@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Web Landing"
+description = "A Vietnamese sales landing page for a studio that designs and builds high-converting landing pages. Visitors explore a 3D-animated showcase, compare build packages, and buy a package through Whop hosted checkout."
+version = "1.0.0"
+id = "artifacts/web-landing"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18500
+
+[services.development]
+run = "pnpm --filter @workspace/web-landing run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/web-landing", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/web-landing/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18500"
+BASE_PATH = "/"
