@@ -175,5 +175,28 @@
     "body": "Halaman ini tidak ada di mana pun di jalan. Kembali ke awal.",
     "back": "Kembali ke beranda",
     "metaTitle": "Halaman tidak ditemukan — xidker"
+  },
+  "chat": {
+    "title": "Chat dengan xidker",
+    "close": "Tutup chat",
+    "intro": "Tanyakan apa saja tentang paket atau kode sumbernya. Balasan kami akan muncul di sini.",
+    "name": "Nama",
+    "email": "Email",
+    "optional": "opsional",
+    "emailHint": "Agar kami bisa menghubungi Anda jika Anda meninggalkan halaman.",
+    "message": "Pesan",
+    "placeholder": "Tulis pesan…",
+    "start": "Kirim pesan",
+    "send": "Kirim",
+    "sending": "Mengirim…",
+    "you": "Anda",
+    "waiting": "Terkirim. Balasan akan muncul di sini. Anda bisa menutup chat dan kembali lagi nanti di browser ini.",
+    "closed": "Percakapan ini sudah ditutup. Kirim pesan lagi untuk membukanya kembali.",
+    "newMessages": "Pesan baru: {n}",
+    "errorSend": "Gagal mengirim. Silakan coba lagi.",
+    "errorRate": "Anda mengirim terlalu cepat. Tunggu sebentar lalu coba lagi.",
+    "errorEmail": "Alamat email itu sepertinya tidak benar.",
+    "errorLoad": "Gagal memuat percakapan.",
+    "retry": "Coba lagi"
   }
 }

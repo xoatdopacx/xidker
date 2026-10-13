@@ -175,5 +175,28 @@
     "body": "Deze pagina bestaat niet. Ga terug naar de start.",
     "back": "Terug naar home",
     "metaTitle": "Pagina niet gevonden — xidker"
+  },
+  "chat": {
+    "title": "Chat met xidker",
+    "close": "Chat sluiten",
+    "intro": "Vraag alles over de pakketten of de broncode. Ons antwoord verschijnt hier.",
+    "name": "Naam",
+    "email": "E-mail",
+    "optional": "optioneel",
+    "emailHint": "Zodat we contact met je kunnen opnemen als je de pagina verlaat.",
+    "message": "Bericht",
+    "placeholder": "Schrijf een bericht…",
+    "start": "Bericht versturen",
+    "send": "Versturen",
+    "sending": "Versturen…",
+    "you": "Jij",
+    "waiting": "Verstuurd. Het antwoord verschijnt hier. Je kunt de chat sluiten en later in deze browser terugkomen.",
+    "closed": "Dit gesprek is gesloten. Stuur opnieuw een bericht om het weer te openen.",
+    "newMessages": "Nieuwe berichten: {n}",
+    "errorSend": "Versturen mislukt. Probeer het opnieuw.",
+    "errorRate": "Je verstuurt iets te snel. Wacht even en probeer het opnieuw.",
+    "errorEmail": "Dit e-mailadres lijkt niet te kloppen.",
+    "errorLoad": "Het gesprek kon niet worden geladen.",
+    "retry": "Opnieuw proberen"
   }
 }

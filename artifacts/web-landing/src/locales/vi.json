@@ -175,5 +175,28 @@
     "body": "Trang bạn tìm không có trên bản đồ. Quay lại vạch xuất phát nhé.",
     "back": "Về trang chủ",
     "metaTitle": "Không tìm thấy trang — xidker"
+  },
+  "chat": {
+    "title": "Chat với xidker",
+    "close": "Đóng chat",
+    "intro": "Hỏi gì về các gói hay source code cũng được. Câu trả lời sẽ hiện ngay tại đây.",
+    "name": "Tên",
+    "email": "Email",
+    "optional": "không bắt buộc",
+    "emailHint": "Để chúng tôi liên hệ lại nếu bạn rời trang.",
+    "message": "Tin nhắn",
+    "placeholder": "Viết tin nhắn…",
+    "start": "Gửi tin nhắn",
+    "send": "Gửi",
+    "sending": "Đang gửi…",
+    "you": "Bạn",
+    "waiting": "Đã gửi. Câu trả lời sẽ hiện ở đây. Bạn có thể đóng chat rồi quay lại xem sau trên trình duyệt này.",
+    "closed": "Cuộc trò chuyện đã đóng. Nhắn tiếp để mở lại.",
+    "newMessages": "Tin nhắn mới: {n}",
+    "errorSend": "Chưa gửi được. Thử lại nhé.",
+    "errorRate": "Bạn đang gửi hơi nhanh. Đợi một lát rồi thử lại.",
+    "errorEmail": "Email này chưa đúng.",
+    "errorLoad": "Chưa tải được cuộc trò chuyện.",
+    "retry": "Thử lại"
   }
 }

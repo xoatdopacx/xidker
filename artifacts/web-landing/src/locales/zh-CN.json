@@ -175,5 +175,28 @@
     "body": "此页面不在地图上。回到起点吧。",
     "back": "回到首页",
     "metaTitle": "页面未找到 — xidker"
+  },
+  "chat": {
+    "title": "与 xidker 聊天",
+    "close": "关闭聊天",
+    "intro": "关于套餐或源码，有任何问题都可以问。回复会直接显示在这里。",
+    "name": "姓名",
+    "email": "邮箱",
+    "optional": "选填",
+    "emailHint": "方便您离开页面后我们与您联系。",
+    "message": "消息",
+    "placeholder": "输入消息…",
+    "start": "发送消息",
+    "send": "发送",
+    "sending": "发送中…",
+    "you": "您",
+    "waiting": "已发送。回复会显示在这里。您可以先关闭聊天，稍后在此浏览器中回来查看。",
+    "closed": "此对话已关闭。再次发送消息即可重新打开。",
+    "newMessages": "新消息：{n}",
+    "errorSend": "发送失败，请重试。",
+    "errorRate": "发送太快了，请稍等片刻再试。",
+    "errorEmail": "这个邮箱地址似乎不正确。",
+    "errorLoad": "无法加载对话。",
+    "retry": "重试"
   }
 }

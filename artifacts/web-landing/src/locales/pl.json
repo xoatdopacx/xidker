@@ -175,5 +175,28 @@
     "body": "Ta strona nie istnieje na trasie. Wróć na start.",
     "back": "Powrót do strony głównej",
     "metaTitle": "Strona nie znaleziona — xidker"
+  },
+  "chat": {
+    "title": "Czat z xidker",
+    "close": "Zamknij czat",
+    "intro": "Pytaj o wszystko, co dotyczy pakietów lub kodu źródłowego. Nasza odpowiedź pojawi się właśnie tutaj.",
+    "name": "Imię",
+    "email": "E-mail",
+    "optional": "opcjonalnie",
+    "emailHint": "Abyśmy mogli się z Tobą skontaktować, jeśli opuścisz stronę.",
+    "message": "Wiadomość",
+    "placeholder": "Napisz wiadomość…",
+    "start": "Wyślij wiadomość",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "you": "Ty",
+    "waiting": "Wysłano. Odpowiedź pojawi się tutaj. Możesz zamknąć czat i wrócić później w tej przeglądarce.",
+    "closed": "Ta rozmowa została zamknięta. Napisz ponownie, aby ją otworzyć.",
+    "newMessages": "Nowe wiadomości: {n}",
+    "errorSend": "Nie udało się wysłać. Spróbuj ponownie.",
+    "errorRate": "Wysyłasz trochę za szybko. Odczekaj chwilę i spróbuj ponownie.",
+    "errorEmail": "Ten adres e-mail wygląda na nieprawidłowy.",
+    "errorLoad": "Nie udało się wczytać rozmowy.",
+    "retry": "Spróbuj ponownie"
   }
 }

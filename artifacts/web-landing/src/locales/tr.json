@@ -175,5 +175,28 @@
     "body": "Aradığınız sayfa bu yolda bulunmuyor. Başlangıca dönün.",
     "back": "Ana sayfaya dön",
     "metaTitle": "Sayfa bulunamadı — xidker"
+  },
+  "chat": {
+    "title": "xidker ile sohbet",
+    "close": "Sohbeti kapat",
+    "intro": "Paketler veya kaynak kodu hakkında her şeyi sorabilirsiniz. Yanıtımız burada görünecek.",
+    "name": "Ad",
+    "email": "E-posta",
+    "optional": "isteğe bağlı",
+    "emailHint": "Sayfadan ayrılırsanız size ulaşabilmemiz için.",
+    "message": "Mesaj",
+    "placeholder": "Bir mesaj yazın…",
+    "start": "Mesaj gönder",
+    "send": "Gönder",
+    "sending": "Gönderiliyor…",
+    "you": "Siz",
+    "waiting": "Gönderildi. Yanıt burada görünecek. Sohbeti kapatıp daha sonra bu tarayıcıda tekrar bakabilirsiniz.",
+    "closed": "Bu sohbet kapatıldı. Yeniden açmak için tekrar mesaj yazın.",
+    "newMessages": "Yeni mesajlar: {n}",
+    "errorSend": "Gönderilemedi. Lütfen tekrar deneyin.",
+    "errorRate": "Biraz hızlı gönderiyorsunuz. Biraz bekleyip tekrar deneyin.",
+    "errorEmail": "Bu e-posta adresi doğru görünmüyor.",
+    "errorLoad": "Sohbet yüklenemedi.",
+    "retry": "Tekrar dene"
   }
 }

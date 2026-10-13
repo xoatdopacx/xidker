@@ -175,5 +175,28 @@
     "body": "Această pagină nu există pe drumul nostru. Întoarce-te la start.",
     "back": "Înapoi la început",
     "metaTitle": "Pagină negăsită — xidker"
+  },
+  "chat": {
+    "title": "Chat cu xidker",
+    "close": "Închide chatul",
+    "intro": "Întreabă orice despre pachete sau codul sursă. Răspunsul nostru va apărea chiar aici.",
+    "name": "Nume",
+    "email": "E-mail",
+    "optional": "opțional",
+    "emailHint": "Ca să te putem contacta dacă părăsești pagina.",
+    "message": "Mesaj",
+    "placeholder": "Scrie un mesaj…",
+    "start": "Trimite mesajul",
+    "send": "Trimite",
+    "sending": "Se trimite…",
+    "you": "Tu",
+    "waiting": "Trimis. Răspunsul va apărea aici. Poți închide chatul și reveni mai târziu în acest browser.",
+    "closed": "Această conversație a fost închisă. Scrie din nou pentru a o redeschide.",
+    "newMessages": "Mesaje noi: {n}",
+    "errorSend": "Nu s-a putut trimite. Încearcă din nou.",
+    "errorRate": "Trimiți puțin prea repede. Așteaptă o clipă și încearcă din nou.",
+    "errorEmail": "Adresa de e-mail nu pare corectă.",
+    "errorLoad": "Conversația nu a putut fi încărcată.",
+    "retry": "Încearcă din nou"
   }
 }

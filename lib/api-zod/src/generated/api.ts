@@ -76,3 +76,201 @@ export const GetCheckoutStatusResponse = zod.object({
 })
 
 
+/**
+ * The conversation is identified by the httpOnly chat cookie set when it was started. Returns 404 when this browser has not started one.
+ * @summary Get this visitor's chat conversation
+ */
+export const GetChatThreadResponse = zod.object({
+  "status": zod.enum(['open', 'closed']),
+  "name": zod.string().nullable(),
+  "messages": zod.array(zod.object({
+  "id": zod.number().int(),
+  "sender": zod.enum(['visitor', 'admin']),
+  "body": zod.string(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * Creates the conversation, stores the first message and sets the httpOnly chat cookie that identifies this browser from now on.
+ * @summary Start a conversation with a first message
+ */
+export const startChatThreadBodyMessageMax = 2000;
+
+export const startChatThreadBodyNameMax = 80;
+
+export const startChatThreadBodyEmailMax = 200;
+
+export const startChatThreadBodyWebsiteMax = 200;
+
+
+
+export const StartChatThreadBody = zod.object({
+  "message": zod.string().min(1).max(startChatThreadBodyMessageMax),
+  "name": zod.string().max(startChatThreadBodyNameMax).optional(),
+  "email": zod.string().max(startChatThreadBodyEmailMax).optional().describe('Optional; an empty string means not given'),
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)'),
+  "website": zod.string().max(startChatThreadBodyWebsiteMax).optional().describe('Must stay empty. Hidden from people; automated form fillers fill it in.')
+})
+
+export const StartChatThreadResponse = zod.object({
+  "status": zod.enum(['open', 'closed']),
+  "name": zod.string().nullable(),
+  "messages": zod.array(zod.object({
+  "id": zod.number().int(),
+  "sender": zod.enum(['visitor', 'admin']),
+  "body": zod.string(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Send a message in this visitor's conversation
+ */
+export const sendChatMessageBodyMessageMax = 2000;
+
+
+
+export const SendChatMessageBody = zod.object({
+  "message": zod.string().min(1).max(sendChatMessageBodyMessageMax)
+})
+
+export const SendChatMessageResponse = zod.object({
+  "id": zod.number().int(),
+  "sender": zod.enum(['visitor', 'admin']),
+  "body": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * When the token is right, a 6-digit code valid for 10 minutes is emailed to the admin address and an httpOnly cookie ties the code to this browser.
+ * @summary Check the admin token and email a one-time code
+ */
+export const requestAdminCodeBodyTokenMax = 512;
+
+
+
+export const RequestAdminCodeBody = zod.object({
+  "token": zod.string().min(1).max(requestAdminCodeBodyTokenMax)
+})
+
+export const RequestAdminCodeResponse = zod.object({
+  "sentTo": zod.string().describe('The admin address with most of it hidden'),
+  "expiresAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Check the emailed code and sign in
+ */
+export const verifyAdminCodeBodyCodeRegExp = new RegExp('^[0-9]{6}$');
+
+
+export const VerifyAdminCodeBody = zod.object({
+  "code": zod.string().regex(verifyAdminCodeBodyCodeRegExp)
+})
+
+export const VerifyAdminCodeResponse = zod.object({
+  "expiresAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Get the current admin session
+ */
+export const GetAdminSessionResponse = zod.object({
+  "expiresAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Sign out this admin browser
+ */
+export const SignOutAdminResponse = zod.void()
+
+
+/**
+ * @summary List chat conversations, most recent activity first
+ */
+export const ListAdminConversationsResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "email": zod.string().nullable(),
+  "lang": zod.string(),
+  "status": zod.enum(['open', 'closed']),
+  "createdAt": zod.coerce.date(),
+  "lastMessageAt": zod.coerce.date(),
+  "lastMessage": zod.string().nullable().describe('Start of the newest message'),
+  "lastSender": zod.union([zod.literal('visitor'),zod.literal('admin'),zod.literal(null)]).nullable(),
+  "unread": zod.number().int().describe('Visitor messages the admin has not opened yet')
+})
+export const ListAdminConversationsResponse = zod.array(ListAdminConversationsResponseItem)
+
+
+/**
+ * @summary Close or reopen a conversation
+ */
+export const UpdateAdminConversationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const UpdateAdminConversationBody = zod.object({
+  "status": zod.enum(['open', 'closed'])
+})
+
+export const UpdateAdminConversationResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string().nullable(),
+  "email": zod.string().nullable(),
+  "lang": zod.string(),
+  "status": zod.enum(['open', 'closed']),
+  "createdAt": zod.coerce.date(),
+  "lastMessageAt": zod.coerce.date(),
+  "lastMessage": zod.string().nullable().describe('Start of the newest message'),
+  "lastSender": zod.union([zod.literal('visitor'),zod.literal('admin'),zod.literal(null)]).nullable(),
+  "unread": zod.number().int().describe('Visitor messages the admin has not opened yet')
+})
+
+
+/**
+ * @summary Read a conversation and mark it as read
+ */
+export const ListAdminMessagesParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const ListAdminMessagesResponseItem = zod.object({
+  "id": zod.number().int(),
+  "sender": zod.enum(['visitor', 'admin']),
+  "body": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+export const ListAdminMessagesResponse = zod.array(ListAdminMessagesResponseItem)
+
+
+/**
+ * @summary Reply in a conversation
+ */
+export const SendAdminMessageParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const sendAdminMessageBodyMessageMax = 2000;
+
+
+
+export const SendAdminMessageBody = zod.object({
+  "message": zod.string().min(1).max(sendAdminMessageBodyMessageMax)
+})
+
+export const SendAdminMessageResponse = zod.object({
+  "id": zod.number().int(),
+  "sender": zod.enum(['visitor', 'admin']),
+  "body": zod.string(),
+  "createdAt": zod.coerce.date()
+})
+
+

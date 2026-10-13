@@ -15,6 +15,8 @@ Montage trick: to review many small captures in one image read, capture each one
 
 CDP gotchas hit later: `Page.captureScreenshot` `clip` x/y are page coordinates, so on a scrolled page add `scrollX/scrollY` or the capture shows only the green background. Retry captures that fail with "Not attached to an active page" during navigation. `localStorage` throws on `about:blank`; navigate to the site before touching it. Background jobs started with `&` inside a shell call die when the call returns; use the background-task option instead. Helper scripts in `/tmp` do not survive across sessions, so rebuild a small launch/evaluate/shot/click/montage helper when needed.
 
+Testing POST endpoints from the headless browser: the API rejects requests whose Origin is not the app's own domain, so pages on `http://localhost` get 403 on POST. Either load the page from `https://$REPLIT_DEV_DOMAIN`, or intercept the API calls with CDP `Fetch` and forward them from Node with the dev-domain Origin. The dev domain injects a preview banner that adds height, so judge full-height (100dvh) layouts on `localhost:80`. After a new frontend dependency is added, the first load of a route that imports it makes Vite optimize it and reload the page once; load the route once before asserting anything.
+
 If WebGL is ever needed again in headless mode: drop `--disable-gpu` and add `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
 
 **Why:** pricing cards with live data, checkout navigation, the road character's per-leg vehicles and the FAQ height check could only be confirmed this way.

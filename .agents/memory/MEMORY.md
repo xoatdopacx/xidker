@@ -1,4 +1,6 @@
 - [Whop integration quirks](whop-integration.md) — SDK pinned to 0.0.42; account_id vs company_id per method; VND works; MCP helper flaky, use REST.
-- [Verifying scroll-revealed sections](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive /repl/tools/bin/chromium over CDP to scroll, capture, click; montage many clips into one image.
+- [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; POSTs need the dev-domain Origin; Vite reloads once after a new dep.
 - [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.
 - [Pricing rules](pricing-rules.md) — user-defined contents of the $12/$50/$250 packages; only A–Z has hosting+domain; no invented client-use policy.
+- [Live chat and admin sign-in](admin-chat.md) — token + emailed 6-digit code, sessions tied to the token, DB polling for autoscale, Vietnamese-only admin.
+- [Backend gotchas](backend-gotchas.md) — drizzle prints unqualified columns in subqueries; run typecheck:libs after schema changes.

@@ -14,6 +14,10 @@ tags:
     description: Landing page build packages sold through Whop
   - name: checkout
     description: Whop hosted checkout sessions and verified payment status
+  - name: chat
+    description: Live chat between site visitors and the studio
+  - name: admin
+    description: Studio admin sign-in and chat inbox
 paths:
   /healthz:
     get:
@@ -126,6 +130,378 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "503":
           description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /chat/thread:
+    get:
+      operationId: getChatThread
+      tags: [chat]
+      summary: Get this visitor's chat conversation
+      description: The conversation is identified by the httpOnly chat cookie set when it was started. Returns 404 when this browser has not started one.
+      responses:
+        "200":
+          description: The visitor's conversation, newest 200 messages in order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatThread"
+        "404":
+          description: This browser has no conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: startChatThread
+      tags: [chat]
+      summary: Start a conversation with a first message
+      description: Creates the conversation, stores the first message and sets the httpOnly chat cookie that identifies this browser from now on.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatStartInput"
+      responses:
+        "201":
+          description: Conversation started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatThread"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many conversations or messages, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /chat/thread/messages:
+    post:
+      operationId: sendChatMessage
+      tags: [chat]
+      summary: Send a message in this visitor's conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessageInput"
+      responses:
+        "201":
+          description: Message stored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: This browser has no conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many messages, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/login:
+    post:
+      operationId: requestAdminCode
+      tags: [admin]
+      summary: Check the admin token and email a one-time code
+      description: When the token is right, a 6-digit code valid for 10 minutes is emailed to the admin address and an httpOnly cookie ties the code to this browser.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTokenInput"
+      responses:
+        "202":
+          description: Code sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCodeChallenge"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Wrong token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Admin sign-in or email sending is not configured
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/login/verify:
+    post:
+      operationId: verifyAdminCode
+      tags: [admin]
+      summary: Check the emailed code and sign in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCodeInput"
+      responses:
+        "200":
+          description: Signed in; the httpOnly admin session cookie is set
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Wrong, expired or already used code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, request a new code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/session:
+    get:
+      operationId: getAdminSession
+      tags: [admin]
+      summary: Get the current admin session
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: signOutAdmin
+      tags: [admin]
+      summary: Sign out this admin browser
+      responses:
+        "204":
+          description: Signed out
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/conversations:
+    get:
+      operationId: listAdminConversations
+      tags: [admin]
+      summary: List chat conversations, most recent activity first
+      responses:
+        "200":
+          description: Up to 200 conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminConversation"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/conversations/{id}:
+    patch:
+      operationId: updateAdminConversation
+      tags: [admin]
+      summary: Close or reopen a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminConversationUpdate"
+      responses:
+        "200":
+          description: Updated conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminConversation"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/conversations/{id}/messages:
+    get:
+      operationId: listAdminMessages
+      tags: [admin]
+      summary: Read a conversation and mark it as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Newest 500 messages in order
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ChatMessage"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: sendAdminMessage
+      tags: [admin]
+      summary: Reply in a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessageInput"
+      responses:
+        "201":
+          description: Reply stored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many messages, try again later
           content:
             application/json:
               schema:
@@ -244,3 +620,154 @@ components:
         - amount
         - currency
         - paidAt
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        sender:
+          type: string
+          enum: [visitor, admin]
+        body:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - sender
+        - body
+        - createdAt
+    ChatThread:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, closed]
+        name:
+          type: ["string", "null"]
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+      required:
+        - status
+        - name
+        - messages
+    ChatStartInput:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        name:
+          type: string
+          maxLength: 80
+        email:
+          type: string
+          maxLength: 200
+          description: Optional; an empty string means not given
+        lang:
+          $ref: "#/components/schemas/Language"
+        website:
+          type: string
+          maxLength: 200
+          description: Must stay empty. Hidden from people; automated form fillers fill it in.
+      required:
+        - message
+        - lang
+    ChatMessageInput:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+      required:
+        - message
+    AdminTokenInput:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 512
+      required:
+        - token
+    AdminCodeChallenge:
+      type: object
+      properties:
+        sentTo:
+          type: string
+          description: The admin address with most of it hidden
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - sentTo
+        - expiresAt
+    AdminCodeInput:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: "^[0-9]{6}$"
+      required:
+        - code
+    AdminSession:
+      type: object
+      properties:
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - expiresAt
+    AdminConversation:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        lang:
+          type: string
+        status:
+          type: string
+          enum: [open, closed]
+        createdAt:
+          type: string
+          format: date-time
+        lastMessageAt:
+          type: string
+          format: date-time
+        lastMessage:
+          type: ["string", "null"]
+          description: Start of the newest message
+        lastSender:
+          type: ["string", "null"]
+          enum: [visitor, admin, null]
+        unread:
+          type: integer
+          description: Visitor messages the admin has not opened yet
+      required:
+        - id
+        - name
+        - email
+        - lang
+        - status
+        - createdAt
+        - lastMessageAt
+        - lastMessage
+        - lastSender
+        - unread
+    AdminConversationUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, closed]
+      required:
+        - status

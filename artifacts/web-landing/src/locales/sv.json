@@ -175,5 +175,28 @@
     "body": "Den här sidan finns inte på vägen. Gå tillbaka till starten.",
     "back": "Tillbaka till startsidan",
     "metaTitle": "Sidan hittades inte — xidker"
+  },
+  "chat": {
+    "title": "Chatta med xidker",
+    "close": "Stäng chatten",
+    "intro": "Fråga vad du vill om paketen eller källkoden. Vårt svar visas här.",
+    "name": "Namn",
+    "email": "E-post",
+    "optional": "valfritt",
+    "emailHint": "Så att vi kan kontakta dig om du lämnar sidan.",
+    "message": "Meddelande",
+    "placeholder": "Skriv ett meddelande…",
+    "start": "Skicka meddelande",
+    "send": "Skicka",
+    "sending": "Skickar…",
+    "you": "Du",
+    "waiting": "Skickat. Svaret visas här. Du kan stänga chatten och titta in senare i den här webbläsaren.",
+    "closed": "Den här konversationen är stängd. Skriv igen för att öppna den.",
+    "newMessages": "Nya meddelanden: {n}",
+    "errorSend": "Det gick inte att skicka. Försök igen.",
+    "errorRate": "Du skickar lite för snabbt. Vänta en stund och försök igen.",
+    "errorEmail": "Den e-postadressen ser inte rätt ut.",
+    "errorLoad": "Det gick inte att läsa in konversationen.",
+    "retry": "Försök igen"
   }
 }

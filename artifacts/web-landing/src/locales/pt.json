@@ -175,5 +175,28 @@
     "body": "Esta página não existe no caminho. Volte para o início.",
     "back": "Voltar ao início",
     "metaTitle": "Página não encontrada — xidker"
+  },
+  "chat": {
+    "title": "Chat com a xidker",
+    "close": "Fechar chat",
+    "intro": "Pergunte o que quiser sobre os pacotes ou o código-fonte. Nossa resposta aparecerá aqui mesmo.",
+    "name": "Nome",
+    "email": "E-mail",
+    "optional": "opcional",
+    "emailHint": "Para podermos entrar em contato se você sair da página.",
+    "message": "Mensagem",
+    "placeholder": "Escreva uma mensagem…",
+    "start": "Enviar mensagem",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "you": "Você",
+    "waiting": "Enviada. A resposta aparecerá aqui. Você pode fechar o chat e voltar mais tarde neste navegador.",
+    "closed": "Esta conversa foi encerrada. Escreva de novo para reabri-la.",
+    "newMessages": "Novas mensagens: {n}",
+    "errorSend": "Não foi possível enviar. Tente novamente.",
+    "errorRate": "Você está enviando rápido demais. Aguarde um pouco e tente novamente.",
+    "errorEmail": "Esse endereço de e-mail não parece correto.",
+    "errorLoad": "Não foi possível carregar a conversa.",
+    "retry": "Tentar novamente"
   }
 }

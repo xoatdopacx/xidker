@@ -129,6 +129,140 @@ export interface CheckoutStatus {
   paidAt: string | null;
 }
 
+export type ChatMessageSender = typeof ChatMessageSender[keyof typeof ChatMessageSender];
+
+
+export const ChatMessageSender = {
+  visitor: 'visitor',
+  admin: 'admin',
+} as const;
+
+export interface ChatMessage {
+  id: number;
+  sender: ChatMessageSender;
+  body: string;
+  createdAt: string;
+}
+
+export type ChatThreadStatus = typeof ChatThreadStatus[keyof typeof ChatThreadStatus];
+
+
+export const ChatThreadStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export interface ChatThread {
+  status: ChatThreadStatus;
+  /** @nullable */
+  name: string | null;
+  messages: ChatMessage[];
+}
+
+export interface ChatStartInput {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  message: string;
+  /** @maxLength 80 */
+  name?: string;
+  /**
+     * Optional; an empty string means not given
+     * @maxLength 200
+     */
+  email?: string;
+  lang: Language;
+  /**
+     * Must stay empty. Hidden from people; automated form fillers fill it in.
+     * @maxLength 200
+     */
+  website?: string;
+}
+
+export interface ChatMessageInput {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  message: string;
+}
+
+export interface AdminTokenInput {
+  /**
+     * @minLength 1
+     * @maxLength 512
+     */
+  token: string;
+}
+
+export interface AdminCodeChallenge {
+  /** The admin address with most of it hidden */
+  sentTo: string;
+  expiresAt: string;
+}
+
+export interface AdminCodeInput {
+  /** @pattern ^[0-9]{6}$ */
+  code: string;
+}
+
+export interface AdminSession {
+  expiresAt: string;
+}
+
+export type AdminConversationStatus = typeof AdminConversationStatus[keyof typeof AdminConversationStatus];
+
+
+export const AdminConversationStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+/**
+ * @nullable
+ */
+export type AdminConversationLastSender = typeof AdminConversationLastSender[keyof typeof AdminConversationLastSender] | null;
+
+
+export const AdminConversationLastSender = {
+  visitor: 'visitor',
+  admin: 'admin',
+} as const;
+
+export interface AdminConversation {
+  id: string;
+  /** @nullable */
+  name: string | null;
+  /** @nullable */
+  email: string | null;
+  lang: string;
+  status: AdminConversationStatus;
+  createdAt: string;
+  lastMessageAt: string;
+  /**
+     * Start of the newest message
+     * @nullable
+     */
+  lastMessage: string | null;
+  /** @nullable */
+  lastSender: AdminConversationLastSender;
+  /** Visitor messages the admin has not opened yet */
+  unread: number;
+}
+
+export type AdminConversationUpdateStatus = typeof AdminConversationUpdateStatus[keyof typeof AdminConversationUpdateStatus];
+
+
+export const AdminConversationUpdateStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export interface AdminConversationUpdate {
+  status: AdminConversationUpdateStatus;
+}
+
 export type ListPackagesParams = {
 /**
  * Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.

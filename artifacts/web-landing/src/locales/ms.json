@@ -175,5 +175,28 @@
     "body": "Halaman ini tiada di sepanjang jalan. Kembali ke permulaan.",
     "back": "Kembali ke utama",
     "metaTitle": "Halaman tidak dijumpai — xidker"
+  },
+  "chat": {
+    "title": "Sembang dengan xidker",
+    "close": "Tutup sembang",
+    "intro": "Tanya apa sahaja tentang pakej atau kod sumber. Balasan kami akan dipaparkan di sini.",
+    "name": "Nama",
+    "email": "E-mel",
+    "optional": "pilihan",
+    "emailHint": "Supaya kami boleh menghubungi anda jika anda meninggalkan halaman.",
+    "message": "Mesej",
+    "placeholder": "Tulis mesej…",
+    "start": "Hantar mesej",
+    "send": "Hantar",
+    "sending": "Menghantar…",
+    "you": "Anda",
+    "waiting": "Dihantar. Balasan akan dipaparkan di sini. Anda boleh menutup sembang dan kembali semula kemudian dalam pelayar ini.",
+    "closed": "Perbualan ini telah ditutup. Hantar mesej lagi untuk membukanya semula.",
+    "newMessages": "Mesej baharu: {n}",
+    "errorSend": "Gagal menghantar. Sila cuba lagi.",
+    "errorRate": "Anda menghantar terlalu cepat. Tunggu sebentar dan cuba lagi.",
+    "errorEmail": "Alamat e-mel itu nampaknya tidak betul.",
+    "errorLoad": "Gagal memuatkan perbualan.",
+    "retry": "Cuba lagi"
   }
 }

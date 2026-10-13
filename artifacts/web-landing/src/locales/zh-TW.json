@@ -175,5 +175,28 @@
     "body": "這個頁面不在路徑上，請回到起點。",
     "back": "回到首頁",
     "metaTitle": "頁面找不到 — xidker"
+  },
+  "chat": {
+    "title": "與 xidker 聊天",
+    "close": "關閉聊天",
+    "intro": "關於方案或原始碼，有任何問題都可以問。回覆會直接顯示在這裡。",
+    "name": "姓名",
+    "email": "電子郵件",
+    "optional": "選填",
+    "emailHint": "方便你離開頁面後我們與你聯絡。",
+    "message": "訊息",
+    "placeholder": "輸入訊息…",
+    "start": "傳送訊息",
+    "send": "傳送",
+    "sending": "傳送中…",
+    "you": "你",
+    "waiting": "已傳送。回覆會顯示在這裡。你可以先關閉聊天，稍後在此瀏覽器中回來查看。",
+    "closed": "此對話已關閉。再次傳送訊息即可重新開啟。",
+    "newMessages": "新訊息：{n}",
+    "errorSend": "傳送失敗，請再試一次。",
+    "errorRate": "傳送得太快了，請稍候再試。",
+    "errorEmail": "這個電子郵件地址似乎不正確。",
+    "errorLoad": "無法載入對話。",
+    "retry": "重試"
   }
 }

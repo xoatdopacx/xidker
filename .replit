@@ -1,4 +1,4 @@
-modules = ["nodejs-24", "python-base-3.13"]
+modules = ["nodejs-24", "python-base-3.13", "postgresql-16"]
 
 [deployment]
 router = "application"
@@ -24,3 +24,7 @@ timeoutMs = 20000
 [userenv.shared]
 WHOP_COMPANY_ID = "biz_5Vqfd5DSoYsIXO"
 WHOP_PRODUCT_ID = "prod_YKfs5mljCPo6O"
+ADMIN_EMAIL = "idkwdusforwork@gmail.com"
+
+[nix]
+channel = "stable-25_05"

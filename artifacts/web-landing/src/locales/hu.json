@@ -175,5 +175,28 @@
     "body": "Ez az oldal nem található az úton. Térj vissza a startvonalhoz.",
     "back": "Vissza a főoldalra",
     "metaTitle": "Az oldal nem található — xidker"
+  },
+  "chat": {
+    "title": "Csevegj velünk",
+    "close": "Csevegés bezárása",
+    "intro": "Kérdezz bármit a csomagokról vagy a forráskódról. A válaszunk itt jelenik meg.",
+    "name": "Név",
+    "email": "E-mail",
+    "optional": "nem kötelező",
+    "emailHint": "Hogy elérhessünk, ha elhagyod az oldalt.",
+    "message": "Üzenet",
+    "placeholder": "Írj üzenetet…",
+    "start": "Üzenet küldése",
+    "send": "Küldés",
+    "sending": "Küldés…",
+    "you": "Te",
+    "waiting": "Elküldve. A válasz itt jelenik meg. Bezárhatod a csevegést, és később visszanézhetsz ebben a böngészőben.",
+    "closed": "Ez a beszélgetés lezárult. Írj újra, és a beszélgetés újra megnyílik.",
+    "newMessages": "Új üzenetek: {n}",
+    "errorSend": "Nem sikerült elküldeni. Próbáld újra.",
+    "errorRate": "Kicsit túl gyorsan küldesz. Várj egy kicsit, és próbáld újra.",
+    "errorEmail": "Ez az e-mail-cím nem tűnik helyesnek.",
+    "errorLoad": "Nem sikerült betölteni a beszélgetést.",
+    "retry": "Újra"
   }
 }

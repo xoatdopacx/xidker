@@ -175,5 +175,28 @@
     "body": "This page isn't anywhere on the road. Head back to the start.",
     "back": "Back to home",
     "metaTitle": "Page not found — xidker"
+  },
+  "chat": {
+    "title": "Chat with xidker",
+    "close": "Close chat",
+    "intro": "Ask anything about the packages or the source code. Our reply will show up right here.",
+    "name": "Name",
+    "email": "Email",
+    "optional": "optional",
+    "emailHint": "So we can get back to you if you leave the page.",
+    "message": "Message",
+    "placeholder": "Write a message…",
+    "start": "Send message",
+    "send": "Send",
+    "sending": "Sending…",
+    "you": "You",
+    "waiting": "Sent. The reply will show up here. You can close the chat and check back later in this browser.",
+    "closed": "This conversation was closed. Write again to reopen it.",
+    "newMessages": "New messages: {n}",
+    "errorSend": "Couldn't send. Please try again.",
+    "errorRate": "You're sending a bit fast. Wait a moment and try again.",
+    "errorEmail": "That email address doesn't look right.",
+    "errorLoad": "Couldn't load the conversation.",
+    "retry": "Try again"
   }
 }

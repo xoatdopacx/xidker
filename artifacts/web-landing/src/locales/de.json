@@ -175,5 +175,28 @@
     "body": "Diese Seite existiert nicht auf dem Weg. Geh zurück zum Start.",
     "back": "Zurück zur Startseite",
     "metaTitle": "Seite nicht gefunden — xidker"
+  },
+  "chat": {
+    "title": "Chat mit xidker",
+    "close": "Chat schließen",
+    "intro": "Frag uns alles zu den Paketen oder zum Quellcode. Unsere Antwort erscheint direkt hier.",
+    "name": "Name",
+    "email": "E-Mail",
+    "optional": "optional",
+    "emailHint": "Damit wir uns bei dir melden können, falls du die Seite verlässt.",
+    "message": "Nachricht",
+    "placeholder": "Nachricht schreiben…",
+    "start": "Nachricht senden",
+    "send": "Senden",
+    "sending": "Wird gesendet…",
+    "you": "Du",
+    "waiting": "Gesendet. Die Antwort erscheint hier. Du kannst den Chat schließen und später in diesem Browser wieder vorbeischauen.",
+    "closed": "Dieses Gespräch wurde geschlossen. Schreib erneut, um es wieder zu öffnen.",
+    "newMessages": "Neue Nachrichten: {n}",
+    "errorSend": "Senden fehlgeschlagen. Bitte versuch es noch einmal.",
+    "errorRate": "Du sendest etwas zu schnell. Warte kurz und versuch es dann noch einmal.",
+    "errorEmail": "Diese E-Mail-Adresse scheint nicht zu stimmen.",
+    "errorLoad": "Das Gespräch konnte nicht geladen werden.",
+    "retry": "Erneut versuchen"
   }
 }

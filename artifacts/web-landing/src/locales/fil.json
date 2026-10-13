@@ -175,5 +175,28 @@
     "body": "Ang pahinang ito ay wala sa daan. Bumalik sa simula.",
     "back": "Bumalik sa home",
     "metaTitle": "Hindi nahanap ang pahina — xidker"
+  },
+  "chat": {
+    "title": "Makipag-chat sa xidker",
+    "close": "Isara ang chat",
+    "intro": "Magtanong ng kahit ano tungkol sa mga package o sa source code. Dito lalabas ang sagot namin.",
+    "name": "Pangalan",
+    "email": "Email",
+    "optional": "opsyonal",
+    "emailHint": "Para makontak ka namin kung aalis ka sa page.",
+    "message": "Mensahe",
+    "placeholder": "Sumulat ng mensahe…",
+    "start": "Ipadala ang mensahe",
+    "send": "Ipadala",
+    "sending": "Ipinapadala…",
+    "you": "Ikaw",
+    "waiting": "Naipadala na. Dito lalabas ang sagot. Puwede mong isara ang chat at bumalik mamaya sa browser na ito.",
+    "closed": "Sarado na ang usapang ito. Magpadala ulit ng mensahe para buksan ito.",
+    "newMessages": "Mga bagong mensahe: {n}",
+    "errorSend": "Hindi naipadala. Pakisubukan ulit.",
+    "errorRate": "Medyo mabilis ang pagpapadala mo. Maghintay sandali at subukan ulit.",
+    "errorEmail": "Mukhang mali ang email address na iyan.",
+    "errorLoad": "Hindi ma-load ang usapan.",
+    "retry": "Subukan ulit"
   }
 }
