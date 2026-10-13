@@ -1,2 +1,2 @@
 - [Whop integration quirks](whop-integration.md) — SDK pinned to 0.0.42; account_id vs company_id per method; VND works; MCP helper flaky, use REST.
-- [Verifying scroll-revealed sections](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive /repl/tools/bin/chromium over CDP (swiftshader flags for WebGL) to scroll, capture, click.
+- [Verifying scroll-revealed sections](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive /repl/tools/bin/chromium over CDP to scroll, capture, click; montage many clips into one image.

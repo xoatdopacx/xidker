@@ -1,6 +1,6 @@
-# xidker — landing page bán gói thiết kế landing page
+# xidker — web bán source code portfolio
 
-Bilingual (Vietnamese / English) sales landing page with artsy 3D visuals that sells landing-page build packages; buyers pay through Whop hosted checkout. Contact email: hello@idkworkshop.com.
+Bilingual (Vietnamese / English) sales page, styled and animated like a pixel-art game road map, that sells portfolio website source code (not landing-page services); buyers pay through Whop hosted checkout and get the source through Whop. Contact email: hello@idkworkshop.com.
 
 ## Run & Operate
 
@@ -18,7 +18,7 @@ Bilingual (Vietnamese / English) sales landing page with artsy 3D visuals that s
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5; payments: `@whop/sdk` pinned to 0.0.42
 - DB: PostgreSQL + Drizzle ORM
-- Frontend: React + Vite, Tailwind, three.js via @react-three/fiber + drei (lazy-loaded hero scene)
+- Frontend: React + Vite, Tailwind; all pixel art is inline SVG (no WebGL, no bitmap images)
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 
@@ -39,22 +39,27 @@ Bilingual (Vietnamese / English) sales landing page with artsy 3D visuals that s
 
 ## Product
 
-- Sales page in Vietnamese and English (language switch in the nav): artsy 3D hero (WebGL with CSS fallback), 3D sections, pricing from Whop, FAQ, contact email.
+- Sales page in Vietnamese and English (language switch in the nav): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop, FAQ, contact email.
 - "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise).
 - `/cam-on`: post-payment confirmation with verified receipt (package, amount, date, ref).
 
 ## User preferences
 
 - Talks in Vietnamese; reply in plain Vietnamese without technical jargon.
-- Use SVG icons, no emoji anywhere in the UI. Use 3D animation, in an artsy style ("kiểu artis").
+- Use SVG icons, no emoji anywhere in the UI. Motion and look follow the user's pixel-art game "ROAD MAP" reference (attached_assets/__1791889422870.jpg); this replaced the earlier artsy 3D sculpture direction.
+- Vietnamese copy must be plain, natural everyday Vietnamese; the user rejected the poetic headline "Trang bán hàng khách dừng lại để ngắm."
 - Brand is "xidker" (lowercase). The only real contact detail is hello@idkworkshop.com; do not add phone numbers or addresses unless the user provides them.
-- Packages and prices are sample content until the user provides real ones.
+- The product is portfolio source code. The three packages (Source Cá Nhân / Source + Cài Đặt / Source Thương Mại) and their prices are sample content until the user provides real ones. Whop grants access per product, not per plan, so different templates would need separate Whop products.
+- No invented social proof (customer names, testimonials, counts, statistics).
 
 ## Gotchas
 
 - Do not upgrade `@whop/sdk` casually: v2.x has a different client API (`WhopClient({ token })`). In 0.0.42, plan/checkout params use `account_id`, while `payments.list` uses `company_id`.
 - `lib/api-client-react/tsconfig.json` needs `"dom.iterable"` in `lib` or the generated client fails typecheck (`Headers.entries`).
-- Reveal animations translate content 40px down; the IntersectionObserver root is extended by 40px to compensate, otherwise items at the fold (hero CTA) stay hidden until scroll.
+- The road on the home page is measured from the `[data-road]` anchors in the page layout. Any interaction that changes page height (e.g. an expanding FAQ) reshapes and stretches the road, so interactive parts must keep a fixed height. Switching language is the only expected exception.
+- Pixelify Sans draws 2 like Z/8 and 5 like S. Digits use `.font-num` (Silkscreen); Pixelify Sans is for letters only, and it is not used for Vietnamese text.
+- Card "pixel build" reveals keep their state in DOM data attributes (`data-rv`, `data-built`) and use one shared scroll check, not IntersectionObserver, so cards skipped by a fast jump finish instantly instead of staying hidden. A remounted card builds again, so lists must not remount on re-render (the package list keeps previous data while the other language loads).
+- In-page `#` links are intercepted by the full-screen scene transition, which scrolls instantly with a 64px header offset. Keep section anchors on `id`s and give the transition a destination label for any new jump target.
 
 ## Pointers
 

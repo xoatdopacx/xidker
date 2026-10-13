@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
 
 export function usePrefersReducedMotion() {
   const [r, setR] = useState(false);
@@ -45,21 +45,92 @@ export function useSectionProgress<T extends HTMLElement>() {
   return [ref, p] as const;
 }
 
-export function Reveal({ children, delay = 0, className = "", as: Tag = "div" }: { children: ReactNode; delay?: number; className?: string; as?: "div" | "li" }) {
+/* ---------- Pixel "build" reveal ----------
+ * Cards are built from 3D pixel tiles when they enter the viewport. State lives in DOM data
+ * attributes (data-rv / data-built), so re-renders (e.g. language switch) never replay it.
+ * Overlays are absolutely positioned inside the card: no layout height change, ever.
+ * A shared rAF scroll check (not IntersectionObserver) means cards scrolled past during a fast
+ * jump are finished instantly instead of staying hidden, and anything on screen at load builds
+ * immediately on mount. */
+const pending = new Map<HTMLElement, number>();
+let installed = false, raf = 0;
+const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function finalize(el: HTMLElement) {
+  el.querySelectorAll(":scope > .rv-ov").forEach((n) => n.remove());
+  el.dataset.rv = "built";
+  el.dataset.built = "true";
+}
+
+function build(el: HTMLElement, animated: boolean) {
+  const base = pending.get(el) ?? 0;
+  pending.delete(el);
+  if (!animated || reducedMotion()) return finalize(el);
+  const er = el.getBoundingClientRect();
+  const marker = el.closest("section")?.querySelector("[data-road]");
+  const mx = marker ? marker.getBoundingClientRect().left : 0;
+  const fromLeft = mx < er.left + er.width / 2;
+  const cols = er.width < 420 ? 6 : 8;
+  const rows = Math.max(2, Math.min(10, Math.round(er.height / (er.width / cols))));
+  const ov = document.createElement("div");
+  ov.className = "rv-ov";
+  ov.setAttribute("aria-hidden", "true");
+  ov.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  ov.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+  const frag = document.createDocumentFragment();
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const i = document.createElement("i");
+    const col = fromLeft ? c : cols - 1 - c;
+    const d = Math.round((col + r * 0.35 + ((r * 7 + c * 13) % 5) * 0.12) * 22);
+    i.style.setProperty("--td", `${d}ms`);
+    if ((r * 5 + c * 3) % 11 === 0) i.className = "g";
+    frag.appendChild(i);
+  }
+  ov.appendChild(frag);
+  el.style.setProperty("--dir", fromLeft ? "1" : "-1");
+  el.style.setProperty("--rvd", `${base}ms`);
+  el.dataset.rv = "build";
+  el.appendChild(ov);
+  const done = () => { window.clearTimeout(timer); if (el.dataset.rv === "build") finalize(el); };
+  const timer = window.setTimeout(done, 1300 + base);
+  ov.addEventListener("animationend", (e) => { if (e.target === ov) done(); });
+}
+
+function check() {
+  raf = 0;
+  const vh = window.innerHeight;
+  pending.forEach((_, el) => {
+    const r = el.getBoundingClientRect();
+    if (r.bottom <= 0) build(el, false);
+    else if (r.top < vh) build(el, true);
+  });
+}
+function schedule() { if (!raf) raf = requestAnimationFrame(check); }
+
+/** Finish every pending card currently in (or above) the viewport without animation. */
+export function settleRevealsInView() {
+  const vh = window.innerHeight;
+  pending.forEach((_, el) => { if (el.getBoundingClientRect().top < vh) build(el, false); });
+}
+
+export function Reveal({ children, delay = 0, className = "", as: Tag = "div", hero = false }: { children: ReactNode; delay?: number; className?: string; as?: "div" | "li"; hero?: boolean }) {
   const ref = useRef<HTMLElement>(null);
-  const [inView, setIn] = useState(false);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    // .reveal starts 40px lower (translate3d), and IntersectionObserver measures the
-    // transformed box. Extend the root by the same 40px so anything actually on screen
-    // (e.g. the hero CTA at the fold) reveals on load instead of waiting for a scroll.
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setIn(true); io.disconnect(); } }, { threshold: 0, rootMargin: "0px 0px 40px 0px" });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    if (!el || el.dataset.built) return;
+    if (hero || reducedMotion()) { el.dataset.built = "true"; return; }
+    el.dataset.rv = "wait";
+    pending.set(el, delay);
+    if (!installed) {
+      installed = true;
+      window.addEventListener("scroll", schedule, { passive: true });
+      window.addEventListener("resize", schedule);
+    }
+    check();
+    return () => { pending.delete(el); };
+  }, [hero, delay]);
   return (
-    <Tag ref={ref as React.RefObject<HTMLDivElement & HTMLLIElement>} className={`reveal ${inView ? "in" : ""} ${className}`} style={{ "--d": `${delay}ms` } as CSSProperties}>
+    <Tag ref={ref as React.RefObject<HTMLDivElement & HTMLLIElement>} data-reveal className={`${hero ? "hero-in" : ""} ${className}`} style={{ "--d": `${delay}ms` } as CSSProperties}>
       {children}
     </Tag>
   );
@@ -74,33 +145,3 @@ export function formatPrice(amount: number, currency: string, locale = "vi-VN") 
   }
 }
 
-/** xidker mark: a Klein sphere resting inside a vermilion arch */
-export function Logo({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 40 40" className={className} aria-hidden>
-      <defs>
-        <radialGradient id="xk-s" cx="35%" cy="30%" r="70%"><stop offset="0" stopColor="#5a6bff" /><stop offset=".55" stopColor="hsl(234 76% 42%)" /><stop offset="1" stopColor="hsl(236 60% 18%)" /></radialGradient>
-      </defs>
-      <path d="M6 36 V20 a14 14 0 0 1 28 0 V36 h-6 V20 a8 8 0 0 0 -16 0 V36 Z" fill="hsl(var(--flare))" />
-      <circle cx="20" cy="27" r="8" fill="url(#xk-s)" />
-      <rect x="4" y="35" width="32" height="3" rx="1" fill="hsl(var(--ink))" />
-    </svg>
-  );
-}
-
-export function Wordmark({ className = "" }: { className?: string }) {
-  return <span className={`font-display font-extrabold tracking-[-.04em] lowercase ${className}`}>xidker<span className="text-[hsl(var(--flare))]">.</span></span>;
-}
-
-/** CSS-only gallery sculpture: sphere, arch, chrome ring on a plinth. Used as WebGL fallback and loader. */
-export function ArtObject({ size = 280, spin = false, className = "", label }: { size?: number; spin?: boolean; className?: string; label?: string }) {
-  return (
-    <div role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true} className={`persp relative ${className}`} style={{ width: size, height: size }}>
-      <div className="art-plinth" />
-      <div className="art-arch" />
-      <div className={`art-ring ${spin ? "art-ring-spin" : ""}`} />
-      <div className={`art-sphere ${spin ? "bob" : ""}`} />
-      <div className="art-dot" />
-    </div>
-  );
-}
