@@ -1,23 +1,35 @@
-import type { Package } from "@workspace/api-zod";
+import type { Language, Package } from "@workspace/api-zod";
 import { getWhopClient } from "./whopClient";
+import { logger } from "./logger";
+import { PACKAGE_TRANSLATIONS, type PackageText } from "./packageTranslations";
 
-// Whop is the source of truth for the catalog. Each package is a Whop plan
-// under WHOP_PRODUCT_ID. Plan description format (editable in Whop):
+// Whop is the source of truth for the catalog. Each package is a Whop plan under
+// WHOP_PRODUCT_ID; the same package sold in another currency is a separate plan.
+// Plan description format (editable in Whop):
 //   first plain line   -> tagline
 //   lines starting "-" -> features, in order
-// The plan title + description are the Vietnamese text. Plan metadata holds:
-//   recommended: "true"  -> the recommended package
-//   name_en, tagline_en  -> English name / tagline
-//   features_en          -> English features, one per line
-// Missing English fields fall back to the Vietnamese text.
+// Plan metadata:
+//   key: "personal"      -> package group: plans sharing a key are one package in several currencies
+//   title_lang: "vi"     -> language of the plan title + description (default "vi")
+//   recommended: "true"  -> the recommended package (set on any plan of the group)
+//   name_<lang>, tagline_<lang>, features_<lang> (one per line) -> text in another language
+// Languages Whop holds no text for use the built-in translations (packageTranslations.ts).
+// Those only apply while the group's English text still matches the text they were
+// translated from, so an edit in Whop never leaves outdated translations on the site:
+// until the translations are refreshed, those languages show the English text.
 
-export type CatalogLanguage = "vi" | "en";
+export type CatalogLanguage = Language;
+
+type PlanRow = Omit<Package, "name" | "tagline" | "features">;
+type Group = {
+  key: string;
+  recommended: boolean;
+  texts: Partial<Record<string, PackageText>>;
+  plans: PlanRow[];
+};
 
 const PACKAGES_CACHE_TTL_MS = 60_000;
-let packagesCache: {
-  fetchedAt: number;
-  byLanguage: Record<CatalogLanguage, Package[]>;
-} | null = null;
+let catalogCache: { fetchedAt: number; groups: Group[] } | null = null;
 
 function requireEnv(name: "WHOP_COMPANY_ID" | "WHOP_PRODUCT_ID"): string {
   const value = process.env[name];
@@ -51,15 +63,12 @@ function parseDescription(description: string | null): {
   return { tagline, features };
 }
 
-function isRecommended(metadata: unknown): boolean {
-  if (!metadata || typeof metadata !== "object") return false;
-  const flag = (metadata as Record<string, unknown>).recommended;
-  return flag === true || flag === "true";
+function metadataRecord(metadata: unknown): Record<string, unknown> {
+  return metadata && typeof metadata === "object" ? (metadata as Record<string, unknown>) : {};
 }
 
-function metadataText(metadata: unknown, key: string): string | null {
-  if (!metadata || typeof metadata !== "object") return null;
-  const value = (metadata as Record<string, unknown>)[key];
+function metadataText(metadata: Record<string, unknown>, key: string): string | null {
+  const value = metadata[key];
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
@@ -71,18 +80,35 @@ function parseFeatureLines(text: string | null): string[] {
 }
 
 function productIdOf(product: unknown): string | null {
-  if (!product || typeof product !== "object") return null;
-  const id = (product as Record<string, unknown>).id;
+  const id = metadataRecord(product).id;
   return typeof id === "string" ? id : null;
 }
 
-async function fetchPackages(): Promise<Record<CatalogLanguage, Package[]>> {
+const normalize = (text: string | null) => (text ?? "").replace(/\s+/g, " ").trim();
+
+function sameText(a: PackageText, b: PackageText): boolean {
+  return (
+    normalize(a.name) === normalize(b.name) &&
+    normalize(a.tagline) === normalize(b.tagline) &&
+    a.features.length === b.features.length &&
+    a.features.every((f, i) => normalize(f) === normalize(b.features[i]))
+  );
+}
+
+async function fetchCatalog(): Promise<Group[]> {
   const client = await getWhopClient();
   const companyId = requireEnv("WHOP_COMPANY_ID");
   const productId = requireEnv("WHOP_PRODUCT_ID");
 
-  const vi: Package[] = [];
-  const en: Package[] = [];
+  type Collected = {
+    row: PlanRow;
+    recommended: boolean;
+    titleLang: string;
+    titleText: PackageText;
+    metaTexts: Record<string, PackageText>;
+  };
+  const byKey = new Map<string, Collected[]>();
+
   for await (const plan of client.plans.list({
     account_id: companyId,
     product_ids: [productId],
@@ -92,43 +118,91 @@ async function fetchPackages(): Promise<Record<CatalogLanguage, Package[]>> {
     if (productIdOf(plan.product) !== productId) continue;
     if (plan.visibility !== "visible") continue;
 
+    const meta = metadataRecord(plan.metadata);
+    const key = metadataText(meta, "key") ?? plan.id;
     const recurring = plan.plan_type === "renewal";
-    const shared = {
-      id: plan.id,
-      price: recurring ? plan.renewal_price : plan.initial_price,
-      currency: plan.currency.toLowerCase(),
-      billing: recurring ? ("recurring" as const) : ("one_time" as const),
-      billingPeriodDays: recurring ? plan.billing_period : null,
-      recommended: isRecommended(plan.metadata),
-    };
-
     const { tagline, features } = parseDescription(plan.description);
-    const title = plan.title?.trim() || null;
-    vi.push({ ...shared, name: title ?? "Gói thiết kế", tagline, features });
+    const titleText: PackageText = { name: plan.title?.trim() || "xidker", tagline, features };
 
-    const featuresEn = parseFeatureLines(metadataText(plan.metadata, "features_en"));
-    en.push({
-      ...shared,
-      name: metadataText(plan.metadata, "name_en") ?? title ?? "Design package",
-      tagline: metadataText(plan.metadata, "tagline_en") ?? tagline,
-      features: featuresEn.length > 0 ? featuresEn : features,
-    });
+    // name_<lang> starts a language entry; missing tagline/features fall back to the plan's own text.
+    const metaTexts: Record<string, PackageText> = {};
+    for (const field of Object.keys(meta)) {
+      const lang = field.match(/^name_(.+)$/)?.[1];
+      const name = lang ? metadataText(meta, field) : null;
+      if (!lang || !name) continue;
+      const langFeatures = parseFeatureLines(metadataText(meta, `features_${lang}`));
+      metaTexts[lang] = {
+        name,
+        tagline: metadataText(meta, `tagline_${lang}`) ?? tagline,
+        features: langFeatures.length > 0 ? langFeatures : features,
+      };
+    }
+
+    const collected: Collected = {
+      row: {
+        id: plan.id,
+        key,
+        price: recurring ? plan.renewal_price : plan.initial_price,
+        currency: plan.currency.toLowerCase(),
+        billing: recurring ? "recurring" : "one_time",
+        billingPeriodDays: recurring ? plan.billing_period : null,
+        recommended: false,
+      },
+      recommended: meta.recommended === true || meta.recommended === "true",
+      titleLang: metadataText(meta, "title_lang") ?? "vi",
+      titleText,
+      metaTexts,
+    };
+    byKey.set(key, [...(byKey.get(key) ?? []), collected]);
   }
 
-  const byPrice = (a: Package, b: Package) => a.price - b.price;
-  return { vi: vi.sort(byPrice), en: en.sort(byPrice) };
+  return [...byKey.entries()].map(([key, items]) => {
+    // Vietnamese-titled plans (the original VND plans) take precedence over their twins.
+    const ordered = [...items].sort((a, b) => Number(a.titleLang !== "vi") - Number(b.titleLang !== "vi"));
+    const texts: Partial<Record<string, PackageText>> = {};
+    for (const item of ordered) for (const [lang, text] of Object.entries(item.metaTexts)) texts[lang] ??= text;
+    for (const item of ordered) texts[item.titleLang] ??= item.titleText;
+    return {
+      key,
+      recommended: items.some((item) => item.recommended),
+      texts,
+      plans: items.map((item) => item.row),
+    };
+  });
 }
 
-export async function listPackages(
-  language: CatalogLanguage = "vi",
-): Promise<Package[]> {
-  if (
-    !packagesCache ||
-    Date.now() - packagesCache.fetchedAt >= PACKAGES_CACHE_TTL_MS
-  ) {
-    packagesCache = { fetchedAt: Date.now(), byLanguage: await fetchPackages() };
+function textFor(group: Group, language: CatalogLanguage): PackageText {
+  const own = group.texts[language];
+  if (own) return own;
+  const en = group.texts.en;
+  const builtIn = PACKAGE_TRANSLATIONS[group.key];
+  if (builtIn && en && sameText(builtIn.source, en)) {
+    const translated = builtIn.text[language];
+    if (translated) return translated;
   }
-  return packagesCache.byLanguage[language];
+  return en ?? group.texts.vi ?? Object.values(group.texts)[0] ?? { name: "xidker", tagline: null, features: [] };
+}
+
+/** Every visible package in every currency, sorted by currency then price. */
+export async function listPackages(language: CatalogLanguage = "vi"): Promise<Package[]> {
+  if (!catalogCache || Date.now() - catalogCache.fetchedAt >= PACKAGES_CACHE_TTL_MS) {
+    catalogCache = { fetchedAt: Date.now(), groups: await fetchCatalog() };
+    const stale = catalogCache.groups
+      .filter((group) => {
+        const builtIn = PACKAGE_TRANSLATIONS[group.key];
+        return builtIn && group.texts.en && !sameText(builtIn.source, group.texts.en);
+      })
+      .map((group) => group.key);
+    if (stale.length > 0) {
+      logger.warn({ keys: stale }, "Package English text changed in Whop; built-in translations skipped until refreshed");
+    }
+  }
+  return catalogCache.groups
+    .flatMap((group) => {
+      const text = textFor(group, language);
+      return group.plans.map((row) => ({ ...row, recommended: group.recommended, ...text }));
+    })
+    .sort((a, b) => a.currency.localeCompare(b.currency) || a.price - b.price);
 }
 
 export async function createWhopCheckout(input: {

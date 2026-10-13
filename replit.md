@@ -1,6 +1,6 @@
 # xidker — web bán source code portfolio
 
-Bilingual (Vietnamese / English) sales page, styled and animated like a pixel-art game road map, that sells portfolio website source code (not landing-page services); buyers pay through Whop hosted checkout and get the source through Whop. Contact email: hello@idkworkshop.com.
+Multilingual (33 languages) sales page, styled and animated like a pixel-art game road map, that sells portfolio website source code (not landing-page services); buyers pay in VND or USD through Whop hosted checkout and get the source through Whop. Contact email: hello@idkworkshop.com.
 
 ## Run & Operate
 
@@ -28,20 +28,23 @@ Bilingual (Vietnamese / English) sales page, styled and animated like a pixel-ar
 - Whop access (server-only): `artifacts/api-server/src/lib/whopClient.ts`, `artifacts/api-server/src/lib/whopStore.ts`
 - DB schema: `lib/db/src/schema/checkoutSessions.ts` (ref → Whop checkout configuration)
 - Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), theme in `src/index.css`
+- UI text: `artifacts/web-landing/src/locales/<code>.json` (`vi.json` is the source, `en.json` the fallback); languages, detection, fonts and currency in `src/lib/i18n.tsx`; picker in `src/components/lang-picker.tsx`
+- Package text translations: `artifacts/api-server/src/lib/packageTranslations.ts`
 
 ## Architecture decisions
 
-- Whop is the catalog: each package is a visible Whop plan under `WHOP_PRODUCT_ID`. Edit name/price/description in Whop; the site picks it up within 60s (in-memory cache). Plan title + description = Vietnamese text (description: first line = tagline, `- ` lines = features). Plan metadata: `recommended: "true"` = highlighted package; `name_en`, `tagline_en`, `features_en` (one feature per line) = English text, falling back to Vietnamese when missing. When updating plan metadata, send every key (whether Whop merges or replaces it is unverified).
-- Language: `GET /api/packages?lang=vi|en` localizes package text server-side. The UI language is chosen client-side (saved choice, else browser language). The checkout-status endpoint is not localized; the thank-you page maps `packageId` to the localized name from the package list.
+- Whop is the catalog: each package is a visible Whop plan under `WHOP_PRODUCT_ID`. Edit name/price/description in Whop; the site picks it up within 60s (in-memory cache). Plans are grouped into packages by metadata `key` (`personal`, `setup`, `commercial`); each package has one VND plan and one USD plan with the same `key`. Metadata `title_lang` says which language the plan title + description are written in (`vi` on the VND plans, `en` on the USD plans; description: first line = tagline, `- ` lines = features). Other metadata: `recommended: "true"` = highlighted package; `name_<lang>`, `tagline_<lang>`, `features_<lang>` (one feature per line) override the text for one language. When updating plan metadata, send every key.
+- Package text per language: own Whop text → built-in translation (only while Whop's English text still equals the translation's `source`; otherwise the server logs a warning and shows English) → English → Vietnamese. After rewording a package in Whop, refresh `packageTranslations.ts` or those languages show English.
+- Language: `GET /api/packages?lang=<code>` (33 codes) localizes package text server-side. The UI language is picked client-side: `?lang=` in the URL, then the saved choice, then the browser language, then English. Currency: VND by default for Vietnamese, USD for every other language; the visitor can switch and the choice is saved. The checkout-status endpoint is not localized; the thank-you page maps `packageId` to the localized name from the package list.
 - Checkout: server creates a Whop checkout configuration with `redirect_url = <site>/cam-on?ref=<random>` and stores ref → checkout id. The redirect itself proves nothing.
 - `/cam-on` shows "paid" only when Whop reports a payment with status `paid` for that checkout configuration (server-side lookup); otherwise it polls as "pending".
 - The redirect origin is taken from the request's Origin/Referer only if the host is in `REPLIT_DOMAINS`/`REPLIT_DEV_DOMAIN`, so a forged header cannot redirect buyers elsewhere.
 
 ## Product
 
-- Sales page in Vietnamese and English (language switch in the nav): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop, FAQ, contact email.
+- Sales page in 33 languages (pixel globe picker in the header and footer; Arabic, Persian, Hebrew and Urdu read right to left): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop with a VND/USD switch, FAQ, contact email.
 - "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise).
-- `/cam-on`: post-payment confirmation with verified receipt (package, amount, date, ref).
+- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, amount, date, ref).
 
 ## User preferences
 
@@ -59,6 +62,10 @@ Bilingual (Vietnamese / English) sales page, styled and animated like a pixel-ar
 - The road on the home page is measured from the `[data-road]` anchors in the page layout. Any interaction that changes page height (e.g. an expanding FAQ) reshapes and stretches the road, so interactive parts must keep a fixed height. Switching language is the only expected exception.
 - Pixelify Sans draws 2 like Z/8 and 5 like S. Digits use `.font-num` (Silkscreen); Pixelify Sans is for letters only, and it is not used for Vietnamese text.
 - Card "pixel build" reveals keep their state in DOM data attributes (`data-rv`, `data-built`) and use one shared scroll check, not IntersectionObserver, so cards skipped by a fast jump finish instantly instead of staying hidden. A remounted card builds again, so lists must not remount on re-render (the package list keeps previous data while the other language loads).
+- Each package card stacks its price in every currency in the same spot (only the active one visible), and the price size follows the card width with a cap, so the VND/USD switch never changes card height and long VND prices fit tablet cards.
+- `.tile` (unlayered CSS) sets `position: relative`, which beats Tailwind's `fixed`; a `.tile` element that must be fixed needs `fixed!` (the language panel opened off-screen until this was fixed).
+- New UI text goes into `vi.json` and `en.json` first; other locales fall back to English key by key until translated. Prices always use Latin digits (`numLocale`), because the number font only has those.
+- Right-to-left languages flip text and arrows only; the road, the walking character and the `[data-road]` geometry are never mirrored.
 - In-page `#` links are intercepted by the full-screen scene transition, which scrolls instantly with a 64px header offset. Keep section anchors on `id`s and give the transition a destination label for any new jump target.
 
 ## Pointers

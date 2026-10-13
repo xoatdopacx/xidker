@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Kant-en-klare broncode voor portfolio-websites",
+    "description": "Koop de broncode van een afgewerkte persoonlijke portfolio-website. Voeg je naam, projecten en foto's toe en zet hem online. Betaling via Whop."
+  },
+  "lang": {
+    "switchLabel": "Kies taal",
+    "close": "Sluiten"
+  },
+  "nav": {
+    "home": "xidker, terug naar home",
+    "what": "Wat krijg je",
+    "how": "Hoe het werkt",
+    "pricing": "Prijzen",
+    "faq": "FAQ",
+    "cta": "Bekijk prijzen"
+  },
+  "hero": {
+    "eyebrow": "Broncode voor portfolio-website",
+    "title": "Een kant-en-klare portfolio-website. Koop de broncode, voeg je werk toe en ga live.",
+    "sub": "Ontwerp niet vanaf nul. Je krijgt de volledige broncode van een geanimeerde portfolio-site — voeg je naam, projecten en foto's toe en publiceer hem.",
+    "start": "Laten we gaan",
+    "cta": "Ga naar prijzen",
+    "hint": "Scroll om het pad te lopen",
+    "mapAlt": "Schatkaart",
+    "heroAlt": "Pixel-personage bij de startlijn"
+  },
+  "stage": "Etappe",
+  "reached": "Bereikt",
+  "stops": {
+    "what": {
+      "title": "Wat koop je precies?",
+      "body": "De volledige broncode van een persoonlijke portfolio-website, al ontworpen en gebouwd. Je mag hem houden en aanpassen zoals je wilt.",
+      "points": [
+        "Een afgewerkt ontwerp, geen ruwe schets",
+        "Inhoud staat apart, dus makkelijk te vinden en vervangen",
+        "Direct klaar voor gebruik zodra je details erin staan"
+      ]
+    },
+    "pages": {
+      "title": "Welke pagina's zijn inbegrepen?",
+      "body": "Alles waar een recruiter of klant naar zoekt als ze je link openen.",
+      "items": [
+        "Een homepagina die vertelt wie je bent",
+        "Een overzicht van je beste projecten",
+        "Een detailpagina voor elk project",
+        "Secties voor info en contact"
+      ]
+    },
+    "motion": {
+      "title": "Hij beweegt. Geen statische pagina.",
+      "body": "Net als de pagina waar je nu op bent: scrol-effecten en kleine bewegende details die mensen nieuwsgierig maken. Als een bezoeker animaties heeft uitgeschakeld, blijft de site stilstaan.",
+      "points": [
+        "Ziet er goed uit op mobiel en desktop",
+        "Niets te installeren om hem te bekijken",
+        "Tekst en beelden eerst, effecten daarna"
+      ]
+    },
+    "how": {
+      "title": "Wat gebeurt er na je aankoop?",
+      "steps": [
+        "Kies een pakket en betaal via Whop.",
+        "Whop mailt je een link naar je aankoop. De broncode staat in je Whop-account.",
+        "Download hem en vervang de tekst en foto's door je eigen materiaal.",
+        "Publiceer hem op een host naar keuze en stuur de link naar recruiters of klanten."
+      ]
+    },
+    "who": {
+      "title": "Voor wie is dit?",
+      "body": "Voor iedereen die een link nodig heeft om mee te sturen met een CV of offerte.",
+      "tags": [
+        "Ontwerpers",
+        "Ontwikkelaars",
+        "Fotografen",
+        "3D- & motion-artiesten",
+        "Afstudeerders",
+        "Freelancers"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Kies je broncode-pakket",
+    "sub": "Pakketdetails en prijzen komen rechtstreeks van Whop. Betaling wordt veilig afgehandeld door Whop.",
+    "recommended": "Aanbevolen",
+    "choose": "Kies dit pakket",
+    "opening": "Checkout openen...",
+    "oneTime": "eenmalig",
+    "monthly": "per maand",
+    "yearly": "per jaar",
+    "everyNDays": "elke {n} dagen",
+    "recurring": "terugkerend",
+    "loading": "Prijzen laden",
+    "errorTitle": "Prijzen konden niet worden geladen",
+    "errorBody": "Het betalingssysteem reageert even niet. Meestal is dit binnen enkele seconden opgelost.",
+    "retry": "Probeer opnieuw",
+    "empty": "Pakketten worden bijgewerkt. Probeer het over enkele minuten nog eens.",
+    "footnote": "Checkout via Whop · Link naar broncode per mail verzonden",
+    "toastTitle": "Kon checkout niet openen",
+    "toastBody": "De verbinding is verbroken. Wacht even en probeer het opnieuw.",
+    "currency": "Valuta kiezen"
+  },
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "items": [
+      {
+        "q": "Waar vind ik de broncode na betaling?",
+        "a": "Zodra je hebt betaald, staat de code in je Whop-account. Whop mailt je ook een link naar je aankoop. Kun je de mail niet vinden? Check je spam, of stuur ons een bericht."
+      },
+      {
+        "q": "Ik kan niet coderen. Kan ik dit gebruiken?",
+        "a": "Je naam, bio, projecten en foto's staan op hun eigen plek zodat ze makkelijk te vervangen zijn. Wil je liever dat wij het voor je doen? Kies dan een pakket inclusief setup."
+      },
+      {
+        "q": "Mag ik dit voor klanten gebruiken?",
+        "a": "Dat hangt van het pakket af. Bij elk pakket staat in de prijstabel wat je ermee mag doen. Twijfel je? Mail ons even voordat je koopt."
+      },
+      {
+        "q": "Hoe zet ik de site online?",
+        "a": "Kies een webhost naar keuze en upload de code. We binden je nergens aan vast."
+      },
+      {
+        "q": "Wat als er iets kapot is of ontbreekt?",
+        "a": "Mail ons wat er mis is en vanaf welk e-mailadres je hebt gekocht. We kijken het na en komen bij je terug."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Je bent er!",
+    "title": "Je hebt de hele weg gelopen. Nu is je portfolio aan de beurt.",
+    "sub": "Kies een pakket, ontvang de code via Whop en krijg een portfolio dat helemaal van jou is.",
+    "button": "Kies een pakket",
+    "trophyAlt": "Gouden beker aan het einde van de weg"
+  },
+  "footer": {
+    "about": "xidker verkoopt kant-en-klare broncode voor portfolio-websites voor creatieven.",
+    "contact": "Contact",
+    "rights": "Deze pagina is ook door xidker gemaakt."
+  },
+  "thanks": {
+    "back": "Terug naar home",
+    "noRefTitle": "Je orderreferentie ontbreekt.",
+    "noRefBody": "Deze link bevat geen orderreferentie, dus we kunnen de betaling niet controleren. Als je hebt gekocht, staat de code nog steeds in je Whop-account en in de mail van Whop.",
+    "loading": "Bestelling controleren...",
+    "nfTitle": "We konden deze bestelling niet vinden.",
+    "nfBody1": "Referentie",
+    "nfBody2": "komt niet overeen met een transactie. Als er geld is afgeschreven, mail ons dan met deze referentie.",
+    "support": "E-mail support",
+    "supportSubject": "Bestelling",
+    "errTitle": "We konden je betaling nog niet controleren.",
+    "errBody": "Het betalingssysteem is wat traag. Je bestelling is niet verloren — probeer het zo nog eens.",
+    "retry": "Check opnieuw",
+    "paidEyebrow": "Betaling bevestigd",
+    "paidTitle": "Je bent er! De broncode is van jou.",
+    "paidBody": "Ga naar Whop om je broncode op te halen. Whop heeft je ook een link naar je aankoop gemaild. Ontbreekt er iets? Mail ons hieronder.",
+    "receipt": "Bon",
+    "pkg": "Pakket",
+    "amount": "Bedrag",
+    "time": "Betaald op",
+    "ref": "Referentie",
+    "pendingEyebrow": "Wachten op bevestiging",
+    "pendingTitle": "We bevestigen je betaling.",
+    "pendingBody1": "Pakket",
+    "pendingBody2": "Deze pagina checkt elke 3 seconden opnieuw — verversen is niet nodig. Dit duurt meestal minder dan een minuut.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Laden",
+    "start": "Startlijn",
+    "finish": "Finishlijn"
+  },
+  "nf": {
+    "title": "Je bent van de kaart geraakt.",
+    "body": "Deze pagina bestaat niet. Ga terug naar de start.",
+    "back": "Terug naar home",
+    "metaTitle": "Pagina niet gevonden — xidker"
+  }
+}

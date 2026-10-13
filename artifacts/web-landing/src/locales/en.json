@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Ready-made portfolio website source code",
+    "description": "Buy the source code of a finished personal portfolio website. Add your name, projects and photos, then put it online. Checkout by Whop."
+  },
+  "lang": {
+    "switchLabel": "Choose language",
+    "close": "Close"
+  },
+  "nav": {
+    "home": "xidker, back to home",
+    "what": "What you get",
+    "how": "How it works",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "cta": "See pricing"
+  },
+  "hero": {
+    "eyebrow": "Portfolio website source code",
+    "title": "A ready-made portfolio website. Buy the source, add your work, go live.",
+    "sub": "Skip designing from scratch. You get the full source of an animated portfolio site — drop in your name, projects and photos, and publish it.",
+    "start": "Let's go",
+    "cta": "Jump to pricing",
+    "hint": "Scroll to walk the road",
+    "mapAlt": "Treasure map",
+    "heroAlt": "Pixel character standing at the start line"
+  },
+  "stage": "Stage",
+  "reached": "Reached",
+  "stops": {
+    "what": {
+      "title": "What are you buying?",
+      "body": "The complete source code of a personal portfolio website, already designed and built. It's yours to keep and change however you like.",
+      "points": [
+        "A finished design, not a template sketch",
+        "Content kept separate, so it's easy to find and replace",
+        "Ready to use as soon as your details are in"
+      ]
+    },
+    "pages": {
+      "title": "What pages are included?",
+      "body": "Everything a recruiter or client looks for when they open your link.",
+      "items": [
+        "A home page that says who you are",
+        "A grid of your best projects",
+        "A detail page for every project",
+        "About and contact sections"
+      ]
+    },
+    "motion": {
+      "title": "It moves. It's not a static page.",
+      "body": "Just like the page you're on: scroll effects and small moving details that make people want to reach the end. If a visitor has reduced motion turned on, the site holds still.",
+      "points": [
+        "Looks right on phones and desktops",
+        "Nothing to install to view it",
+        "Text and images first, effects after"
+      ]
+    },
+    "how": {
+      "title": "What happens after you buy?",
+      "steps": [
+        "Pick a package and pay through Whop.",
+        "Whop emails you a link to your purchase. The source lives in your Whop account.",
+        "Download it and swap in your name, projects and photos.",
+        "Publish it on any host you like, then send the link to recruiters or clients."
+      ]
+    },
+    "who": {
+      "title": "Who is it for?",
+      "body": "Anyone who needs one link to send with a CV or a quote.",
+      "tags": [
+        "Designers",
+        "Developers",
+        "Photographers",
+        "3D & motion artists",
+        "Graduating students",
+        "Freelancers"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Pick your source package",
+    "sub": "Package details and prices come straight from Whop. Checkout is handled securely by Whop.",
+    "recommended": "Recommended",
+    "choose": "Choose this package",
+    "opening": "Opening checkout…",
+    "oneTime": "one-time",
+    "monthly": "per month",
+    "yearly": "per year",
+    "everyNDays": "every {n} days",
+    "recurring": "recurring",
+    "loading": "Loading pricing",
+    "errorTitle": "Pricing didn't load",
+    "errorBody": "The payment system isn't responding right now. It's usually back within seconds.",
+    "retry": "Try again",
+    "empty": "Packages are being updated. Check back in a few minutes.",
+    "footnote": "Checkout by Whop · Source link sent by email",
+    "toastTitle": "Couldn't open checkout",
+    "toastBody": "The connection dropped. Give it a few seconds and try again.",
+    "currency": "Choose currency"
+  },
+  "faq": {
+    "title": "Common questions",
+    "items": [
+      {
+        "q": "Where do I get the source after paying?",
+        "a": "Once you've paid, the source is available in your Whop account, and Whop emails you a link to your purchase. Can't find the email? Check spam, or write to us."
+      },
+      {
+        "q": "I'm not a coder. Can I still use it?",
+        "a": "Your name, bio, projects and photos are kept in their own place so they're easy to swap. If you'd rather have it set up for you, pick a package that includes setup."
+      },
+      {
+        "q": "Can I use it for client work?",
+        "a": "It depends on the package. Each one lists what you're allowed to do with it in the pricing section. Not sure? Email us before you buy."
+      },
+      {
+        "q": "How do I put it online?",
+        "a": "Choose any web host you like and upload the source. We don't lock you into a platform."
+      },
+      {
+        "q": "What if something's broken or missing?",
+        "a": "Email us with what went wrong and the email you bought with. We'll look into it and get back to you."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "You made it!",
+    "title": "You walked the whole road. Now it's your portfolio's turn.",
+    "sub": "Pick a package, get the source through Whop, and have a portfolio that's all yours.",
+    "button": "Pick a package",
+    "trophyAlt": "Gold trophy at the end of the road"
+  },
+  "footer": {
+    "about": "xidker sells ready-made portfolio website source code for creative people.",
+    "contact": "Contact",
+    "rights": "This page was made by xidker, too."
+  },
+  "thanks": {
+    "back": "Back to home",
+    "noRefTitle": "Your order reference is missing.",
+    "noRefBody": "This link has no order reference, so we can't check the payment. If you did buy, the source is still in your Whop account and in the email Whop sent you.",
+    "loading": "Checking your order…",
+    "nfTitle": "We couldn't find this order.",
+    "nfBody1": "Reference",
+    "nfBody2": "doesn't match any transaction. If you were charged, email us with this reference.",
+    "support": "Email support",
+    "supportSubject": "Order",
+    "errTitle": "We couldn't check your payment yet.",
+    "errBody": "The payment system is being flaky. Your order isn't lost — try again in a moment.",
+    "retry": "Check again",
+    "paidEyebrow": "Payment confirmed",
+    "paidTitle": "You made it! The source is yours.",
+    "paidBody": "Head to Whop to grab your source now. Whop has also emailed you a link to your purchase. If anything's missing, email us below.",
+    "receipt": "Receipt",
+    "pkg": "Package",
+    "amount": "Amount",
+    "time": "Paid at",
+    "ref": "Reference",
+    "pendingEyebrow": "Awaiting confirmation",
+    "pendingTitle": "We're confirming your payment.",
+    "pendingBody1": "Package",
+    "pendingBody2": "This page checks again every 3 seconds — no need to refresh. It usually takes under a minute.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Loading",
+    "start": "Start line",
+    "finish": "Finish line"
+  },
+  "nf": {
+    "title": "You wandered off the map.",
+    "body": "This page isn't anywhere on the road. Head back to the start.",
+    "back": "Back to home",
+    "metaTitle": "Page not found — xidker"
+  }
+}

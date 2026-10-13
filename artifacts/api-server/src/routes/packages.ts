@@ -7,7 +7,7 @@ const router: IRouter = Router();
 router.get("/packages", async (req, res): Promise<void> => {
   const query = ListPackagesQueryParams.safeParse(req.query);
   if (!query.success) {
-    res.status(400).json({ error: "lang must be one of: vi, en" });
+    res.status(400).json({ error: "lang must be a supported language code" });
     return;
   }
 

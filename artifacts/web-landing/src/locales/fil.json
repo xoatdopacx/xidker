@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Ready-made portfolio website source code",
+    "description": "Bumili ng source code ng isang tapos na personal portfolio website. Idagdag ang iyong pangalan, mga proyekto at larawan, pagkatapos ay i-publish ito online. Checkout sa pamamagitan ng Whop."
+  },
+  "lang": {
+    "switchLabel": "Pumili ng wika",
+    "close": "Isara"
+  },
+  "nav": {
+    "home": "xidker, bumalik sa home",
+    "what": "Ang makukuha mo",
+    "how": "Paano ito gumagana",
+    "pricing": "Pagpepresyo",
+    "faq": "FAQ",
+    "cta": "Tignan ang presyo"
+  },
+  "hero": {
+    "eyebrow": "Source code ng portfolio website",
+    "title": "Isang ready-made portfolio website. Bilhin ang source, idagdag ang iyong gawa, at i-live.",
+    "sub": "Huwag nang mag-design mula sa simula. Makukuha mo ang buong source ng isang animated portfolio site — ilagay lang ang iyong pangalan, mga proyekto, at larawan, at i-publish ito.",
+    "start": "Tara na",
+    "cta": "Punta sa presyo",
+    "hint": "Mag-scroll para lakarin ang daan",
+    "mapAlt": "Mapa ng kayamanan",
+    "heroAlt": "Pixel character na nakatayo sa panimulang linya"
+  },
+  "stage": "Yugto",
+  "reached": "Naabot",
+  "stops": {
+    "what": {
+      "title": "Ano ang binibili mo?",
+      "body": "Ang kumpletong source code ng isang personal portfolio website, na dinisenyo at ginawa na. Ito ay iyo nang pagmamay-ari para i-edit kahit kailan mo gusto.",
+      "points": [
+        "Tapos na ang design, hindi lang draft",
+        "Hiwalay ang nilalaman para madaling hanapin at palitan",
+        "Handa nang gamitin kapag nailagay na ang iyong detalye"
+      ]
+    },
+    "pages": {
+      "title": "Anong mga pahina ang kasama?",
+      "body": "Lahat ng hinahanap ng recruiter o kliyente kapag binuksan nila ang link mo.",
+      "items": [
+        "Isang home page na nagsasabi kung sino ka",
+        "Isang grid ng iyong pinakamahusay na mga proyekto",
+        "Isang detalye na pahina para sa bawat proyekto",
+        "Mga seksyon ng tungkol sa akin at contact"
+      ]
+    },
+    "motion": {
+      "title": "Gumagalaw ito. Hindi ito static na pahina.",
+      "body": "Tulad ng pahinang ito: may scroll effects at maliliit na galaw na nagpapaganang makarating sa dulo. Kung ang bisita ay naka-off ang motion, hindi gagalaw ang site.",
+      "points": [
+        "Maganda sa phone at desktop",
+        "Walang kailangang i-install para makita",
+        "Text at larawan muna, bago ang effects"
+      ]
+    },
+    "how": {
+      "title": "Ano ang mangyayari pagkatapos mong bumili?",
+      "steps": [
+        "Pumili ng package at magbayad sa pamamagitan ng Whop.",
+        "Padadalhan ka ng Whop ng link sa iyong binili. Ang source ay nasa iyong Whop account.",
+        "I-download ito at palitan ng iyong pangalan, proyekto, at larawan.",
+        "I-publish ito sa kahit anong host na gusto mo, at ipadala ang link sa mga recruiter o kliyente."
+      ]
+    },
+    "who": {
+      "title": "Para kanino ito?",
+      "body": "Para sa sinumang kailangan ng isang link na isasama sa CV o quote.",
+      "tags": [
+        "Mga designer",
+        "Mga developer",
+        "Mga litratista",
+        "Mga 3D at motion artist",
+        "Mga magtatapos na estudyante",
+        "Mga freelancer"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Piliin ang iyong source package",
+    "sub": "Ang mga detalye at presyo ng package ay direkta mula sa Whop. Ang checkout ay ligtas na hawak ng Whop.",
+    "recommended": "Inirerekomenda",
+    "choose": "Piliin ang package na ito",
+    "opening": "Binubuksan ang checkout…",
+    "oneTime": "isang beses na bayad",
+    "monthly": "kada buwan",
+    "yearly": "kada taon",
+    "everyNDays": "kada {n} na araw",
+    "recurring": "paulit-ulit na bayad",
+    "loading": "Naglo-load ng presyo",
+    "errorTitle": "Hindi nag-load ang presyo",
+    "errorBody": "Hindi sumasagot ang payment system ngayon. Karaniwan itong bumabalik sa loob ng ilang segundo.",
+    "retry": "Subukan muli",
+    "empty": "Ina-update pa ang mga package. Bumalik pagkalipas ng ilang minuto.",
+    "footnote": "Checkout sa pamamagitan ng Whop · Source link na ipinadala sa email",
+    "toastTitle": "Hindi mabuksan ang checkout",
+    "toastBody": "Naputol ang koneksyon. Maghintay ng ilang segundo at subukan muli.",
+    "currency": "Pumili ng currency"
+  },
+  "faq": {
+    "title": "Mga karaniwang tanong",
+    "items": [
+      {
+        "q": "Saan ko kukunin ang source pagkatapos magbayad?",
+        "a": "Kapag nakabayad ka na, available na ang source sa iyong Whop account, at mag-e-email ang Whop ng link sa iyong binili. Hindi mahanap ang email? I-check ang spam, o sulatan kami."
+      },
+      {
+        "q": "Hindi ako coder. Pwede ko pa rin ba itong gamitin?",
+        "a": "Ang iyong pangalan, bio, mga proyekto, at larawan ay nasa tamang lugar para madaling palitan. Kung gusto mong ipagawa sa iba, pumili ng package na may kasamang setup."
+      },
+      {
+        "q": "Pwede ko ba itong gamitin para sa client work?",
+        "a": "Depende ito sa package. Nakalista sa pricing section kung ano ang pwede mong gawin sa bawat isa. Hindi sigurado? Mag-email sa amin bago bumili."
+      },
+      {
+        "q": "Paano ko ito ilalagay online?",
+        "a": "Pumili ng kahit anong web host na gusto mo at i-upload ang source. Hindi ka namin ikukulong sa iisang platform."
+      },
+      {
+        "q": "Paano kung may sira o kulang?",
+        "a": "Mag-email sa amin kung ano ang mali at gamitin ang email na ginamit mo sa pagbili. Iimbestigahan namin ito at babalikan ka."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Nakarating ka!",
+    "title": "Nilakad mo ang buong daan. Ngayon, turn na ng portfolio mo.",
+    "sub": "Pumili ng package, makuha ang source sa pamamagitan ng Whop, at magkaroon ng portfolio na sa iyo lang.",
+    "button": "Pumili ng package",
+    "trophyAlt": "Gintong tropeo sa dulo ng daan"
+  },
+  "footer": {
+    "about": "Ang xidker ay nagbebenta ng ready-made portfolio website source code para sa mga creative.",
+    "contact": "Makipag-ugnayan",
+    "rights": "Ang pahinang ito ay ginawa rin ng xidker."
+  },
+  "thanks": {
+    "back": "Bumalik sa home",
+    "noRefTitle": "Nawawala ang iyong order reference.",
+    "noRefBody": "Ang link na ito ay walang order reference, kaya hindi namin ma-check ang bayad. Kung nakabili ka na, ang source ay nasa iyong Whop account pa rin at sa email na ipinadala ng Whop.",
+    "loading": "Tinitignan ang order…",
+    "nfTitle": "Hindi namin mahanap ang order na ito.",
+    "nfBody1": "Ang reference",
+    "nfBody2": "ay hindi tumutugma sa anumang transaksyon. Kung ikaw ay na-charge, mag-email sa amin kasama ang reference na ito.",
+    "support": "I-email ang support",
+    "supportSubject": "Order",
+    "errTitle": "Hindi pa namin ma-check ang bayad mo.",
+    "errBody": "Ang payment system ay hindi stable. Ang order mo ay hindi nawala — subukan muli pagkalipas ng sandali.",
+    "retry": "I-check muli",
+    "paidEyebrow": "Confirmed ang bayad",
+    "paidTitle": "Nakarating ka! Ang source ay sa iyo na.",
+    "paidBody": "Pumunta sa Whop para makuha ang iyong source ngayon. Nag-email na rin ang Whop ng link sa iyong binili. Kung may kulang, mag-email sa amin sa ibaba.",
+    "receipt": "Resibo",
+    "pkg": "Pakete",
+    "amount": "Halaga",
+    "time": "Binayaran noong",
+    "ref": "Reference",
+    "pendingEyebrow": "Naghihintay ng confirmation",
+    "pendingTitle": "Kinukumpirma namin ang iyong bayad.",
+    "pendingBody1": "Pakete",
+    "pendingBody2": "Ang pahinang ito ay awtomatikong mag-che-check kada 3 segundo — hindi mo kailangang mag-refresh. Karaniwang kulang sa isang minuto ang tagal nito.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Naglo-load",
+    "start": "Simulang linya",
+    "finish": "Pagtatapos na linya"
+  },
+  "nf": {
+    "title": "Naligaw ka sa mapa.",
+    "body": "Ang pahinang ito ay wala sa daan. Bumalik sa simula.",
+    "back": "Bumalik sa home",
+    "metaTitle": "Hindi nahanap ang pahina — xidker"
+  }
+}

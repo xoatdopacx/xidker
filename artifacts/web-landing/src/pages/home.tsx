@@ -6,7 +6,7 @@ import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown } fr
 import { useToast } from "@/hooks/use-toast";
 import { Reveal, formatPrice } from "@/lib/motion";
 import { SceneTransition } from "@/components/scene-transition";
-import { useI18n, LangSwitch, CONTACT_EMAIL, type Dict } from "@/lib/i18n";
+import { useI18n, LangSwitch, CONTACT_EMAIL, tpl, type Dict, type Currency } from "@/lib/i18n";
 import { Hero as HeroSprite, Pine, Sunflower, Log, Pin, Trophy, MapIcon, Cat, Raccoon, Chest, Logo, Wordmark, PixelTitle, Vehicle, VEHICLES } from "@/components/sprites";
 
 /* ---------------- Road + walking character ---------------- */
@@ -142,7 +142,7 @@ function Nav() {
         </nav>
         <div className="flex items-center gap-3">
           <LangSwitch />
-          <a href="#bang-gia" className="pbtn red hidden sm:inline-flex px-4 py-1.5 text-sm font-bold" data-testid="button-nav-cta">{t.nav.cta}</a>
+          <a href="#bang-gia" className="pbtn red max-sm:hidden! px-4 whitespace-nowrap py-1.5 text-sm font-bold" data-testid="button-nav-cta">{t.nav.cta}</a>
         </div>
       </div>
     </header>
@@ -173,7 +173,7 @@ function HeroSection() {
         </Reveal>
         <Reveal hero delay={340}>
           <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#bang-gia" className="pbtn red px-6 py-3 font-bold" data-testid="button-hero-cta">{t.hero.cta} <ArrowRight className="h-5 w-5" /></a>
+            <a href="#bang-gia" className="pbtn red px-6 py-3 font-bold" data-testid="button-hero-cta">{t.hero.cta} <ArrowRight className="h-5 w-5 rtl:-scale-x-100" /></a>
           </div>
         </Reveal>
       </div>
@@ -265,12 +265,14 @@ function billingLabel(p: Package, t: Dict) {
   if (p.billing === "one_time") return t.pricing.oneTime;
   if (p.billingPeriodDays === 30 || p.billingPeriodDays === 31) return t.pricing.monthly;
   if (p.billingPeriodDays === 365) return t.pricing.yearly;
-  if (p.billingPeriodDays) return t.pricing.everyNDays(p.billingPeriodDays);
+  if (p.billingPeriodDays) return tpl(t.pricing.everyNDays, { n: p.billingPeriodDays });
   return t.pricing.recurring;
 }
 
-function PackageCard({ p, i, busy, disabled, onBuy }: { p: Package; i: number; busy: boolean; disabled: boolean; onBuy: () => void }) {
-  const { t, locale } = useI18n();
+/** `prices`: this package in every currency. All of them sit in the same spot (only the active one visible),
+ *  so switching currency never changes the card height. */
+function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; prices: Package[]; i: number; busy: boolean; disabled: boolean; onBuy: () => void }) {
+  const { t, numLocale } = useI18n();
   const rec = p.recommended;
   return (
     <Reveal delay={i * 110} className="h-full">
@@ -281,9 +283,17 @@ function PackageCard({ p, i, busy, disabled, onBuy }: { p: Package; i: number; b
           <h3 className="font-display text-xl leading-tight" data-testid={`text-package-name-${p.id}`}>{p.name}</h3>
         </div>
         {p.tagline && <p className="mt-2 text-sm text-[#3d4a3d]">{p.tagline}</p>}
-        <div className="mt-5 flex items-baseline gap-2 flex-wrap">
-          <span className="font-display text-3xl md:text-4xl tracking-tight" data-testid={`text-package-price-${p.id}`}>{formatPrice(p.price, p.currency, locale)}</span>
-          <span className="text-sm text-[#3d4a3d]">{billingLabel(p, t)}</span>
+        {/* The price size follows the card width (capped at the normal size) so long VND prices fit narrow tablet cards. */}
+        <div className="mt-5 grid @container">
+          {prices.map((v) => {
+            const on = v.id === p.id;
+            return (
+              <div key={v.id} className={`[grid-area:1/1] flex items-baseline gap-2 flex-wrap ${on ? "" : "invisible"}`} aria-hidden={on ? undefined : true}>
+                <span className="font-display text-[length:min(1.875rem,15cqw)] md:text-[length:min(2.25rem,15cqw)] leading-[1.15] tracking-tight" data-testid={on ? `text-package-price-${p.id}` : undefined}>{formatPrice(v.price, v.currency, numLocale)}</span>
+                <span className="text-sm text-[#3d4a3d]">{billingLabel(v, t)}</span>
+              </div>
+            );
+          })}
         </div>
         <ul className="mt-5 space-y-2.5 flex-1">
           {p.features.map((f, k) => (
@@ -294,15 +304,17 @@ function PackageCard({ p, i, busy, disabled, onBuy }: { p: Package; i: number; b
           ))}
         </ul>
         <button onClick={onBuy} disabled={disabled} className={`pbtn ${rec ? "red" : ""} mt-6 w-full justify-center py-3 font-bold`} data-testid={`button-buy-${p.id}`}>
-          {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> {t.pricing.opening}</> : <>{t.pricing.choose} <ArrowRight className="h-5 w-5" /></>}
+          {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> {t.pricing.opening}</> : <>{t.pricing.choose} <ArrowRight className="h-5 w-5 rtl:-scale-x-100" /></>}
         </button>
       </div>
     </Reveal>
   );
 }
 
+const CURRENCY_ORDER: Currency[] = ["vnd", "usd"];
+
 function Pricing() {
-  const { t, lang } = useI18n();
+  const { t, lang, currency, setCurrency } = useI18n();
   // Keep the previous language's cards while the new language loads: no skeleton flash and no
   // remount (a remount would replay the pixel build on the package cards).
   const { data, isLoading, isError, refetch, isFetching } = useListPackages({ lang }, { query: { queryKey: getListPackagesQueryKey({ lang }), placeholderData: keepPreviousData } });
@@ -310,6 +322,17 @@ function Pricing() {
   const checkout = useCreateCheckout();
   const { toast } = useToast();
   const [pendingId, setPendingId] = useState<string | null>(null);
+
+  // Every currency comes back from the API; show the visitor's currency, or whichever one exists.
+  const currencies = [...new Set((data ?? []).map((p) => p.currency))].sort((a, b) => {
+    const ia = CURRENCY_ORDER.indexOf(a as Currency), ib = CURRENCY_ORDER.indexOf(b as Currency);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
+  });
+  const active = currencies.includes(currency) ? currency : currencies[0];
+  const shown = (data ?? []).filter((p) => p.currency === active);
+  // Cards are keyed by package group, so switching currency only swaps the price (no remount, no rebuild).
+  const seen = new Set<string>();
+  const cardKey = (p: Package) => (seen.has(p.key) ? p.id : (seen.add(p.key), p.key));
 
   const buy = (id: string) => {
     if (checkout.isPending) return;
@@ -344,6 +367,19 @@ function Pricing() {
               <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin))]">{t.stage} <span className="font-num text-base">06</span></span>
               <h2 className="font-display text-3xl md:text-4xl leading-tight mt-1">{t.pricing.title}</h2>
               <p className="mt-3 text-[#2c3a2c]">{t.pricing.sub}</p>
+              {/* fixed-height slot: the toggle appearing or switching never changes the section height */}
+              <div className="mt-5 h-[46px] flex md:justify-center">
+                {currencies.length > 1 && (
+                  <div role="radiogroup" aria-label={t.pricing.currency} className="cur-seg" dir="ltr" data-testid="group-currency">
+                    {currencies.map((c) => (
+                      <button key={c} type="button" role="radio" aria-checked={c === active} onClick={() => setCurrency(c as Currency)}
+                        className="font-num text-sm uppercase" data-testid={`button-currency-${c}`}>
+                        <i aria-hidden="true" />{c}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </Reveal>
 
@@ -369,11 +405,14 @@ function Pricing() {
             </div>
           )}
 
-          {data && data.length === 0 && <div className="tile p-6 text-center" data-testid="status-packages-empty">{t.pricing.empty}</div>}
+          {data && shown.length === 0 && <div className="tile p-6 text-center" data-testid="status-packages-empty">{t.pricing.empty}</div>}
 
-          {data && data.length > 0 && (
-            <div className={`grid gap-8 md:gap-6 items-stretch ${data.length === 1 ? "max-w-md mx-auto" : data.length === 2 ? "md:grid-cols-2 max-w-4xl mx-auto" : "md:grid-cols-3"}`}>
-              {data.map((p, i) => <PackageCard key={p.id} p={p} i={i} busy={pendingId === p.id} disabled={checkout.isPending} onBuy={() => buy(p.id)} />)}
+          {shown.length > 0 && (
+            <div className={`grid gap-8 md:gap-6 items-stretch ${shown.length === 1 ? "max-w-md mx-auto" : shown.length === 2 ? "md:grid-cols-2 max-w-4xl mx-auto" : "md:grid-cols-3"}`}>
+              {shown.map((p, i) => (
+                <PackageCard key={cardKey(p)} p={p} i={i} busy={pendingId === p.id} disabled={checkout.isPending} onBuy={() => buy(p.id)}
+                  prices={(data ?? []).filter((v) => v.key === p.key && (v.currency !== p.currency || v.id === p.id))} />
+              ))}
             </div>
           )}
 
@@ -457,7 +496,7 @@ function Goal() {
               <p className="text-sm font-bold uppercase tracking-wider mt-1">{t.goal.reached}</p>
               <h2 className="font-display text-2xl md:text-4xl leading-tight mt-3">{t.goal.title}</h2>
               <p className="mt-4 text-[#2c3a2c]">{t.goal.sub}</p>
-              <a href="#bang-gia" className="pbtn red mt-7 px-6 py-3 font-bold" data-testid="button-final-cta">{t.goal.button} <ArrowRight className="h-5 w-5" /></a>
+              <a href="#bang-gia" className="pbtn red mt-7 px-6 py-3 font-bold" data-testid="button-final-cta">{t.goal.button} <ArrowRight className="h-5 w-5 rtl:-scale-x-100" /></a>
             </div>
           </Reveal>
         </div>

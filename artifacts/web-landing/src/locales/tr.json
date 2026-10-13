@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Hazır kişisel portfolyo web sitesi kaynak kodu",
+    "description": "Hazır bir kişisel portfolyo web sitesinin kaynak kodunu satın alın. Adınızı, projelerinizi ve fotoğraflarınızı ekleyin, ardından yayına alın. Ödeme Whop ile yapılır."
+  },
+  "lang": {
+    "switchLabel": "Dil seçin",
+    "close": "Kapat"
+  },
+  "nav": {
+    "home": "xidker, ana sayfaya dön",
+    "what": "Ne alacaksınız",
+    "how": "Nasıl çalışır",
+    "pricing": "Fiyatlandırma",
+    "faq": "S.S.S.",
+    "cta": "Fiyatları gör"
+  },
+  "hero": {
+    "eyebrow": "Portfolyo web sitesi kaynak kodu",
+    "title": "Hazır bir portfolyo web sitesi. Kaynak kodunu alın, işlerinizi ekleyin ve yayına başlayın.",
+    "sub": "Sıfırdan tasarlamakla uğraşmayın. Animasyonlu bir portfolyo sitesinin tüm kaynak koduna sahip olun; adınızı, projelerinizi ve fotoğraflarınızı ekleyip hemen yayınlayın.",
+    "start": "Başlayalım",
+    "cta": "Fiyatlara atla",
+    "hint": "Yolda yürümek için kaydırın",
+    "mapAlt": "Hazine haritası",
+    "heroAlt": "Başlangıç çizgisinde duran piksel karakter"
+  },
+  "stage": "Aşama",
+  "reached": "Tamamlandı",
+  "stops": {
+    "what": {
+      "title": "Ne satın alıyorsunuz?",
+      "body": "Halihazırda tasarlanmış ve kodlanmış kişisel bir portfolyo web sitesinin tüm kaynak kodu. Tamamen size ait, dilediğiniz gibi değiştirebilirsiniz.",
+      "points": [
+        "Taslak değil, tamamlanmış bir tasarım",
+        "İçerikler ayrı tutulmuştur, kolayca bulunup değiştirilebilir",
+        "Bilgilerinizi girdiğiniz anda kullanıma hazır"
+      ]
+    },
+    "pages": {
+      "title": "Hangi sayfalar dahil?",
+      "body": "Bir işe alım uzmanı veya müşteri linkinize tıkladığında aradığı her şey.",
+      "items": [
+        "Kim olduğunuzu anlatan bir ana sayfa",
+        "En iyi projelerinizin olduğu bir galeri",
+        "Her proje için detay sayfası",
+        "Hakkımda ve iletişim bölümleri"
+      ]
+    },
+    "motion": {
+      "title": "Sadece statik bir sayfa değil, hareketli.",
+      "body": "Tıpkı üzerinde bulunduğunuz sayfa gibi; kaydırma efektleri ve ziyaretçilerin sona ulaşmak istemesini sağlayan küçük hareketli detaylar. Ziyaretçi hareket azaltma özelliğini açarsa, site sabit kalır.",
+      "points": [
+        "Telefon ve bilgisayarlarda harika görünür",
+        "Görüntülemek için hiçbir şey yüklemeniz gerekmez",
+        "Önce metinler ve görseller, sonra efektler"
+      ]
+    },
+    "how": {
+      "title": "Satın aldıktan sonra ne olacak?",
+      "steps": [
+        "Bir paket seçin ve Whop üzerinden ödemenizi yapın.",
+        "Whop size satın alım linkini e-posta ile gönderir. Kaynak kodunuz Whop hesabınızdadır.",
+        "İndirin, kendi adınızı, projelerinizi ve fotoğraflarınızı yerleştirin.",
+        "Dilediğiniz sunucuda yayınlayın ve linki iş verenlere ya da müşterilere gönderin."
+      ]
+    },
+    "who": {
+      "title": "Kimler için?",
+      "body": "CV veya teklif ile birlikte göndermek için tek bir linke ihtiyaç duyan herkes.",
+      "tags": [
+        "Tasarımcılar",
+        "Yazılımcılar",
+        "Fotoğrafçılar",
+        "3D ve hareket sanatçıları",
+        "Yeni mezunlar",
+        "Freelancerlar"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Paketinizi seçin",
+    "sub": "Paket detayları ve fiyatlar doğrudan Whop tarafından sağlanmaktadır. Ödeme Whop ile güvenle gerçekleştirilir.",
+    "recommended": "Önerilen",
+    "choose": "Paketi seç",
+    "opening": "Ödeme açılıyor...",
+    "oneTime": "tek seferlik",
+    "monthly": "aylık",
+    "yearly": "yıllık",
+    "everyNDays": "{n} günde bir",
+    "recurring": "düzenli",
+    "loading": "Fiyatlar yükleniyor",
+    "errorTitle": "Fiyatlar yüklenemedi",
+    "errorBody": "Ödeme sistemi şu an yanıt vermiyor. Genellikle birkaç saniye içinde düzelir.",
+    "retry": "Tekrar dene",
+    "empty": "Paketler güncelleniyor. Birkaç dakika sonra tekrar kontrol edin.",
+    "footnote": "Whop ile ödeme · Kaynak kodu linki e-postayla gönderilir",
+    "toastTitle": "Ödeme açılamadı",
+    "toastBody": "Bağlantı koptu. Birkaç saniye bekleyip tekrar deneyin.",
+    "currency": "Para birimi seçin"
+  },
+  "faq": {
+    "title": "Sıkça sorulan sorular",
+    "items": [
+      {
+        "q": "Ödemeden sonra kaynak koduna nereden ulaşırım?",
+        "a": "Ödeme yaptıktan sonra kaynak kodu Whop hesabınızda kullanılabilir olur ve Whop size satın alımınızla ilgili bir link gönderir. E-postayı göremiyor musunuz? Spam klasörünü kontrol edin veya bize yazın."
+      },
+      {
+        "q": "Yazılımcı değilim. Yine de kullanabilir miyim?",
+        "a": "Adınız, biyografiniz, projeleriniz ve fotoğraflarınız kolayca değiştirilebilecek şekilde yerleştirilmiştir. Eğer sizin yerinize kurulum yapılmasını isterseniz, kurulum içeren bir paket seçin."
+      },
+      {
+        "q": "Müşteri işleri için kullanabilir miyim?",
+        "a": "Bu pakete bağlıdır. Her paketin neleri kapsadığı fiyatlandırma bölümünde listelenmiştir. Emin değil misiniz? Satın almadan önce bize e-posta gönderin."
+      },
+      {
+        "q": "Nasıl yayına alabilirim?",
+        "a": "İstediğiniz herhangi bir web sunucusunu seçin ve kaynak kodunu yükleyin. Sizi tek bir platforma kısıtlamıyoruz."
+      },
+      {
+        "q": "Bir şey kırılırsa veya eksikse ne yapmalıyım?",
+        "a": "Sorunun ne olduğunu ve satın alırken kullandığınız e-posta adresini bize yazın. İnceleyip size dönüş yapalım."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Başardınız!",
+    "title": "Yolun sonuna geldiniz. Şimdi sıra sizin portfolyonuzda.",
+    "sub": "Bir paket seçin, Whop üzerinden kaynak koduna sahip olun ve tamamen size ait bir portfolyonuz olsun.",
+    "button": "Paket seç",
+    "trophyAlt": "Yolun sonundaki altın kupa"
+  },
+  "footer": {
+    "about": "xidker, yaratıcı insanlar için hazır portfolyo web sitesi kaynak kodları satar.",
+    "contact": "İletişim",
+    "rights": "Bu sayfa da xidker tarafından yapıldı."
+  },
+  "thanks": {
+    "back": "Ana sayfaya dön",
+    "noRefTitle": "Sipariş referansınız eksik.",
+    "noRefBody": "Bu linkte sipariş referansı bulunmuyor, bu nedenle ödemeyi kontrol edemiyoruz. Eğer satın aldıysanız, kaynak kodu Whop hesabınızda ve Whop tarafından gönderilen e-postada mevcuttur.",
+    "loading": "Siparişiniz kontrol ediliyor...",
+    "nfTitle": "Sipariş bulunamadı.",
+    "nfBody1": "Referans",
+    "nfBody2": "hiçbir işlemle eşleşmiyor. Eğer ödeme alındıysa, bu referans koduyla birlikte bize e-posta gönderin.",
+    "support": "E-posta desteği",
+    "supportSubject": "Sipariş",
+    "errTitle": "Ödemenizi henüz doğrulayamadık.",
+    "errBody": "Ödeme sistemi şu an aksıyor. Siparişiniz kaybolmadı, birazdan tekrar deneyin.",
+    "retry": "Tekrar kontrol et",
+    "paidEyebrow": "Ödeme onaylandı",
+    "paidTitle": "Başardınız! Kaynak kodu artık sizin.",
+    "paidBody": "Kaynak kodunuzu almak için Whop'a gidin. Whop ayrıca satın alımınızla ilgili linki e-posta ile gönderdi. Herhangi bir şey eksikse, aşağıdan bize e-posta atın.",
+    "receipt": "Makbuz",
+    "pkg": "Paket",
+    "amount": "Tutar",
+    "time": "Ödeme zamanı",
+    "ref": "Referans",
+    "pendingEyebrow": "Onay bekleniyor",
+    "pendingTitle": "Ödemeniz doğrulanıyor.",
+    "pendingBody1": "Paket",
+    "pendingBody2": "Bu sayfa her 3 saniyede bir otomatik kontrol eder, yenilemenize gerek yoktur. Genellikle bir dakikadan az sürer.",
+    "code": "Kod"
+  },
+  "scene": {
+    "loading": "Yükleniyor",
+    "start": "Başlangıç çizgisi",
+    "finish": "Bitiş çizgisi"
+  },
+  "nf": {
+    "title": "Haritanın dışına çıktınız.",
+    "body": "Aradığınız sayfa bu yolda bulunmuyor. Başlangıca dönün.",
+    "back": "Ana sayfaya dön",
+    "metaTitle": "Sayfa bulunamadı — xidker"
+  }
+}

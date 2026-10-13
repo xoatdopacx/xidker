@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Kész portfólió weboldal forráskód",
+    "description": "Vásárold meg egy kész személyes portfólió weboldal forráskódját. Add hozzá a nevedet, projektjeidet és fotóidat, majd tedd közzé. Fizetés a Whop rendszerén keresztül."
+  },
+  "lang": {
+    "switchLabel": "Nyelv választása",
+    "close": "Bezárás"
+  },
+  "nav": {
+    "home": "xidker, vissza a főoldalra",
+    "what": "Mit kapsz",
+    "how": "Hogyan működik",
+    "pricing": "Árak",
+    "faq": "GYIK",
+    "cta": "Árak megtekintése"
+  },
+  "hero": {
+    "eyebrow": "Portfólió weboldal forráskód",
+    "title": "Kész portfólió weboldal. Vedd meg a forrást, add hozzá a munkáidat, és már indulhat is.",
+    "sub": "Ne a nulláról tervezz. Megkapod egy animált portfólió oldal teljes forráskódját — csak írd át a nevet, a projekteket és a fotókat, majd tedd közzé.",
+    "start": "Gyerünk",
+    "cta": "Ugrás az árakhoz",
+    "hint": "Görgess az út bejárásához",
+    "mapAlt": "Kincses térkép",
+    "heroAlt": "Pixel karakter a rajtvonalnál"
+  },
+  "stage": "Szakasz",
+  "reached": "Teljesítve",
+  "stops": {
+    "what": {
+      "title": "Mit vásárolsz?",
+      "body": "Egy személyes portfólió weboldal teljes forráskódja, teljesen megtervezve és felépítve. A tied, megtarthatod és kedvedre módosíthatod.",
+      "points": [
+        "Kész dizájn, nem csak egy sablonvázlat",
+        "A tartalom külön van választva, így könnyen megtalálható és lecserélhető",
+        "Használatra kész, amint beírtad az adataidat"
+      ]
+    },
+    "pages": {
+      "title": "Milyen oldalak vannak benne?",
+      "body": "Minden, amit egy toborzó vagy ügyfél keres, amikor megnyitja a linkedet.",
+      "items": [
+        "Kezdőlap, amely bemutat téged",
+        "Rácsnézet a legjobb projektjeidről",
+        "Részletes oldal minden egyes projekthez",
+        "Rólam és Kapcsolat szekciók"
+      ]
+    },
+    "motion": {
+      "title": "Mozog. Ez nem egy statikus oldal.",
+      "body": "Pont mint az az oldal, amin épp vagy: görgetési effektek és apró mozgó részletek, amiktől az emberek végig akarják érni. Ha a látogató kikapcsolta a mozgást a gépén, az oldal mozdulatlan marad.",
+      "points": [
+        "Jól néz ki telefonon és asztali gépen is",
+        "Nem kell semmit telepíteni a megtekintéséhez",
+        "Szöveg és képek először, effektek utána"
+      ]
+    },
+    "how": {
+      "title": "Mi történik vásárlás után?",
+      "steps": [
+        "Válassz egy csomagot és fizess a Whop rendszerén keresztül.",
+        "A Whop emailben küld egy linket a vásárlásodhoz. A forráskód a Whop-fiókodban található.",
+        "Töltsd le, majd cseréld ki a nevet, a projekteket és a fotókat.",
+        "Tedd közzé tetszőleges tárhelyen, majd küldd el a linket toborzóknak vagy ügyfeleknek."
+      ]
+    },
+    "who": {
+      "title": "Kinek való?",
+      "body": "Bárkinek, akinek egy linkre van szüksége, amit a CV-jével vagy árajánlatával együtt elküldhet.",
+      "tags": [
+        "Dizájnerek",
+        "Fejlesztők",
+        "Fotósok",
+        "3D és motion artistok",
+        "Pályakezdők",
+        "Szabadúszók"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Válaszd ki a csomagodat",
+    "sub": "A csomag részletei és árai közvetlenül a Whop rendszeréből érkeznek. A fizetés biztonságosan, a Whop segítségével történik.",
+    "recommended": "Ajánlott",
+    "choose": "Ezt a csomagot választom",
+    "opening": "Fizetési oldal megnyitása...",
+    "oneTime": "egyszeri",
+    "monthly": "havonta",
+    "yearly": "évente",
+    "everyNDays": "minden {n} napban",
+    "recurring": "ismétlődő",
+    "loading": "Árak betöltése",
+    "errorTitle": "Az árak nem töltődtek be",
+    "errorBody": "A fizetési rendszer jelenleg nem válaszol. Általában másodperceken belül újra elérhető.",
+    "retry": "Próbáld újra",
+    "empty": "A csomagok frissítése folyamatban van. Nézz vissza pár perc múlva.",
+    "footnote": "Fizetés a Whop-on keresztül · A forráslinket emailben küldjük",
+    "toastTitle": "Nem sikerült megnyitni a fizetést",
+    "toastBody": "Megszakadt a kapcsolat. Várj pár másodpercet, és próbáld újra.",
+    "currency": "Pénznem választása"
+  },
+  "faq": {
+    "title": "Gyakori kérdések",
+    "items": [
+      {
+        "q": "Hol találom a forráskódot fizetés után?",
+        "a": "A fizetés után a forráskód elérhető a Whop-fiókodban, és a Whop küld egy emailt a vásárlásod linkjével. Nem találod az emailt? Ellenőrizd a spam mappát, vagy írj nekünk."
+      },
+      {
+        "q": "Nem értek a kódoláshoz. Használhatom így is?",
+        "a": "A neved, bemutatkozásod, projektjeid és fotóid külön helyen vannak tárolva, így könnyen cserélhetők. Ha inkább szeretnéd, hogy beállítsuk neked, válassz egy csomagot, amely tartalmazza a beállítást."
+      },
+      {
+        "q": "Használhatom ügyfélmunkákhoz?",
+        "a": "Ez csomagtól függ. Mindegyiknél fel van tüntetve, mit tehetsz vele az árazási részben. Nem vagy benne biztos? Írj nekünk vásárlás előtt."
+      },
+      {
+        "q": "Hogyan tehetem online elérhetővé?",
+        "a": "Válassz tetszőleges webtárhelyet és töltsd fel a forráskódot. Nem kötünk hozzá semmilyen platformhoz."
+      },
+      {
+        "q": "Mi van, ha valami elromlott vagy hiányzik?",
+        "a": "Írj nekünk emailt arról, mi a probléma, és add meg az emailcímet, amivel vásároltál. Utánanézünk és válaszolunk."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Sikerült!",
+    "title": "Bejártad az egész utat. Most a te portfóliódon a sor.",
+    "sub": "Válassz egy csomagot, vedd át a forráskódot a Whop-on keresztül, és legyen egy saját portfóliód.",
+    "button": "Csomag választása",
+    "trophyAlt": "Arany trófea az út végén"
+  },
+  "footer": {
+    "about": "A xidker kész portfólió weboldal forráskódokat árul kreatív embereknek.",
+    "contact": "Kapcsolat",
+    "rights": "Ezt az oldalt is a xidker készítette."
+  },
+  "thanks": {
+    "back": "Vissza a főoldalra",
+    "noRefTitle": "Hiányzik a rendelési hivatkozás.",
+    "noRefBody": "Ebben a linkben nincs rendelési hivatkozás, így nem tudjuk ellenőrizni a fizetést. Ha már vásároltál, a forráskód megtalálható a Whop-fiókodban és a Whop által küldött emailben.",
+    "loading": "Rendelés ellenőrzése...",
+    "nfTitle": "Nem találjuk ezt a rendelést.",
+    "nfBody1": "A hivatkozás",
+    "nfBody2": "nem egyezik egyik tranzakcióval sem. Ha levonták az összeget, írj nekünk ezzel a hivatkozással.",
+    "support": "E-mail támogatás",
+    "supportSubject": "Rendelés",
+    "errTitle": "Még nem tudtuk ellenőrizni a fizetést.",
+    "errBody": "A fizetési rendszer akadozik. A rendelésed nem veszett el, próbáld meg újra egy pillanat múlva.",
+    "retry": "Ellenőrzés újra",
+    "paidEyebrow": "Fizetés megerősítve",
+    "paidTitle": "Sikerült! A forráskód a tied.",
+    "paidBody": "Lépj be a Whop-ba a forráskód megszerzéséhez. A Whop küldött egy linket a vásárlásodról emailben. Ha bármi hiányzik, írj nekünk alább.",
+    "receipt": "Nyugta",
+    "pkg": "Csomag",
+    "amount": "Összeg",
+    "time": "Fizetve ekkor",
+    "ref": "Hivatkozás",
+    "pendingEyebrow": "Várakozás megerősítésre",
+    "pendingTitle": "Fizetés megerősítése folyamatban.",
+    "pendingBody1": "Csomag",
+    "pendingBody2": "Ez az oldal 3 másodpercenként újraellenőrzi az állapotot, nem kell frissítened. Általában egy percen belül megvan.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Betöltés",
+    "start": "Rajtvonal",
+    "finish": "Célvonal"
+  },
+  "nf": {
+    "title": "Eltévedtél a térképen.",
+    "body": "Ez az oldal nem található az úton. Térj vissza a startvonalhoz.",
+    "back": "Vissza a főoldalra",
+    "metaTitle": "Az oldal nem található — xidker"
+  }
+}

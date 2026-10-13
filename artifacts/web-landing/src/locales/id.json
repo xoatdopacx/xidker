@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Kode sumber situs web portofolio siap pakai",
+    "description": "Beli kode sumber situs web portofolio pribadi yang sudah jadi. Tambahkan nama, proyek, dan foto Anda, lalu publikasikan. Checkout oleh Whop."
+  },
+  "lang": {
+    "switchLabel": "Pilih bahasa",
+    "close": "Tutup"
+  },
+  "nav": {
+    "home": "xidker, kembali ke beranda",
+    "what": "Apa yang Anda dapatkan",
+    "how": "Cara kerja",
+    "pricing": "Harga",
+    "faq": "FAQ",
+    "cta": "Lihat harga"
+  },
+  "hero": {
+    "eyebrow": "Kode sumber situs web portofolio",
+    "title": "Situs web portofolio siap pakai. Beli kodenya, tambahkan karya Anda, langsung online.",
+    "sub": "Lewati proses desain dari nol. Anda mendapatkan kode sumber penuh dari situs portofolio animasi — masukkan nama, proyek, dan foto Anda, lalu publikasikan.",
+    "start": "Mulai",
+    "cta": "Ke harga",
+    "hint": "Gulir untuk berjalan di sepanjang jalan",
+    "mapAlt": "Peta harta karun",
+    "heroAlt": "Karakter piksel berdiri di garis start"
+  },
+  "stage": "Tahap",
+  "reached": "Tercapai",
+  "stops": {
+    "what": {
+      "title": "Apa yang Anda beli?",
+      "body": "Kode sumber lengkap dari situs web portofolio pribadi, sudah dirancang dan dibuat. Kode ini milik Anda untuk disimpan dan diubah sesuka Anda.",
+      "points": [
+        "Desain jadi, bukan sekadar sketsa templat",
+        "Konten dipisah agar mudah dicari dan diganti",
+        "Siap digunakan segera setelah detail Anda dimasukkan"
+      ]
+    },
+    "pages": {
+      "title": "Halaman apa saja yang disertakan?",
+      "body": "Segala hal yang dicari perekrut atau klien saat mereka membuka tautan Anda.",
+      "items": [
+        "Halaman beranda yang menjelaskan siapa Anda",
+        "Kisi proyek terbaik Anda",
+        "Halaman detail untuk setiap proyek",
+        "Bagian tentang dan kontak"
+      ]
+    },
+    "motion": {
+      "title": "Ini bergerak. Bukan halaman statis.",
+      "body": "Sama seperti halaman yang Anda buka sekarang: efek gulir dan detail bergerak kecil yang membuat orang ingin mencapai akhir. Jika pengunjung mengaktifkan pengurangan gerak, situs akan diam.",
+      "points": [
+        "Tampilan pas di ponsel dan desktop",
+        "Tidak perlu menginstal apa pun untuk melihatnya",
+        "Teks dan gambar pertama, efek menyusul"
+      ]
+    },
+    "how": {
+      "title": "Apa yang terjadi setelah Anda membeli?",
+      "steps": [
+        "Pilih paket dan bayar melalui Whop.",
+        "Whop mengirim email tautan ke pembelian Anda. Kode sumber ada di akun Whop Anda.",
+        "Unduh dan ganti dengan nama, proyek, dan foto Anda.",
+        "Publikasikan di host mana pun yang Anda suka, lalu kirim tautannya ke perekrut atau klien."
+      ]
+    },
+    "who": {
+      "title": "Untuk siapa ini?",
+      "body": "Siapa pun yang membutuhkan satu tautan untuk dikirim dengan CV atau penawaran.",
+      "tags": [
+        "Desainer",
+        "Pengembang",
+        "Fotografer",
+        "Artis 3D & gerak",
+        "Mahasiswa lulusan",
+        "Freelancer"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Pilih paket kode sumber Anda",
+    "sub": "Detail paket dan harga langsung dari Whop. Checkout ditangani dengan aman oleh Whop.",
+    "recommended": "Disarankan",
+    "choose": "Pilih paket ini",
+    "opening": "Membuka checkout…",
+    "oneTime": "sekali bayar",
+    "monthly": "per bulan",
+    "yearly": "per tahun",
+    "everyNDays": "setiap {n} hari",
+    "recurring": "berulang",
+    "loading": "Memuat harga",
+    "errorTitle": "Harga tidak dimuat",
+    "errorBody": "Sistem pembayaran tidak merespons saat ini. Biasanya kembali dalam hitungan detik.",
+    "retry": "Coba lagi",
+    "empty": "Paket sedang diperbarui. Periksa kembali dalam beberapa menit.",
+    "footnote": "Checkout oleh Whop · Tautan kode sumber dikirim lewat email",
+    "toastTitle": "Tidak dapat membuka checkout",
+    "toastBody": "Koneksi terputus. Tunggu beberapa detik dan coba lagi.",
+    "currency": "Pilih mata uang"
+  },
+  "faq": {
+    "title": "Pertanyaan umum",
+    "items": [
+      {
+        "q": "Di mana saya mendapatkan kode sumber setelah membayar?",
+        "a": "Setelah Anda membayar, kode sumber tersedia di akun Whop Anda, dan Whop mengirimkan tautan pembelian melalui email. Tidak menemukan emailnya? Periksa spam, atau tulis kepada kami."
+      },
+      {
+        "q": "Saya bukan pembuat kode. Bisakah saya menggunakannya?",
+        "a": "Nama, bio, proyek, dan foto Anda disimpan di tempat terpisah agar mudah diganti. Jika Anda lebih suka disiapkan untuk Anda, pilih paket yang menyertakan pengaturan."
+      },
+      {
+        "q": "Bisakah saya menggunakannya untuk pekerjaan klien?",
+        "a": "Tergantung paketnya. Masing-masing mencantumkan apa yang diperbolehkan dalam bagian harga. Tidak yakin? Kirim email sebelum Anda membeli."
+      },
+      {
+        "q": "Bagaimana cara membuatnya online?",
+        "a": "Pilih host web mana pun yang Anda suka dan unggah kode sumbernya. Kami tidak mengunci Anda di satu platform."
+      },
+      {
+        "q": "Bagaimana jika ada yang rusak atau hilang?",
+        "a": "Kirimi kami email tentang apa yang salah dan email yang Anda gunakan untuk membeli. Kami akan memeriksanya dan menghubungi Anda kembali."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Anda berhasil!",
+    "title": "Anda berjalan di seluruh jalan. Sekarang giliran portofolio Anda.",
+    "sub": "Pilih paket, dapatkan kode sumber melalui Whop, dan miliki portofolio milik Anda sendiri.",
+    "button": "Pilih paket",
+    "trophyAlt": "Trofi emas di ujung jalan"
+  },
+  "footer": {
+    "about": "xidker menjual kode sumber situs web portofolio siap pakai untuk orang kreatif.",
+    "contact": "Kontak",
+    "rights": "Halaman ini juga dibuat oleh xidker."
+  },
+  "thanks": {
+    "back": "Kembali ke beranda",
+    "noRefTitle": "Referensi pesanan Anda hilang.",
+    "noRefBody": "Tautan ini tidak memiliki referensi pesanan, jadi kami tidak bisa memeriksa pembayaran. Jika Anda sudah membeli, kode sumber tetap ada di akun Whop Anda dan dalam email yang dikirim Whop.",
+    "loading": "Memeriksa pesanan Anda…",
+    "nfTitle": "Kami tidak dapat menemukan pesanan ini.",
+    "nfBody1": "Referensi",
+    "nfBody2": "tidak cocok dengan transaksi apa pun. Jika Anda telah dikenakan biaya, kirim email kepada kami dengan referensi ini.",
+    "support": "Dukungan email",
+    "supportSubject": "Pesanan",
+    "errTitle": "Kami belum bisa memeriksa pembayaran Anda.",
+    "errBody": "Sistem pembayaran sedang bermasalah. Pesanan Anda tidak hilang — coba lagi nanti.",
+    "retry": "Periksa lagi",
+    "paidEyebrow": "Pembayaran dikonfirmasi",
+    "paidTitle": "Anda berhasil! Kode sumbernya milik Anda.",
+    "paidBody": "Buka Whop untuk mengambil kode sumber Anda sekarang. Whop juga telah mengirim email tautan ke pembelian Anda. Jika ada yang hilang, kirim email kepada kami di bawah ini.",
+    "receipt": "Tanda terima",
+    "pkg": "Paket",
+    "amount": "Jumlah",
+    "time": "Dibayar pada",
+    "ref": "Referensi",
+    "pendingEyebrow": "Menunggu konfirmasi",
+    "pendingTitle": "Kami sedang mengonfirmasi pembayaran Anda.",
+    "pendingBody1": "Paket",
+    "pendingBody2": "Halaman ini memeriksa lagi setiap 3 detik — tidak perlu memuat ulang. Biasanya memakan waktu kurang dari satu menit.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Memuat",
+    "start": "Garis start",
+    "finish": "Garis finish"
+  },
+  "nf": {
+    "title": "Anda tersesat dari peta.",
+    "body": "Halaman ini tidak ada di mana pun di jalan. Kembali ke awal.",
+    "back": "Kembali ke beranda",
+    "metaTitle": "Halaman tidak ditemukan — xidker"
+  }
+}

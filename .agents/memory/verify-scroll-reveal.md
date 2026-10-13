@@ -13,6 +13,8 @@ To put the road character at a chosen point, scroll so that `innerHeight * 0.62`
 
 Montage trick: to review many small captures in one image read, capture each one with `Page.captureScreenshot` + `clip` (base64 PNG). Then navigate to `about:blank`, inject a CSS grid of `<img src="data:image/png;base64,...">` with captions, and capture once.
 
+CDP gotchas hit later: `Page.captureScreenshot` `clip` x/y are page coordinates, so on a scrolled page add `scrollX/scrollY` or the capture shows only the green background. Retry captures that fail with "Not attached to an active page" during navigation. `localStorage` throws on `about:blank`; navigate to the site before touching it. Background jobs started with `&` inside a shell call die when the call returns; use the background-task option instead. Helper scripts in `/tmp` do not survive across sessions, so rebuild a small launch/evaluate/shot/click/montage helper when needed.
+
 If WebGL is ever needed again in headless mode: drop `--disable-gpu` and add `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
 
 **Why:** pricing cards with live data, checkout navigation, the road character's per-leg vehicles and the FAQ height check could only be confirmed this way.

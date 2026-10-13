@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Gotowy kod źródłowy strony portfolio",
+    "description": "Kup kod źródłowy gotowej strony portfolio. Dodaj swoje imię, projekty i zdjęcia, a następnie opublikuj. Płatność przez Whop."
+  },
+  "lang": {
+    "switchLabel": "Wybierz język",
+    "close": "Zamknij"
+  },
+  "nav": {
+    "home": "xidker, powrót do strony głównej",
+    "what": "Co otrzymujesz",
+    "how": "Jak to działa",
+    "pricing": "Cennik",
+    "faq": "FAQ",
+    "cta": "Zobacz cennik"
+  },
+  "hero": {
+    "eyebrow": "Kod źródłowy strony portfolio",
+    "title": "Gotowa strona portfolio. Kup kod, dodaj swoje prace i działaj.",
+    "sub": "Nie projektuj od zera. Otrzymasz pełny kod źródłowy animowanego portfolio — wstaw swoje imię, projekty, zdjęcia i publikuj.",
+    "start": "Zaczynamy",
+    "cta": "Przejdź do cen",
+    "hint": "Przewijaj, aby przejść drogę",
+    "mapAlt": "Mapa skarbów",
+    "heroAlt": "Postać pixel-art stojąca na starcie"
+  },
+  "stage": "Etap",
+  "reached": "Osiągnięto",
+  "stops": {
+    "what": {
+      "title": "Co kupujesz?",
+      "body": "Pełny kod źródłowy strony portfolio, zaprojektowany i zakodowany od podstaw. Jest Twój – możesz go edytować jak chcesz.",
+      "points": [
+        "Gotowy projekt, nie tylko szkic",
+        "Treści są oddzielone, więc łatwo je podmienić",
+        "Gotowe do użycia po wstawieniu własnych danych"
+      ]
+    },
+    "pages": {
+      "title": "Jakie strony są w zestawie?",
+      "body": "Wszystko, czego szuka rekruter lub klient, gdy otwiera Twój link.",
+      "items": [
+        "Strona główna z opisem kim jesteś",
+        "Siatka z Twoimi najlepszymi projektami",
+        "Szczegółowa strona każdego projektu",
+        "Sekcje o Tobie i kontakt"
+      ]
+    },
+    "motion": {
+      "title": "To się rusza. To nie jest statyczna strona.",
+      "body": "Tak jak strona, na której jesteś: efekty przewijania i ruchome detale sprawiają, że użytkownicy chcą dotrzeć do końca. Jeśli użytkownik ma wyłączone animacje, strona będzie statyczna.",
+      "points": [
+        "Wygląda świetnie na telefonach i komputerach",
+        "Nic nie trzeba instalować, żeby ją obejrzeć",
+        "Najpierw tekst i obrazki, potem efekty"
+      ]
+    },
+    "how": {
+      "title": "Co dzieje się po zakupie?",
+      "steps": [
+        "Wybierz pakiet i zapłać przez Whop.",
+        "Whop prześle Ci link do zakupu. Kod źródłowy znajdziesz na swoim koncie Whop.",
+        "Pobierz go i podmień swoje dane, projekty i zdjęcia.",
+        "Opublikuj na dowolnym hostingu i wyślij link do rekruterów lub klientów."
+      ]
+    },
+    "who": {
+      "title": "Dla kogo to jest?",
+      "body": "Dla każdego, kto potrzebuje linku do wysłania z CV lub ofertą.",
+      "tags": [
+        "Projektanci",
+        "Programiści",
+        "Fotografowie",
+        "Graficy 3D i motion",
+        "Absolwenci",
+        "Freelancerzy"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Wybierz pakiet",
+    "sub": "Szczegóły pakietów i ceny pochodzą bezpośrednio z Whop. Płatność jest bezpiecznie obsługiwana przez Whop.",
+    "recommended": "Polecany",
+    "choose": "Wybierz pakiet",
+    "opening": "Otwieranie płatności...",
+    "oneTime": "jednorazowo",
+    "monthly": "miesięcznie",
+    "yearly": "rocznie",
+    "everyNDays": "co {n} dni",
+    "recurring": "cyklicznie",
+    "loading": "Ładowanie cen",
+    "errorTitle": "Cennik nie wczytał się",
+    "errorBody": "System płatności teraz nie odpowiada. Zazwyczaj wraca po kilku sekundach.",
+    "retry": "Spróbuj ponownie",
+    "empty": "Pakiety są aktualizowane. Wróć za chwilę.",
+    "footnote": "Płatność przez Whop · Link do kodu w mailu",
+    "toastTitle": "Nie udało się otworzyć płatności",
+    "toastBody": "Połączenie przerwane. Odczekaj chwilę i spróbuj ponownie.",
+    "currency": "Wybierz walutę"
+  },
+  "faq": {
+    "title": "Częste pytania",
+    "items": [
+      {
+        "q": "Gdzie znajdę kod po zapłaceniu?",
+        "a": "Po dokonaniu płatności, kod jest dostępny na Twoim koncie Whop, otrzymasz też maila z linkiem. Nie widzisz wiadomości? Sprawdź spam lub napisz do nas."
+      },
+      {
+        "q": "Nie znam się na kodowaniu. Poradzę sobie?",
+        "a": "Imię, bio, projekty i zdjęcia są w jednym miejscu, więc łatwo je zmienić. Jeśli wolisz, żebyśmy zrobili to za Ciebie, wybierz pakiet z konfiguracją."
+      },
+      {
+        "q": "Czy mogę użyć tego dla klienta?",
+        "a": "Zależy od pakietu. Informacje o tym, co możesz robić, znajdziesz przy każdym pakiecie w cenniku. Nie jesteś pewien? Napisz do nas przed zakupem."
+      },
+      {
+        "q": "Jak opublikować stronę?",
+        "a": "Wybierz dowolny hosting i wgraj kod. Nie ograniczamy Cię do żadnej platformy."
+      },
+      {
+        "q": "Co jeśli coś nie działa lub brakuje pliku?",
+        "a": "Napisz do nas, co jest nie tak i podaj maila, z którego kupowałeś. Sprawdzimy to i odpowiemy."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Udało się!",
+    "title": "Przeszedłeś całą drogę. Teraz czas na Twoje portfolio.",
+    "sub": "Wybierz pakiet, pobierz kod przez Whop i miej portfolio, które jest tylko Twoje.",
+    "button": "Wybierz pakiet",
+    "trophyAlt": "Złoty puchar na końcu drogi"
+  },
+  "footer": {
+    "about": "xidker sprzedaje gotowy kod źródłowy stron portfolio dla kreatywnych osób.",
+    "contact": "Kontakt",
+    "rights": "Ta strona również została stworzona przez xidker."
+  },
+  "thanks": {
+    "back": "Powrót do strony głównej",
+    "noRefTitle": "Brak numeru zamówienia.",
+    "noRefBody": "Ten link nie ma numeru zamówienia, więc nie możemy sprawdzić płatności. Jeśli dokonałeś zakupu, kod czeka na Twoim koncie Whop i w mailu, który dostałeś od Whop.",
+    "loading": "Sprawdzanie zamówienia...",
+    "nfTitle": "Nie znaleziono zamówienia.",
+    "nfBody1": "Numer",
+    "nfBody2": "nie pasuje do żadnej transakcji. Jeśli opłata została pobrana, napisz do nas z tym numerem.",
+    "support": "Napisz wsparcie",
+    "supportSubject": "Zamówienie",
+    "errTitle": "Nie udało się sprawdzić płatności.",
+    "errBody": "System płatności chwilowo nie działa. Twoje zamówienie nie przepadło, spróbuj za chwilę.",
+    "retry": "Sprawdź ponownie",
+    "paidEyebrow": "Płatność potwierdzona",
+    "paidTitle": "Udało się! Kod jest Twój.",
+    "paidBody": "Odbierz kod na Whop. Whop wysłał Ci też maila z linkiem do zakupu. Jeśli coś nie gra, napisz do nas poniżej.",
+    "receipt": "Paragon",
+    "pkg": "Pakiet",
+    "amount": "Kwota",
+    "time": "Opłacono",
+    "ref": "Numer zamówienia",
+    "pendingEyebrow": "Czekam na potwierdzenie",
+    "pendingTitle": "Potwierdzamy płatność.",
+    "pendingBody1": "Pakiet",
+    "pendingBody2": "Strona odświeża się co 3 sekundy, nie musisz tego robić ręcznie. Zazwyczaj trwa to poniżej minuty.",
+    "code": "Nr"
+  },
+  "scene": {
+    "loading": "Ładowanie",
+    "start": "Linia startu",
+    "finish": "Linia mety"
+  },
+  "nf": {
+    "title": "Zgubiłeś się na mapie.",
+    "body": "Ta strona nie istnieje na trasie. Wróć na start.",
+    "back": "Powrót do strony głównej",
+    "metaTitle": "Strona nie znaleziona — xidker"
+  }
+}

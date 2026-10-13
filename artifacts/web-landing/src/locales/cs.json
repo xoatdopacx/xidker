@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Hotový zdrojový kód pro portfolio web",
+    "description": "Kupte si zdrojový kód hotového osobního portfolia. Vložte své jméno, projekty a fotky a spusťte web. Platba přes Whop."
+  },
+  "lang": {
+    "switchLabel": "Vybrat jazyk",
+    "close": "Zavřít"
+  },
+  "nav": {
+    "home": "xidker, zpět domů",
+    "what": "Co získáte",
+    "how": "Jak to funguje",
+    "pricing": "Ceník",
+    "faq": "FAQ",
+    "cta": "Zobrazit cenu"
+  },
+  "hero": {
+    "eyebrow": "Zdrojový kód webového portfolia",
+    "title": "Hotové portfolio. Kupte zdrojový kód, přidejte svou práci a jděte online.",
+    "sub": "Přeskočte design od nuly. Získáte kompletní zdrojový kód animovaného portfolia — stačí doplnit jméno, projekty, fotky a publikovat.",
+    "start": "Jdeme na to",
+    "cta": "Přejít k cenám",
+    "hint": "Skrolujte a procházejte cestu",
+    "mapAlt": "Mapa pokladu",
+    "heroAlt": "Pixelová postavička na startu"
+  },
+  "stage": "Fáze",
+  "reached": "Splněno",
+  "stops": {
+    "what": {
+      "title": "Co vlastně kupujete?",
+      "body": "Kompletní zdrojový kód osobního portfolia, který je již navržen a naprogramován. Je jen váš a můžete si ho libovolně upravit.",
+      "points": [
+        "Hotový design, ne jen skica",
+        "Obsah je oddělený pro snadnou výměnu",
+        "Připraveno k použití ihned po vložení dat"
+      ]
+    },
+    "pages": {
+      "title": "Jaké stránky jsou v ceně?",
+      "body": "Vše, co náborář nebo klient hledá, když otevře váš odkaz.",
+      "items": [
+        "Hlavní stránka, která řekne, kdo jste",
+        "Mřížka vašich nejlepších projektů",
+        "Detailní stránka ke každému projektu",
+        "Sekce o mně a kontakt"
+      ]
+    },
+    "motion": {
+      "title": "Hýbe se to. Není to statický web.",
+      "body": "Stejně jako stránka, na které právě jste: efekty při skrolování a drobné animace, díky kterým chtějí lidé dojít až na konec. Pokud má návštěvník vypnuté animace, web zůstane statický.",
+      "points": [
+        "Vypadá skvěle na mobilech i počítačích",
+        "Pro zobrazení není třeba nic instalovat",
+        "Nejdřív text a fotky, pak efekty"
+      ]
+    },
+    "how": {
+      "title": "Co se stane po nákupu?",
+      "steps": [
+        "Vyberte balíček a zaplaťte přes Whop.",
+        "Whop vám pošle odkaz k nákupu do e-mailu. Zdrojový kód najdete ve svém Whop účtu.",
+        "Stáhněte si kód a vyměňte jméno, projekty a fotky za své.",
+        "Nahrajte web na jakýkoli hosting a pošlete odkaz náborářům nebo klientům."
+      ]
+    },
+    "who": {
+      "title": "Pro koho to je?",
+      "body": "Pro každého, kdo potřebuje jeden odkaz k zaslání s CV nebo nabídkou.",
+      "tags": [
+        "Designéři",
+        "Vývojáři",
+        "Fotografové",
+        "3D a motion umělci",
+        "Studenti před promocí",
+        "Freelanceři"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Vyberte si balíček kódu",
+    "sub": "Detaily a ceny balíčků pocházejí přímo z Whop. Platba probíhá bezpečně přes Whop.",
+    "recommended": "Doporučeno",
+    "choose": "Vybrat balíček",
+    "opening": "Otevírám pokladnu...",
+    "oneTime": "jednorázově",
+    "monthly": "měsíčně",
+    "yearly": "ročně",
+    "everyNDays": "každých {n} dní",
+    "recurring": "opakovaně",
+    "loading": "Načítám ceny",
+    "errorTitle": "Ceník se nenačetl",
+    "errorBody": "Platební systém právě neodpovídá. Obvykle je zpět během pár sekund.",
+    "retry": "Zkusit znovu",
+    "empty": "Balíčky se právě aktualizují. Zkuste to za chvíli.",
+    "footnote": "Platba přes Whop · Odkaz ke stažení dorazí e-mailem",
+    "toastTitle": "Pokladnu nelze otevřít",
+    "toastBody": "Spojení vypadlo. Počkejte pár sekund a zkuste to znovu.",
+    "currency": "Zvolit měnu"
+  },
+  "faq": {
+    "title": "Časté otázky",
+    "items": [
+      {
+        "q": "Kde získám zdrojový kód po zaplacení?",
+        "a": "Po zaplacení najdete zdrojový kód ve svém Whop účtu a Whop vám pošle odkaz i do e-mailu. Nemůžete ho najít? Zkontrolujte spam nebo nám napište."
+      },
+      {
+        "q": "Nejsem programátor. Mohu to přesto použít?",
+        "a": "Vaše jméno, životopis, projekty a fotky jsou uloženy na jednom místě, takže se snadno mění. Pokud byste raději chtěli nastavení od nás, vyberte balíček, který obsahuje i zprovoznění."
+      },
+      {
+        "q": "Mohu to použít pro práci pro klienty?",
+        "a": "Záleží na balíčku. Povolené použití je uvedeno v ceníku. Nejste si jistí? Napište nám před nákupem."
+      },
+      {
+        "q": "Jak to dostanu online?",
+        "a": "Vyberte si libovolný webhosting a nahrajte tam zdrojový kód. Nikoho k ničemu nenutíme."
+      },
+      {
+        "q": "Co když je něco rozbité nebo chybí?",
+        "a": "Napište nám e-mail s tím, co nefunguje, a přiložte e-mail, pod kterým jste nakupovali. Podíváme se na to a ozveme se."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Dokázali jste to!",
+    "title": "Prošli jste celou cestu. Teď je řada na vašem portfoliu.",
+    "sub": "Vyberte balíček, získejte kód přes Whop a mějte portfolio, které je jen vaše.",
+    "button": "Vybrat balíček",
+    "trophyAlt": "Zlatá trofej na konci cesty"
+  },
+  "footer": {
+    "about": "xidker prodává hotové zdrojové kódy portfolií pro kreativní lidi.",
+    "contact": "Kontakt",
+    "rights": "Tuto stránku vytvořil také xidker."
+  },
+  "thanks": {
+    "back": "Zpět domů",
+    "noRefTitle": "Chybí kód objednávky.",
+    "noRefBody": "Tento odkaz neobsahuje kód objednávky, takže nemůžeme ověřit platbu. Pokud jste nakoupili, kód je stále ve vašem Whop účtu a v e-mailu, který vám přišel.",
+    "loading": "Kontroluji objednávku...",
+    "nfTitle": "Objednávku se nepodařilo najít.",
+    "nfBody1": "Kód",
+    "nfBody2": "neodpovídá žádné transakci. Pokud vám byly strženy peníze, napište nám e-mail s tímto kódem.",
+    "support": "E-mailová podpora",
+    "supportSubject": "Objednávka",
+    "errTitle": "Platbu se zatím nepodařilo ověřit.",
+    "errBody": "Platební systém právě vynechává. Vaše objednávka není ztracena — zkuste to za chvíli znovu.",
+    "retry": "Zkusit znovu",
+    "paidEyebrow": "Platba potvrzena",
+    "paidTitle": "Dokázali jste to! Zdrojový kód je váš.",
+    "paidBody": "Přejděte na Whop a stáhněte si kód. Whop vám také poslal odkaz do e-mailu. Pokud něco chybí, napište nám níže.",
+    "receipt": "Účtenka",
+    "pkg": "Balíček",
+    "amount": "Částka",
+    "time": "Zaplaceno",
+    "ref": "Kód",
+    "pendingEyebrow": "Čeká se na potvrzení",
+    "pendingTitle": "Potvrzujeme vaši platbu.",
+    "pendingBody1": "Balíček",
+    "pendingBody2": "Stránka se sama obnovuje každé 3 sekundy. Obvykle to netrvá ani minutu.",
+    "code": "Kód"
+  },
+  "scene": {
+    "loading": "Načítám",
+    "start": "Start",
+    "finish": "Cíl"
+  },
+  "nf": {
+    "title": "Ztratili jste se na mapě.",
+    "body": "Tato stránka na cestě neexistuje. Vraťte se na start.",
+    "back": "Zpět domů",
+    "metaTitle": "Stránka nenalezena — xidker"
+  }
+}

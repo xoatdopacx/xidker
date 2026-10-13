@@ -150,7 +150,7 @@ export const getListPackagesUrl = (params?: ListPackagesParams,) => {
 }
 
 /**
- * Returns the landing page build packages (Whop plans), sorted by price ascending.
+ * Returns every visible package in every currency. The same package sold in another currency is a separate Whop plan sharing the same key. Sorted by currency, then price ascending.
  * @summary List purchasable packages
  */
 export const listPackages = async (params?: ListPackagesParams, options?: Parameters<typeof customFetch>[1]): Promise<Package[]> => {

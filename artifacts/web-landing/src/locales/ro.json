@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Cod sursă pentru site de portofoliu gata de utilizare",
+    "description": "Cumpără codul sursă al unui site de portofoliu personal finalizat. Adaugă numele, proiectele și fotografiile tale, apoi pune-l online. Finalizarea comenzii prin Whop."
+  },
+  "lang": {
+    "switchLabel": "Alege limba",
+    "close": "Închide"
+  },
+  "nav": {
+    "home": "xidker, înapoi la început",
+    "what": "Ce primești",
+    "how": "Cum funcționează",
+    "pricing": "Prețuri",
+    "faq": "Întrebări frecvente",
+    "cta": "Vezi prețurile"
+  },
+  "hero": {
+    "eyebrow": "Cod sursă pentru site de portofoliu",
+    "title": "Un site de portofoliu gata de utilizare. Cumpără codul, adaugă lucrările, publică-l.",
+    "sub": "Nu mai pierde timpul cu designul de la zero. Primești codul sursă complet al unui site de portofoliu animat — adaugă numele, proiectele și fotografiile, apoi publică-l.",
+    "start": "Să începem",
+    "cta": "Sari la prețuri",
+    "hint": "Derulează pentru a parcurge drumul",
+    "mapAlt": "Hartă de comori",
+    "heroAlt": "Personaj pixelat stând la linia de start"
+  },
+  "stage": "Etapa",
+  "reached": "Atins",
+  "stops": {
+    "what": {
+      "title": "Ce cumperi?",
+      "body": "Codul sursă complet al unui site de portofoliu personal, deja proiectat și construit. Este al tău, îl poți păstra și modifica după bunul plac.",
+      "points": [
+        "Un design finisat, nu o schiță de șablon",
+        "Conținut separat, ușor de găsit și de înlocuit",
+        "Gata de utilizare imediat ce ai introdus datele tale"
+      ]
+    },
+    "pages": {
+      "title": "Ce pagini sunt incluse?",
+      "body": "Tot ceea ce caută un recrutor sau un client atunci când deschide linkul tău.",
+      "items": [
+        "O pagină de start care spune cine ești",
+        "O grilă cu cele mai bune proiecte ale tale",
+        "O pagină de detaliu pentru fiecare proiect",
+        "Secțiuni de prezentare și contact"
+      ]
+    },
+    "motion": {
+      "title": "Se mișcă. Nu este o pagină statică.",
+      "body": "La fel ca pagina pe care te afli: efecte de derulare și mici detalii în mișcare care îi fac pe oameni să vrea să ajungă la final. Dacă vizitatorul are activată reducerea mișcării, site-ul rămâne static.",
+      "points": [
+        "Arată bine pe telefoane și computere",
+        "Nu trebuie să instalezi nimic pentru a-l vizualiza",
+        "Textul și imaginile apar primele, efectele după"
+      ]
+    },
+    "how": {
+      "title": "Ce se întâmplă după ce cumperi?",
+      "steps": [
+        "Alege un pachet și plătește prin Whop.",
+        "Whop îți trimite un link prin email către achiziția ta. Codul sursă se află în contul tău Whop.",
+        "Descarcă-l și înlocuiește numele, proiectele și fotografiile cu ale tale.",
+        "Publică-l pe orice host dorești, apoi trimite linkul recrutorilor sau clienților."
+      ]
+    },
+    "who": {
+      "title": "Pentru cine este?",
+      "body": "Oricine are nevoie de un link de trimis împreună cu un CV sau o ofertă.",
+      "tags": [
+        "Designeri",
+        "Programatori",
+        "Fotografi",
+        "Artiști 3D și de animație",
+        "Absolvenți",
+        "Freelanceri"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Alege pachetul tău de cod sursă",
+    "sub": "Detaliile pachetelor și prețurile provin direct de la Whop. Finalizarea comenzii este gestionată securizat de Whop.",
+    "recommended": "Recomandat",
+    "choose": "Alege acest pachet",
+    "opening": "Se deschide pagina de plată...",
+    "oneTime": "o singură dată",
+    "monthly": "pe lună",
+    "yearly": "pe an",
+    "everyNDays": "la fiecare {n} zile",
+    "recurring": "recurent",
+    "loading": "Se încarcă prețurile",
+    "errorTitle": "Prețurile nu s-au încărcat",
+    "errorBody": "Sistemul de plată nu răspunde momentan. De obicei revine în câteva secunde.",
+    "retry": "Încearcă din nou",
+    "empty": "Pachetele sunt actualizate. Revino în câteva minute.",
+    "footnote": "Finalizare comandă prin Whop · Linkul pentru cod trimis prin email",
+    "toastTitle": "Nu s-a putut deschide pagina de plată",
+    "toastBody": "Conexiunea a fost întreruptă. Mai așteaptă câteva secunde și încearcă din nou.",
+    "currency": "Alege moneda"
+  },
+  "faq": {
+    "title": "Întrebări frecvente",
+    "items": [
+      {
+        "q": "De unde iau codul după ce plătesc?",
+        "a": "După ce ai plătit, codul este disponibil în contul tău Whop, iar Whop îți trimite un link către achiziția ta prin email. Nu găsești emailul? Verifică spam-ul sau scrie-ne."
+      },
+      {
+        "q": "Nu mă pricep la cod. Îl pot folosi?",
+        "a": "Numele, biografia, proiectele și fotografiile sunt păstrate într-un loc separat pentru a fi ușor de schimbat. Dacă preferi să fie configurat pentru tine, alege un pachet care include configurarea."
+      },
+      {
+        "q": "Îl pot folosi pentru clienți?",
+        "a": "Depinde de pachet. Fiecare enumeră ce ai voie să faci cu el în secțiunea de prețuri. Nu ești sigur? Scrie-ne înainte de a cumpăra."
+      },
+      {
+        "q": "Cum îl pun online?",
+        "a": "Alege orice serviciu de găzduire dorești și urcă codul. Nu te obligăm să folosești o anumită platformă."
+      },
+      {
+        "q": "Ce fac dacă ceva este stricat sau lipsește?",
+        "a": "Trimite-ne un email cu ce nu a mers și adresa de email folosită la cumpărare. Vom verifica și îți vom răspunde."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Ai reușit!",
+    "title": "Ai parcurs tot drumul. Acum e rândul portofoliului tău.",
+    "sub": "Alege un pachet, primește codul prin Whop și ai un portofoliu care este doar al tău.",
+    "button": "Alege un pachet",
+    "trophyAlt": "Trofeu de aur la capătul drumului"
+  },
+  "footer": {
+    "about": "xidker vinde cod sursă de site de portofoliu gata de utilizare pentru oameni creativi.",
+    "contact": "Contact",
+    "rights": "Și această pagină a fost făcută de xidker."
+  },
+  "thanks": {
+    "back": "Înapoi la început",
+    "noRefTitle": "Codul de comandă lipsește.",
+    "noRefBody": "Acest link nu are un cod de comandă, așa că nu putem verifica plata. Dacă ai cumpărat, codul este în contul tău Whop și în emailul trimis de Whop.",
+    "loading": "Se verifică comanda...",
+    "nfTitle": "Nu am găsit această comandă.",
+    "nfBody1": "Referința",
+    "nfBody2": "nu corespunde niciunei tranzacții. Dacă ai fost taxat, trimite-ne un email cu acest cod.",
+    "support": "Trimite email la asistență",
+    "supportSubject": "Comandă",
+    "errTitle": "Nu am putut verifica plata încă.",
+    "errBody": "Sistemul de plată are probleme. Comanda ta nu este pierdută — încearcă din nou imediat.",
+    "retry": "Verifică din nou",
+    "paidEyebrow": "Plată confirmată",
+    "paidTitle": "Ai reușit! Codul este al tău.",
+    "paidBody": "Mergi la Whop pentru a lua codul acum. Whop ți-a trimis și un link către achiziția ta prin email. Dacă lipsește ceva, scrie-ne mai jos.",
+    "receipt": "Chitanță",
+    "pkg": "Pachet",
+    "amount": "Sumă",
+    "time": "Plătit la",
+    "ref": "Referință",
+    "pendingEyebrow": "Așteptăm confirmarea",
+    "pendingTitle": "Confirmăm plata ta.",
+    "pendingBody1": "Pachet",
+    "pendingBody2": "Această pagină verifică din nou la fiecare 3 secunde — nu trebuie să reîncarci. De obicei durează sub un minut.",
+    "code": "Cod"
+  },
+  "scene": {
+    "loading": "Se încarcă",
+    "start": "Linia de start",
+    "finish": "Linia de finish"
+  },
+  "nf": {
+    "title": "Te-ai rătăcit pe hartă.",
+    "body": "Această pagină nu există pe drumul nostru. Întoarce-te la start.",
+    "back": "Înapoi la început",
+    "metaTitle": "Pagină negăsită — xidker"
+  }
+}

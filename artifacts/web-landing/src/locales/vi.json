@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Source code web portfolio làm sẵn",
+    "description": "Mua source code một website portfolio cá nhân đã làm xong. Thay tên, dự án và ảnh của bạn vào rồi đưa lên mạng. Thanh toán qua Whop."
+  },
+  "lang": {
+    "switchLabel": "Chọn ngôn ngữ",
+    "close": "Đóng"
+  },
+  "nav": {
+    "home": "xidker, về trang chủ",
+    "what": "Bạn nhận gì",
+    "how": "Cách dùng",
+    "pricing": "Bảng giá",
+    "faq": "Hỏi đáp",
+    "cta": "Xem giá"
+  },
+  "hero": {
+    "eyebrow": "Source code web portfolio",
+    "title": "Web portfolio làm sẵn. Mua source về, thay thông tin của bạn là dùng được.",
+    "sub": "Không cần thiết kế từ đầu. Bạn nhận toàn bộ source của một trang portfolio có chuyển động, chỉ việc điền tên, dự án và ảnh của mình rồi đưa lên mạng.",
+    "start": "Bắt đầu đi",
+    "cta": "Xem giá luôn",
+    "hint": "Cuộn xuống để đi hết con đường",
+    "mapAlt": "Bản đồ kho báu",
+    "heroAlt": "Nhân vật pixel đứng ở vạch xuất phát"
+  },
+  "stage": "Chặng",
+  "reached": "Đã tới",
+  "stops": {
+    "what": {
+      "title": "Bạn mua gì?",
+      "body": "Toàn bộ source code của một website portfolio cá nhân, đã thiết kế và lập trình xong. Bạn sở hữu bản source đó và sửa thoải mái theo ý mình.",
+      "points": [
+        "Thiết kế đã hoàn chỉnh, không phải bản nháp",
+        "Nội dung tách riêng, dễ tìm để thay",
+        "Dùng được ngay sau khi thay thông tin"
+      ]
+    },
+    "pages": {
+      "title": "Trong web có những trang nào?",
+      "body": "Đủ những gì một nhà tuyển dụng hay khách hàng muốn xem khi mở link của bạn.",
+      "items": [
+        "Trang chủ giới thiệu bạn là ai",
+        "Danh sách dự án nổi bật",
+        "Trang chi tiết cho từng dự án",
+        "Phần giới thiệu và liên hệ"
+      ]
+    },
+    "motion": {
+      "title": "Có chuyển động, không chỉ là trang tĩnh",
+      "body": "Giống trang bạn đang xem: hiệu ứng khi cuộn, chi tiết nhỏ có chuyển động, người xem muốn kéo tới cuối. Ai tắt hiệu ứng trong máy thì trang tự đứng yên.",
+      "points": [
+        "Đẹp trên điện thoại lẫn máy tính",
+        "Không cần cài thêm gì để xem",
+        "Ảnh và chữ hiện ra trước, hiệu ứng theo sau"
+      ]
+    },
+    "how": {
+      "title": "Mua xong thì làm gì?",
+      "steps": [
+        "Chọn gói và thanh toán qua Whop.",
+        "Whop gửi email có link tới phần bạn đã mua. Source nằm trong tài khoản Whop của bạn.",
+        "Tải source về, thay tên, dự án và ảnh của bạn.",
+        "Đưa lên hosting bạn chọn, rồi gửi link cho nhà tuyển dụng hoặc khách hàng."
+      ]
+    },
+    "who": {
+      "title": "Hợp với ai?",
+      "body": "Ai cần một đường link để gửi kèm CV hoặc báo giá.",
+      "tags": [
+        "Designer",
+        "Developer",
+        "Nhiếp ảnh",
+        "Làm 3D, motion",
+        "Sinh viên sắp ra trường",
+        "Freelancer"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Chọn gói source",
+    "sub": "Nội dung và giá từng gói được cập nhật trực tiếp từ Whop. Thanh toán an toàn qua Whop.",
+    "recommended": "Nên chọn",
+    "choose": "Chọn gói này",
+    "opening": "Đang mở trang thanh toán…",
+    "oneTime": "trả một lần",
+    "monthly": "mỗi tháng",
+    "yearly": "mỗi năm",
+    "everyNDays": "mỗi {n} ngày",
+    "recurring": "định kỳ",
+    "loading": "Đang tải bảng giá",
+    "errorTitle": "Chưa tải được bảng giá",
+    "errorBody": "Hệ thống thanh toán đang không phản hồi. Thường chỉ vài giây là có lại.",
+    "retry": "Tải lại",
+    "empty": "Các gói đang được cập nhật. Bạn quay lại sau ít phút nhé.",
+    "footnote": "Thanh toán qua Whop · Nhận link source qua email",
+    "toastTitle": "Chưa mở được trang thanh toán",
+    "toastBody": "Kết nối bị gián đoạn. Bạn thử lại sau vài giây nhé.",
+    "currency": "Chọn loại tiền"
+  },
+  "faq": {
+    "title": "Câu hỏi hay gặp",
+    "items": [
+      {
+        "q": "Mua xong tôi lấy source ở đâu?",
+        "a": "Sau khi thanh toán, bạn có quyền truy cập source trong tài khoản Whop của mình. Whop cũng gửi email kèm link tới phần bạn đã mua. Không thấy email thì kiểm tra mục spam, hoặc viết cho chúng tôi."
+      },
+      {
+        "q": "Tôi không rành code thì có dùng được không?",
+        "a": "Tên, phần giới thiệu, dự án và ảnh được để riêng cho dễ thay. Nếu bạn muốn được cài đặt giúp, hãy chọn gói có kèm cài đặt trong bảng giá."
+      },
+      {
+        "q": "Tôi có được dùng cho khách hàng không?",
+        "a": "Tùy gói. Phạm vi sử dụng của từng gói được ghi trong bảng giá. Còn phân vân thì gửi email hỏi chúng tôi trước khi mua."
+      },
+      {
+        "q": "Tôi đưa web lên mạng bằng cách nào?",
+        "a": "Bạn chọn dịch vụ hosting mình thích rồi tải source lên. Chúng tôi không khóa bạn vào nền tảng nào."
+      },
+      {
+        "q": "Gặp lỗi hoặc thiếu file thì sao?",
+        "a": "Gửi email kèm mô tả lỗi và email bạn dùng để mua. Chúng tôi sẽ kiểm tra và trả lời bạn."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Về đích!",
+    "title": "Bạn đã đi hết con đường. Giờ tới lượt portfolio của bạn.",
+    "sub": "Chọn một gói, nhận source qua Whop và có trang portfolio của riêng mình.",
+    "button": "Chọn gói source",
+    "trophyAlt": "Cúp vàng ở cuối đường"
+  },
+  "footer": {
+    "about": "xidker bán source code web portfolio làm sẵn cho người làm sáng tạo.",
+    "contact": "Liên hệ",
+    "rights": "Trang này cũng do xidker làm."
+  },
+  "thanks": {
+    "back": "Về trang chủ",
+    "noRefTitle": "Thiếu mã đơn hàng.",
+    "noRefBody": "Đường link này không có mã đơn nên chúng tôi chưa kiểm tra được thanh toán. Nếu bạn đã mua, source vẫn nằm trong tài khoản Whop của bạn và trong email Whop gửi.",
+    "loading": "Đang kiểm tra đơn hàng…",
+    "nfTitle": "Không tìm thấy đơn này.",
+    "nfBody1": "Mã",
+    "nfBody2": "không khớp với giao dịch nào. Nếu bạn đã bị trừ tiền, gửi email cho chúng tôi kèm mã này.",
+    "support": "Gửi email hỗ trợ",
+    "supportSubject": "Đơn hàng",
+    "errTitle": "Chưa kiểm tra được thanh toán.",
+    "errBody": "Hệ thống thanh toán đang chập chờn. Đơn của bạn không bị mất, bạn thử lại nhé.",
+    "retry": "Kiểm tra lại",
+    "paidEyebrow": "Thanh toán thành công",
+    "paidTitle": "Về đích! Source đã là của bạn.",
+    "paidBody": "Bạn có thể vào Whop để lấy source ngay. Whop cũng đã gửi email kèm link tới phần bạn mua. Nếu thiếu gì, viết cho chúng tôi qua email bên dưới.",
+    "receipt": "Biên nhận",
+    "pkg": "Gói",
+    "amount": "Số tiền",
+    "time": "Thời gian",
+    "ref": "Mã đơn",
+    "pendingEyebrow": "Đang chờ xác nhận",
+    "pendingTitle": "Chúng tôi đang xác nhận thanh toán của bạn.",
+    "pendingBody1": "Gói",
+    "pendingBody2": "Trang này tự kiểm tra lại mỗi 3 giây, bạn không cần tải lại. Thường chưa tới một phút.",
+    "code": "Mã"
+  },
+  "scene": {
+    "loading": "Đang tải",
+    "start": "Điểm xuất phát",
+    "finish": "Vạch đích"
+  },
+  "nf": {
+    "title": "Lạc đường rồi.",
+    "body": "Trang bạn tìm không có trên bản đồ. Quay lại vạch xuất phát nhé.",
+    "back": "Về trang chủ",
+    "metaTitle": "Không tìm thấy trang — xidker"
+  }
+}

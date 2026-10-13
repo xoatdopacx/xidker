@@ -26,7 +26,7 @@ export default function NotFound() {
           <h1 className="font-display text-3xl md:text-4xl mt-2">{t.nf.title}</h1>
           <p className="mt-3 text-[#2c3a2c]">{t.nf.body}</p>
           <Link href="/" className="pbtn red mt-7 px-5 py-2.5 font-bold" data-testid="link-back-home">
-            <ArrowLeft className="h-4 w-4" /> {t.nf.back}
+            <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" /> {t.nf.back}
           </Link>
         </div>
       </div>

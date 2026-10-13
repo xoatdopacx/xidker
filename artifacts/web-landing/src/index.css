@@ -437,8 +437,8 @@
 :root{--ink:150 45% 9%;--paper:48 22% 90%;--grass:108 48% 52%;--grass-d:118 45% 36%;--road:225 9% 23%;--pin:3 78% 52%;--gold:44 95% 55%;--brick:10 62% 46%;--klein:3 78% 52%;--flare:3 78% 52%;--sun:44 95% 55%}
 html{scroll-behavior:smooth}
 body{overflow-x:hidden;background-color:hsl(var(--grass));background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges'%3E%3Cg fill='%2346a83a'%3E%3Crect x='10' y='14' width='4' height='4'/%3E%3Crect x='14' y='10' width='4' height='4'/%3E%3Crect x='60' y='52' width='4' height='4'/%3E%3Crect x='64' y='48' width='4' height='4'/%3E%3Crect x='30' y='76' width='4' height='4'/%3E%3C/g%3E%3Cg fill='%2370d65c'%3E%3Crect x='80' y='20' width='4' height='4'/%3E%3Crect x='44' y='34' width='4' height='4'/%3E%3Crect x='6' y='60' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E");background-size:96px 96px;image-rendering:pixelated}
-.font-display{font-family:'Be Vietnam Pro',sans-serif;font-weight:800}
-.font-pixel{font-family:'Pixelify Sans',monospace}
+.font-display{font-family:var(--app-font-sans);font-weight:800}
+.font-pixel{font-family:'Pixelify Sans',var(--app-font-sans)}
 /* Pixelify Sans draws 2 like Z/8 and 5 like S; numbers use Silkscreen instead. */
 .font-num{font-family:'Silkscreen',monospace}
 .font-mono{font-family:'JetBrains Mono',monospace}
@@ -524,3 +524,57 @@ body{overflow-x:hidden;background-color:hsl(var(--grass));background-image:url("
 .poof.go i{animation:poof .55s steps(5) forwards}
 @keyframes poof{0%{opacity:1;transform:rotate(var(--a)) translateX(4px)}100%{opacity:0;transform:rotate(var(--a)) translateX(38px)}}
 @media (prefers-reduced-motion:reduce){.poof,.puffs{display:none}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}[data-rv]>*{opacity:1!important}.rv-ov,.scene{display:none!important}.spark{display:none}}
+
+/* ---- Languages ----
+   Be Vietnam Pro draws Latin letters and digits; each other writing system adds a Noto Sans
+   loaded on demand by the i18n provider (html[data-script] is set from the active language). */
+html[data-script="cyrl"],html[data-script="greek"]{--app-font-sans:'Be Vietnam Pro','Noto Sans',sans-serif}
+html[data-script="sc"]{--app-font-sans:'Be Vietnam Pro','Noto Sans SC',sans-serif}
+html[data-script="tc"]{--app-font-sans:'Be Vietnam Pro','Noto Sans TC',sans-serif}
+html[data-script="jp"]{--app-font-sans:'Be Vietnam Pro','Noto Sans JP',sans-serif}
+html[data-script="kr"]{--app-font-sans:'Be Vietnam Pro','Noto Sans KR',sans-serif}
+html[data-script="thai"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Thai',sans-serif}
+html[data-script="lao"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Lao',sans-serif}
+html[data-script="khmer"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Khmer',sans-serif}
+html[data-script="deva"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Devanagari',sans-serif}
+html[data-script="beng"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Bengali',sans-serif}
+html[data-script="arab"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Arabic',sans-serif}
+html[data-script="hebr"]{--app-font-sans:'Be Vietnam Pro','Noto Sans Hebrew',sans-serif}
+/* Long words (German, Finnish-style compounds) wrap instead of pushing past the card edge. */
+h1,h2,h3,p,li,dd,dt,button,a{overflow-wrap:break-word}
+h1,h2,h3{hyphens:auto}
+html[lang="ko"] body{word-break:keep-all}
+/* Scripts with marks above and below the line need more room than the tight Latin headings. */
+html:is([data-script="thai"],[data-script="lao"],[data-script="khmer"],[data-script="deva"],[data-script="beng"],[data-script="arab"]) :is(h1,h2,h3,.font-display){line-height:1.4}
+html:is([data-script="thai"],[data-script="lao"],[data-script="khmer"],[data-script="deva"],[data-script="beng"],[data-script="arab"]) body{line-height:1.7}
+/* Letter spacing breaks joined Arabic letters; upper-casing does nothing for these scripts anyway. */
+html[data-script="arab"] *{letter-spacing:0!important}
+
+/* pixel language picker */
+.lp-trigger{color:#1b2a1c;background:hsl(var(--paper));border:3px solid #1b2a1c;box-shadow:inset -3px -3px 0 #cfcbbf,0 3px 0 #1b2a1c;transition:transform .1s steps(2)}
+.lp-trigger:active,.lp-trigger[aria-expanded="true"]{transform:translateY(3px);box-shadow:inset -3px -3px 0 #cfcbbf,0 0 0 #1b2a1c}
+.lp-trigger.dark{color:#eaf7d6;background:#24382a;border-color:#eaf7d6;box-shadow:inset -3px -3px 0 #16241a,0 3px 0 #0e1a10}
+.lp-trigger.dark[aria-expanded="true"]{box-shadow:inset -3px -3px 0 #16241a,0 0 0 #0e1a10}
+.lp-trigger:focus-visible,.lp-opt:focus-visible,.lp-close:focus-visible{outline:3px solid hsl(var(--gold));outline-offset:2px}
+.lp-panel{animation:lpIn .16s steps(3) both;color:#1b2a1c}
+@keyframes lpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.lp-close{border:3px solid #1b2a1c;background:#fff9;}
+.lp-close:hover{background:hsl(var(--gold))}
+.lp-opt{border:3px solid transparent;background:#fff6}
+.lp-opt:hover{border-color:#1b2a1c;background:#fff}
+.lp-opt.on{background:hsl(var(--gold));border-color:#1b2a1c;box-shadow:inset -3px -3px 0 #c99a1e}
+.lp-dot{width:8px;height:8px;background:#cfcbbf}
+.lp-opt.on .lp-dot{background:hsl(var(--pin));box-shadow:0 0 0 2px #1b2a1c}
+
+/* currency segmented toggle */
+.cur-seg{display:inline-flex;border:4px solid #1b2a1c;background:#1b2a1c;gap:4px;box-shadow:0 4px 0 rgba(16,64,20,.35)}
+.cur-seg button{min-width:4.25rem;padding:.35rem .9rem;background:#ebe8de;color:#3d4a3d;box-shadow:inset -3px -3px 0 #cfcbbf;display:inline-flex;align-items:center;justify-content:center;gap:.45rem}
+.cur-seg button:hover{background:#fff}
+.cur-seg button[aria-checked="true"]{background:hsl(var(--gold));color:#1b2a1c;box-shadow:inset -3px -3px 0 #c99a1e,inset 3px 3px 0 #ffe590}
+.cur-seg button i{width:6px;height:6px;background:#8d8a80}
+.cur-seg button[aria-checked="true"] i{background:hsl(var(--pin))}
+.cur-seg button:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:-6px}
+
+/* thank-you cover: bar follows real progress */
+.scene.thanks-cover[data-phase] .scene-bar>span{transform:scaleX(var(--p,0));transition:transform .28s steps(6)}
+@media (prefers-reduced-motion:reduce){.lp-panel{animation:none}}

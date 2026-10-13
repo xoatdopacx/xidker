@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Código fuente para portafolio web ya listo",
+    "description": "Compra el código fuente de un sitio web de portafolio personal terminado. Añade tu nombre, proyectos y fotos, luego publícalo. Pago a través de Whop."
+  },
+  "lang": {
+    "switchLabel": "Elegir idioma",
+    "close": "Cerrar"
+  },
+  "nav": {
+    "home": "xidker, volver al inicio",
+    "what": "Qué recibes",
+    "how": "Cómo funciona",
+    "pricing": "Precios",
+    "faq": "Preguntas frecuentes",
+    "cta": "Ver precios"
+  },
+  "hero": {
+    "eyebrow": "Código fuente para portafolio web",
+    "title": "Un sitio web de portafolio ya listo. Compra el código, añade tu trabajo y publícalo.",
+    "sub": "Deja de diseñar desde cero. Recibes el código completo de un sitio web de portafolio animado: solo inserta tu nombre, proyectos y fotos, y publícalo.",
+    "start": "Comenzar",
+    "cta": "Ir a los precios",
+    "hint": "Desliza para recorrer el camino",
+    "mapAlt": "Mapa del tesoro",
+    "heroAlt": "Personaje pixelado en la línea de salida"
+  },
+  "stage": "Etapa",
+  "reached": "Completado",
+  "stops": {
+    "what": {
+      "title": "¿Qué estás comprando?",
+      "body": "El código fuente completo de un sitio web de portafolio personal, ya diseñado y construido. Es tuyo para conservarlo y cambiarlo como quieras.",
+      "points": [
+        "Diseño terminado, no un borrador de plantilla",
+        "Contenido separado para encontrarlo y reemplazarlo fácilmente",
+        "Listo para usar en cuanto pongas tus datos"
+      ]
+    },
+    "pages": {
+      "title": "¿Qué páginas se incluyen?",
+      "body": "Todo lo que un reclutador o cliente busca cuando abre tu enlace.",
+      "items": [
+        "Una página de inicio que dice quién eres",
+        "Una cuadrícula con tus mejores proyectos",
+        "Una página detallada para cada proyecto",
+        "Secciones de acerca de y contacto"
+      ]
+    },
+    "motion": {
+      "title": "Se mueve. No es una página estática.",
+      "body": "Tal como la página en la que estás: efectos de desplazamiento y pequeños detalles en movimiento que hacen que la gente quiera llegar al final. Si un visitante tiene desactivado el movimiento, el sitio se mantiene estático.",
+      "points": [
+        "Se ve bien en teléfonos y computadoras",
+        "No hay que instalar nada para verlo",
+        "Texto e imágenes primero, efectos después"
+      ]
+    },
+    "how": {
+      "title": "¿Qué sucede después de comprar?",
+      "steps": [
+        "Elige un paquete y paga a través de Whop.",
+        "Whop te envía por correo electrónico el enlace a tu compra. El código está en tu cuenta de Whop.",
+        "Descárgalo e inserta tu nombre, proyectos y fotos.",
+        "Publícalo en el host que prefieras y envía el enlace a reclutadores o clientes."
+      ]
+    },
+    "who": {
+      "title": "¿Para quién es?",
+      "body": "Cualquiera que necesite un enlace para enviar junto con su CV o presupuesto.",
+      "tags": [
+        "Diseñadores",
+        "Desarrolladores",
+        "Fotógrafos",
+        "Artistas 3D y movimiento",
+        "Estudiantes graduados",
+        "Freelancers"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Elige tu paquete de código",
+    "sub": "Los detalles del paquete y los precios vienen directamente de Whop. El pago se gestiona de forma segura a través de Whop.",
+    "recommended": "Recomendado",
+    "choose": "Elige este paquete",
+    "opening": "Abriendo el pago...",
+    "oneTime": "pago único",
+    "monthly": "al mes",
+    "yearly": "al año",
+    "everyNDays": "cada {n} días",
+    "recurring": "recurrente",
+    "loading": "Cargando precios",
+    "errorTitle": "No se cargaron los precios",
+    "errorBody": "El sistema de pagos no responde en este momento. Suele volver en cuestión de segundos.",
+    "retry": "Intenta de nuevo",
+    "empty": "Los paquetes se están actualizando. Vuelve en unos minutos.",
+    "footnote": "Pago a través de Whop · Enlace al código enviado por correo",
+    "toastTitle": "No se pudo abrir el pago",
+    "toastBody": "La conexión se interrumpió. Espera unos segundos e intenta de nuevo.",
+    "currency": "Elegir moneda"
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "items": [
+      {
+        "q": "¿Dónde obtengo el código tras pagar?",
+        "a": "Una vez pagado, el código está disponible en tu cuenta de Whop y Whop te enviará un correo con el enlace a tu compra. ¿No encuentras el correo? Revisa el spam o escríbenos."
+      },
+      {
+        "q": "No soy programador. ¿Puedo usarlo?",
+        "a": "Tu nombre, biografía, proyectos y fotos se mantienen en su propio lugar para que sean fáciles de cambiar. Si prefieres que alguien lo haga por ti, elige un paquete que incluya configuración."
+      },
+      {
+        "q": "¿Puedo usarlo para trabajos de clientes?",
+        "a": "Depende del paquete. Cada uno detalla lo que puedes hacer con él en la sección de precios. ¿No estás seguro? Escríbenos antes de comprar."
+      },
+      {
+        "q": "¿Cómo lo pongo en línea?",
+        "a": "Elige el alojamiento web que prefieras y sube el código. No te bloqueamos en ninguna plataforma."
+      },
+      {
+        "q": "¿Qué pasa si algo está roto o falta?",
+        "a": "Envíanos un correo con el problema y el email con el que hiciste la compra. Lo investigaremos y te responderemos."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "¡Lo lograste!",
+    "title": "Recorriste todo el camino. Ahora es el turno de tu portafolio.",
+    "sub": "Elige un paquete, obtén el código a través de Whop y ten un portafolio que sea totalmente tuyo.",
+    "button": "Elige un paquete",
+    "trophyAlt": "Trofeo de oro al final del camino"
+  },
+  "footer": {
+    "about": "xidker vende el código fuente de sitios web de portafolio listos para usar para creativos.",
+    "contact": "Contacto",
+    "rights": "Esta página también fue hecha por xidker."
+  },
+  "thanks": {
+    "back": "Volver al inicio",
+    "noRefTitle": "Falta la referencia de tu pedido.",
+    "noRefBody": "Este enlace no tiene referencia de pedido, por lo que no podemos verificar el pago. Si lo compraste, el código sigue estando en tu cuenta de Whop y en el correo que te envió Whop.",
+    "loading": "Verificando tu pedido...",
+    "nfTitle": "No pudimos encontrar este pedido.",
+    "nfBody1": "La referencia",
+    "nfBody2": "no coincide con ninguna transacción. Si te han cobrado, escríbenos un correo con esta referencia.",
+    "support": "Email de soporte",
+    "supportSubject": "Pedido",
+    "errTitle": "No hemos podido comprobar tu pago todavía.",
+    "errBody": "El sistema de pago está fallando un poco. Tu pedido no se ha perdido, inténtalo de nuevo en un momento.",
+    "retry": "Comprobar de nuevo",
+    "paidEyebrow": "Pago confirmado",
+    "paidTitle": "¡Lo lograste! El código es tuyo.",
+    "paidBody": "Ve a Whop para obtener tu código ahora. Whop también te ha enviado por correo un enlace a tu compra. Si falta algo, escríbenos al correo de abajo.",
+    "receipt": "Recibo",
+    "pkg": "Paquete",
+    "amount": "Importe",
+    "time": "Pagado el",
+    "ref": "Referencia",
+    "pendingEyebrow": "Esperando confirmación",
+    "pendingTitle": "Estamos confirmando tu pago.",
+    "pendingBody1": "Paquete",
+    "pendingBody2": "Esta página vuelve a comprobar cada 3 segundos, no hace falta actualizar. Suele tardar menos de un minuto.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Cargando",
+    "start": "Línea de salida",
+    "finish": "Línea de meta"
+  },
+  "nf": {
+    "title": "Te saliste del mapa.",
+    "body": "Esta página no está en ningún lugar del camino. Vuelve al inicio.",
+    "back": "Volver al inicio",
+    "metaTitle": "Página no encontrada — xidker"
+  }
+}

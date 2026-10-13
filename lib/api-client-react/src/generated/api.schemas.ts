@@ -14,7 +14,7 @@ export interface ErrorResponse {
 }
 
 /**
- * Site language
+ * Site language (BCP 47 code)
  */
 export type Language = typeof Language[keyof typeof Language];
 
@@ -22,6 +22,37 @@ export type Language = typeof Language[keyof typeof Language];
 export const Language = {
   vi: 'vi',
   en: 'en',
+  'zh-CN': 'zh-CN',
+  'zh-TW': 'zh-TW',
+  ja: 'ja',
+  ko: 'ko',
+  th: 'th',
+  id: 'id',
+  ms: 'ms',
+  fil: 'fil',
+  km: 'km',
+  lo: 'lo',
+  hi: 'hi',
+  bn: 'bn',
+  ur: 'ur',
+  ar: 'ar',
+  fa: 'fa',
+  he: 'he',
+  tr: 'tr',
+  ru: 'ru',
+  uk: 'uk',
+  pl: 'pl',
+  cs: 'cs',
+  de: 'de',
+  fr: 'fr',
+  es: 'es',
+  pt: 'pt',
+  it: 'it',
+  nl: 'nl',
+  sv: 'sv',
+  el: 'el',
+  ro: 'ro',
+  hu: 'hu',
 } as const;
 
 export type PackageBilling = typeof PackageBilling[keyof typeof PackageBilling];
@@ -38,6 +69,8 @@ export const PackageBilling = {
 export interface Package {
   /** Whop plan id */
   id: string;
+  /** Package group. The same package sold in different currencies shares one key (Whop plan metadata "key"). */
+  key: string;
   name: string;
   /**
      * One-line summary of who the package is for
@@ -98,7 +131,7 @@ export interface CheckoutStatus {
 
 export type ListPackagesParams = {
 /**
- * Language for the package name, tagline and features. Defaults to vi. English text comes from Whop plan metadata and falls back to the Vietnamese text when a translation is missing.
+ * Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.
  */
 lang?: Language;
 };

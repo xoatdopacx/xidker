@@ -18,15 +18,16 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Returns the landing page build packages (Whop plans), sorted by price ascending.
+ * Returns every visible package in every currency. The same package sold in another currency is a separate Whop plan sharing the same key. Sorted by currency, then price ascending.
  * @summary List purchasable packages
  */
 export const ListPackagesQueryParams = zod.object({
-  "lang": zod.enum(['vi', 'en']).optional().describe('Language for the package name, tagline and features. Defaults to vi. English text comes from Whop plan metadata and falls back to the Vietnamese text when a translation is missing.')
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).optional().describe('Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.')
 })
 
 export const ListPackagesResponseItem = zod.object({
   "id": zod.string().describe('Whop plan id'),
+  "key": zod.string().describe('Package group. The same package sold in different currencies shares one key (Whop plan metadata "key").'),
   "name": zod.string(),
   "tagline": zod.string().nullable().describe('One-line summary of who the package is for'),
   "features": zod.array(zod.string()).describe('What the buyer gets, in display order'),

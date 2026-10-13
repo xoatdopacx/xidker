@@ -9,7 +9,7 @@ import type { Language } from './language';
 
 export type ListPackagesParams = {
 /**
- * Language for the package name, tagline and features. Defaults to vi. English text comes from Whop plan metadata and falls back to the Vietnamese text when a translation is missing.
+ * Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.
  */
 lang?: Language;
 };

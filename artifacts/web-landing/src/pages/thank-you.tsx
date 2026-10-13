@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { ThanksCover } from "@/components/thanks-cover";
 import { useSearch, Link } from "wouter";
 import { useGetCheckoutStatus, getGetCheckoutStatusQueryKey, useListPackages } from "@workspace/api-client-react";
 import { ArrowLeft, Check, Clock, Receipt, RefreshCw, Mail } from "lucide-react";
@@ -31,7 +32,7 @@ function BackHome({ red }: { red?: boolean }) {
   const { t } = useI18n();
   return (
     <Link href="/" className={`pbtn ${red ? "red" : ""} px-5 py-2.5 font-bold`} data-testid="link-back-home">
-      <ArrowLeft className="h-4 w-4" /> {t.thanks.back}
+      <ArrowLeft className="h-4 w-4 rtl:-scale-x-100" /> {t.thanks.back}
     </Link>
   );
 }
@@ -47,7 +48,7 @@ function SupportLink({ subject }: { subject?: string }) {
 }
 
 export default function ThankYou() {
-  const { t, lang, locale } = useI18n();
+  const { t, lang, locale, numLocale } = useI18n();
   const search = useSearch();
   const ref = new URLSearchParams(search).get("ref") ?? "";
   const { data, isLoading, isError, error, refetch, isFetching } = useGetCheckoutStatus(ref, {
@@ -55,11 +56,15 @@ export default function ThankYou() {
       enabled: !!ref,
       queryKey: getGetCheckoutStatusQueryKey(ref),
       refetchInterval: (q) => (q.state.data?.status === "pending" ? 3000 : false),
+      // An unknown order reference is a final answer; retrying it only keeps the loading screen up longer.
+      retry: (count, err) => (err as { status?: number } | null)?.status !== 404 && count < 3,
     },
   });
   const { data: pkgs } = useListPackages({ lang });
+  const [cover, setCover] = useState(() => !!ref && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const pkgName = (id: string, fallback: string) => pkgs?.find((p) => p.id === id)?.name ?? fallback;
 
+  const body = (() => {
   if (!ref) {
     return (
       <Shell>
@@ -126,13 +131,13 @@ export default function ThankYou() {
           <p className="mt-2 inline-flex items-center gap-1.5 bg-[hsl(var(--gold))] border-[3px] border-[#1b2a1c] px-3 py-1 text-xs font-bold uppercase"><Check className="h-3.5 w-3.5" strokeWidth={3} /> {t.thanks.paidEyebrow}</p>
           <h1 className="font-display text-3xl md:text-5xl leading-tight mt-4">{t.thanks.paidTitle}</h1>
           <p className="mt-4 text-[#2c3a2c]">{t.thanks.paidBody}</p>
-          <div className="mt-7 text-left border-[3px] border-[#1b2a1c] bg-white/70 p-5">
+          <div className="mt-7 text-start border-[3px] border-[#1b2a1c] bg-white/70 p-5">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#3d4a3d]"><Receipt className="h-4 w-4" /> {t.thanks.receipt}</div>
             <dl className="mt-3 space-y-2.5 text-sm">
-              <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.pkg}</dt><dd className="font-bold text-right" data-testid="text-package-name">{pkgName(data.packageId, data.packageName)}</dd></div>
-              {data.amount != null && data.currency && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.amount}</dt><dd className="font-display text-lg" data-testid="text-amount">{formatPrice(data.amount, data.currency, locale)}</dd></div>}
-              {paidAt && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.time}</dt><dd className="text-right" data-testid="text-paid-at">{paidAt}</dd></div>}
-              <div className="flex justify-between gap-4 border-t-2 border-dashed border-[#8d8a80] pt-2.5"><dt className="text-[#3d4a3d]">{t.thanks.ref}</dt><dd className="font-mono text-xs break-all text-right" data-testid="text-ref">{data.ref}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.pkg}</dt><dd className="font-bold text-end" data-testid="text-package-name">{pkgName(data.packageId, data.packageName)}</dd></div>
+              {data.amount != null && data.currency && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.amount}</dt><dd className="font-display text-lg" data-testid="text-amount">{formatPrice(data.amount, data.currency, numLocale)}</dd></div>}
+              {paidAt && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.time}</dt><dd className="text-end" data-testid="text-paid-at">{paidAt}</dd></div>}
+              <div className="flex justify-between gap-4 border-t-2 border-dashed border-[#8d8a80] pt-2.5"><dt className="text-[#3d4a3d]">{t.thanks.ref}</dt><dd className="font-mono text-xs break-all text-end" data-testid="text-ref">{data.ref}</dd></div>
             </dl>
           </div>
           <div className="mt-7 flex flex-wrap gap-4 justify-center items-center"><BackHome /><SupportLink /></div>
@@ -153,4 +158,7 @@ export default function ThankYou() {
       </Card>
     </Shell>
   );
+  })();
+
+  return <>{body}{cover && <ThanksCover loading={isLoading} onDone={() => setCover(false)} />}</>;
 }

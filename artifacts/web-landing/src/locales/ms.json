@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Kod sumber laman web portfolio sedia guna",
+    "description": "Beli kod sumber laman web portfolio peribadi yang siap. Masukkan nama, projek dan foto anda, kemudian terbitkan dalam talian. Pembayaran melalui Whop."
+  },
+  "lang": {
+    "switchLabel": "Pilih bahasa",
+    "close": "Tutup"
+  },
+  "nav": {
+    "home": "xidker, kembali ke utama",
+    "what": "Apa yang anda dapat",
+    "how": "Cara kerja",
+    "pricing": "Harga",
+    "faq": "Soalan lazim",
+    "cta": "Lihat harga"
+  },
+  "hero": {
+    "eyebrow": "Kod sumber laman web portfolio",
+    "title": "Laman web portfolio sedia guna. Beli kod sumber, masukkan hasil kerja anda, dan terus terbitkan.",
+    "sub": "Tidak perlu reka dari awal. Anda mendapat kod sumber penuh laman portfolio beranimasi — masukkan nama, projek dan foto anda, kemudian terbitkan.",
+    "start": "Jom mula",
+    "cta": "Pergi ke harga",
+    "hint": "Skrol untuk berjalan di sepanjang jalan",
+    "mapAlt": "Peta harta karun",
+    "heroAlt": "Watak piksel berdiri di garisan permulaan"
+  },
+  "stage": "Peringkat",
+  "reached": "Telah sampai",
+  "stops": {
+    "what": {
+      "title": "Apa yang anda beli?",
+      "body": "Kod sumber penuh laman web portfolio peribadi, sudah direka dan dibina. Ia milik anda untuk disimpan dan diubah suai sesuka hati.",
+      "points": [
+        "Reka bentuk siap, bukan lakaran templat",
+        "Kandungan diasingkan, mudah dicari dan diganti",
+        "Sedia digunakan sebaik sahaja butiran anda dimasukkan"
+      ]
+    },
+    "pages": {
+      "title": "Apakah halaman yang disertakan?",
+      "body": "Segala yang dicari oleh perekrut atau klien apabila mereka membuka pautan anda.",
+      "items": [
+        "Halaman utama yang menyatakan siapa anda",
+        "Grid projek terbaik anda",
+        "Halaman terperinci untuk setiap projek",
+        "Bahagian tentang dan hubungan"
+      ]
+    },
+    "motion": {
+      "title": "Ia bergerak. Ini bukan halaman statik.",
+      "body": "Sama seperti halaman yang anda sedang lihat: kesan skrol dan perincian kecil yang bergerak membuatkan orang mahu sampai ke penghujungnya. Jika pelawat menetapkan gerakan dikurangkan, laman ini akan diam.",
+      "points": [
+        "Tampak betul pada telefon dan komputer",
+        "Tiada apa perlu dipasang untuk melihatnya",
+        "Teks dan imej dahulu, kesan kemudian"
+      ]
+    },
+    "how": {
+      "title": "Apa berlaku selepas anda beli?",
+      "steps": [
+        "Pilih pakej dan bayar melalui Whop.",
+        "Whop menghantar e-mel pautan pembelian anda. Kod sumber ada dalam akaun Whop anda.",
+        "Muat turun dan masukkan nama, projek dan foto anda.",
+        "Terbitkan pada mana-mana hos yang anda suka, kemudian hantar pautan kepada perekrut atau klien."
+      ]
+    },
+    "who": {
+      "title": "Untuk siapa ini?",
+      "body": "Sesiapa yang memerlukan satu pautan untuk dihantar bersama CV atau sebut harga.",
+      "tags": [
+        "Pereka",
+        "Pembangun",
+        "Jurugambar",
+        "Artis 3D & gerak",
+        "Pelajar bergraduasi",
+        "Pekerja bebas"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Pilih pakej kod sumber anda",
+    "sub": "Butiran pakej dan harga datang terus daripada Whop. Pembayaran dikendalikan dengan selamat oleh Whop.",
+    "recommended": "Disyorkan",
+    "choose": "Pilih pakej ini",
+    "opening": "Membuka pembayaran...",
+    "oneTime": "sekali bayar",
+    "monthly": "sebulan",
+    "yearly": "setahun",
+    "everyNDays": "setiap {n} hari",
+    "recurring": "berulang",
+    "loading": "Memuatkan harga",
+    "errorTitle": "Harga gagal dimuat",
+    "errorBody": "Sistem pembayaran tidak bertindak balas sekarang. Biasanya ia kembali dalam beberapa saat.",
+    "retry": "Cuba lagi",
+    "empty": "Pakej sedang dikemas kini. Semak semula dalam beberapa minit.",
+    "footnote": "Pembayaran oleh Whop · Pautan kod sumber dihantar melalui e-mel",
+    "toastTitle": "Gagal membuka pembayaran",
+    "toastBody": "Sambungan terputus. Tunggu beberapa saat dan cuba lagi.",
+    "currency": "Pilih mata wang"
+  },
+  "faq": {
+    "title": "Soalan lazim",
+    "items": [
+      {
+        "q": "Di mana saya dapatkan kod sumber selepas membayar?",
+        "a": "Selepas anda membayar, kod sumber tersedia dalam akaun Whop anda, dan Whop menghantar e-mel pautan pembelian anda. Tidak jumpa e-mel? Semak spam, atau tulis kepada kami."
+      },
+      {
+        "q": "Saya bukan pengekod. Masih boleh guna ke?",
+        "a": "Nama, bio, projek dan foto anda disimpan di tempatnya sendiri supaya mudah ditukar. Jika anda lebih suka kami sediakan untuk anda, pilih pakej yang termasuk penyediaan."
+      },
+      {
+        "q": "Boleh guna untuk kerja klien?",
+        "a": "Ia bergantung pada pakej. Setiap satu menyenaraikan perkara yang anda dibenarkan lakukan dalam bahagian harga. Tidak pasti? E-mel kami sebelum anda beli."
+      },
+      {
+        "q": "Bagaimana saya terbitkan dalam talian?",
+        "a": "Pilih mana-mana hos web yang anda suka dan muat naik kod sumber. Kami tidak mengunci anda pada satu platform sahaja."
+      },
+      {
+        "q": "Bagaimana jika ada yang rosak atau hilang?",
+        "a": "E-mel kami tentang masalah tersebut berserta e-mel yang anda gunakan untuk membeli. Kami akan menyemak dan membalas anda."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Anda berjaya!",
+    "title": "Anda telah berjalan di sepanjang jalan. Kini giliran portfolio anda.",
+    "sub": "Pilih pakej, dapatkan kod sumber melalui Whop, dan miliki portfolio yang benar-benar milik anda.",
+    "button": "Pilih pakej",
+    "trophyAlt": "Trofi emas di penghujung jalan"
+  },
+  "footer": {
+    "about": "xidker menjual kod sumber laman web portfolio siap untuk golongan kreatif.",
+    "contact": "Hubungi",
+    "rights": "Laman ini juga dibuat oleh xidker."
+  },
+  "thanks": {
+    "back": "Kembali ke utama",
+    "noRefTitle": "Rujukan pesanan anda hilang.",
+    "noRefBody": "Pautan ini tidak mempunyai rujukan pesanan, jadi kami tidak boleh menyemak pembayaran. Jika anda telah membeli, kod sumber masih ada dalam akaun Whop anda dan dalam e-mel yang Whop hantar.",
+    "loading": "Menyemak pesanan anda...",
+    "nfTitle": "Kami tidak menemui pesanan ini.",
+    "nfBody1": "Rujukan",
+    "nfBody2": "tidak sepadan dengan mana-mana transaksi. Jika anda telah dicaj, e-mel kami dengan rujukan ini.",
+    "support": "Sokongan e-mel",
+    "supportSubject": "Pesanan",
+    "errTitle": "Kami belum dapat menyemak pembayaran anda.",
+    "errBody": "Sistem pembayaran agak tidak stabil. Pesanan anda tidak hilang — cuba lagi sebentar lagi.",
+    "retry": "Semak lagi",
+    "paidEyebrow": "Pembayaran disahkan",
+    "paidTitle": "Anda berjaya! Kod sumber adalah milik anda.",
+    "paidBody": "Pergi ke Whop untuk ambil kod sumber anda sekarang. Whop juga telah menghantar e-mel pautan pembelian anda. Jika ada yang hilang, e-mel kami di bawah.",
+    "receipt": "Resit",
+    "pkg": "Pakej",
+    "amount": "Jumlah",
+    "time": "Dibayar pada",
+    "ref": "Rujukan",
+    "pendingEyebrow": "Menunggu pengesahan",
+    "pendingTitle": "Kami sedang mengesahkan pembayaran anda.",
+    "pendingBody1": "Pakej",
+    "pendingBody2": "Halaman ini menyemak semula setiap 3 saat — tidak perlu muat semula. Biasanya ia mengambil masa di bawah seminit.",
+    "code": "Ruj"
+  },
+  "scene": {
+    "loading": "Memuatkan",
+    "start": "Garisan permulaan",
+    "finish": "Garisan penamat"
+  },
+  "nf": {
+    "title": "Anda terkeluar dari peta.",
+    "body": "Halaman ini tiada di sepanjang jalan. Kembali ke permulaan.",
+    "back": "Kembali ke utama",
+    "metaTitle": "Halaman tidak dijumpai — xidker"
+  }
+}

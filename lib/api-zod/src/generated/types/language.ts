@@ -7,7 +7,7 @@
  */
 
 /**
- * Site language
+ * Site language (BCP 47 code)
  */
 export type Language = typeof Language[keyof typeof Language];
 
@@ -15,4 +15,35 @@ export type Language = typeof Language[keyof typeof Language];
 export const Language = {
   vi: 'vi',
   en: 'en',
+  'zh-CN': 'zh-CN',
+  'zh-TW': 'zh-TW',
+  ja: 'ja',
+  ko: 'ko',
+  th: 'th',
+  id: 'id',
+  ms: 'ms',
+  fil: 'fil',
+  km: 'km',
+  lo: 'lo',
+  hi: 'hi',
+  bn: 'bn',
+  ur: 'ur',
+  ar: 'ar',
+  fa: 'fa',
+  he: 'he',
+  tr: 'tr',
+  ru: 'ru',
+  uk: 'uk',
+  pl: 'pl',
+  cs: 'cs',
+  de: 'de',
+  fr: 'fr',
+  es: 'es',
+  pt: 'pt',
+  it: 'it',
+  nl: 'nl',
+  sv: 'sv',
+  el: 'el',
+  ro: 'ro',
+  hu: 'hu',
 } as const;

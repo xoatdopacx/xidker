@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Fertiger Quellcode für Portfolio-Websites",
+    "description": "Kaufe den Quellcode einer fertigen persönlichen Portfolio-Website. Füge deinen Namen, Projekte und Fotos hinzu und gehe online. Zahlung über Whop."
+  },
+  "lang": {
+    "switchLabel": "Sprache wählen",
+    "close": "Schließen"
+  },
+  "nav": {
+    "home": "xidker, zurück zur Startseite",
+    "what": "Das bekommst du",
+    "how": "So funktioniert es",
+    "pricing": "Preise",
+    "faq": "FAQ",
+    "cta": "Preise ansehen"
+  },
+  "hero": {
+    "eyebrow": "Quellcode für Portfolio-Websites",
+    "title": "Eine fertige Portfolio-Website. Kauf den Quellcode, füge deine Arbeit hinzu und geh live.",
+    "sub": "Spare dir das Design von Grund auf. Du erhältst den vollständigen Quellcode einer animierten Portfolio-Website — füge einfach deinen Namen, Projekte und Fotos ein und veröffentliche sie.",
+    "start": "Los geht's",
+    "cta": "Zu den Preisen",
+    "hint": "Scrollen, um den Weg zu gehen",
+    "mapAlt": "Schatzkarte",
+    "heroAlt": "Pixel-Figur an der Startlinie"
+  },
+  "stage": "Etappe",
+  "reached": "Erreicht",
+  "stops": {
+    "what": {
+      "title": "Was kaufst du?",
+      "body": "Der vollständige Quellcode einer persönlichen Portfolio-Website, bereits designt und entwickelt. Er gehört dir und du kannst ihn nach Belieben anpassen.",
+      "points": [
+        "Ein fertiges Design, kein bloßer Entwurf",
+        "Inhalte separat abgelegt, einfach zu finden und zu ersetzen",
+        "Sofort einsatzbereit, sobald deine Infos eingefügt sind"
+      ]
+    },
+    "pages": {
+      "title": "Welche Seiten sind enthalten?",
+      "body": "Alles, wonach ein Recruiter oder Kunde sucht, wenn er deinen Link öffnet.",
+      "items": [
+        "Eine Startseite, die zeigt, wer du bist",
+        "Ein Raster deiner besten Projekte",
+        "Eine Detailseite für jedes Projekt",
+        "Über-uns- und Kontakt-Bereiche"
+      ]
+    },
+    "motion": {
+      "title": "Es bewegt sich. Keine statische Seite.",
+      "body": "Genau wie die Seite, auf der du dich gerade befindest: Scroll-Effekte und kleine Details, die Lust darauf machen, das Ende zu erreichen. Wenn ein Besucher die Bewegungen in den Einstellungen reduziert hat, bleibt die Seite ruhig.",
+      "points": [
+        "Sieht auf Smartphones und Desktops gut aus",
+        "Keine Installation zum Ansehen erforderlich",
+        "Texte und Bilder zuerst, Effekte danach"
+      ]
+    },
+    "how": {
+      "title": "Was passiert nach dem Kauf?",
+      "steps": [
+        "Wähle ein Paket und bezahle über Whop.",
+        "Whop sendet dir einen Link zu deinem Kauf. Der Quellcode liegt in deinem Whop-Konto.",
+        "Lade ihn herunter und füge deinen Namen, Projekte und Fotos ein.",
+        "Veröffentliche alles bei einem Hoster deiner Wahl und sende den Link an Recruiter oder Kunden."
+      ]
+    },
+    "who": {
+      "title": "Für wen ist es?",
+      "body": "Für alle, die einen Link für ihren Lebenslauf oder ein Angebot benötigen.",
+      "tags": [
+        "Designer",
+        "Entwickler",
+        "Fotografen",
+        "3D & Motion Artists",
+        "Absolventen",
+        "Freelancer"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Wähle dein Quellcode-Paket",
+    "sub": "Die Paketdetails und Preise stammen direkt von Whop. Die Zahlung erfolgt sicher über Whop.",
+    "recommended": "Empfohlen",
+    "choose": "Paket wählen",
+    "opening": "Öffne Checkout...",
+    "oneTime": "einmalig",
+    "monthly": "pro Monat",
+    "yearly": "pro Jahr",
+    "everyNDays": "alle {n} Tage",
+    "recurring": "wiederkehrend",
+    "loading": "Preise werden geladen",
+    "errorTitle": "Preise konnten nicht geladen werden",
+    "errorBody": "Das Zahlungssystem reagiert derzeit nicht. Es ist meist innerhalb von Sekunden wieder verfügbar.",
+    "retry": "Erneut versuchen",
+    "empty": "Die Pakete werden aktualisiert. Schau in ein paar Minuten nochmal rein.",
+    "footnote": "Checkout über Whop · Quellcode-Link per E-Mail",
+    "toastTitle": "Checkout konnte nicht geöffnet werden",
+    "toastBody": "Die Verbindung wurde unterbrochen. Warte kurz und versuche es erneut.",
+    "currency": "Währung wählen"
+  },
+  "faq": {
+    "title": "Häufige Fragen",
+    "items": [
+      {
+        "q": "Woher bekomme ich den Quellcode nach der Zahlung?",
+        "a": "Nach der Zahlung steht der Quellcode in deinem Whop-Konto bereit und Whop sendet dir einen Link per E-Mail. Findest du die Mail nicht? Prüfe deinen Spam-Ordner oder schreibe uns."
+      },
+      {
+        "q": "Ich bin kein Programmierer. Kann ich es trotzdem nutzen?",
+        "a": "Name, Bio, Projekte und Fotos sind an einer zentralen Stelle, damit sie leicht zu ändern sind. Wenn du möchtest, dass wir die Einrichtung übernehmen, wähle ein Paket mit inkludiertem Setup."
+      },
+      {
+        "q": "Kann ich es für Kundenprojekte nutzen?",
+        "a": "Das hängt vom Paket ab. In der Preisübersicht steht bei jedem Paket, was erlaubt ist. Unsicher? Schreib uns eine E-Mail vor dem Kauf."
+      },
+      {
+        "q": "Wie bringe ich es online?",
+        "a": "Wähle einen beliebigen Webhoster und lade den Quellcode hoch. Wir binden dich an keine Plattform."
+      },
+      {
+        "q": "Was ist, wenn etwas kaputt oder unvollständig ist?",
+        "a": "Schreibe uns eine E-Mail mit dem Fehler und der E-Mail-Adresse, mit der du gekauft hast. Wir sehen uns das an und melden uns bei dir."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Geschafft!",
+    "title": "Du bist den ganzen Weg gegangen. Jetzt ist dein Portfolio dran.",
+    "sub": "Wähle ein Paket, erhalte den Quellcode über Whop und habe ein Portfolio, das ganz dir gehört.",
+    "button": "Paket wählen",
+    "trophyAlt": "Goldene Trophäe am Ende des Weges"
+  },
+  "footer": {
+    "about": "xidker verkauft fertigen Portfolio-Quellcode für Kreative.",
+    "contact": "Kontakt",
+    "rights": "Diese Seite wurde ebenfalls von xidker gemacht."
+  },
+  "thanks": {
+    "back": "Zurück zur Startseite",
+    "noRefTitle": "Deine Bestellreferenz fehlt.",
+    "noRefBody": "Dieser Link hat keine Bestellreferenz, daher können wir die Zahlung nicht prüfen. Falls du gekauft hast, befindet sich der Quellcode in deinem Whop-Konto und in der E-Mail von Whop.",
+    "loading": "Prüfe deine Bestellung...",
+    "nfTitle": "Wir konnten diese Bestellung nicht finden.",
+    "nfBody1": "Referenz",
+    "nfBody2": "stimmt mit keiner Transaktion überein. Falls dir der Betrag abgebucht wurde, schreibe uns eine E-Mail mit dieser Referenz.",
+    "support": "E-Mail-Support",
+    "supportSubject": "Bestellung",
+    "errTitle": "Zahlung konnte noch nicht geprüft werden.",
+    "errBody": "Das Zahlungssystem zickt etwas. Deine Bestellung ist nicht verloren — versuche es gleich noch einmal.",
+    "retry": "Erneut prüfen",
+    "paidEyebrow": "Zahlung bestätigt",
+    "paidTitle": "Geschafft! Der Quellcode gehört dir.",
+    "paidBody": "Gehe zu Whop, um deinen Quellcode jetzt zu erhalten. Whop hat dir auch einen Link zum Kauf gesendet. Wenn etwas fehlt, schreibe uns unten eine E-Mail.",
+    "receipt": "Quittung",
+    "pkg": "Paket",
+    "amount": "Betrag",
+    "time": "Bezahlt am",
+    "ref": "Referenz",
+    "pendingEyebrow": "Warte auf Bestätigung",
+    "pendingTitle": "Wir bestätigen deine Zahlung.",
+    "pendingBody1": "Paket",
+    "pendingBody2": "Diese Seite aktualisiert sich alle 3 Sekunden selbst — kein Neuladen nötig. Es dauert meist weniger als eine Minute.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Lädt",
+    "start": "Startlinie",
+    "finish": "Ziellinie"
+  },
+  "nf": {
+    "title": "Du bist vom Weg abgekommen.",
+    "body": "Diese Seite existiert nicht auf dem Weg. Geh zurück zum Start.",
+    "back": "Zurück zur Startseite",
+    "metaTitle": "Seite nicht gefunden — xidker"
+  }
+}

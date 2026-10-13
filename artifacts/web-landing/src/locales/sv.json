@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Färdig källkod för portföljwebbplats",
+    "description": "Köp källkoden till en färdig personlig portföljwebbplats. Lägg till ditt namn, projekt och bilder, och publicera sedan på nätet. Betalning via Whop."
+  },
+  "lang": {
+    "switchLabel": "Välj språk",
+    "close": "Stäng"
+  },
+  "nav": {
+    "home": "xidker, tillbaka till startsidan",
+    "what": "Vad du får",
+    "how": "Så fungerar det",
+    "pricing": "Priser",
+    "faq": "FAQ",
+    "cta": "Se priser"
+  },
+  "hero": {
+    "eyebrow": "Källkod för portföljwebbplats",
+    "title": "En färdig portföljwebbplats. Köp källkoden, lägg till ditt arbete och kör igång.",
+    "sub": "Slipp designa från grunden. Du får hela källkoden till en animerad portföljsida — lägg in ditt namn, projekt och bilder, och publicera den.",
+    "start": "Kör igång",
+    "cta": "Hoppa till priser",
+    "hint": "Scrolla för att gå längs vägen",
+    "mapAlt": "Skattkarta",
+    "heroAlt": "Pixelkaraktär som står vid startlinjen"
+  },
+  "stage": "Steg",
+  "reached": "Nådd",
+  "stops": {
+    "what": {
+      "title": "Vad köper du?",
+      "body": "Den kompletta källkoden till en personlig portföljwebbplats, färdigdesignad och programmerad. Den är din att behålla och ändra precis som du vill.",
+      "points": [
+        "En färdig design, inte en mallskiss",
+        "Innehåll hålls separat för enkel redigering",
+        "Redo att användas så snart dina detaljer är på plats"
+      ]
+    },
+    "pages": {
+      "title": "Vilka sidor ingår?",
+      "body": "Allt en rekryterare eller kund letar efter när de öppnar din länk.",
+      "items": [
+        "En startsida som berättar vem du är",
+        "Ett rutnät med dina bästa projekt",
+        "En detaljsida för varje projekt",
+        "Sidor för om mig och kontakt"
+      ]
+    },
+    "motion": {
+      "title": "Den rör sig. Det är ingen statisk sida.",
+      "body": "Precis som sidan du är på nu: scrolleffekter och små rörliga detaljer som får besökare att vilja nå slutet. Om en besökare har inaktiverat rörelse i sin webbläsare står sidan stilla.",
+      "points": [
+        "Ser bra ut på både mobiler och datorer",
+        "Inget behöver installeras för att se den",
+        "Text och bilder först, effekter sen"
+      ]
+    },
+    "how": {
+      "title": "Vad händer efter köpet?",
+      "steps": [
+        "Välj ett paket och betala via Whop.",
+        "Whop mailar dig en länk till ditt köp. Källkoden finns i ditt Whop-konto.",
+        "Ladda ner koden och byt ut namn, projekt och bilder.",
+        "Publicera på valfritt webbhotell och skicka länken till rekryterare eller kunder."
+      ]
+    },
+    "who": {
+      "title": "Vem är den för?",
+      "body": "Alla som behöver en länk att skicka med ett CV eller en offert.",
+      "tags": [
+        "Designer",
+        "Utvecklare",
+        "Fotografer",
+        "3D- & motion-artister",
+        "Studenter",
+        "Frilansare"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Välj ditt källkodspaket",
+    "sub": "Paketdetaljer och priser kommer direkt från Whop. Betalning sker säkert via Whop.",
+    "recommended": "Rekommenderas",
+    "choose": "Välj paket",
+    "opening": "Öppnar betalning...",
+    "oneTime": "engångsbetalning",
+    "monthly": "per månad",
+    "yearly": "per år",
+    "everyNDays": "var {n} dag",
+    "recurring": "återkommande",
+    "loading": "Laddar priser",
+    "errorTitle": "Priserna kunde inte laddas",
+    "errorBody": "Betalsystemet svarar inte just nu. Det brukar vara tillbaka inom några sekunder.",
+    "retry": "Försök igen",
+    "empty": "Paketen uppdateras just nu. Kom tillbaka om en liten stund.",
+    "footnote": "Betalning via Whop · Källkod skickas via e-post",
+    "toastTitle": "Kunde inte öppna betalning",
+    "toastBody": "Anslutningen bröts. Vänta några sekunder och försök igen.",
+    "currency": "Välj valuta"
+  },
+  "faq": {
+    "title": "Vanliga frågor",
+    "items": [
+      {
+        "q": "Var får jag källkoden efter betalning?",
+        "a": "När du har betalat finns koden tillgänglig i ditt Whop-konto, och Whop mailar dig en länk till köpet. Hittar du inte mailet? Kolla i skräpposten eller skriv till oss."
+      },
+      {
+        "q": "Jag är inte utvecklare. Kan jag ändå använda den?",
+        "a": "Ditt namn, biografi, projekt och bilder finns på en egen plats så att de är enkla att byta ut. Om du hellre vill få den uppsatt åt dig, välj ett paket som inkluderar installation."
+      },
+      {
+        "q": "Kan jag använda den för kundarbete?",
+        "a": "Det beror på paketet. Varje paket listar vad du får göra med det under prisavsnittet. Osäker? Maila oss innan du köper."
+      },
+      {
+        "q": "Hur publicerar jag den på nätet?",
+        "a": "Välj vilket webbhotell du vill och ladda upp koden. Vi låser inte in dig i någon specifik plattform."
+      },
+      {
+        "q": "Vad gör jag om något är trasigt eller saknas?",
+        "a": "Maila oss vad som blev fel och den e-postadress du köpte med. Vi undersöker det och återkommer till dig."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Du klarade det!",
+    "title": "Du har gått hela vägen. Nu är det dags för din portfölj.",
+    "sub": "Välj ett paket, få källkoden via Whop och skaffa en portfölj som är helt din egen.",
+    "button": "Välj paket",
+    "trophyAlt": "Guldpokal vid slutet av vägen"
+  },
+  "footer": {
+    "about": "xidker säljer färdig källkod för portföljwebbplatser för kreativa personer.",
+    "contact": "Kontakt",
+    "rights": "Den här sidan är också gjord av xidker."
+  },
+  "thanks": {
+    "back": "Tillbaka till startsidan",
+    "noRefTitle": "Din orderreferens saknas.",
+    "noRefBody": "Den här länken har ingen orderreferens, så vi kan inte kontrollera betalningen. Om du har genomfört köpet finns källkoden kvar i ditt Whop-konto och i mailet som Whop skickade.",
+    "loading": "Kontrollerar din order...",
+    "nfTitle": "Vi kunde inte hitta denna order.",
+    "nfBody1": "Referens",
+    "nfBody2": "matchar ingen transaktion. Om du har blivit debiterad, maila oss med denna referens.",
+    "support": "Maila support",
+    "supportSubject": "Order",
+    "errTitle": "Vi kunde inte kontrollera din betalning än.",
+    "errBody": "Betalsystemet krånglar just nu. Din order har inte försvunnit — försök igen om en stund.",
+    "retry": "Kontrollera igen",
+    "paidEyebrow": "Betalning bekräftad",
+    "paidTitle": "Du klarade det! Källkoden är din.",
+    "paidBody": "Gå till Whop för att hämta din kod nu. Whop har även mailat dig en länk till köpet. Om något saknas, maila oss nedan.",
+    "receipt": "Kvitto",
+    "pkg": "Paket",
+    "amount": "Belopp",
+    "time": "Betald vid",
+    "ref": "Referens",
+    "pendingEyebrow": "Väntar på bekräftelse",
+    "pendingTitle": "Vi bekräftar din betalning.",
+    "pendingBody1": "Paket",
+    "pendingBody2": "Den här sidan kontrollerar igen var 3:e sekund — du behöver inte ladda om. Det tar oftast under en minut.",
+    "code": "Ref"
+  },
+  "scene": {
+    "loading": "Laddar",
+    "start": "Startlinje",
+    "finish": "Mållinje"
+  },
+  "nf": {
+    "title": "Du har hamnat utanför kartan.",
+    "body": "Den här sidan finns inte på vägen. Gå tillbaka till starten.",
+    "back": "Tillbaka till startsidan",
+    "metaTitle": "Sidan hittades inte — xidker"
+  }
+}

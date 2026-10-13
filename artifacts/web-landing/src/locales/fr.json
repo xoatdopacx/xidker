@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "title": "xidker — Code source de site portfolio prêt à l'emploi",
+    "description": "Achetez le code source d'un site portfolio personnel fini. Ajoutez votre nom, vos projets et vos photos, puis mettez-le en ligne. Paiement via Whop."
+  },
+  "lang": {
+    "switchLabel": "Choisir la langue",
+    "close": "Fermer"
+  },
+  "nav": {
+    "home": "xidker, retour à l'accueil",
+    "what": "Ce que vous obtenez",
+    "how": "Comment ça marche",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "cta": "Voir les tarifs"
+  },
+  "hero": {
+    "eyebrow": "Code source de site portfolio",
+    "title": "Un site portfolio prêt à l'emploi. Achetez le code source, ajoutez vos travaux, lancez-vous.",
+    "sub": "Ne repartez pas de zéro. Vous obtenez tout le code source d'un portfolio animé — insérez votre nom, vos projets et vos photos, et publiez-le.",
+    "start": "C'est parti",
+    "cta": "Aller aux tarifs",
+    "hint": "Faites défiler pour parcourir la route",
+    "mapAlt": "Carte au trésor",
+    "heroAlt": "Personnage pixel sur la ligne de départ"
+  },
+  "stage": "Étape",
+  "reached": "Atteint",
+  "stops": {
+    "what": {
+      "title": "Qu'achetez-vous ?",
+      "body": "Le code source complet d'un site portfolio personnel, déjà conçu et programmé. Il vous appartient, modifiez-le comme bon vous semble.",
+      "points": [
+        "Un design fini, pas une ébauche",
+        "Contenu séparé, facile à trouver et à remplacer",
+        "Prêt à l'emploi dès que vos infos sont ajoutées"
+      ]
+    },
+    "pages": {
+      "title": "Quelles pages sont incluses ?",
+      "body": "Tout ce qu'un recruteur ou un client recherche lorsqu'il ouvre votre lien.",
+      "items": [
+        "Une page d'accueil qui présente qui vous êtes",
+        "Une grille de vos meilleurs projets",
+        "Une page détaillée pour chaque projet",
+        "Des sections à propos et contact"
+      ]
+    },
+    "motion": {
+      "title": "Il bouge. Ce n'est pas une page statique.",
+      "body": "Tout comme la page sur laquelle vous êtes : des effets de défilement et de petits détails animés qui donnent envie d'atteindre la fin. Si un visiteur a désactivé les animations, le site reste immobile.",
+      "points": [
+        "S'affiche parfaitement sur mobile et bureau",
+        "Rien à installer pour le visualiser",
+        "Texte et images d'abord, effets ensuite"
+      ]
+    },
+    "how": {
+      "title": "Que se passe-t-il après l'achat ?",
+      "steps": [
+        "Choisissez un forfait et payez via Whop.",
+        "Whop vous envoie par e-mail un lien vers votre achat. Le code source se trouve dans votre compte Whop.",
+        "Téléchargez-le et remplacez les éléments par votre nom, vos projets et vos photos.",
+        "Publiez-le sur l'hébergeur de votre choix, puis envoyez le lien aux recruteurs ou clients."
+      ]
+    },
+    "who": {
+      "title": "Pour qui est-ce ?",
+      "body": "Quiconque a besoin d'un lien à envoyer avec un CV ou un devis.",
+      "tags": [
+        "Designers",
+        "Développeurs",
+        "Photographes",
+        "Artistes 3D & motion",
+        "Étudiants diplômés",
+        "Freelances"
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Choisissez votre forfait",
+    "sub": "Les détails des forfaits et les prix proviennent directement de Whop. Le paiement est géré de manière sécurisée par Whop.",
+    "recommended": "Recommandé",
+    "choose": "Choisir ce forfait",
+    "opening": "Ouverture du paiement...",
+    "oneTime": "paiement unique",
+    "monthly": "par mois",
+    "yearly": "par an",
+    "everyNDays": "tous les {n} jours",
+    "recurring": "récurrent",
+    "loading": "Chargement des tarifs",
+    "errorTitle": "Les tarifs n'ont pas chargé",
+    "errorBody": "Le système de paiement ne répond pas pour le moment. Cela revient généralement en quelques secondes.",
+    "retry": "Réessayer",
+    "empty": "Les forfaits sont en cours de mise à jour. Revenez dans quelques minutes.",
+    "footnote": "Paiement par Whop · Lien source envoyé par e-mail",
+    "toastTitle": "Impossible d'ouvrir le paiement",
+    "toastBody": "La connexion a été interrompue. Attendez quelques secondes et réessayez.",
+    "currency": "Choisir la devise"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "items": [
+      {
+        "q": "Où récupérer le code source après le paiement ?",
+        "a": "Une fois payé, le code source est disponible dans votre compte Whop, et Whop vous envoie un e-mail avec un lien vers votre achat. Vous ne trouvez pas l'e-mail ? Vérifiez vos spams ou écrivez-nous."
+      },
+      {
+        "q": "Je ne suis pas développeur. Puis-je quand même l'utiliser ?",
+        "a": "Votre nom, biographie, projets et photos sont stockés au même endroit pour être faciles à modifier. Si vous préférez qu'on le fasse pour vous, choisissez un forfait incluant l'installation."
+      },
+      {
+        "q": "Puis-je l'utiliser pour un client ?",
+        "a": "Cela dépend du forfait. Chaque forfait liste ce que vous êtes autorisé à faire dans la section tarifs. Pas sûr ? Écrivez-nous avant d'acheter."
+      },
+      {
+        "q": "Comment le mettre en ligne ?",
+        "a": "Choisissez l'hébergeur web de votre choix et téléchargez le code source. Nous ne vous enfermons pas sur une plateforme spécifique."
+      },
+      {
+        "q": "Que faire si quelque chose est cassé ou manquant ?",
+        "a": "Envoyez-nous un e-mail avec le problème rencontré et l'adresse e-mail utilisée pour l'achat. Nous examinerons cela et reviendrons vers vous."
+      }
+    ]
+  },
+  "goal": {
+    "reached": "Vous avez réussi !",
+    "title": "Vous avez parcouru toute la route. Maintenant, c'est au tour de votre portfolio.",
+    "sub": "Choisissez un forfait, obtenez le code source via Whop et ayez un portfolio qui est vraiment le vôtre.",
+    "button": "Choisir un forfait",
+    "trophyAlt": "Trophée en or à la fin de la route"
+  },
+  "footer": {
+    "about": "xidker vend le code source de sites portfolio prêts à l'emploi pour les créatifs.",
+    "contact": "Contact",
+    "rights": "Cette page a aussi été créée par xidker."
+  },
+  "thanks": {
+    "back": "Retour à l'accueil",
+    "noRefTitle": "Votre référence de commande est manquante.",
+    "noRefBody": "Ce lien n'a pas de référence de commande, nous ne pouvons donc pas vérifier le paiement. Si vous avez bien acheté, le code source se trouve dans votre compte Whop et dans l'e-mail que Whop vous a envoyé.",
+    "loading": "Vérification de votre commande...",
+    "nfTitle": "Nous n'avons pas trouvé cette commande.",
+    "nfBody1": "La référence",
+    "nfBody2": "ne correspond à aucune transaction. Si vous avez été débité, envoyez-nous un e-mail avec cette référence.",
+    "support": "Support par e-mail",
+    "supportSubject": "Commande",
+    "errTitle": "Impossible de vérifier votre paiement pour l'instant.",
+    "errBody": "Le système de paiement est instable. Votre commande n'est pas perdue — réessayez dans un instant.",
+    "retry": "Vérifier à nouveau",
+    "paidEyebrow": "Paiement confirmé",
+    "paidTitle": "Vous avez réussi ! Le code source est à vous.",
+    "paidBody": "Rendez-vous sur Whop pour récupérer votre source maintenant. Whop vous a également envoyé un lien vers votre achat par e-mail. S'il manque quelque chose, écrivez-nous ci-dessous.",
+    "receipt": "Reçu",
+    "pkg": "Forfait",
+    "amount": "Montant",
+    "time": "Payé le",
+    "ref": "Référence",
+    "pendingEyebrow": "En attente de confirmation",
+    "pendingTitle": "Nous confirmons votre paiement.",
+    "pendingBody1": "Forfait",
+    "pendingBody2": "Cette page se vérifie automatiquement toutes les 3 secondes — pas besoin de rafraîchir. Cela prend généralement moins d'une minute.",
+    "code": "Réf"
+  },
+  "scene": {
+    "loading": "Chargement",
+    "start": "Ligne de départ",
+    "finish": "Ligne d'arrivée"
+  },
+  "nf": {
+    "title": "Vous êtes sorti de la carte.",
+    "body": "Cette page n'existe nulle part sur la route. Retournez au départ.",
+    "back": "Retour à l'accueil",
+    "metaTitle": "Page non trouvée — xidker"
+  }
+}

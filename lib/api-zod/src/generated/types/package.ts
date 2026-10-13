@@ -13,6 +13,8 @@ import type { PackageBilling } from './packageBilling';
 export interface Package {
   /** Whop plan id */
   id: string;
+  /** Package group. The same package sold in different currencies shares one key (Whop plan metadata "key"). */
+  key: string;
   name: string;
   /**
      * One-line summary of who the package is for
