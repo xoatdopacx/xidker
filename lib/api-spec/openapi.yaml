@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: packages
+    description: Landing page build packages sold through Whop
+  - name: checkout
+    description: Whop hosted checkout sessions and verified payment status
 paths:
   /healthz:
     get:
@@ -24,6 +28,108 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /packages:
+    get:
+      operationId: listPackages
+      tags: [packages]
+      summary: List purchasable packages
+      description: Returns the landing page build packages (Whop plans), sorted by price ascending.
+      parameters:
+        - name: lang
+          in: query
+          required: false
+          description: Language for the package name, tagline and features. Defaults to vi. English text comes from Whop plan metadata and falls back to the Vietnamese text when a translation is missing.
+          schema:
+            $ref: "#/components/schemas/Language"
+      responses:
+        "200":
+          description: Packages available for purchase
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Package"
+        "400":
+          description: Invalid lang value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /checkout:
+    post:
+      operationId: createCheckout
+      tags: [checkout]
+      summary: Start a Whop hosted checkout for a package
+      description: Creates a Whop checkout session for the chosen package and returns the hosted checkout URL to send the buyer to. After paying, Whop sends the buyer back to /cam-on?ref={ref}.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutInput"
+      responses:
+        "201":
+          description: Checkout session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutSession"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Package not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /checkout/{ref}:
+    get:
+      operationId: getCheckoutStatus
+      tags: [checkout]
+      summary: Get the verified payment status of a checkout
+      description: Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment.
+      parameters:
+        - name: ref
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Checkout status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutStatus"
+        "404":
+          description: Checkout not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +139,104 @@ components:
           type: string
       required:
         - status
-
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    Language:
+      type: string
+      enum: [vi, en]
+      description: Site language
+    Package:
+      type: object
+      description: A landing page build package, backed by a Whop plan.
+      properties:
+        id:
+          type: string
+          description: Whop plan id
+        name:
+          type: string
+        tagline:
+          type: ["string", "null"]
+          description: One-line summary of who the package is for
+        features:
+          type: array
+          items:
+            type: string
+          description: What the buyer gets, in display order
+        price:
+          type: number
+          description: Price in major currency units (e.g. 5990000 = 5.990.000 VND, 249 = $249)
+        currency:
+          type: string
+          description: ISO 4217 currency code, lowercase (e.g. "vnd", "usd")
+        billing:
+          type: string
+          enum: [one_time, recurring]
+        billingPeriodDays:
+          type: ["integer", "null"]
+          description: Days between charges for recurring packages, null for one-time
+        recommended:
+          type: boolean
+          description: True for the package the studio recommends most
+      required:
+        - id
+        - name
+        - tagline
+        - features
+        - price
+        - currency
+        - billing
+        - billingPeriodDays
+        - recommended
+    CheckoutInput:
+      type: object
+      properties:
+        packageId:
+          type: string
+          minLength: 1
+      required:
+        - packageId
+    CheckoutSession:
+      type: object
+      properties:
+        ref:
+          type: string
+          description: Reference for this checkout, used on the /cam-on page
+        purchaseUrl:
+          type: string
+          description: Whop hosted checkout URL to send the buyer to
+      required:
+        - ref
+        - purchaseUrl
+    CheckoutStatus:
+      type: object
+      properties:
+        ref:
+          type: string
+        status:
+          type: string
+          enum: [paid, pending]
+        packageId:
+          type: string
+        packageName:
+          type: string
+        amount:
+          type: ["number", "null"]
+          description: Amount paid in major currency units, null until paid
+        currency:
+          type: ["string", "null"]
+        paidAt:
+          type: ["string", "null"]
+          format: date-time
+      required:
+        - ref
+        - status
+        - packageId
+        - packageName
+        - amount
+        - currency
+        - paidAt
