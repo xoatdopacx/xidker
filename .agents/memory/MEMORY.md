@@ -2,5 +2,5 @@
 - [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; POSTs need the dev-domain Origin; Vite reloads once after a new dep.
 - [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.
 - [Pricing rules](pricing-rules.md) — user-defined contents of the $12/$50/$250 packages; only A–Z has hosting+domain; no invented client-use policy.
-- [Live chat and admin sign-in](admin-chat.md) — token + emailed 6-digit code, sessions tied to the token, DB polling for autoscale, Vietnamese-only admin.
+- [Live chat and admin sign-in](admin-chat.md) — token + emailed code; Gmail only via connector SDK proxy; how to test real delivery; DB polling; Vietnamese-only admin.
 - [Backend gotchas](backend-gotchas.md) — drizzle prints unqualified columns in subqueries; run typecheck:libs after schema changes.
