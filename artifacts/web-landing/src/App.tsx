@@ -4,6 +4,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { I18nProvider } from '@/lib/i18n';
+import { PixelTransitionProvider } from '@/components/pixel-transition';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import ThankYou from '@/pages/thank-you';
@@ -40,9 +41,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
+        <PixelTransitionProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+        </PixelTransitionProvider>
         <Toaster />
       </TooltipProvider>
       </I18nProvider>

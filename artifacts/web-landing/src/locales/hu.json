@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Betöltés",
     "start": "Rajtvonal",
-    "finish": "Célvonal"
+    "finish": "Célvonal",
+    "lang": "Nyelvváltás"
   },
   "nf": {
     "title": "Eltévedtél a térképen.",

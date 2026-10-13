@@ -1,2 +1,3 @@
 - [Whop integration quirks](whop-integration.md) — SDK pinned to 0.0.42; account_id vs company_id per method; VND works; MCP helper flaky, use REST.
 - [Verifying scroll-revealed sections](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive /repl/tools/bin/chromium over CDP to scroll, capture, click; montage many clips into one image.
+- [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.

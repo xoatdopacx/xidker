@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Memuat",
     "start": "Garis start",
-    "finish": "Garis finish"
+    "finish": "Garis finish",
+    "lang": "Mengganti bahasa"
   },
   "nf": {
     "title": "Anda tersesat dari peta.",

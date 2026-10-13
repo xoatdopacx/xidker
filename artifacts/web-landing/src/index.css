@@ -452,35 +452,33 @@ body{overflow-x:hidden;background-color:hsl(var(--grass));background-image:url("
 .pbtn.paper{background:hsl(var(--paper));color:hsl(var(--ink));border-color:#3b3a35;box-shadow:inset -4px -4px 0 #cfcbbf,inset 4px 4px 0 #fff,0 6px 0 #3b3a35}
 .pbtn:disabled{opacity:.7;cursor:not-allowed;transform:none}
 [data-reveal]{position:relative}
-[data-rv="wait"]>:not(.rv-ov){opacity:0}
-[data-rv="build"]{animation:rvTilt .46s cubic-bezier(.2,.8,.2,1) var(--rvd,0ms) both}
-[data-rv="build"]>:not(.rv-ov){animation:rvShow .24s steps(4) calc(var(--rvd,0ms) + .36s) both}
-.rv-ov{position:absolute;inset:0;z-index:30;display:grid;pointer-events:none;perspective:700px;animation:rvOut .18s steps(3) calc(var(--rvd,0ms) + .46s) forwards}
-.rv-ov i{position:relative;background:hsl(var(--paper));box-shadow:inset -3px -3px 0 #cfcbbf,inset 3px 3px 0 #fbfaf4,0 0 0 1px #8d8a80;transform-style:preserve-3d;animation:rvTile .26s cubic-bezier(.3,.7,.2,1) calc(var(--rvd,0ms) + var(--td,0ms)) both}
-.rv-ov i.g{background:hsl(var(--gold))}
-.rv-ov i::after{content:"";position:absolute;top:0;bottom:0;right:0;width:10px;background:#6b6f78;transform-origin:right center;transform:rotateY(90deg)}
-@keyframes rvTile{0%{opacity:0;transform:rotateY(calc(var(--dir,1) * -110deg)) scale(.55)}55%{opacity:1}100%{opacity:1;transform:none}}
-@keyframes rvTilt{from{transform:perspective(1000px) rotateY(calc(var(--dir,1) * 24deg)) translateZ(-90px)}to{transform:none}}
-@keyframes rvShow{from{opacity:0}to{opacity:1}}
-@keyframes rvOut{to{opacity:0}}
+/* card build-in (lib/motion.tsx): the canvas shows the card coarse-to-fine, then the real card returns */
+[data-rv="wait"]>*,[data-rv="build"]>:not(.rv-px){opacity:0}
+.rv-px{position:absolute;z-index:30;pointer-events:none;image-rendering:pixelated}
 .hero-in{animation:heroIn .4s steps(4) var(--d,0ms) both}
 @keyframes heroIn{from{transform:translate3d(0,10px,0)}to{transform:none}}
-/* full-screen scene transition */
-.scene{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;visibility:hidden;perspective:900px}
-.scene:not([data-phase="idle"]){visibility:visible;pointer-events:auto}
-.scene-grid{position:absolute;inset:0;display:grid}
-.scene-grid i{position:relative;opacity:0;transform-style:preserve-3d;box-shadow:inset -4px -4px 0 rgba(0,0,0,.18),inset 4px 4px 0 rgba(255,255,255,.18)}
-.scene-grid i::after{content:"";position:absolute;left:0;right:0;top:100%;height:12px;background:#1b2a1c;transform-origin:top center;transform:rotateX(-90deg)}
-.scene[data-phase="cover"] .scene-grid i{animation:scIn .2s cubic-bezier(.3,.7,.2,1) var(--td) both}
-.scene[data-phase="hold"] .scene-grid i{opacity:1}
-.scene[data-phase="uncover"] .scene-grid i{animation:scOut .2s ease-in var(--td) both}
-@keyframes scIn{from{opacity:0;transform:rotateX(-100deg) translateZ(-40px)}to{opacity:1;transform:none}}
-@keyframes scOut{from{opacity:1;transform:none}to{opacity:0;transform:rotateX(100deg) translateZ(-40px)}}
-.scene-card{position:absolute;left:50%;top:50%;width:min(86vw,360px);transform:translate(-50%,-50%);opacity:0}
-.scene[data-phase="hold"] .scene-card{opacity:1;animation:scCard .18s steps(3) both}
-@keyframes scCard{from{transform:translate(-50%,-50%) perspective(600px) rotateX(70deg)}to{transform:translate(-50%,-50%)}}
-.scene-bar>span{display:block;height:100%;background:hsl(var(--gold));transform:scaleX(0);transform-origin:left center}
-.scene[data-phase="hold"] .scene-bar>span{transform:scaleX(1);transition:transform .34s steps(8)}
+/* pixel scene transition (components/pixel-transition.tsx): canvas mosaic + ink, loading card on top */
+.px-ov{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;visibility:hidden}
+.px-ov:not([data-phase="idle"]){visibility:visible;pointer-events:auto;cursor:progress}
+.px-ov[data-phase="hold"]{background:#1b2a1c}
+.px-cv{position:absolute;left:0;top:0;image-rendering:pixelated}
+.px-card{position:absolute;left:50%;top:50%;width:min(88vw,360px);transform:translate(-50%,-50%);display:none;color:#1b2a1c}
+.px-ov[data-card] .px-card{display:block}
+.px-ov[data-card="in"] .px-card{animation:pxCardIn .24s steps(4) both}
+.px-ov[data-card="out"] .px-card{animation:pxCardOut .12s steps(2) both}
+@keyframes pxCardIn{from{clip-path:inset(50% -16px 50% -16px)}to{clip-path:inset(-16px)}}
+@keyframes pxCardOut{from{clip-path:inset(-16px)}to{clip-path:inset(50% -16px 50% -16px)}}
+.px-dio{--sp:4px;display:flex;justify-content:center}
+.px-bar{position:relative;display:grid;grid-template-columns:repeat(12,1fr);gap:3px;height:22px;padding:3px;border:3px solid #1b2a1c;background:#fff}
+.px-bar i{position:relative;background:#e6e2d6}
+.px-bar b{position:absolute;inset:0;background:hsl(var(--gold));box-shadow:inset 0 -4px 0 #d99a1e;opacity:0}
+.px-walk{position:absolute;bottom:calc(100% + 3px);left:0;width:20px;height:28px}
+.px-pct{position:relative;display:inline-block;width:4.5ch;height:1.25em}
+.px-pct em{position:absolute;right:0;top:0;padding-left:.35em;font-style:normal;background:hsl(var(--paper));opacity:0}
+.px-pct em:first-child{opacity:1}
+.px-walk svg{position:absolute;left:0;top:0}
+.px-walk .pw-a{animation:scFa .32s steps(1) infinite}
+.px-walk .pw-b{animation:scFb .32s steps(1) infinite}
 .persp{perspective:1200px}
 .p3d{transform-style:preserve-3d}
 .pin-sprite{filter:grayscale(1) brightness(1.1);opacity:.75;transform-origin:50% 100%;transition:filter .2s,opacity .2s}
@@ -523,7 +521,7 @@ body{overflow-x:hidden;background-color:hsl(var(--grass));background-image:url("
 .poof i:nth-child(odd){background:hsl(var(--gold))}
 .poof.go i{animation:poof .55s steps(5) forwards}
 @keyframes poof{0%{opacity:1;transform:rotate(var(--a)) translateX(4px)}100%{opacity:0;transform:rotate(var(--a)) translateX(38px)}}
-@media (prefers-reduced-motion:reduce){.poof,.puffs{display:none}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}[data-rv]>*{opacity:1!important}.rv-ov,.scene{display:none!important}.spark{display:none}}
+@media (prefers-reduced-motion:reduce){.poof,.puffs{display:none}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}[data-rv]>*{opacity:1!important}.rv-px,.px-ov{display:none!important}.spark{display:none}}
 
 /* ---- Languages ----
    Be Vietnam Pro draws Latin letters and digits; each other writing system adds a Noto Sans
@@ -575,6 +573,42 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .cur-seg button[aria-checked="true"] i{background:hsl(var(--pin))}
 .cur-seg button:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:-6px}
 
-/* thank-you cover: bar follows real progress */
-.scene.thanks-cover[data-phase] .scene-bar>span{transform:scaleX(var(--p,0));transition:transform .28s steps(6)}
 @media (prefers-reduced-motion:reduce){.lp-panel{animation:none}}
+
+/* ---- little pixel scenes along the road (components/scenes.tsx) ----
+   Sizes are multiples of --sp (one art pixel). Loops pause while a scene is off screen. */
+.scn-p{position:absolute}
+.scn:not([data-run]) *{animation-play-state:paused!important}
+@keyframes scBlink{50%{opacity:.15}}
+.sc-blink{animation:scBlink 1.2s steps(1) infinite}
+@keyframes scFa{0%{opacity:1}50%{opacity:0}}
+@keyframes scFb{0%{opacity:0}50%{opacity:1}}
+.sc-fa{animation:scFa .9s steps(1) infinite}
+.sc-fb{animation:scFb .9s steps(1) infinite}
+@keyframes scBob{50%{transform:translateY(calc(var(--sp,3px) * -1))}}
+.sc-bob{animation:scBob 1.8s steps(2) infinite}
+@keyframes scDrift{50%{transform:translateX(calc(var(--sp,3px) * 3))}}
+.sc-drift{animation:scDrift 7s steps(6) infinite}
+@keyframes scFlicker{50%{opacity:.55}}
+.sc-bob.sc-flicker{animation:scBob 1.8s steps(2) infinite,scFlicker .32s steps(1) infinite}
+.sc-late{animation-delay:-.6s}
+/* the ride parked at a stop leaves once the traveller gets there */
+@keyframes scGo{70%{opacity:1}to{transform:translateX(calc(var(--sp,3px) * 36));opacity:0}}
+@keyframes scUp{70%{opacity:1}to{transform:translateY(calc(var(--sp,3px) * -44));opacity:0}}
+@keyframes scFly{70%{opacity:1}to{transform:translate(calc(var(--sp,3px) * 40),calc(var(--sp,3px) * -26));opacity:0}}
+[data-ms].reached .sc-ride{animation:scGo 1.1s steps(9) forwards}
+[data-ms].reached .sc-up{animation:scUp 1.6s steps(12) forwards}
+[data-ms].reached .sc-fly{animation:scFly 1.4s steps(10) forwards}
+.fx{position:absolute;width:0;height:0}
+.fx i{position:absolute;left:0;top:0;width:var(--sp,3px);height:var(--sp,3px);opacity:0}
+.fx-smoke i{width:calc(var(--sp,3px) * 2);height:calc(var(--sp,3px) * 2);background:#ebe8de;animation:fxSmoke 2.7s steps(9) infinite;animation-delay:calc(var(--i) * -.9s + var(--fd,0s))}
+@keyframes fxSmoke{0%{opacity:.95;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(calc(var(--sp,3px) * 4),calc(var(--sp,3px) * -10)) scale(1.8)}}
+.fx-steam i{background:#fff;animation:fxSteam 1.8s steps(6) infinite;animation-delay:calc(var(--i) * -.6s + var(--fd,0s))}
+@keyframes fxSteam{0%{opacity:.9;transform:translate(0,0)}50%{transform:translate(var(--sp,3px),calc(var(--sp,3px) * -3))}100%{opacity:0;transform:translate(0,calc(var(--sp,3px) * -6))}}
+.fx-confetti i{height:calc(var(--sp,3px) * 2);animation:fxConf 2.4s steps(12) infinite;animation-delay:calc(var(--i) * -.3s + var(--fd,0s))}
+.fx-confetti i:nth-child(4n+1){background:#e3392b}.fx-confetti i:nth-child(4n+2){background:#f6c945}.fx-confetti i:nth-child(4n+3){background:#3d8ad9}.fx-confetti i:nth-child(4n){background:#8fdc6a}
+@keyframes fxConf{0%{opacity:1;transform:translate(calc((var(--i) - 3.5) * var(--sp,3px) * 2),0) rotate(0)}100%{opacity:0;transform:translate(calc((var(--i) - 3.5) * var(--sp,3px) * 3),calc(var(--sp,3px) * 16)) rotate(180deg)}}
+.fx-burst i{animation:fxBurst 2.2s steps(8) infinite;animation-delay:var(--fd,0s)}
+.fx-burst i:nth-child(odd){background:#f6c945}.fx-burst i:nth-child(even){background:#e3392b}
+@keyframes fxBurst{0%{opacity:1;transform:rotate(calc(var(--i) * 45deg)) translateX(0)}45%{opacity:1}60%,100%{opacity:0;transform:rotate(calc(var(--i) * 45deg)) translateX(calc(var(--sp,3px) * 7))}}
+@media (prefers-reduced-motion:reduce){.fx{display:none}[data-ms].reached .sc-ride{visibility:hidden}}

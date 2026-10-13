@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Laddar",
     "start": "Startlinje",
-    "finish": "Mållinje"
+    "finish": "Mållinje",
+    "lang": "Byter språk"
   },
   "nf": {
     "title": "Du har hamnat utanför kartan.",

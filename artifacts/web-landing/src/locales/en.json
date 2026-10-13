@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Loading",
     "start": "Start line",
-    "finish": "Finish line"
+    "finish": "Finish line",
+    "lang": "Switching language"
   },
   "nf": {
     "title": "You wandered off the map.",

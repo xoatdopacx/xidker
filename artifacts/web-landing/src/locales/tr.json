@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Yükleniyor",
     "start": "Başlangıç çizgisi",
-    "finish": "Bitiş çizgisi"
+    "finish": "Bitiş çizgisi",
+    "lang": "Dil değiştiriliyor"
   },
   "nf": {
     "title": "Haritanın dışına çıktınız.",

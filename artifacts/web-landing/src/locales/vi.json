@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Đang tải",
     "start": "Điểm xuất phát",
-    "finish": "Vạch đích"
+    "finish": "Vạch đích",
+    "lang": "Đổi ngôn ngữ"
   },
   "nf": {
     "title": "Lạc đường rồi.",

@@ -67,6 +67,8 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - New UI text goes into `vi.json` and `en.json` first; other locales fall back to English key by key until translated. Prices always use Latin digits (`numLocale`), because the number font only has those.
 - Right-to-left languages flip text and arrows only; the road, the walking character and the `[data-road]` geometry are never mirrored.
 - In-page `#` links are intercepted by the full-screen scene transition, which scrolls instantly with a 64px header offset. Keep section anchors on `id`s and give the transition a destination label for any new jump target.
+- A language switch blocks the page for several hundred ms (re-render, text layout, font swap; worst for Chinese/Japanese/Korean). The loading card's bar, walker and percentage are queued up front as browser (compositor) animations so they keep moving through that; do not drive them with JS timers. The new language's font stylesheet is added only after the screen is covered, because adding a stylesheet restyles the whole page and would stall the cover animation.
+- Transition and card-build canvases are reused from a pool; creating canvases costs more than drawing into them.
 
 ## Pointers
 

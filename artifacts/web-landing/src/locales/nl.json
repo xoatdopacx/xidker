@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Laden",
     "start": "Startlijn",
-    "finish": "Finishlijn"
+    "finish": "Finishlijn",
+    "lang": "Taal wisselen"
   },
   "nf": {
     "title": "Je bent van de kaart geraakt.",

@@ -1,23 +1,44 @@
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { useListPackages, useCreateCheckout, getListPackagesQueryKey } from "@workspace/api-client-react";
 import type { Package } from "@workspace/api-client-react";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Reveal, formatPrice } from "@/lib/motion";
-import { SceneTransition } from "@/components/scene-transition";
+import { Scene, type SceneName } from "@/components/scenes";
 import { useI18n, LangSwitch, CONTACT_EMAIL, tpl, type Dict, type Currency } from "@/lib/i18n";
 import { Hero as HeroSprite, Pine, Sunflower, Log, Pin, Trophy, MapIcon, Cat, Raccoon, Chest, Logo, Wordmark, PixelTitle, Vehicle, VEHICLES } from "@/components/sprites";
 
 /* ---------------- Road + walking character ---------------- */
 
-type Geo = { w: number; h: number; d: string; mobile: boolean };
+type Geo = { w: number; h: number; d: string; mobile: boolean; top: number; xs: Float64Array; ys: Float64Array; ss: Float64Array };
+
+/** Points along the road plus the distance walked so far. Every segment is a cubic whose control
+ * points sit straight below/above its ends, so y only ever grows: a sorted table that the scroll
+ * handler can binary-search instead of asking the SVG engine for points every frame. */
+function sampleRoad(pts: { x: number; y: number }[]) {
+  const N = 48;
+  const n = (pts.length - 1) * N + 1;
+  const xs = new Float64Array(n), ys = new Float64Array(n), ss = new Float64Array(n);
+  xs[0] = pts[0].x; ys[0] = pts[0].y;
+  let k = 1;
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], dy = (b.y - a.y) / 2;
+    for (let j = 1; j <= N; j++, k++) {
+      const t = j / N, u = 1 - t;
+      const x = (u * u * u + 3 * u * u * t) * a.x + (3 * u * t * t + t * t * t) * b.x;
+      const y = u * u * u * a.y + 3 * u * u * t * (a.y + dy) + 3 * u * t * t * (b.y - dy) + t * t * t * b.y;
+      xs[k] = x; ys[k] = y; ss[k] = ss[k - 1] + Math.hypot(x - xs[k - 1], y - ys[k - 1]);
+    }
+  }
+  return { xs, ys, ss };
+}
 
 function Road({ worldRef }: { worldRef: RefObject<HTMLDivElement | null> }) {
   const { t } = useI18n();
   const [geo, setGeo] = useState<Geo | null>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const trailRef = useRef<SVGPathElement>(null);
+  const trailBox = useRef<HTMLDivElement>(null);
+  const trailSvg = useRef<SVGSVGElement>(null);
   const charRef = useRef<HTMLDivElement>(null);
   const poofRef = useRef<HTMLDivElement>(null);
   const stops = useRef<{ el: Element; y: number }[]>([]);
@@ -25,7 +46,9 @@ function Road({ worldRef }: { worldRef: RefObject<HTMLDivElement | null> }) {
   useEffect(() => {
     const world = worldRef.current;
     if (!world) return;
+    let raf = 0;
     const measure = () => {
+      raf = 0;
       const wr = world.getBoundingClientRect();
       const pts = Array.from(world.querySelectorAll<HTMLElement>("[data-road]")).map((a) => {
         const r = a.getBoundingClientRect();
@@ -39,42 +62,55 @@ function Road({ worldRef }: { worldRef: RefObject<HTMLDivElement | null> }) {
         const dy = (b.y - a.y) / 2;
         d += ` C ${a.x.toFixed(1)} ${(a.y + dy).toFixed(1)}, ${b.x.toFixed(1)} ${(b.y - dy).toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
       }
-      setGeo((g) => (g && g.d === d && g.w === wr.width && g.h === wr.height ? g : { w: wr.width, h: wr.height, d, mobile: wr.width < 768 }));
+      const top = wr.top + window.scrollY;
+      setGeo((g) => (g && g.d === d && g.w === wr.width && g.h === wr.height && Math.abs(g.top - top) < 0.5 ? g
+        : { w: wr.width, h: wr.height, d, top, mobile: wr.width < 768, ...sampleRoad(pts) }));
     };
-    const ro = new ResizeObserver(measure);
+    // Measure on the next frame, never inside the observer callback itself.
+    const ro = new ResizeObserver(() => { if (!raf) raf = requestAnimationFrame(measure); });
     ro.observe(world);
     measure();
-    return () => ro.disconnect();
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); };
   }, [worldRef]);
 
-  useEffect(() => {
-    const path = pathRef.current, world = worldRef.current;
-    if (!path || !world || !geo) return;
-    const len = path.getTotalLength();
-    let raf = 0, lastX = -1, facing = 1, leg = -1, frame = -1;
+  // Layout effect: the trail and rider are placed before the first paint after every re-measure.
+  useLayoutEffect(() => {
+    if (!geo) return;
+    const { xs, ys, ss, top, h } = geo;
+    const last = ys.length - 1;
+    let raf = 0, lastX = -1, facing = 1, leg = -1, frame = -1, trailY = NaN;
     const poof = poofRef.current;
     const update = () => {
       raf = 0;
-      const wr = world.getBoundingClientRect();
-      const target = window.innerHeight * 0.62 - wr.top;
-      let lo = 0, hi = len;
-      for (let i = 0; i < 22; i++) {
-        const mid = (lo + hi) / 2;
-        if (path.getPointAtLength(mid).y < target) lo = mid; else hi = mid;
+      const target = window.innerHeight * 0.62 + window.scrollY - top;
+      let x: number, y: number, s: number;
+      if (target <= ys[0]) { x = xs[0]; y = ys[0]; s = 0; }
+      else if (target >= ys[last]) { x = xs[last]; y = ys[last]; s = ss[last]; }
+      else {
+        let lo = 0, hi = last;
+        while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (ys[mid] < target) lo = mid; else hi = mid; }
+        const f = (target - ys[lo]) / (ys[hi] - ys[lo]);
+        x = xs[lo] + (xs[hi] - xs[lo]) * f; y = target; s = ss[lo] + (ss[hi] - ss[lo]) * f;
       }
-      const pt = path.getPointAtLength(lo);
-      if (lastX >= 0 && Math.abs(pt.x - lastX) > 0.4) facing = pt.x < lastX ? -1 : 1;
-      lastX = pt.x;
-      const ch = charRef.current;
-      if (trailRef.current) trailRef.current.style.strokeDasharray = `${lo} ${len + 10}`;
+      if (lastX >= 0 && Math.abs(x - lastX) > 0.4) facing = x < lastX ? -1 : 1;
+      lastX = x;
+      // Gold trail: a clipping box slides down while the drawing inside slides up by the same
+      // amount, so only transforms change (no repaint of the long road while scrolling).
+      const ty = Math.round(y);
+      if (ty !== trailY && trailBox.current && trailSvg.current) {
+        trailY = ty;
+        trailBox.current.style.transform = `translate3d(0,${ty - h}px,0)`;
+        trailSvg.current.style.transform = `translate3d(0,${h - ty}px,0)`;
+      }
       let reached = 0;
-      for (const s of stops.current) { const r = pt.y >= s.y - 6; s.el.classList.toggle("reached", r); if (r) reached++; }
+      for (const st of stops.current) { const r = y >= st.y - 6; st.el.classList.toggle("reached", r); if (r) reached++; }
+      const ch = charRef.current;
       if (!ch) return;
-      ch.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0) translate(-50%, -88%)`;
+      ch.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -88%)`;
       const flip = ch.firstElementChild as HTMLElement | null;
       if (flip) flip.style.transform = `scaleX(${facing})`;
-      const f = Math.floor(lo / 18) % 2;
-      if (f !== frame) { frame = f; ch.dataset.f = String(f); }
+      const fr = Math.floor(s / 18) % 2;
+      if (fr !== frame) { frame = fr; ch.dataset.f = String(fr); }
       if (reached !== leg) {
         // vehicle swap: only touches a data attribute + restarts the poof animation
         if (leg !== -1 && poof) { poof.classList.remove("go"); void poof.offsetWidth; poof.classList.add("go"); }
@@ -86,21 +122,26 @@ function Road({ worldRef }: { worldRef: RefObject<HTMLDivElement | null> }) {
     window.addEventListener("scroll", on, { passive: true });
     window.addEventListener("resize", on);
     return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); cancelAnimationFrame(raf); };
-  }, [geo, worldRef]);
+  }, [geo]);
 
   if (!geo) return null;
   const rw = geo.mobile ? 30 : 58;
   const px = geo.mobile ? 3 : 4;
   const vpx = geo.mobile ? 2 : 3;
+  const view = `0 0 ${geo.w} ${geo.h}`;
   return (
     <>
-      <svg className="absolute left-0 top-0 z-[1] pointer-events-none" width={geo.w} height={geo.h} viewBox={`0 0 ${geo.w} ${geo.h}`} shapeRendering="crispEdges" aria-hidden>
+      <svg className="absolute left-0 top-0 z-[1] pointer-events-none" width={geo.w} height={geo.h} viewBox={view} shapeRendering="crispEdges" aria-hidden>
         <path d={geo.d} fill="none" stroke="#1f3d1c" strokeOpacity=".35" strokeWidth={rw + 14} strokeLinecap="square" transform="translate(5 6)" />
         <path d={geo.d} fill="none" stroke="#6b6f78" strokeWidth={rw + 8} strokeLinecap="square" />
-        <path ref={pathRef} d={geo.d} fill="none" stroke="#33363d" strokeWidth={rw} strokeLinecap="square" />
+        <path d={geo.d} fill="none" stroke="#33363d" strokeWidth={rw} strokeLinecap="square" />
         <path d={geo.d} fill="none" stroke="#e9e6d8" strokeWidth={geo.mobile ? 2 : 3} strokeDasharray={geo.mobile ? "8 10" : "14 16"} />
-        <path ref={trailRef} d={geo.d} fill="none" stroke="hsl(44 95% 55%)" strokeWidth={geo.mobile ? 3 : 4} strokeDasharray="0 99999" />
       </svg>
+      <div ref={trailBox} className="absolute left-0 top-0 z-[1] overflow-hidden pointer-events-none will-change-transform" style={{ width: geo.w, height: geo.h }} aria-hidden>
+        <svg ref={trailSvg} className="block will-change-transform" width={geo.w} height={geo.h} viewBox={view} shapeRendering="crispEdges">
+          <path d={geo.d} fill="none" stroke="hsl(44 95% 55%)" strokeWidth={geo.mobile ? 3 : 4} />
+        </svg>
+      </div>
       <div ref={charRef} data-v="0" data-f="0" className="rider absolute left-0 top-0 z-[15] pointer-events-none will-change-transform" role="img" aria-label={t.hero.heroAlt}>
         <div className="flex flex-col items-center">
           <div className="absolute left-1/2 bottom-0 h-2 w-8 -translate-x-1/2 translate-y-1 bg-black/25" />
@@ -188,6 +229,7 @@ function HeroSection() {
       <div className="absolute bottom-8 left-0 right-0 z-20">
         <div className="relative mx-auto max-w-7xl h-24">
           <div data-road className="absolute left-[34px] md:left-[22%] top-1/2 h-1 w-1" />
+          <Scene name="home" className="absolute z-10 right-4 top-1/2 -translate-y-1/2 md:right-auto md:left-[58%] md:top-auto md:bottom-0 md:translate-y-0 md:[--sp:4px] lg:[--sp:5px]" />
           <a href="#ban-nhan-gi" className="pbtn absolute left-[64px] md:left-auto md:right-[80%] top-1/2 -translate-y-1/2 px-5 py-2 font-pixel text-2xl md:text-3xl" data-testid="button-start">
             START
           </a>
@@ -202,15 +244,17 @@ function HeroSection() {
 
 /* ---------------- Stops ---------------- */
 
-function Stop({ id, n, side, title, children, wide = false, decor }: { id?: string; n: number; side: "left" | "right"; title: string; children: ReactNode; wide?: boolean; decor?: ReactNode }) {
+function Stop({ id, n, side, title, children, wide = false, decor, scene, className = "" }: { id?: string; n: number; side: "left" | "right"; title: string; children: ReactNode; wide?: boolean; decor?: ReactNode; scene: SceneName; className?: string }) {
   const { t } = useI18n();
   return (
-    <section id={id} data-ms className="relative py-14 md:py-24 px-4 md:px-8 scroll-mt-16">
+    <section id={id} data-ms className={`relative py-14 md:py-24 px-4 md:px-8 scroll-mt-16 ${className}`}>
       <div className="relative mx-auto max-w-7xl">
         <div data-road className={`absolute top-8 md:top-1/2 h-1 w-1 ${side === "left" ? "left-[22px] md:left-[64%]" : "left-[40px] md:left-[36%]"}`}>
           <Pin px={4} className="pin-sprite absolute bottom-3 left-1/2 -translate-x-1/2" />
         </div>
         {decor}
+        {/* phone: in the gap above the card; wider screens: on the free side of the road */}
+        <Scene name={scene} className={`absolute z-10 right-1 top-[-56px] -translate-y-1/2 md:top-1/2 md:[--sp:4px] lg:[--sp:5px] ${side === "left" ? "md:right-[3%]" : "md:right-auto md:left-[3%]"}`} />
         <div className={`relative z-20 ml-[60px] md:ml-0 ${wide ? "md:w-[56%]" : "md:w-[46%]"} ${side === "right" ? "md:ml-auto" : ""}`}>
           <Reveal>
             <div className="tile p-5 md:p-8">
@@ -361,6 +405,8 @@ function Pricing() {
         <div data-road className="absolute top-6 left-[30px] md:left-1/2 h-1 w-1">
           <Pin px={5} className="pin-sprite absolute bottom-3 left-1/2 -translate-x-1/2" />
         </div>
+        {/* above the heading card until there is room beside it */}
+        <Scene name="air" className="absolute z-10 right-1 top-[-40px] -translate-y-1/2 md:right-[2%] md:top-[46px] xl:top-[226px] md:[--sp:4px]" />
         <div className="relative z-20 ml-[56px] md:ml-0 pt-4 md:pt-24">
           <Reveal>
             <div className="tile p-5 md:p-7 md:max-w-2xl md:mx-auto md:text-center mb-10 md:mb-14">
@@ -438,7 +484,7 @@ function Faq() {
     btns.current[next]?.focus();
   };
   return (
-    <Stop id="hoi-dap" n={7} side="right" wide title={t.faq.title}>
+    <Stop id="hoi-dap" n={7} side="right" wide title={t.faq.title} scene="launch">
       {/* Fixed-height: selecting a question never changes the page height (the road is measured from it). */}
       <ul className="mt-2 space-y-2">
         {t.faq.items.map((f, i) => {
@@ -489,6 +535,8 @@ function Goal() {
             ))}
           </div>
         </div>
+        {/* beside the card (its middle is 50% + half of the 240px top padding) once there is room */}
+        <Scene name="finish" className="absolute z-10 right-1 top-[112px] -translate-y-1/2 md:right-[3%] lg:top-[calc(50%+120px)] md:[--sp:4px] lg:[--sp:5px]" />
         <div className="relative z-20 ml-[60px] md:ml-0 pt-56 md:pt-60 md:max-w-2xl md:mx-auto text-left md:text-center">
           <Reveal>
             <div className="tile p-6 md:p-10">
@@ -543,24 +591,23 @@ export default function Home() {
   return (
     <main className="overflow-x-hidden">
       <Nav />
-      <SceneTransition />
       <div ref={worldRef} className="relative">
         <Road worldRef={worldRef} />
         <HeroSection />
-        <Stop id="ban-nhan-gi" n={1} side="left" title={s.what.title}
+        <Stop id="ban-nhan-gi" n={1} side="left" title={s.what.title} scene="bike" className="max-md:pt-28"
           decor={<><Pine px={5} className="absolute right-[4%] top-0 hidden md:block" /><Sunflower px={4} className="absolute right-[18%] bottom-0 sway hidden md:block" /></>}>
           <p>{s.what.body}</p><Bullets items={s.what.points} />
         </Stop>
-        <Stop n={2} side="right" title={s.pages.title}
+        <Stop n={2} side="right" title={s.pages.title} scene="cafe"
           decor={<><Pine px={4} className="absolute left-[6%] top-4 hidden md:block" /><Pine px={5} className="absolute left-[12%] top-14 hidden md:block" /></>}>
           <p>{s.pages.body}</p><PagesMock items={s.pages.items} />
         </Stop>
-        <Stop n={3} side="left" title={s.motion.title}
-          decor={<Log px={4} className="absolute right-[10%] top-1/3 hidden md:block" />}>
+        <Stop n={3} side="left" title={s.motion.title} scene="fuel"
+          decor={<Log px={4} className="absolute right-[5%] bottom-0 hidden md:block" />}>
           <p>{s.motion.body}</p><Bullets items={s.motion.points} />
         </Stop>
-        <Stop id="cach-dung" n={4} side="right" title={s.how.title}
-          decor={<><Sunflower px={4} className="absolute left-[8%] top-1/4 sway hidden md:block" /><Sunflower px={3} className="absolute left-[12%] top-[30%] sway hidden md:block" /></>}>
+        <Stop id="cach-dung" n={4} side="right" title={s.how.title} scene="bus"
+          decor={<><Sunflower px={4} className="absolute left-[6%] bottom-0 sway hidden md:block" /><Sunflower px={3} className="absolute left-[10%] bottom-3 sway hidden md:block" /></>}>
           <ol className="space-y-3">
             {s.how.steps.map((st, i) => (
               <li key={i} className="flex gap-3">
@@ -570,8 +617,8 @@ export default function Home() {
             ))}
           </ol>
         </Stop>
-        <Stop n={5} side="left" title={s.who.title}
-          decor={<><Pine px={5} className="absolute right-[6%] top-8 hidden md:block" /><Pine px={4} className="absolute right-[2%] top-20 hidden md:block" /></>}>
+        <Stop n={5} side="left" title={s.who.title} scene="balloon"
+          decor={<><Pine px={5} className="absolute right-[16%] -bottom-6 hidden md:block" /><Pine px={4} className="absolute right-[3%] -bottom-8 hidden md:block" /></>}>
           <p>{s.who.body}</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {s.who.tags.map((tag) => <span key={tag} className="border-[3px] border-[#1b2a1c] bg-white/70 px-2.5 py-1 text-sm font-semibold">{tag}</span>)}

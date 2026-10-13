@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Caricamento",
     "start": "Linea di partenza",
-    "finish": "Traguardo"
+    "finish": "Traguardo",
+    "lang": "Cambio lingua"
   },
   "nf": {
     "title": "Sei uscito dal percorso.",

@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Cargando",
     "start": "Línea de salida",
-    "finish": "Línea de meta"
+    "finish": "Línea de meta",
+    "lang": "Cambiando de idioma"
   },
   "nf": {
     "title": "Te saliste del mapa.",

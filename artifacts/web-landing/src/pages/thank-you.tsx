@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from "react";
-import { ThanksCover } from "@/components/thanks-cover";
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
+import { usePixelTransition, type CardSpec } from "@/components/pixel-transition";
 import { useSearch, Link } from "wouter";
 import { useGetCheckoutStatus, getGetCheckoutStatusQueryKey, useListPackages } from "@workspace/api-client-react";
 import { ArrowLeft, Check, Clock, Receipt, RefreshCw, Mail } from "lucide-react";
@@ -47,6 +47,13 @@ function SupportLink({ subject }: { subject?: string }) {
   );
 }
 
+const CHECK_CARD: CardSpec = {
+  scene: "finish",
+  label: (t) => <>{t.stage} <span className="font-num text-base">08</span></>,
+  title: (t) => t.scene.finish,
+  sub: (t) => t.thanks.loading,
+};
+
 export default function ThankYou() {
   const { t, lang, locale, numLocale } = useI18n();
   const search = useSearch();
@@ -61,7 +68,18 @@ export default function ThankYou() {
     },
   });
   const { data: pkgs } = useListPackages({ lang });
-  const [cover, setCover] = useState(() => !!ref && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // the order check runs behind the pixel loading card (stage 08), lifted once the answer is in
+  const px = usePixelTransition();
+  const release = useRef<(() => void) | null>(null);
+  useLayoutEffect(() => {
+    if (!ref || !px || !isLoading) return;
+    release.current = px.hold(CHECK_CARD, { minHold: 900, failSafe: 8000 });
+    return () => { release.current?.(); release.current = null; };
+    // runs once: only the first load of this page waits behind the card
+  }, []);
+  useEffect(() => {
+    if (!isLoading) { release.current?.(); release.current = null; }
+  }, [isLoading]);
   const pkgName = (id: string, fallback: string) => pkgs?.find((p) => p.id === id)?.name ?? fallback;
 
   const body = (() => {
@@ -160,5 +178,5 @@ export default function ThankYou() {
   );
   })();
 
-  return <>{body}{cover && <ThanksCover loading={isLoading} onDone={() => setCover(false)} />}</>;
+  return body;
 }

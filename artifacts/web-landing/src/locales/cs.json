@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Načítám",
     "start": "Start",
-    "finish": "Cíl"
+    "finish": "Cíl",
+    "lang": "Přepínání jazyka"
   },
   "nf": {
     "title": "Ztratili jste se na mapě.",

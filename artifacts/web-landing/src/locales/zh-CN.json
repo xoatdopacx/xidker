@@ -166,7 +166,8 @@
   "scene": {
     "loading": "正在加载",
     "start": "起点",
-    "finish": "终点"
+    "finish": "终点",
+    "lang": "切换语言"
   },
   "nf": {
     "title": "您迷路了。",

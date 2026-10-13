@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Carregando",
     "start": "Linha de partida",
-    "finish": "Linha de chegada"
+    "finish": "Linha de chegada",
+    "lang": "Mudando de idioma"
   },
   "nf": {
     "title": "Você saiu do mapa.",

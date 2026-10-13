@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Ładowanie",
     "start": "Linia startu",
-    "finish": "Linia mety"
+    "finish": "Linia mety",
+    "lang": "Zmiana języka"
   },
   "nf": {
     "title": "Zgubiłeś się na mapie.",

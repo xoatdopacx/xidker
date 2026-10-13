@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Chargement",
     "start": "Ligne de départ",
-    "finish": "Ligne d'arrivée"
+    "finish": "Ligne d'arrivée",
+    "lang": "Changement de langue"
   },
   "nf": {
     "title": "Vous êtes sorti de la carte.",

@@ -166,7 +166,8 @@
   "scene": {
     "loading": "載入中",
     "start": "起跑線",
-    "finish": "終點線"
+    "finish": "終點線",
+    "lang": "切換語言"
   },
   "nf": {
     "title": "你偏離了地圖。",

@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Naglo-load",
     "start": "Simulang linya",
-    "finish": "Pagtatapos na linya"
+    "finish": "Pagtatapos na linya",
+    "lang": "Nagpapalit ng wika"
   },
   "nf": {
     "title": "Naligaw ka sa mapa.",

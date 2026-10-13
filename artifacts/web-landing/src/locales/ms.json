@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Memuatkan",
     "start": "Garisan permulaan",
-    "finish": "Garisan penamat"
+    "finish": "Garisan penamat",
+    "lang": "Menukar bahasa"
   },
   "nf": {
     "title": "Anda terkeluar dari peta.",

@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { X } from "lucide-react";
 import type { Language } from "@workspace/api-client-react";
-import { useI18n, LANGUAGES } from "@/lib/i18n";
+import { useI18n, LANGUAGES, shortCode } from "@/lib/i18n";
+import { usePixelTransition } from "@/components/pixel-transition";
 
 /** 9x9 pixel globe drawn with rects so it stays crisp. */
 function PixelGlobe({ className = "" }: { className?: string }) {
@@ -18,7 +19,6 @@ function PixelGlobe({ className = "" }: { className?: string }) {
   );
 }
 
-const shortCode = (c: string) => c.split("-")[0].toUpperCase() + (c === "zh-TW" ? "-TW" : "");
 
 export function LangPicker({ className = "", tone = "light" }: { className?: string; tone?: "light" | "dark" }) {
   const { lang, info, setLang, t } = useI18n();
@@ -76,7 +76,15 @@ export function LangPicker({ className = "", tone = "light" }: { className?: str
     };
   }, [open]);
 
-  const pick = (c: Language) => { setLang(c); setOpen(false); btn.current?.focus(); };
+  const px = usePixelTransition();
+  const pick = (c: Language) => {
+    setOpen(false);
+    btn.current?.focus();
+    if (c === lang) return;
+    const r = btn.current?.getBoundingClientRect();
+    if (px) px.switchLang(c, r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : undefined);
+    else setLang(c);
+  };
   const dark = tone === "dark";
 
   return (

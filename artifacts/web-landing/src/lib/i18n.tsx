@@ -63,6 +63,8 @@ export const LANGUAGES: LangInfo[] = [
 
 const BY_CODE = new Map(LANGUAGES.map((l) => [l.code, l]));
 export const langInfo = (code: Language): LangInfo => BY_CODE.get(code) ?? LANGUAGES[1];
+/** Short Latin code for small labels: VI, EN, ZH, ZH-TW… */
+export const shortCode = (c: string) => c.split("-")[0].toUpperCase() + (c === "zh-TW" ? "-TW" : "");
 
 /* ---------------- dictionaries ---------------- */
 
@@ -107,14 +109,27 @@ const SCRIPT_FONT: Partial<Record<Script, string>> = {
   beng: "Noto Sans Bengali", arab: "Noto Sans Arabic", hebr: "Noto Sans Hebrew",
 };
 
+/* Settles once a font stylesheet has loaded or failed (the font files themselves load on first use). */
+const FONT_READY = new Map<string, Promise<void>>();
+
 function ensureFont(script: Script) {
   const family = SCRIPT_FONT[script];
-  if (!family || document.querySelector(`link[data-font="${family}"]`)) return;
+  if (!family || FONT_READY.has(family)) return;
+  if (document.querySelector(`link[data-font="${family}"]`)) { FONT_READY.set(family, Promise.resolve()); return; }
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.dataset.font = family;
   link.href = `https://fonts.googleapis.com/css2?family=${family.replace(/ /g, "+")}:wght@400;500;600;700;800&display=swap`;
+  FONT_READY.set(family, new Promise<void>((done) => { link.onload = () => done(); link.onerror = () => done(); }));
   document.head.appendChild(link);
+}
+
+/** Starts the font for a language and resolves when its stylesheet is in (immediately for Latin). */
+export function whenFontReady(code: Language): Promise<void> {
+  const { script } = langInfo(code);
+  ensureFont(script);
+  const family = SCRIPT_FONT[script];
+  return (family && FONT_READY.get(family)) || Promise.resolve();
 }
 
 /* ---------------- initial language ---------------- */

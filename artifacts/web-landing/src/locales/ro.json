@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Se încarcă",
     "start": "Linia de start",
-    "finish": "Linia de finish"
+    "finish": "Linia de finish",
+    "lang": "Se schimbă limba"
   },
   "nf": {
     "title": "Te-ai rătăcit pe hartă.",

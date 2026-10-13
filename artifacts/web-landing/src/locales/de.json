@@ -166,7 +166,8 @@
   "scene": {
     "loading": "Lädt",
     "start": "Startlinie",
-    "finish": "Ziellinie"
+    "finish": "Ziellinie",
+    "lang": "Sprache wird gewechselt"
   },
   "nf": {
     "title": "Du bist vom Weg abgekommen.",

@@ -166,7 +166,8 @@
   "scene": {
     "loading": "불러오는 중",
     "start": "출발선",
-    "finish": "도착선"
+    "finish": "도착선",
+    "lang": "언어 전환 중"
   },
   "nf": {
     "title": "길을 벗어났습니다.",
