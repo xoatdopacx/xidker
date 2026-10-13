@@ -94,6 +94,7 @@
     "errorBody": "Hindi sumasagot ang payment system ngayon. Karaniwan itong bumabalik sa loob ng ilang segundo.",
     "retry": "Subukan muli",
     "empty": "Ina-update pa ang mga package. Bumalik pagkalipas ng ilang minuto.",
+    "note": "Bawat package ay para sa 1 portfolio. Ang All-in-One A–Z lang ang may kasamang hosting at domain. Ina-adjust ang presyo ayon sa VAT ng bansa mo sa checkout.",
     "footnote": "Checkout sa pamamagitan ng Whop · Source link na ipinadala sa email",
     "toastTitle": "Hindi mabuksan ang checkout",
     "toastBody": "Naputol ang koneksyon. Maghintay ng ilang segundo at subukan muli.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Hindi ako coder. Pwede ko pa rin ba itong gamitin?",
-        "a": "Ang iyong pangalan, bio, mga proyekto, at larawan ay nasa tamang lugar para madaling palitan. Kung gusto mong ipagawa sa iba, pumili ng package na may kasamang setup."
+        "a": "Oo. Nasa iisang lugar ang pangalan, bio, projects at photos mo, at may README na gagabay sa bawat hakbang. Ayaw mong gumalaw ng code? Piliin ang Custom Build o All-in-One A–Z: ipadala ang requirements mo at kami na ang gagawa."
       },
       {
-        "q": "Pwede ko ba itong gamitin para sa client work?",
-        "a": "Depende ito sa package. Nakalista sa pricing section kung ano ang pwede mong gawin sa bawat isa. Hindi sigurado? Mag-email sa amin bago bumili."
+        "q": "Ilang portfolio ang kasama sa isang package?",
+        "a": "Bawat package ay para sa 1 portfolio. Kung kailangan mo ng higit sa isa, bumili ng isang package para sa bawat portfolio."
       },
       {
         "q": "Paano ko ito ilalagay online?",
-        "a": "Pumili ng kahit anong web host na gusto mo at i-upload ang source. Hindi ka namin ikukulong sa iisang platform."
+        "a": "Sa All-in-One A–Z, kami ang maglalagay nito online, kasama ang hosting at domain sa loob ng 1 taon. Sa ibang package, pumili ng kahit anong web host at i-upload ang source; nasa README kung paano. Hindi ka namin ikinakandado sa isang platform."
       },
       {
         "q": "Paano kung may sira o kulang?",

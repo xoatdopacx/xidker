@@ -94,6 +94,7 @@
     "errorBody": "The payment system isn't responding right now. It's usually back within seconds.",
     "retry": "Try again",
     "empty": "Packages are being updated. Check back in a few minutes.",
+    "note": "Each package builds 1 portfolio. Hosting and a domain come only with All-in-One A–Z. Prices are adjusted for your country's VAT at checkout.",
     "footnote": "Checkout by Whop · Source link sent by email",
     "toastTitle": "Couldn't open checkout",
     "toastBody": "The connection dropped. Give it a few seconds and try again.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "I'm not a coder. Can I still use it?",
-        "a": "Your name, bio, projects and photos are kept in their own place so they're easy to swap. If you'd rather have it set up for you, pick a package that includes setup."
+        "a": "Yes. Your name, bio, projects and photos are kept in one place, and the README walks you through each step. Rather not touch code? Pick Custom Build or All-in-One A–Z: send us your requirements and we build it for you."
       },
       {
-        "q": "Can I use it for client work?",
-        "a": "It depends on the package. Each one lists what you're allowed to do with it in the pricing section. Not sure? Email us before you buy."
+        "q": "How many portfolios does one package cover?",
+        "a": "Each package builds 1 portfolio. Need more than one? Buy a package for each portfolio."
       },
       {
         "q": "How do I put it online?",
-        "a": "Choose any web host you like and upload the source. We don't lock you into a platform."
+        "a": "With All-in-One A–Z, we put it online for you, with hosting and a domain name included for 1 year. With the other packages, pick any web host and upload the source; the README shows you how. We don't lock you into a platform."
       },
       {
         "q": "What if something's broken or missing?",

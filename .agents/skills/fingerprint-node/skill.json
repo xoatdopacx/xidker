@@ -1,0 +1,8 @@
+{
+  "id": "fingerprint-node",
+  "title": "Fingerprint — Node (Server API)",
+  "role": "backend",
+  "frameworks": ["express"],
+  "packages": ["@fingerprint/node-sdk", "dotenv"],
+  "envVars": ["FINGERPRINT_SECRET_API_KEY", "FINGERPRINT_REGION"]
+}

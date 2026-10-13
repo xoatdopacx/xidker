@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "skills": {
+    "fingerprint-angular": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-angular/SKILL.md",
+      "computedHash": "2e9bd662be5984ea072464e2a09d8b36763bb6e00cade44996108674ad77d2cb"
+    },
+    "fingerprint-get-started": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-get-started/SKILL.md",
+      "computedHash": "8f8d4c7f1cb0e6a3f44c2e4385f52ba8731ad727ef39a8a1d6c767f04dc6c916"
+    },
+    "fingerprint-javascript": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-javascript/SKILL.md",
+      "computedHash": "277458453d5580dcd7b0fc530713dc835213d7fdd88f2b07fe8846a70ab772b1"
+    },
+    "fingerprint-nextjs": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-nextjs/SKILL.md",
+      "computedHash": "035d0e5cffe2a4fe64100947055467acb19f9416c90fa6aa78349d261235edd3"
+    },
+    "fingerprint-node": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-node/SKILL.md",
+      "computedHash": "e0369357f1e8d85cea16c46eb2176bab8ce76283cc0ba5febb3617b9173d7045"
+    },
+    "fingerprint-proxy-integration": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-proxy-integration/SKILL.md",
+      "computedHash": "1582802103d5bf1b715d5be80f3712a9908fe9ee7bc1848d37e262460dabedf8"
+    },
+    "fingerprint-python": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-python/SKILL.md",
+      "computedHash": "986f208b01e5d877ac3b1558593289149b1a2f01a12f570afc412a1ba17d430e"
+    },
+    "fingerprint-react": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-react/SKILL.md",
+      "computedHash": "ce9a50026562746e890cb38e966812469985668607465547418b4bc7d1dd96e9"
+    },
+    "fingerprint-request-filtering": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-request-filtering/SKILL.md",
+      "computedHash": "e88e61a008216e2753fbf98aec05b14f62a3bc222fdbc46bbdc2228b2988c189"
+    },
+    "fingerprint-rules-engine": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-rules-engine/SKILL.md",
+      "computedHash": "5f37f74acf6f398a54816cbe030b910d6cde586fe6fbc48d807e3ed2b9408f5c"
+    },
+    "fingerprint-smart-signals": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-smart-signals/SKILL.md",
+      "computedHash": "14a37c719fffabab3905a5d9e64c8bc72091b49f95b63375e36e1bc8ed26c176"
+    },
+    "fingerprint-svelte": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-svelte/SKILL.md",
+      "computedHash": "ce101792d0fcdc177a3132e42d9fe6e38ad07dda34fe31f52ae7546bac3cacc3"
+    },
+    "fingerprint-tagging": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-tagging/SKILL.md",
+      "computedHash": "11ec285b86ae797bf2ec9ecc5f99fe8fd3a3cf22c1747b36ada755e93b979a6a"
+    },
+    "fingerprint-vue": {
+      "source": "fingerprintjs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/fingerprint-vue/SKILL.md",
+      "computedHash": "841589dc98716b18c5966b079345b28f0fa02c156782e4c2ca30a830fd7afb24"
+    }
+  }
+}

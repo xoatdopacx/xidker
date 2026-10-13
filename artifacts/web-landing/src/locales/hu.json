@@ -94,6 +94,7 @@
     "errorBody": "A fizetési rendszer jelenleg nem válaszol. Általában másodperceken belül újra elérhető.",
     "retry": "Próbáld újra",
     "empty": "A csomagok frissítése folyamatban van. Nézz vissza pár perc múlva.",
+    "note": "Minden csomag 1 portfólióhoz szól. Tárhely és domain csak a Minden egyben A–Z csomagban van. Az árat fizetéskor az országod áfájához igazítjuk.",
     "footnote": "Fizetés a Whop-on keresztül · A forráslinket emailben küldjük",
     "toastTitle": "Nem sikerült megnyitni a fizetést",
     "toastBody": "Megszakadt a kapcsolat. Várj pár másodpercet, és próbáld újra.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Nem értek a kódoláshoz. Használhatom így is?",
-        "a": "A neved, bemutatkozásod, projektjeid és fotóid külön helyen vannak tárolva, így könnyen cserélhetők. Ha inkább szeretnéd, hogy beállítsuk neked, válassz egy csomagot, amely tartalmazza a beállítást."
+        "a": "Igen. A neved, a bemutatkozás, a projektek és a fotók egy helyen vannak, a README pedig minden lépést elmagyaráz. Nem akarsz a kódhoz nyúlni? Válaszd az Egyedi kivitelezés vagy a Minden egyben A–Z csomagot: küldd el az igényeidet, és mi elkészítjük."
       },
       {
-        "q": "Használhatom ügyfélmunkákhoz?",
-        "a": "Ez csomagtól függ. Mindegyiknél fel van tüntetve, mit tehetsz vele az árazási részben. Nem vagy benne biztos? Írj nekünk vásárlás előtt."
+        "q": "Hány portfólióhoz elég egy csomag?",
+        "a": "Minden csomag 1 portfólióhoz szól. Többre van szükséged? Vegyél minden portfólióhoz egy csomagot."
       },
       {
         "q": "Hogyan tehetem online elérhetővé?",
-        "a": "Válassz tetszőleges webtárhelyet és töltsd fel a forráskódot. Nem kötünk hozzá semmilyen platformhoz."
+        "a": "A Minden egyben A–Z csomaggal mi tesszük közzé helyetted, 1 év tárhellyel és domainnel. A többi csomagnál bármilyen tárhelyet választhatsz, és feltöltöd a kódot; a README leírja, hogyan. Nem kötünk semmilyen platformhoz."
       },
       {
         "q": "Mi van, ha valami elromlott vagy hiányzik?",

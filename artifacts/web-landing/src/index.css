@@ -504,23 +504,46 @@ body{overflow-x:hidden;background-color:hsl(var(--grass));background-image:url("
 [data-ms].reached .trophy-glow{opacity:1}
 @keyframes blink{50%{opacity:0}}
 .blink{animation:blink 1s steps(1) infinite}
-.rider .ride{display:none;position:relative}
+/* --alt (inline, per ride) lifts the flying rides off the road; their shadow shrinks to sell the height.
+   Changing rides is a transformation, in both directions: for 1s the old ride (.out, added by the road)
+   and the new one show as white silhouettes that flicker faster and faster between the two shapes while
+   sparkles spiral in, then a flash and the new ride is there in colour. Both glide from --from to --to
+   (old and new ride heights). data-sw (a/b) restarts the sparkles without forcing a layout. */
+.rider .ride{display:none;position:relative;translate:0 var(--alt,0px);transform-origin:50% 100%}
 .rider[data-v="0"] .v0,.rider[data-v="1"] .v1,.rider[data-v="2"] .v2,.rider[data-v="3"] .v3,.rider[data-v="4"] .v4,.rider[data-v="5"] .v5,.rider[data-v="6"] .v6,.rider[data-v="7"] .v7,.rider[data-v="8"] .v8{display:block}
+.rider .ride.out{display:block;position:absolute;left:50%;bottom:0}
 .rider .fr1,.rider[data-f="1"] .fr0{display:none}
 .rider[data-f="1"] .fr1{display:block}
-.rider .v5,.rider .v6,.rider .v7{margin-bottom:10px}
 .rider .v5{animation:bob 1.8s steps(2) infinite}
 .rider .v8{animation:hop .7s steps(3) infinite}
+.rider[data-sw] .ride{animation:mIn 1s steps(1,end) both,mLift 1s steps(5) both}
+.rider[data-sw] .v5:not(.out){animation:mIn 1s steps(1,end) both,mLift 1s steps(5) both,bob 1.8s steps(2) 1s infinite}
+.rider[data-sw] .v8:not(.out){animation:mIn 1s steps(1,end) both,mLift 1s steps(5) both,hop .7s steps(3) 1s infinite}
+.rider[data-sw] .ride.out{animation:mOut 1s steps(1,end) both,mDrop 1s steps(5) both}
+/* mIn/mOut are shared with the parked rides in the scenes, so both transformations run in step */
+@keyframes mIn{0%{opacity:0;filter:brightness(0) invert(1);scale:1}14%{opacity:1}20%{opacity:0}30%{opacity:1}36%{opacity:0}44%{opacity:1}50%{opacity:0}55%{opacity:1}60%{opacity:0}64%{opacity:1}68%{opacity:0}71%{opacity:1}74%{opacity:0}76%{opacity:1;filter:brightness(0) invert(1);scale:1}84%{filter:none;scale:1.16}92%{scale:.94}100%{opacity:1;filter:none;scale:1}}
+@keyframes mOut{0%{opacity:1;filter:none}6%{filter:brightness(0) invert(1)}14%{opacity:0}20%{opacity:1}30%{opacity:0}36%{opacity:1}44%{opacity:0}50%{opacity:1}55%{opacity:0}60%{opacity:1}64%{opacity:0}68%{opacity:1}71%{opacity:0}74%{opacity:1}76%,100%{opacity:0;filter:brightness(0) invert(1)}}
+@keyframes mLift{0%{translate:0 var(--from,0px)}76%,100%{translate:0 var(--alt,0px)}}
+@keyframes mDrop{0%{translate:-50% var(--from,0px)}76%,100%{translate:-50% var(--to,0px)}}
 @keyframes hop{50%{transform:translateY(-10px)}}
+.rider .sh{transition:scale .4s steps(4),opacity .4s steps(4)}
+.rider[data-v="5"] .sh,.rider[data-v="6"] .sh,.rider[data-v="7"] .sh{scale:.5;opacity:.55}
 .puffs{position:absolute;left:-6px;bottom:10px}
 .puffs i{position:absolute;width:6px;height:6px;background:#e9e6d8;opacity:0;animation:puff 1.2s steps(4) infinite}
 .puffs i:nth-child(2){animation-delay:.4s}.puffs i:nth-child(3){animation-delay:.8s}
 @keyframes puff{0%{transform:translate(0,0);opacity:.9}100%{transform:translate(-18px,-10px) scale(1.8);opacity:0}}
 .poof{position:absolute;left:50%;top:50%}
+.poof::before{content:"";position:absolute;left:-28px;top:-28px;width:56px;height:56px;opacity:0;background:#fff6c8;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .poof i{position:absolute;width:8px;height:8px;margin:-4px;opacity:0;background:#fff6c8;box-shadow:0 0 0 2px #1b2a1c}
 .poof i:nth-child(odd){background:hsl(var(--gold))}
-.poof.go i{animation:poof .55s steps(5) forwards}
-@keyframes poof{0%{opacity:1;transform:rotate(var(--a)) translateX(4px)}100%{opacity:0;transform:rotate(var(--a)) translateX(38px)}}
+.rider[data-sw="a"] .poof i{animation:sparkA 1s steps(6) forwards}
+.rider[data-sw="b"] .poof i{animation:sparkB 1s steps(6) forwards}
+.rider[data-sw="a"] .poof::before{animation:flashA 1s steps(1,end) forwards}
+.rider[data-sw="b"] .poof::before{animation:flashB 1s steps(1,end) forwards}
+@keyframes sparkA{0%{opacity:1;transform:rotate(var(--a)) translateX(46px) scale(.6)}70%{opacity:1;transform:rotate(calc(var(--a) + 150deg)) translateX(8px) scale(1)}76%{opacity:0;transform:rotate(calc(var(--a) + 160deg)) translateX(4px)}78%{opacity:1;transform:rotate(calc(var(--a) + 160deg)) translateX(10px) scale(1.2)}100%{opacity:0;transform:rotate(calc(var(--a) + 170deg)) translateX(50px) scale(.5)}}
+@keyframes sparkB{0%{opacity:1;transform:rotate(var(--a)) translateX(46px) scale(.6)}70%{opacity:1;transform:rotate(calc(var(--a) + 150deg)) translateX(8px) scale(1)}76%{opacity:0;transform:rotate(calc(var(--a) + 160deg)) translateX(4px)}78%{opacity:1;transform:rotate(calc(var(--a) + 160deg)) translateX(10px) scale(1.2)}100%{opacity:0;transform:rotate(calc(var(--a) + 170deg)) translateX(50px) scale(.5)}}
+@keyframes flashA{0%,76%{opacity:0;scale:.3}78%{opacity:1;scale:.7}84%{opacity:.8;scale:1.2}92%{opacity:.35;scale:1.6}100%{opacity:0;scale:1.9}}
+@keyframes flashB{0%,76%{opacity:0;scale:.3}78%{opacity:1;scale:.7}84%{opacity:.8;scale:1.2}92%{opacity:.35;scale:1.6}100%{opacity:0;scale:1.9}}
 @media (prefers-reduced-motion:reduce){.poof,.puffs{display:none}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}[data-rv]>*{opacity:1!important}.rv-px,.px-ov{display:none!important}.spark{display:none}}
 
 /* ---- Languages ----
@@ -592,13 +615,28 @@ html[data-script="arab"] *{letter-spacing:0!important}
 @keyframes scFlicker{50%{opacity:.55}}
 .sc-bob.sc-flicker{animation:scBob 1.8s steps(2) infinite,scFlicker .32s steps(1) infinite}
 .sc-late{animation-delay:-.6s}
-/* the ride parked at a stop leaves once the traveller gets there */
-@keyframes scGo{70%{opacity:1}to{transform:translateX(calc(var(--sp,3px) * 36));opacity:0}}
-@keyframes scUp{70%{opacity:1}to{transform:translateY(calc(var(--sp,3px) * -44));opacity:0}}
-@keyframes scFly{70%{opacity:1}to{transform:translate(calc(var(--sp,3px) * 40),calc(var(--sp,3px) * -26));opacity:0}}
-[data-ms].reached .sc-ride{animation:scGo 1.1s steps(9) forwards}
-[data-ms].reached .sc-up{animation:scUp 1.6s steps(12) forwards}
-[data-ms].reached .sc-fly{animation:scFly 1.4s steps(10) forwards}
+/* Handoff at a stop: the parked ride (.sc-take) is the one she takes, and the ride she came on (.sc-left)
+   is parked in its place. .reached gives the end state in either direction; the road adds .sw for a
+   moment on a real crossing (only while the scene is on screen). The swap is the same transformation as
+   the rider's and runs in step with it: both rides flicker as white silhouettes, then the one that stays
+   flashes into colour (down: take -> left, up: left -> take). Nothing drives away. */
+.sc-take,.sc-left{transform-origin:50% 100%}
+.sc-left,[data-ms].reached .sc-take{visibility:hidden}
+[data-ms].reached .sc-left{visibility:visible}
+[data-ms].sw.reached .sc-take,[data-ms].sw:not(.reached) .sc-left{visibility:visible;animation:mOut 1s steps(1,end) forwards}
+[data-ms].sw.reached .sc-left,[data-ms].sw:not(.reached) .sc-take{animation:mIn 1s steps(1,end) both}
+.sc-poof{position:absolute;width:0;height:0}
+.sc-poof b,.sc-poof i{position:absolute;opacity:0}
+.sc-poof b{left:calc(var(--sp,3px) * -8);top:calc(var(--sp,3px) * -8);width:calc(var(--sp,3px) * 16);height:calc(var(--sp,3px) * 16);background:#fff6c8;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.sc-poof i{left:calc(var(--sp,3px) * -1);top:calc(var(--sp,3px) * -1);width:calc(var(--sp,3px) * 2);height:calc(var(--sp,3px) * 2);background:#fff6c8;box-shadow:0 0 0 calc(var(--sp,3px) * .5) #1b2a1c}
+.sc-poof i:nth-child(odd){background:#f6c945}
+/* two identical keyframe names: flipping direction restarts the sparkles without a reflow */
+[data-ms].sw.reached .sc-poof b{animation:flashA 1s steps(1,end) forwards}
+[data-ms].sw:not(.reached) .sc-poof b{animation:flashB 1s steps(1,end) forwards}
+[data-ms].sw.reached .sc-poof i{animation:scSparkA 1s steps(6) forwards}
+[data-ms].sw:not(.reached) .sc-poof i{animation:scSparkB 1s steps(6) forwards}
+@keyframes scSparkA{0%{opacity:1;transform:rotate(var(--a)) translateX(calc(var(--sp,3px) * 14)) scale(.6)}70%{opacity:1;transform:rotate(calc(var(--a) + 150deg)) translateX(calc(var(--sp,3px) * 3)) scale(1)}76%{opacity:0;transform:rotate(calc(var(--a) + 160deg)) translateX(var(--sp,3px))}78%{opacity:1;transform:rotate(calc(var(--a) + 160deg)) translateX(calc(var(--sp,3px) * 4)) scale(1.2)}100%{opacity:0;transform:rotate(calc(var(--a) + 170deg)) translateX(calc(var(--sp,3px) * 16)) scale(.5)}}
+@keyframes scSparkB{0%{opacity:1;transform:rotate(var(--a)) translateX(calc(var(--sp,3px) * 14)) scale(.6)}70%{opacity:1;transform:rotate(calc(var(--a) + 150deg)) translateX(calc(var(--sp,3px) * 3)) scale(1)}76%{opacity:0;transform:rotate(calc(var(--a) + 160deg)) translateX(var(--sp,3px))}78%{opacity:1;transform:rotate(calc(var(--a) + 160deg)) translateX(calc(var(--sp,3px) * 4)) scale(1.2)}100%{opacity:0;transform:rotate(calc(var(--a) + 170deg)) translateX(calc(var(--sp,3px) * 16)) scale(.5)}}
 .fx{position:absolute;width:0;height:0}
 .fx i{position:absolute;left:0;top:0;width:var(--sp,3px);height:var(--sp,3px);opacity:0}
 .fx-smoke i{width:calc(var(--sp,3px) * 2);height:calc(var(--sp,3px) * 2);background:#ebe8de;animation:fxSmoke 2.7s steps(9) infinite;animation-delay:calc(var(--i) * -.9s + var(--fd,0s))}
@@ -611,4 +649,16 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .fx-burst i{animation:fxBurst 2.2s steps(8) infinite;animation-delay:var(--fd,0s)}
 .fx-burst i:nth-child(odd){background:#f6c945}.fx-burst i:nth-child(even){background:#e3392b}
 @keyframes fxBurst{0%{opacity:1;transform:rotate(calc(var(--i) * 45deg)) translateX(0)}45%{opacity:1}60%,100%{opacity:0;transform:rotate(calc(var(--i) * 45deg)) translateX(calc(var(--sp,3px) * 7))}}
-@media (prefers-reduced-motion:reduce){.fx{display:none}[data-ms].reached .sc-ride{visibility:hidden}}
+@media (prefers-reduced-motion:reduce){.fx,.sc-poof{display:none}.sc-fb{visibility:hidden}}
+/* ---- clouds drifting over the whole page (Clouds in pages/home.tsx) ----
+   Fixed to the screen, so they keep passing over the road while you scroll. The shadows fall on the
+   road, scenes and rider; both layers stay under the cards (z-20) so text is never covered. */
+.clouds{position:fixed;inset:0;overflow:hidden;pointer-events:none;--sp:4px}
+@media (min-width:768px){.clouds{--sp:6px}}
+@media (min-width:1024px){.clouds{--sp:8px}}
+.cl-shadow{z-index:16;color:#0d3b12;opacity:.18}
+.cl-sky{z-index:17;opacity:.92}
+.cl{position:absolute;left:0;will-change:transform;animation:clDrift 60s steps(1400) infinite}
+.cl-shadow .cl{margin:calc(var(--sp) * 16) 0 0 calc(var(--sp) * 9)}
+@keyframes clDrift{from{transform:translate3d(-100%,0,0)}to{transform:translate3d(100vw,0,0)}}
+@media (prefers-reduced-motion:reduce){.clouds{display:none}}

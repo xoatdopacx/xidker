@@ -94,6 +94,7 @@
     "errorBody": "Sistem pembayaran tidak merespons saat ini. Biasanya kembali dalam hitungan detik.",
     "retry": "Coba lagi",
     "empty": "Paket sedang diperbarui. Periksa kembali dalam beberapa menit.",
+    "note": "Setiap paket untuk 1 portofolio. Hosting dan domain hanya termasuk di Paket Lengkap A–Z. Harga disesuaikan dengan PPN negara Anda saat checkout.",
     "footnote": "Checkout oleh Whop · Tautan kode sumber dikirim lewat email",
     "toastTitle": "Tidak dapat membuka checkout",
     "toastBody": "Koneksi terputus. Tunggu beberapa detik dan coba lagi.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Saya bukan pembuat kode. Bisakah saya menggunakannya?",
-        "a": "Nama, bio, proyek, dan foto Anda disimpan di tempat terpisah agar mudah diganti. Jika Anda lebih suka disiapkan untuk Anda, pilih paket yang menyertakan pengaturan."
+        "a": "Bisa. Nama, bio, proyek, dan foto disimpan di satu tempat, dan README memandu setiap langkah. Tidak mau menyentuh kode? Pilih Buat Sesuai Permintaan atau Paket Lengkap A–Z: kirim kebutuhan Anda dan kami yang membuatnya."
       },
       {
-        "q": "Bisakah saya menggunakannya untuk pekerjaan klien?",
-        "a": "Tergantung paketnya. Masing-masing mencantumkan apa yang diperbolehkan dalam bagian harga. Tidak yakin? Kirim email sebelum Anda membeli."
+        "q": "Satu paket bisa untuk berapa portofolio?",
+        "a": "Satu paket untuk 1 portofolio. Butuh lebih dari satu? Beli satu paket untuk setiap portofolio."
       },
       {
         "q": "Bagaimana cara membuatnya online?",
-        "a": "Pilih host web mana pun yang Anda suka dan unggah kode sumbernya. Kami tidak mengunci Anda di satu platform."
+        "a": "Dengan Paket Lengkap A–Z, kami yang menaruhnya online untuk Anda, dengan hosting 1 tahun dan domain 1 tahun. Dengan paket lain, pilih hosting mana pun lalu unggah kode sumbernya; caranya ada di README. Kami tidak mengunci Anda di platform tertentu."
       },
       {
         "q": "Bagaimana jika ada yang rusak atau hilang?",

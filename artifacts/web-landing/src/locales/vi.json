@@ -94,6 +94,7 @@
     "errorBody": "Hệ thống thanh toán đang không phản hồi. Thường chỉ vài giây là có lại.",
     "retry": "Tải lại",
     "empty": "Các gói đang được cập nhật. Bạn quay lại sau ít phút nhé.",
+    "note": "Mỗi gói làm 1 portfolio. Chỉ Trọn Gói A–Z có kèm hosting và tên miền. Giá được điều chỉnh theo thuế VAT của từng nước khi thanh toán.",
     "footnote": "Thanh toán qua Whop · Nhận link source qua email",
     "toastTitle": "Chưa mở được trang thanh toán",
     "toastBody": "Kết nối bị gián đoạn. Bạn thử lại sau vài giây nhé.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Tôi không rành code thì có dùng được không?",
-        "a": "Tên, phần giới thiệu, dự án và ảnh được để riêng cho dễ thay. Nếu bạn muốn được cài đặt giúp, hãy chọn gói có kèm cài đặt trong bảng giá."
+        "a": "Được. Tên, giới thiệu, dự án và ảnh nằm riêng một chỗ, file README hướng dẫn từng bước. Không muốn đụng tới code thì chọn Build Theo Yêu Cầu hoặc Trọn Gói A–Z: bạn gửi yêu cầu, chúng tôi làm giúp."
       },
       {
-        "q": "Tôi có được dùng cho khách hàng không?",
-        "a": "Tùy gói. Phạm vi sử dụng của từng gói được ghi trong bảng giá. Còn phân vân thì gửi email hỏi chúng tôi trước khi mua."
+        "q": "Một gói làm được mấy portfolio?",
+        "a": "Mỗi gói làm 1 portfolio. Cần nhiều hơn thì mua mỗi portfolio một gói."
       },
       {
         "q": "Tôi đưa web lên mạng bằng cách nào?",
-        "a": "Bạn chọn dịch vụ hosting mình thích rồi tải source lên. Chúng tôi không khóa bạn vào nền tảng nào."
+        "a": "Với Trọn Gói A–Z, chúng tôi đưa web lên mạng giúp bạn, kèm hosting 1 năm và tên miền 1 năm. Với các gói khác, bạn chọn hosting mình thích rồi tải source lên, file README có hướng dẫn. Chúng tôi không khóa bạn vào nền tảng nào."
       },
       {
         "q": "Gặp lỗi hoặc thiếu file thì sao?",

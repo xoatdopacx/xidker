@@ -94,6 +94,7 @@
     "errorBody": "System płatności teraz nie odpowiada. Zazwyczaj wraca po kilku sekundach.",
     "retry": "Spróbuj ponownie",
     "empty": "Pakiety są aktualizowane. Wróć za chwilę.",
+    "note": "Każdy pakiet to 1 portfolio. Hosting i domena są tylko w pakiecie Wszystko w jednym A–Z. Przy płatności cena jest dostosowywana do stawki VAT w Twoim kraju.",
     "footnote": "Płatność przez Whop · Link do kodu w mailu",
     "toastTitle": "Nie udało się otworzyć płatności",
     "toastBody": "Połączenie przerwane. Odczekaj chwilę i spróbuj ponownie.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Nie znam się na kodowaniu. Poradzę sobie?",
-        "a": "Imię, bio, projekty i zdjęcia są w jednym miejscu, więc łatwo je zmienić. Jeśli wolisz, żebyśmy zrobili to za Ciebie, wybierz pakiet z konfiguracją."
+        "a": "Tak. Imię, opis, projekty i zdjęcia są w jednym miejscu, a README prowadzi przez każdy krok. Nie chcesz dotykać kodu? Wybierz pakiet Wykonanie na zamówienie lub Wszystko w jednym A–Z: wyślij wymagania, a my zrobimy resztę."
       },
       {
-        "q": "Czy mogę użyć tego dla klienta?",
-        "a": "Zależy od pakietu. Informacje o tym, co możesz robić, znajdziesz przy każdym pakiecie w cenniku. Nie jesteś pewien? Napisz do nas przed zakupem."
+        "q": "Na ile portfolio wystarcza jeden pakiet?",
+        "a": "Każdy pakiet to 1 portfolio. Potrzebujesz więcej? Kup osobny pakiet na każde portfolio."
       },
       {
         "q": "Jak opublikować stronę?",
-        "a": "Wybierz dowolny hosting i wgraj kod. Nie ograniczamy Cię do żadnej platformy."
+        "a": "W pakiecie Wszystko w jednym A–Z sami opublikujemy stronę, z hostingiem i domeną na 1 rok. W pozostałych pakietach wybierz dowolny hosting i wgraj kod; instrukcja jest w README. Nie wiążemy Cię z żadną platformą."
       },
       {
         "q": "Co jeśli coś nie działa lub brakuje pliku?",

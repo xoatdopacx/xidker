@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, type CSSProperties } from "react";
-import { SCENES, SCENE_PAL, type Fx, type SceneName } from "@/components/scene-art";
+import { CLOUD_ARTS, SCENES, SCENE_PAL, type Fx, type SceneName } from "@/components/scene-art";
 
 export type { SceneName } from "@/components/scene-art";
 
@@ -47,7 +47,7 @@ const FX_BITS: Record<Fx["k"], number> = { smoke: 3, steam: 3, confetti: 8, burs
 
 function Effect({ f, n }: { f: Fx; n: number }) {
   return (
-    <span className={`fx fx-${f.k}`} style={{ left: sp(f.x), top: sp(f.y), "--fd": `${n * -1.3}s` } as CSSProperties}>
+    <span className={`fx fx-${f.k} ${f.c ?? ""}`} style={{ left: sp(f.x), top: sp(f.y), "--fd": `${n * -1.3}s` } as CSSProperties}>
       {Array.from({ length: FX_BITS[f.k] }, (_, i) => <i key={i} style={{ "--i": i } as CSSProperties} />)}
     </span>
   );
@@ -77,6 +77,22 @@ export const Scene = memo(function Scene({ name, className = "relative", style }
         </div>
       ))}
       {def.fx?.map((f, i) => <Effect key={`fx${i}`} f={f} n={i} />)}
+      {def.swap && (
+        <span className="sc-poof" style={{ left: sp(def.swap.x), top: sp(def.swap.y) }}>
+          <b />
+          {Array.from({ length: 8 }, (_, i) => <i key={i} style={{ "--a": `${i * 45}deg` } as CSSProperties} />)}
+        </span>
+      )}
     </div>
   );
 });
+
+/** A drifting cloud, or its shadow (every pixel in currentColor). Size follows --sp like the scenes. */
+export function CloudArt({ i, shadow = false }: { i: number; shadow?: boolean }) {
+  const { w, h, paths } = parse(CLOUD_ARTS[i]);
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="block" style={{ width: sp(w), height: sp(h) }} shapeRendering="crispEdges" aria-hidden="true">
+      {shadow ? <path d={paths.map((p) => p[2]).join("")} fill="currentColor" /> : paths.map(([k, fill, d]) => <path key={k} d={d} fill={fill} />)}
+    </svg>
+  );
+}

@@ -560,6 +560,357 @@ const FORK = `
 .TTTTTt........tTTTTT.
 TTTt..............tTTT`;
 
+/* ---------- little extras along the way (wider screens) ---------- */
+
+const POND = `
+.......cccccccccccc.......
+....cccCCCCCCCCCCCCccc....
+..ccCCCCCCUUUCCCCCCCCCcc..
+.cCCCCCCCCCCCCCCCUUUCCCCc.
+cCCCCUUUCCCCCCCCCCCCCCCCCc
+.uCCCCCCCCCCCCCCCCCCCCCCu.
+..uuCCCCCCCCCCCCCCCCCCuu..
+....uuuuuuuuuuuuuuuuuu....`;
+
+const DUCK = `
+.....WW.
+....WWKO
+.....WW.
+WW..WWW.
+WWWWWWW.
+.vvvvv..`;
+
+const DUCKLING = `
+..YO
+YYYY
+.YY.`;
+
+const REEDS = `
+.b...
+.b.b.
+.G.b.
+.G.G.
+GG.GG
+.GGG.
+.G.G.
+.GGG.`;
+
+const LILY = `
+.M..
+GGGG
+.GL.`;
+
+const ROCK = `
+.SS.
+SSSs
+.ss.`;
+
+const BARN = `
+........KKKKKK........
+......KKrrrrrrKK......
+....KKrrrrrrrrrrKK....
+...KrrrrrrrrrrrrrrK...
+..KrrrrrrKKKKrrrrrrK..
+.KrrrrrrrKTTKrrrrrrrK.
+KKKKKKKKKKKKKKKKKKKKKK
+.KRRRRRRRRRRRRRRRRRRK.
+.KRRRRRRRRRRRRRRRRRRK.
+.KRRRRWWWWWWWWWWRRRRK.
+.KRRRRWWRRRRRRWWRRRRK.
+.KRRRRWRWRRRRWRWRRRRK.
+.KRRRRWRRWRRWRRWRRRRK.
+.KRRRRWRRRWWRRRWRRRRK.
+.KRRRRWRRWRRWRRWRRRRK.
+.KRRRRWRWRRRRWRWRRRRK.
+.KRRRRWWRRRRRRWWRRRRK.
+.KKKKKKKKKKKKKKKKKKKK.`;
+
+const COW = `
+..ww...........
+.wWWw..........
+.WKW.WWWWWWWW..
+MMWWWKKWWWKKWWb
+MMWWWKKWWWWWWWb
+..WWWWWWWWWWWW.
+..W.W...MM.W.W.
+..K.K......K.K.`;
+
+const HAY = `
+.TTTT.
+TtTTtT
+TTTTTT
+tttttt`;
+
+const MILL = `
+......KK......
+.....KrrK.....
+....KrrrrK....
+...KrrrrrrK...
+...KKKKKKKK...
+...KwwwwwvK...
+...KwwwwwvK...
+..KwwKKwwwvK..
+..KwwKUKwwvK..
+..KwwKKwwwvK..
+..KwwwwwwwvK..
+.KwwwwwwwwwvK.
+.KwwwwKKKwwvK.
+.KwwwKBBBKwvK.
+.KwwwKBBBKwvK.
+KwwwwKBYBKwwvK
+KwwwwKBBBKwwvK
+KKKKKKKKKKKKKK`;
+
+const SAILS_A = `
+........KKK........
+........KwK........
+........KwK........
+........KvK........
+........KwK........
+........KwK........
+........KvK........
+........KwK........
+KKKKKKKKbbbKKKKKKKK
+KwwvwwvwbYbwvwwvwwK
+KKKKKKKKbbbKKKKKKKK
+........KwK........
+........KvK........
+........KwK........
+........KwK........
+........KvK........
+........KwK........
+........KwK........
+........KKK........`;
+
+const SAILS_B = `
+KK...............KK
+KwK.............KwK
+.KwK...........KwK.
+..KwK.........KwK..
+...KvK.......KvK...
+....KwK.....KwK....
+.....KwK...KwK.....
+......KvK.KvK......
+.......KbbbK.......
+........bYb........
+.......KbbbK.......
+......KvK.KvK......
+.....KwK...KwK.....
+....KwK.....KwK....
+...KvK.......KvK...
+..KwK.........KwK..
+.KwK...........KwK.
+KwK.............KwK
+KK...............KK`;
+
+const TENT = `
+.......KK.......
+......KOOK......
+.....KOOOyK.....
+....KOOOKyyK....
+...KOOOKAKyyK...
+..KOOOKAAAKyyK..
+.KOOOOKAAAKyyyK.
+KOOOOKAAAAAKyyyK
+KKKKKKKKKKKKKKKK`;
+
+const FIRE_A = `
+..O..
+.OYO.
+.OYR.
+ROYOR
+.RYR.`;
+
+const FIRE_B = `
+.O...
+.OO..
+.OYO.
+OYYOR
+.RYR.`;
+
+const LOGS = `
+BB...BB
+.bBBBb.
+bb...bb`;
+
+const SKEP = `
+...KKKK...
+..KTTTTK..
+.KttttttK.
+.KTTTTTTK.
+KttttttttK
+KTTTTTTTTK
+KtttKKtttK
+KKKKKKKKKK
+bBBBBBBBBb
+.b......b.
+.b......b.`;
+
+const BEES_A = `
+.W.......
+YKY......
+......W..
+.....YKY.
+..W......
+.YKY.....`;
+
+const BEES_B = `
+..W......
+.YKY.....
+.......W.
+......YKY
+.W.......
+YKY......`;
+
+const TALL_FLOWER = `
+.Y.
+YbY
+.Y.
+.G.
+GG.
+.G.`;
+
+const UMBRELLA = `
+......KKK......
+....KKMWMKK....
+...KMMWWWMMK...
+..KWMMWWWMMWK..
+.KWWMMWWWMMWWK.
+KWWWMMWWWMMWWWK
+KKKKKKKKKKKKKKK`;
+
+const STICK = `
+s
+s
+s
+s
+s`;
+
+const CART = `
+bKKKKKKKKKKKKKKK.
+bKwwwwwwMMwwwwwvK
+.KwwwwwwTTwwwwwvK
+.KwwwwwwwTwwwwwvK
+.KMMMMMMMMMMMMMMK
+.KKKKKKKKKKKKKKKK
+...KsK.....KsK...
+..KsSsK...KsSsK..
+...KKK.....KKK...`;
+
+const SCARECROW = `
+....bbb....
+...bbbbb...
+..bbbbbbb..
+....TTT....
+....KTK....
+....TTT....
+YRrRRRRRrRY
+...RrRrR...
+...RRrRR...
+...CCCCC...
+...CC.CC...
+.....b.....
+.....b.....
+.....b.....
+.....b.....`;
+
+const CROW = `
+.KK.
+KKKY
+.K..`;
+
+const CROPS = `
+.LL...LL...LL....
+LGGL.LGGL.LGGL...
+BBBBBBBBBBBBBBBB.
+bbbbbbbbbbbbbbbb.
+..G.G...G.G...G.G
+..O.O...O.O...O.O
+.BBBBBBBBBBBBBBBB`;
+
+const WATER = `
+..cccccccccccccccccccccccc..
+.cCCCCCCCCCCCCCCCCCCCCCCCCc.
+cCCCUUCCCCCCCCCCCCCCCCCCCCCc
+CCCCCCCCCCCCCCUUUCCCCCCCCCCC
+CCCCCCCCCCCCCCCCCCCCCCCUUCCC
+uCCCCCCUUCCCCCCCCCCCCCCCCCCu
+.uuCCCCCCCCCCCCCCCCCCCCCCuu.
+...uuuuuuuuuuuuuuuuuuuuuu...`;
+
+const DOCK = `
+TTTTTTTTTTTTTTTT
+tTtTtTtTtTtTtTtT
+BBBBBBBBBBBBBBBB
+.b...b....b...b.
+.b...b....b...b.
+.u...u....u...u.`;
+
+const ROD = `
+........b
+.......bs
+......b.s
+.....b..s
+....b...s
+...b....s
+..b.....R
+.b......W`;
+
+const BUCKET = `
+s...s
+KSSSK
+KSSSK
+.KKK.`;
+
+const CONE = `
+..O..
+..O..
+.WWW.
+.OOO.
+OWWWO
+KKKKK`;
+
+const BARRIER = `
+KKKKKKKKKKKKKK
+KRRWWRRWWRRWWK
+KRWWRRWWRRWWRK
+KKKKKKKKKKKKKK
+.s..........s.
+.s..........s.
+sss........sss`;
+
+const WARN = `
+.Y.
+YOY
+.K.`;
+
+const WORK_SIGN = `
+...K...
+..KYK..
+.KYKYK.
+.KYKYK.
+KYYYYYK
+KYYKYYK
+KKKKKKK
+...s...
+...s...
+..sss..`;
+
+const SAND = `
+...TTTT...
+..TTTtTT..
+.TTtTTTTt.
+TTTTTTtTTT`;
+
+const SHOVEL = `
+bbb
+.b.
+.b.
+.b.
+.b.
+.b.
+SSS`;
+
 /* ---------- compositions ---------- */
 
 export type Part = {
@@ -568,15 +919,18 @@ export type Part = {
   /** position in art pixels */
   x: number;
   y: number;
-  /** classes on the positioned wrapper (e.g. the ride that leaves when the stop is reached) */
+  /** classes on the positioned wrapper. At a stop, `sc-take` is the parked ride the traveller takes and
+   *  `sc-left` the ride she arrives on and leaves in its place (shown once the stop is reached). */
   c?: string;
   /** classes on the drawing itself (e.g. a looping animation) */
   i?: string;
 };
-export type Fx = { k: "smoke" | "steam" | "confetti" | "burst"; x: number; y: number };
-export type SceneDef = { w: number; h: number; parts: Part[]; fx?: Fx[] };
+export type Fx = { k: "smoke" | "steam" | "confetti" | "burst"; x: number; y: number; c?: string };
+/** `swap`: centre of the dust cloud (art pixels) when the rides change places. */
+export type SceneDef = { w: number; h: number; parts: Part[]; fx?: Fx[]; swap?: { x: number; y: number } };
 
-export type SceneName = "home" | "bike" | "cafe" | "fuel" | "bus" | "balloon" | "air" | "launch" | "finish" | "signpost";
+export type SceneName = "home" | "bike" | "cafe" | "fuel" | "bus" | "balloon" | "air" | "launch" | "finish" | "signpost"
+  | "pond" | "farm" | "windmill" | "camp" | "bees" | "icecream" | "garden" | "dock" | "works";
 
 export const SCENES: Record<SceneName, SceneDef> = {
   home: {
@@ -602,10 +956,11 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: KIOSK, x: 0, y: 5 },
       { a: SIGN_BIKE, x: 20, y: 8 },
       { a: BUSH, x: 36, y: 17 },
-      { a: BICYCLE, x: 27, y: 12, c: "sc-ride" },
+      { a: BICYCLE, x: 27, y: 12, c: "sc-take" },
       { a: FLOWERS, x: 3, y: 20 },
       { a: FLOWERS_B, x: 14, y: 20 },
     ],
+    swap: { x: 35, y: 16 },
   },
   cafe: {
     w: 44, h: 22,
@@ -615,10 +970,12 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: TABLE, x: 6, y: 15 },
       { a: CUP, x: 8, y: 13 },
       { a: STOOL_B, x: 15, y: 17 },
-      { a: SCOOTER, x: 24, y: 9, c: "sc-ride" },
+      { a: SCOOTER, x: 24, y: 9, c: "sc-take" },
+      { a: BICYCLE, x: 25, y: 12, c: "sc-left" },
       { a: FLOWERS, x: 20, y: 19 },
     ],
     fx: [{ k: "steam", x: 9, y: 12 }],
+    swap: { x: 33, y: 15 },
   },
   fuel: {
     w: 42, h: 22,
@@ -627,10 +984,12 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: LAMP, x: 10, y: 4, i: "sc-blink" },
       { a: LAMP, x: 30, y: 4, i: "sc-blink sc-late" },
       { a: PUMP, x: 7, y: 8 },
-      { a: CAR, x: 19, y: 9, c: "sc-ride" },
+      { a: CAR, x: 19, y: 9, c: "sc-take" },
+      { a: SCOOTER, x: 19, y: 9, c: "sc-left" },
       { a: FLOWERS_B, x: 0, y: 19 },
       { a: FLOWERS, x: 37, y: 19 },
     ],
+    swap: { x: 28, y: 14 },
   },
   bus: {
     w: 44, h: 22,
@@ -638,25 +997,29 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: SHELTER, x: 0, y: 7 },
       { a: CAT, x: 7, y: 12 },
       { a: BUS_SIGN, x: 19, y: 6 },
-      { a: BUS, x: 25, y: 8, c: "sc-ride" },
+      { a: BUS, x: 25, y: 8, c: "sc-take" },
+      { a: CAR, x: 25, y: 9, c: "sc-left" },
       { a: FLOWERS, x: 1, y: 19 },
       { a: FLOWERS_B, x: 13, y: 19 },
     ],
+    swap: { x: 34, y: 14 },
   },
   balloon: {
     w: 44, h: 25,
     parts: [
       { a: CLOUD, x: 0, y: 3, i: "sc-drift" },
       { a: CLOUD_S, x: 33, y: 8, i: "sc-drift sc-late" },
-      { a: ROPE, x: 21, y: 14, c: "sc-ride sc-up" },
-      { a: BALLOON, x: 15, y: 0, c: "sc-ride sc-up", i: "sc-bob" },
-      { a: FLAME, x: 21, y: 9, c: "sc-ride sc-up", i: "sc-bob sc-flicker" },
+      { a: ROPE, x: 21, y: 14, c: "sc-take" },
+      { a: BALLOON, x: 15, y: 0, c: "sc-take", i: "sc-bob" },
+      { a: FLAME, x: 21, y: 9, c: "sc-take", i: "sc-bob sc-flicker" },
       { a: PEG, x: 20, y: 19 },
       { a: SACK, x: 10, y: 18 },
       { a: SACK, x: 28, y: 18 },
+      { a: BUS, x: 13, y: 9, c: "sc-left" },
       { a: BUSH, x: 1, y: 18 },
       { a: FLOWERS, x: 36, y: 19 },
     ],
+    swap: { x: 22, y: 13 },
   },
   air: {
     w: 48, h: 23,
@@ -668,8 +1031,10 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: STRIP, x: 20, y: 20 },
       { a: RUNWAY_LIGHT, x: 20, y: 19, i: "sc-blink" },
       { a: RUNWAY_LIGHT, x: 45, y: 19, i: "sc-blink sc-late" },
-      { a: PLANE, x: 23, y: 10, c: "sc-ride sc-fly" },
+      { a: PLANE, x: 23, y: 10, c: "sc-take" },
+      { a: BALLOON, x: 26, y: 5, c: "sc-left" },
     ],
+    swap: { x: 33, y: 13 },
   },
   launch: {
     w: 42, h: 28,
@@ -678,15 +1043,17 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: GANTRY, x: 20, y: 4 },
       { a: ARM, x: 16, y: 11 },
       { a: PAD, x: 6, y: 24 },
-      { a: ROCKET, x: 10, y: 6, c: "sc-ride sc-up" },
+      { a: ROCKET, x: 10, y: 6, c: "sc-take" },
+      { a: PLANE, x: 0, y: 14, c: "sc-left" },
       { a: HUT, x: 29, y: 15 },
       { a: BUSH, x: 0, y: 23 },
       { a: FLOWERS, x: 36, y: 25 },
     ],
-    fx: [{ k: "steam", x: 9, y: 24 }, { k: "steam", x: 18, y: 24 }],
+    fx: [{ k: "steam", x: 9, y: 24, c: "sc-take" }, { k: "steam", x: 18, y: 24, c: "sc-take" }],
+    swap: { x: 12, y: 16 },
   },
   finish: {
-    w: 44, h: 28,
+    w: 50, h: 28,
     parts: [
       { a: FLAG_POLE, x: 8, y: 2 },
       { a: FLAG_A, x: 9, y: 2, i: "sc-fa" },
@@ -697,9 +1064,11 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: GATE, x: 7, y: 8 },
       { a: PODIUM, x: 14, y: 18 },
       { a: FLOWERS, x: 1, y: 23 },
-      { a: FLOWERS_B, x: 39, y: 23 },
+      { a: FLOWERS_B, x: 45, y: 23 },
+      { a: ROCKET, x: 36, y: 8, c: "sc-left" },
     ],
-    fx: [{ k: "burst", x: 4, y: 3 }, { k: "burst", x: 41, y: 1 }, { k: "confetti", x: 22, y: 6 }],
+    fx: [{ k: "burst", x: 4, y: 3 }, { k: "burst", x: 44, y: 1 }, { k: "confetti", x: 22, y: 6 }],
+    swap: { x: 40, y: 17 },
   },
   signpost: {
     w: 40, h: 25,
@@ -712,4 +1081,133 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: FLOWERS_B, x: 33, y: 21 },
     ],
   },
+
+  /* little extras beside the road on wider screens */
+  pond: {
+    w: 34, h: 14,
+    parts: [
+      { a: POND, x: 4, y: 5 },
+      { a: LILY, x: 8, y: 9 },
+      { a: DUCK, x: 15, y: 4, i: "sc-bob" },
+      { a: DUCKLING, x: 25, y: 7, i: "sc-bob sc-late" },
+      { a: REEDS, x: 0, y: 3 },
+      { a: ROCK, x: 29, y: 10 },
+      { a: FLOWERS, x: 29, y: 2 },
+    ],
+  },
+  farm: {
+    w: 42, h: 18,
+    parts: [
+      { a: BARN, x: 0, y: 0 },
+      { a: FENCE, x: 29, y: 9 },
+      { a: HAY, x: 22, y: 14 },
+      { a: COW, x: 26, y: 10 },
+      { a: FLOWERS_B, x: 37, y: 15 },
+    ],
+  },
+  windmill: {
+    w: 26, h: 28,
+    parts: [
+      { a: MILL, x: 6, y: 10 },
+      { a: SAILS_A, x: 4, y: 5, i: "sc-fa" },
+      { a: SAILS_B, x: 4, y: 5, i: "sc-fb" },
+      { a: BUSH, x: 18, y: 24 },
+      { a: FLOWERS, x: 0, y: 25 },
+    ],
+  },
+  camp: {
+    w: 34, h: 14,
+    parts: [
+      { a: PINE, x: 25, y: 0 },
+      { a: TENT, x: 0, y: 4 },
+      { a: LOGS, x: 18, y: 10 },
+      { a: FIRE_A, x: 19, y: 6, i: "sc-fa" },
+      { a: FIRE_B, x: 19, y: 6, i: "sc-fb" },
+    ],
+    fx: [{ k: "smoke", x: 21, y: 4 }],
+  },
+  bees: {
+    w: 26, h: 15,
+    parts: [
+      { a: SKEP, x: 1, y: 4 },
+      { a: BEES_A, x: 11, y: 0, i: "sc-fa" },
+      { a: BEES_B, x: 11, y: 0, i: "sc-fb" },
+      { a: TALL_FLOWER, x: 15, y: 7 },
+      { a: TALL_FLOWER, x: 21, y: 8 },
+      { a: FLOWERS, x: 13, y: 12 },
+      { a: FLOWERS_B, x: 19, y: 12 },
+    ],
+  },
+  icecream: {
+    w: 24, h: 21,
+    parts: [
+      { a: UMBRELLA, x: 1, y: 0 },
+      { a: STICK, x: 8, y: 7 },
+      { a: CART, x: 0, y: 12 },
+      { a: FLOWERS_B, x: 19, y: 18 },
+    ],
+  },
+  garden: {
+    w: 31, h: 15,
+    parts: [
+      { a: SCARECROW, x: 1, y: 0 },
+      { a: CROW, x: 9, y: 3 },
+      { a: CROPS, x: 13, y: 7 },
+      { a: FLOWERS, x: 26, y: 2 },
+    ],
+  },
+  dock: {
+    w: 36, h: 14,
+    parts: [
+      { a: WATER, x: 7, y: 6 },
+      { a: DOCK, x: 0, y: 7 },
+      { a: BUCKET, x: 3, y: 4 },
+      { a: CAT, x: 9, y: 5 },
+      { a: ROD, x: 13, y: 0 },
+      { a: REEDS, x: 31, y: 3 },
+    ],
+  },
+  works: {
+    w: 42, h: 13,
+    parts: [
+      { a: CONE, x: 0, y: 6 },
+      { a: WORK_SIGN, x: 5, y: 2 },
+      { a: BARRIER, x: 12, y: 5 },
+      { a: WARN, x: 13, y: 2, i: "sc-blink" },
+      { a: WARN, x: 22, y: 2, i: "sc-blink sc-late" },
+      { a: CONE, x: 27, y: 6 },
+      { a: SHOVEL, x: 35, y: 2 },
+      { a: SAND, x: 32, y: 8 },
+    ],
+  },
 };
+
+/** Clouds drifting over the whole page (Clouds in pages/home.tsx): light top, pale-blue underside. */
+export const CLOUD_ARTS: string[] = [
+`
+........WWWW..........
+.....WWWWWWWWW..WW....
+...WWWWWWWWWWWWWWWWW..
+.WWWWWWWWWWWWWWWWWWWW.
+WWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWW
+.UUUUUUUUUUUUUUUUUUUU.
+...UUUUUUUUUUUUUUUU...`,
+`
+.....WWWW......
+...WWWWWWWW.W..
+.WWWWWWWWWWWWW.
+WWWWWWWWWWWWWWW
+.UUUUUUUUUUUUU.
+...UUUUUUUUU...`,
+`
+...........WWWWW..............
+.......WWWWWWWWWWW...WWW......
+.....WWWWWWWWWWWWWWWWWWWWW....
+...WWWWWWWWWWWWWWWWWWWWWWWWW..
+.WWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+.UUUUUUUUUUUUUUUUUUUUUUUUUUUU.
+....UUUUUUUUUUUUUUUUUUUUUUU...`,
+];

@@ -94,6 +94,7 @@
     "errorBody": "Betalsystemet svarar inte just nu. Det brukar vara tillbaka inom några sekunder.",
     "retry": "Försök igen",
     "empty": "Paketen uppdateras just nu. Kom tillbaka om en liten stund.",
+    "note": "Varje paket gäller 1 portfölj. Webbhotell och domän ingår bara i Allt-i-ett A–Z. Priset anpassas efter momsen i ditt land i kassan.",
     "footnote": "Betalning via Whop · Källkod skickas via e-post",
     "toastTitle": "Kunde inte öppna betalning",
     "toastBody": "Anslutningen bröts. Vänta några sekunder och försök igen.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Jag är inte utvecklare. Kan jag ändå använda den?",
-        "a": "Ditt namn, biografi, projekt och bilder finns på en egen plats så att de är enkla att byta ut. Om du hellre vill få den uppsatt åt dig, välj ett paket som inkluderar installation."
+        "a": "Ja. Namn, presentation, projekt och foton ligger på ett ställe, och README förklarar varje steg. Vill du inte röra koden? Välj Skräddarsydd eller Allt-i-ett A–Z: skicka dina önskemål så bygger vi den."
       },
       {
-        "q": "Kan jag använda den för kundarbete?",
-        "a": "Det beror på paketet. Varje paket listar vad du får göra med det under prisavsnittet. Osäker? Maila oss innan du köper."
+        "q": "Hur många portföljer gäller ett paket för?",
+        "a": "Varje paket gäller 1 portfölj. Behöver du fler? Köp ett paket per portfölj."
       },
       {
         "q": "Hur publicerar jag den på nätet?",
-        "a": "Välj vilket webbhotell du vill och ladda upp koden. Vi låser inte in dig i någon specifik plattform."
+        "a": "Med Allt-i-ett A–Z publicerar vi den åt dig, med webbhotell och domän i 1 år. Med de andra paketen väljer du valfritt webbhotell och laddar upp källkoden; README visar hur. Vi låser inte fast dig vid någon plattform."
       },
       {
         "q": "Vad gör jag om något är trasigt eller saknas?",

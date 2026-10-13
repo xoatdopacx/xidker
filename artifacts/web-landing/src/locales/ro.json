@@ -94,6 +94,7 @@
     "errorBody": "Sistemul de plată nu răspunde momentan. De obicei revine în câteva secunde.",
     "retry": "Încearcă din nou",
     "empty": "Pachetele sunt actualizate. Revino în câteva minute.",
+    "note": "Fiecare pachet este pentru 1 portofoliu. Găzduirea și domeniul sunt incluse doar în Totul inclus A–Z. Prețurile se ajustează la plată în funcție de TVA-ul țării tale.",
     "footnote": "Finalizare comandă prin Whop · Linkul pentru cod trimis prin email",
     "toastTitle": "Nu s-a putut deschide pagina de plată",
     "toastBody": "Conexiunea a fost întreruptă. Mai așteaptă câteva secunde și încearcă din nou.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Nu mă pricep la cod. Îl pot folosi?",
-        "a": "Numele, biografia, proiectele și fotografiile sunt păstrate într-un loc separat pentru a fi ușor de schimbat. Dacă preferi să fie configurat pentru tine, alege un pachet care include configurarea."
+        "a": "Da. Numele, descrierea, proiectele și fotografiile sunt într-un singur loc, iar README-ul explică fiecare pas. Nu vrei să atingi codul? Alege La comandă sau Totul inclus A–Z: trimite-ne cerințele și îl construim noi."
       },
       {
-        "q": "Îl pot folosi pentru clienți?",
-        "a": "Depinde de pachet. Fiecare enumeră ce ai voie să faci cu el în secțiunea de prețuri. Nu ești sigur? Scrie-ne înainte de a cumpăra."
+        "q": "Pentru câte portofolii este un pachet?",
+        "a": "Fiecare pachet este pentru 1 portofoliu. Ai nevoie de mai multe? Cumpără câte un pachet pentru fiecare portofoliu."
       },
       {
         "q": "Cum îl pun online?",
-        "a": "Alege orice serviciu de găzduire dorești și urcă codul. Nu te obligăm să folosești o anumită platformă."
+        "a": "Cu Totul inclus A–Z îl punem noi online pentru tine, cu găzduire și domeniu pentru 1 an. Cu celelalte pachete alegi orice găzduire și încarci codul; README-ul explică cum. Nu te legăm de nicio platformă."
       },
       {
         "q": "Ce fac dacă ceva este stricat sau lipsește?",

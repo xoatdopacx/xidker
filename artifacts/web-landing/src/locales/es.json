@@ -94,6 +94,7 @@
     "errorBody": "El sistema de pagos no responde en este momento. Suele volver en cuestión de segundos.",
     "retry": "Intenta de nuevo",
     "empty": "Los paquetes se están actualizando. Vuelve en unos minutos.",
+    "note": "Cada paquete sirve para 1 portafolio. El hosting y el dominio solo están incluidos en Todo incluido A–Z. Los precios se ajustan al IVA de tu país al pagar.",
     "footnote": "Pago a través de Whop · Enlace al código enviado por correo",
     "toastTitle": "No se pudo abrir el pago",
     "toastBody": "La conexión se interrumpió. Espera unos segundos e intenta de nuevo.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "No soy programador. ¿Puedo usarlo?",
-        "a": "Tu nombre, biografía, proyectos y fotos se mantienen en su propio lugar para que sean fáciles de cambiar. Si prefieres que alguien lo haga por ti, elige un paquete que incluya configuración."
+        "a": "Sí. Tu nombre, biografía, proyectos y fotos están en un solo lugar, y el README explica cada paso. ¿Prefieres no tocar el código? Elige A medida o Todo incluido A–Z: envíanos tus requisitos y lo hacemos nosotros."
       },
       {
-        "q": "¿Puedo usarlo para trabajos de clientes?",
-        "a": "Depende del paquete. Cada uno detalla lo que puedes hacer con él en la sección de precios. ¿No estás seguro? Escríbenos antes de comprar."
+        "q": "¿Para cuántos portafolios sirve un paquete?",
+        "a": "Cada paquete sirve para 1 portafolio. ¿Necesitas más? Compra un paquete por cada portafolio."
       },
       {
         "q": "¿Cómo lo pongo en línea?",
-        "a": "Elige el alojamiento web que prefieras y sube el código. No te bloqueamos en ninguna plataforma."
+        "a": "Con Todo incluido A–Z lo publicamos por ti, con hosting y dominio por 1 año. Con los demás paquetes, elige el hosting que quieras y sube el código; el README explica cómo. No te atamos a ninguna plataforma."
       },
       {
         "q": "¿Qué pasa si algo está roto o falta?",

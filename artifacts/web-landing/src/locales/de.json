@@ -94,6 +94,7 @@
     "errorBody": "Das Zahlungssystem reagiert derzeit nicht. Es ist meist innerhalb von Sekunden wieder verfügbar.",
     "retry": "Erneut versuchen",
     "empty": "Die Pakete werden aktualisiert. Schau in ein paar Minuten nochmal rein.",
+    "note": "Jedes Paket ist für 1 Portfolio. Hosting und Domain gibt es nur im Rundum-Paket A–Z. Der Preis wird beim Bezahlen an die Mehrwertsteuer deines Landes angepasst.",
     "footnote": "Checkout über Whop · Quellcode-Link per E-Mail",
     "toastTitle": "Checkout konnte nicht geöffnet werden",
     "toastBody": "Die Verbindung wurde unterbrochen. Warte kurz und versuche es erneut.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Ich bin kein Programmierer. Kann ich es trotzdem nutzen?",
-        "a": "Name, Bio, Projekte und Fotos sind an einer zentralen Stelle, damit sie leicht zu ändern sind. Wenn du möchtest, dass wir die Einrichtung übernehmen, wähle ein Paket mit inkludiertem Setup."
+        "a": "Ja. Name, Bio, Projekte und Fotos liegen an einer Stelle, und die README erklärt jeden Schritt. Du willst keinen Code anfassen? Wähle Individuelle Umsetzung oder das Rundum-Paket A–Z: Schick uns deine Anforderungen, wir bauen es."
       },
       {
-        "q": "Kann ich es für Kundenprojekte nutzen?",
-        "a": "Das hängt vom Paket ab. In der Preisübersicht steht bei jedem Paket, was erlaubt ist. Unsicher? Schreib uns eine E-Mail vor dem Kauf."
+        "q": "Für wie viele Portfolios reicht ein Paket?",
+        "a": "Jedes Paket ist für 1 Portfolio. Du brauchst mehrere? Kauf für jedes Portfolio ein eigenes Paket."
       },
       {
         "q": "Wie bringe ich es online?",
-        "a": "Wähle einen beliebigen Webhoster und lade den Quellcode hoch. Wir binden dich an keine Plattform."
+        "a": "Mit dem Rundum-Paket A–Z bringen wir es für dich online, mit Hosting und Domain für 1 Jahr. Bei den anderen Paketen wählst du einen beliebigen Hoster und lädst den Quellcode hoch; wie das geht, steht in der README. Wir binden dich an keine Plattform."
       },
       {
         "q": "Was ist, wenn etwas kaputt oder unvollständig ist?",

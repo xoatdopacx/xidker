@@ -94,6 +94,7 @@
     "errorBody": "Het betalingssysteem reageert even niet. Meestal is dit binnen enkele seconden opgelost.",
     "retry": "Probeer opnieuw",
     "empty": "Pakketten worden bijgewerkt. Probeer het over enkele minuten nog eens.",
+    "note": "Elk pakket is voor 1 portfolio. Hosting en domein zitten alleen in Alles-in-één A–Z. Bij het afrekenen wordt de prijs aangepast aan de btw van je land.",
     "footnote": "Checkout via Whop · Link naar broncode per mail verzonden",
     "toastTitle": "Kon checkout niet openen",
     "toastBody": "De verbinding is verbroken. Wacht even en probeer het opnieuw.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Ik kan niet coderen. Kan ik dit gebruiken?",
-        "a": "Je naam, bio, projecten en foto's staan op hun eigen plek zodat ze makkelijk te vervangen zijn. Wil je liever dat wij het voor je doen? Kies dan een pakket inclusief setup."
+        "a": "Ja. Je naam, bio, projecten en foto's staan op één plek, en de README legt elke stap uit. Liever niet aan code zitten? Kies Op maat gebouwd of Alles-in-één A–Z: stuur je wensen en wij bouwen het."
       },
       {
-        "q": "Mag ik dit voor klanten gebruiken?",
-        "a": "Dat hangt van het pakket af. Bij elk pakket staat in de prijstabel wat je ermee mag doen. Twijfel je? Mail ons even voordat je koopt."
+        "q": "Voor hoeveel portfolio's is één pakket?",
+        "a": "Elk pakket is voor 1 portfolio. Meer nodig? Koop een pakket per portfolio."
       },
       {
         "q": "Hoe zet ik de site online?",
-        "a": "Kies een webhost naar keuze en upload de code. We binden je nergens aan vast."
+        "a": "Met Alles-in-één A–Z zetten wij het voor je online, met 1 jaar hosting en domeinnaam. Bij de andere pakketten kies je zelf een host en upload je de broncode; de README legt uit hoe. We binden je niet aan een platform."
       },
       {
         "q": "Wat als er iets kapot is of ontbreekt?",

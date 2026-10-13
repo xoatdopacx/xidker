@@ -1,0 +1,8 @@
+{
+  "id": "fingerprint-vue",
+  "title": "Fingerprint — Vue",
+  "role": "frontend",
+  "frameworks": ["vue"],
+  "packages": ["@fingerprint/vue"],
+  "envVars": ["FINGERPRINT_PUBLIC_API_KEY", "FINGERPRINT_REGION"]
+}

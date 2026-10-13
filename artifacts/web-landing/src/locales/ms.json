@@ -94,6 +94,7 @@
     "errorBody": "Sistem pembayaran tidak bertindak balas sekarang. Biasanya ia kembali dalam beberapa saat.",
     "retry": "Cuba lagi",
     "empty": "Pakej sedang dikemas kini. Semak semula dalam beberapa minit.",
+    "note": "Setiap pakej untuk 1 portfolio. Hosting dan domain hanya termasuk dalam Pakej Lengkap A–Z. Harga diselaraskan mengikut cukai (VAT) negara anda semasa pembayaran.",
     "footnote": "Pembayaran oleh Whop · Pautan kod sumber dihantar melalui e-mel",
     "toastTitle": "Gagal membuka pembayaran",
     "toastBody": "Sambungan terputus. Tunggu beberapa saat dan cuba lagi.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Saya bukan pengekod. Masih boleh guna ke?",
-        "a": "Nama, bio, projek dan foto anda disimpan di tempatnya sendiri supaya mudah ditukar. Jika anda lebih suka kami sediakan untuk anda, pilih pakej yang termasuk penyediaan."
+        "a": "Boleh. Nama, bio, projek dan foto disimpan di satu tempat, dan README membimbing setiap langkah. Tidak mahu sentuh kod? Pilih Bina Ikut Permintaan atau Pakej Lengkap A–Z: hantar keperluan anda dan kami bina untuk anda."
       },
       {
-        "q": "Boleh guna untuk kerja klien?",
-        "a": "Ia bergantung pada pakej. Setiap satu menyenaraikan perkara yang anda dibenarkan lakukan dalam bahagian harga. Tidak pasti? E-mel kami sebelum anda beli."
+        "q": "Satu pakej boleh buat berapa portfolio?",
+        "a": "Satu pakej untuk 1 portfolio. Perlukan lebih? Beli satu pakej bagi setiap portfolio."
       },
       {
         "q": "Bagaimana saya terbitkan dalam talian?",
-        "a": "Pilih mana-mana hos web yang anda suka dan muat naik kod sumber. Kami tidak mengunci anda pada satu platform sahaja."
+        "a": "Dengan Pakej Lengkap A–Z, kami letakkan dalam talian untuk anda dengan hosting 1 tahun dan domain 1 tahun. Dengan pakej lain, pilih mana-mana hosting dan muat naik kod sumber; caranya ada dalam README. Kami tidak mengikat anda pada mana-mana platform."
       },
       {
         "q": "Bagaimana jika ada yang rosak atau hilang?",

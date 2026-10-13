@@ -94,6 +94,7 @@
     "errorBody": "Ödeme sistemi şu an yanıt vermiyor. Genellikle birkaç saniye içinde düzelir.",
     "retry": "Tekrar dene",
     "empty": "Paketler güncelleniyor. Birkaç dakika sonra tekrar kontrol edin.",
+    "note": "Her paket 1 portfolyo içindir. Hosting ve alan adı yalnızca Hepsi Bir Arada A–Z paketinde var. Fiyatlar ödeme sırasında ülkenizin KDV'sine göre ayarlanır.",
     "footnote": "Whop ile ödeme · Kaynak kodu linki e-postayla gönderilir",
     "toastTitle": "Ödeme açılamadı",
     "toastBody": "Bağlantı koptu. Birkaç saniye bekleyip tekrar deneyin.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Yazılımcı değilim. Yine de kullanabilir miyim?",
-        "a": "Adınız, biyografiniz, projeleriniz ve fotoğraflarınız kolayca değiştirilebilecek şekilde yerleştirilmiştir. Eğer sizin yerinize kurulum yapılmasını isterseniz, kurulum içeren bir paket seçin."
+        "a": "Evet. Adınız, tanıtımınız, projeleriniz ve fotoğraflarınız tek bir yerde durur, README her adımı anlatır. Koda dokunmak istemiyor musunuz? İsteğe Özel Yapım veya Hepsi Bir Arada A–Z paketini seçin: isteklerinizi gönderin, biz yapalım."
       },
       {
-        "q": "Müşteri işleri için kullanabilir miyim?",
-        "a": "Bu pakete bağlıdır. Her paketin neleri kapsadığı fiyatlandırma bölümünde listelenmiştir. Emin değil misiniz? Satın almadan önce bize e-posta gönderin."
+        "q": "Bir paketle kaç portfolyo yapılır?",
+        "a": "Her paket 1 portfolyo içindir. Daha fazlası gerekiyorsa her portfolyo için bir paket alın."
       },
       {
         "q": "Nasıl yayına alabilirim?",
-        "a": "İstediğiniz herhangi bir web sunucusunu seçin ve kaynak kodunu yükleyin. Sizi tek bir platforma kısıtlamıyoruz."
+        "a": "Hepsi Bir Arada A–Z ile 1 yıl hosting ve 1 yıl alan adıyla sitenizi biz yayına alırız. Diğer paketlerde istediğiniz hostingi seçip kaynak kodu yüklersiniz; nasıl yapılacağı README'de. Sizi hiçbir platforma bağlamıyoruz."
       },
       {
         "q": "Bir şey kırılırsa veya eksikse ne yapmalıyım?",

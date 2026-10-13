@@ -1,0 +1,8 @@
+{
+  "id": "fingerprint-react",
+  "title": "Fingerprint — React",
+  "role": "frontend",
+  "frameworks": ["react"],
+  "packages": ["@fingerprint/react"],
+  "envVars": ["FINGERPRINT_PUBLIC_API_KEY", "FINGERPRINT_REGION"]
+}

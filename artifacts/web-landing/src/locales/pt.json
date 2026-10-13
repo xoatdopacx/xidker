@@ -94,6 +94,7 @@
     "errorBody": "O sistema de pagamento não está respondendo no momento. Geralmente volta em poucos segundos.",
     "retry": "Tentar novamente",
     "empty": "Os pacotes estão sendo atualizados. Verifique novamente em alguns minutos.",
+    "note": "Cada pacote serve para 1 portfólio. Hospedagem e domínio vêm apenas no Tudo Incluído A–Z. Os preços são ajustados ao imposto (IVA) do seu país no pagamento.",
     "footnote": "Checkout via Whop · Link do código enviado por e-mail",
     "toastTitle": "Não foi possível abrir o checkout",
     "toastBody": "A conexão caiu. Aguarde alguns segundos e tente novamente.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Não sou programador. Posso usar mesmo assim?",
-        "a": "Seu nome, bio, projetos e fotos ficam em um local separado para facilitar a troca. Se preferir que alguém configure para você, escolha um pacote que inclua configuração."
+        "a": "Sim. Seu nome, bio, projetos e fotos ficam em um só lugar, e o README explica cada passo. Prefere não mexer no código? Escolha Sob Medida ou Tudo Incluído A–Z: envie seus requisitos e nós fazemos."
       },
       {
-        "q": "Posso usar em projetos de clientes?",
-        "a": "Depende do pacote. Cada um lista o que você pode fazer com ele na seção de preços. Não tem certeza? Mande um e-mail antes de comprar."
+        "q": "Um pacote serve para quantos portfólios?",
+        "a": "Cada pacote serve para 1 portfólio. Precisa de mais? Compre um pacote para cada portfólio."
       },
       {
         "q": "Como coloco online?",
-        "a": "Escolha qualquer hospedagem que preferir e envie os arquivos. Não te prendemos a nenhuma plataforma."
+        "a": "Com o Tudo Incluído A–Z, nós publicamos para você, com hospedagem e domínio por 1 ano. Nos outros pacotes, escolha qualquer hospedagem e envie o código; o README mostra como. Não prendemos você a nenhuma plataforma."
       },
       {
         "q": "E se algo estiver quebrado ou faltando?",

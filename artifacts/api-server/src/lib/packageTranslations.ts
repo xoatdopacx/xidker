@@ -16,8 +16,8 @@ export const PACKAGE_TRANSLATIONS: Record<
         "Looks great on phones and desktops",
         "Motion effects built in",
         "Edit your name, projects and photos in a single file",
-        "Step-by-step guide to put your portfolio online",
-        "License for 1 personal portfolio"
+        "README guide to put your portfolio online, step by step",
+        "Builds 1 portfolio"
       ]
     },
     "text": {
@@ -29,8 +29,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "スマホでもPCでも美しく表示",
           "アニメーションエフェクト組み込み済み",
           "名前、プロジェクト、写真を1つのファイルで編集可能",
-          "ポートフォリオ公開までのステップバイステップガイド",
-          "個人用ポートフォリオ1件分のライセンス"
+          "ポートフォリオ公開までをステップごとに説明したREADMEガイド",
+          "ポートフォリオ1件分"
         ]
       },
       "zh-CN": {
@@ -41,8 +41,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "在手机和电脑上显示都很出色",
           "内置动态效果",
           "在单个文件中修改您的名字、项目和照片",
-          "将作品集上线的分步指南",
-          "1个个人作品集使用许可"
+          "README 指南，一步步教您把作品集上线",
+          "可制作 1 个作品集"
         ]
       },
       "zh-TW": {
@@ -53,8 +53,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "手機與桌機皆美觀",
           "內建動態效果",
           "在單一檔案中修改名字、專案與照片",
-          "作品集上線逐步指南",
-          "個人作品集授權（1 個）"
+          "README 指南，一步步教你把作品集上線",
+          "可製作 1 個作品集"
         ]
       },
       "ko": {
@@ -65,8 +65,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "휴대폰과 데스크톱 모두에서 완벽하게 표시",
           "모션 효과 내장",
           "하나의 파일에서 이름, 프로젝트, 사진 수정",
-          "온라인 게시를 위한 단계별 가이드",
-          "개인 포트폴리오 1개용 라이선스"
+          "포트폴리오 온라인 게시까지 단계별로 안내하는 README 가이드",
+          "포트폴리오 1개 제작"
         ]
       },
       "th": {
@@ -77,8 +77,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "สวยงามทั้งบนมือถือและคอมพิวเตอร์",
           "มีเอฟเฟกต์การเคลื่อนไหวในตัว",
           "แก้ไขชื่อ โปรเจกต์ และรูปภาพได้ในไฟล์เดียว",
-          "คู่มือทีละขั้นตอนเพื่อนำพอร์ตโฟลิโอขึ้นออนไลน์",
-          "สิทธิ์ใช้งานสำหรับ 1 พอร์ตโฟลิโอส่วนตัว"
+          "คู่มือ README ทีละขั้นตอนเพื่อนำพอร์ตโฟลิโอขึ้นออนไลน์",
+          "ใช้ทำพอร์ตโฟลิโอได้ 1 ชิ้น"
         ]
       },
       "id": {
@@ -89,8 +89,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Tampilan hebat di ponsel dan desktop",
           "Efek gerak bawaan",
           "Edit nama, proyek, dan foto Anda dalam satu file",
-          "Panduan langkah demi langkah untuk menaruh portofolio online",
-          "Lisensi untuk 1 portofolio pribadi"
+          "Panduan README langkah demi langkah untuk menaruh portofolio online",
+          "Untuk 1 portofolio"
         ]
       },
       "ms": {
@@ -101,8 +101,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Tampak hebat pada telefon dan komputer",
           "Kesan gerakan terbina dalam",
           "Sunting nama, projek dan foto anda dalam satu fail",
-          "Panduan langkah demi langkah untuk meletakkan portfolio anda dalam talian",
-          "Lesen untuk 1 portfolio peribadi"
+          "Panduan README langkah demi langkah untuk meletakkan portfolio dalam talian",
+          "Untuk 1 portfolio"
         ]
       },
       "fil": {
@@ -113,8 +113,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Maganda sa phones at desktops",
           "May built-in motion effects",
           "I-edit ang pangalan, projects, at photos sa isang file lang",
-          "Step-by-step guide para mailagay online ang portfolio mo",
-          "License para sa 1 personal portfolio"
+          "README guide para mailagay online ang portfolio mo, step by step",
+          "Para sa 1 portfolio"
         ]
       },
       "km": {
@@ -125,8 +125,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "មើលទៅល្អឥតខ្ចោះនៅលើទូរស័ព្ទ និងកុំព្យូទ័រ",
           "មានបែបផែនចលនាស្រាប់",
           "កែសម្រួលឈ្មោះ គម្រោង និងរូបថតក្នុងឯកសារតែមួយ",
-          "មគ្គុទ្ទេសក៍ជាជំហានៗដើម្បីដាក់ផលប័ត្ររបស់អ្នកនៅលើអ៊ីនធឺណិត",
-          "អាជ្ញាប័ណ្ណសម្រាប់ផលប័ត្រផ្ទាល់ខ្លួនចំនួន 1"
+          "មគ្គុទ្ទេសក៍ README ជាជំហានៗ ដើម្បីដាក់ផលប័ត្ររបស់អ្នកនៅលើអ៊ីនធឺណិត",
+          "សម្រាប់ផលប័ត្រ 1"
         ]
       },
       "lo": {
@@ -137,8 +137,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "ສະແດງຜົນດີທັງໃນມືຖື ແລະ ຄອມພິວເຕີ",
           "ມີເອຟເຟັກການເຄື່ອນໄຫວໃນຕົວ",
           "ແກ້ໄຂຊື່, ຜົນງານ ແລະ ຮູບພາບໃນໄຟລ໌ດຽວ",
-          "ຄູ່ມືເປັນຂັ້ນຕອນເພື່ອອອນລາຍ Portfolio",
-          "ໃບອະນຸຍາດສຳລັບ 1 Portfolio ສ່ວນຕົວ"
+          "ຄູ່ມື README ເປັນຂັ້ນຕອນເພື່ອອອນລາຍ Portfolio",
+          "ສຳລັບ 1 Portfolio"
         ]
       },
       "hi": {
@@ -149,8 +149,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "फोन और डेस्कटॉप पर बेहतरीन दिखता है",
           "मोशन इफेक्ट्स पहले से बने हैं",
           "अपना नाम, प्रोजेक्ट्स और फोटो एक फाइल में एडिट करें",
-          "अपना पोर्टफोलियो ऑनलाइन डालने के लिए स्टेप-बाय-स्टेप गाइड",
-          "1 पर्सनल पोर्टफोलियो के लिए लाइसेंस"
+          "पोर्टफोलियो ऑनलाइन डालने के लिए स्टेप-बाय-स्टेप README गाइड",
+          "1 पोर्टफोलियो के लिए"
         ]
       },
       "bn": {
@@ -161,8 +161,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "ফোন এবং ডেস্কটপে দারুণ দেখায়",
           "বিল্ট-ইন মোশন ইফেক্ট",
           "একটি ফাইলে নাম, প্রজেক্ট এবং ছবি এডিট করুন",
-          "পোর্টফোলিও অনলাইনে দেওয়ার স্টেপ-বাই-স্টেপ গাইড",
-          "১টি পার্সোনাল পোর্টফোলিও’র লাইসেন্স"
+          "পোর্টফোলিও অনলাইনে দেওয়ার স্টেপ-বাই-স্টেপ README গাইড",
+          "১টি পোর্টফোলিওর জন্য"
         ]
       },
       "ar": {
@@ -173,8 +173,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "يبدو رائعاً على الهواتف والحواسيب",
           "تأثيرات حركة مدمجة",
           "عدل اسمك ومشاريعك وصورك في ملف واحد",
-          "دليل خطوة بخطوة لنشر موقعك",
-          "رخصة لمعرض أعمال شخصي واحد"
+          "دليل README خطوة بخطوة لنشر معرض أعمالك",
+          "لمعرض أعمال واحد"
         ]
       },
       "fa": {
@@ -185,8 +185,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "نمایش عالی روی گوشی‌ها و دسکتاپ‌ها",
           "افکت‌های حرکتی داخلی",
           "نام، پروژه‌ها و عکس‌های خود را در یک فایل واحد ویرایش کنید",
-          "راهنمای گام‌به‌گام برای آنلاین کردن نمونه‌کار",
-          "مجوز برای ۱ نمونه‌کار شخصی"
+          "راهنمای گام‌به‌گام README برای آنلاین کردن نمونه‌کار",
+          "برای ۱ نمونه‌کار"
         ]
       },
       "he": {
@@ -197,8 +197,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "נראה מעולה בטלפונים ובמחשבים",
           "אפקטי תנועה מובנים",
           "עריכת שם, פרויקטים ותמונות בקובץ אחד",
-          "מדריך שלב-אחר-שלב להעלאת הפורטפוליו לרשת",
-          "רישיון לפורטפוליו אישי אחד"
+          "מדריך README שלב-אחר-שלב להעלאת הפורטפוליו לרשת",
+          "לפורטפוליו אחד"
         ]
       },
       "ur": {
@@ -209,8 +209,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "فون اور ڈیسک ٹاپ پر بہترین نظر آتا ہے",
           "موشن ایفیکٹس شامل ہیں",
           "اپنا نام، پروجیکٹس اور تصاویر ایک فائل میں بدلیں",
-          "اپنے پورٹ فولیو کو آن لائن کرنے کے لیے سٹیپ بائی سٹیپ گائیڈ",
-          "1 ذاتی پورٹ فولیو کے لیے لائسنس"
+          "پورٹ فولیو آن لائن کرنے کے لیے سٹیپ بائی سٹیپ README گائیڈ",
+          "1 پورٹ فولیو کے لیے"
         ]
       },
       "tr": {
@@ -221,8 +221,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Telefon ve bilgisayarlarda harika görünüm",
           "Dahili hareket efektleri",
           "Adınızı, projelerinizi ve fotoğraflarınızı tek dosyada düzenleyin",
-          "Portfolyonuzu yayına almak için adım adım kılavuz",
-          "1 kişisel portfolyo için lisans"
+          "Portfolyonuzu yayına almak için adım adım README kılavuzu",
+          "1 portfolyo için"
         ]
       },
       "ru": {
@@ -233,8 +233,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Отлично выглядит на телефонах и ПК",
           "Встроенные анимации",
           "Меняйте имя, проекты и фото в одном файле",
-          "Пошаговое руководство по запуску",
-          "Лицензия для 1 личного портфолио"
+          "Пошаговая инструкция README по запуску портфолио",
+          "Для 1 портфолио"
         ]
       },
       "uk": {
@@ -245,8 +245,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Чудовий вигляд на телефонах і ПК",
           "Вбудовані анімаційні ефекти",
           "Редагуйте ім'я, проекти та фото в одному файлі",
-          "Покрокова інструкція для запуску",
-          "Ліцензія на 1 особисте портфоліо"
+          "Покрокова інструкція README для запуску портфоліо",
+          "Для 1 портфоліо"
         ]
       },
       "pl": {
@@ -257,8 +257,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Wygląda świetnie na telefonach i komputerach",
           "Wbudowane efekty ruchu",
           "Edytuj imię, projekty i zdjęcia w jednym pliku",
-          "Poradnik krok po kroku jak wystartować",
-          "Licencja na 1 własne portfolio"
+          "Poradnik README krok po kroku, jak wystawić portfolio online",
+          "Na 1 portfolio"
         ]
       },
       "cs": {
@@ -269,8 +269,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Vypadá skvěle na telefonech i počítačích",
           "Integrované pohybové efekty",
           "Jméno, projekty a fotky změníte v jednom souboru",
-          "Návod krok za krokem pro spuštění webu",
-          "Licence pro 1 osobní portfolio"
+          "Návod README krok za krokem, jak dát portfolio online",
+          "Pro 1 portfolio"
         ]
       },
       "de": {
@@ -281,8 +281,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Sieht auf Handys und Desktops toll aus",
           "Integrierte Bewegungseffekte",
           "Ändere Name, Projekte und Fotos in einer einzigen Datei",
-          "Schritt-für-Schritt-Anleitung, um dein Portfolio online zu bringen",
-          "Lizenz für 1 persönliches Portfolio"
+          "README-Anleitung, um dein Portfolio Schritt für Schritt online zu bringen",
+          "Für 1 Portfolio"
         ]
       },
       "fr": {
@@ -293,8 +293,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "S'affiche parfaitement sur mobile et bureau",
           "Effets de mouvement intégrés",
           "Modifiez votre nom, vos projets et photos dans un seul fichier",
-          "Guide étape par étape pour mettre votre portfolio en ligne",
-          "Licence pour 1 portfolio personnel"
+          "Guide README étape par étape pour mettre votre portfolio en ligne",
+          "Pour 1 portfolio"
         ]
       },
       "es": {
@@ -305,8 +305,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Se ve excelente en teléfonos y computadoras",
           "Efectos de movimiento incluidos",
           "Edita tu nombre, proyectos y fotos en un solo archivo",
-          "Guía paso a paso para poner tu portafolio en línea",
-          "Licencia para 1 portafolio personal"
+          "Guía README paso a paso para poner tu portafolio en línea",
+          "Para 1 portafolio"
         ]
       },
       "pt": {
@@ -317,8 +317,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Fica ótimo em celulares e computadores",
           "Efeitos de movimento incluídos",
           "Edite nome, projetos e fotos em um arquivo só",
-          "Guia passo a passo para publicar seu portfólio",
-          "Licença para 1 portfólio pessoal"
+          "Guia README passo a passo para publicar seu portfólio",
+          "Para 1 portfólio"
         ]
       },
       "it": {
@@ -329,8 +329,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Ottimo su telefoni e desktop",
           "Effetti di movimento inclusi",
           "Modifica nome, progetti e foto in un unico file",
-          "Guida passo dopo passo per pubblicare il tuo portfolio",
-          "Licenza per 1 portfolio personale"
+          "Guida README passo dopo passo per pubblicare il tuo portfolio",
+          "Per 1 portfolio"
         ]
       },
       "nl": {
@@ -341,8 +341,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Ziet er top uit op mobiel en desktop",
           "Ingebouwde animatie-effecten",
           "Naam, projecten en foto's bewerken in één bestand",
-          "Stap-voor-stap handleiding om je site online te krijgen",
-          "Licentie voor 1 persoonlijk portfolio"
+          "README-handleiding om je portfolio stap voor stap online te zetten",
+          "Voor 1 portfolio"
         ]
       },
       "sv": {
@@ -353,8 +353,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Ser bra ut på mobiler och datorer",
           "Rörelseeffekter inbyggda",
           "Redigera ditt namn, projekt och foton i en enda fil",
-          "Steg-för-steg-guide för att få din portfölj online",
-          "Licens för 1 personlig portfölj"
+          "README-guide för att få din portfölj online steg för steg",
+          "För 1 portfölj"
         ]
       },
       "el": {
@@ -365,8 +365,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Φαίνεται τέλεια σε κινητά και desktop",
           "Ενσωματωμένα εφέ κίνησης",
           "Αλλάξτε όνομα, έργα και φωτογραφίες σε ένα αρχείο",
-          "Οδηγός βήμα-βήμα για να βάλετε το portfolio online",
-          "Άδεια για 1 προσωπικό portfolio"
+          "Οδηγός README βήμα-βήμα για να βάλετε το portfolio online",
+          "Για 1 portfolio"
         ]
       },
       "ro": {
@@ -377,8 +377,8 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Arată excelent pe telefoane și computere",
           "Efecte de mișcare incluse",
           "Editare nume, proiecte și fotografii dintr-un singur fișier",
-          "Ghid pas cu pas pentru a pune portofoliul online",
-          "Licență pentru 1 portofoliu personal"
+          "Ghid README pas cu pas pentru a pune portofoliul online",
+          "Pentru 1 portofoliu"
         ]
       },
       "hu": {
@@ -389,720 +389,720 @@ export const PACKAGE_TRANSLATIONS: Record<
           "Remekül néz ki telefonon és asztali gépen is",
           "Beépített mozgási effektek",
           "Szerkeszd a nevedet, projektjeidet és fotóidat egyetlen fájlban",
-          "Lépésről lépésre útmutató a portfólió közzétételéhez",
-          "Licenc 1 személyes portfólióhoz"
+          "Lépésről lépésre README-útmutató a portfólió közzétételéhez",
+          "1 portfólióhoz"
         ]
       }
     }
   },
   "setup": {
     "source": {
-      "name": "Source + Setup",
-      "tagline": "Source code with full setup: send us your content and we put your portfolio online.",
+      "name": "Custom Build",
+      "tagline": "Send us your requirements and we build the portfolio for you.",
       "features": [
         "Everything in Personal Source",
-        "We fill in your content, photos and projects",
-        "Online on your own domain",
-        "Colors and fonts adjusted to your taste",
-        "30 days of email support"
+        "Send requirements as Word, README or PDF with images, sketches welcome",
+        "Your portfolio built to match your requirements",
+        "1 round of revisions",
+        "30 days of support"
       ]
     },
     "text": {
       "ja": {
-        "name": "ソース ＋ セットアップ",
-        "tagline": "ソースコードとセットアップの完全パッケージ：コンテンツを送っていただければ、こちらで公開まで代行します。",
+        "name": "オーダーメイド制作",
+        "tagline": "ご要望を送るだけで、ポートフォリオを制作します。",
         "features": [
           "個人用ソースの全内容",
-          "コンテンツ、写真、プロジェクトを代行入力",
-          "独自のドメインで公開",
-          "お好みに合わせて色やフォントを調整",
-          "30日間のメールサポート"
+          "要望はWord・README・画像付きPDFで送信（ラフスケッチ歓迎）",
+          "ご要望どおりにポートフォリオを制作",
+          "修正1回",
+          "30日間のサポート"
         ]
       },
       "zh-CN": {
-        "name": "源码+设置服务",
-        "tagline": "源码加上全套设置：发送您的内容给我们，我们帮您发布作品集。",
+        "name": "按需定制",
+        "tagline": "把您的需求发给我们，我们为您制作作品集。",
         "features": [
           "个人版源码的所有内容",
-          "我们代为您填充内容、照片和项目",
-          "在您的个人域名上上线",
-          "根据您的喜好调整颜色和字体",
-          "30天电子邮件支持"
+          "用 Word、README 或带图片的 PDF 提交需求，欢迎附上草图",
+          "按您的需求制作作品集",
+          "1 次修改",
+          "30 天支持"
         ]
       },
       "zh-TW": {
-        "name": "原始碼 + 設定",
-        "tagline": "原始碼含全套設定：將你的資料發給我們，我們幫你把作品集上線。",
+        "name": "客製化製作",
+        "tagline": "把你的需求寄給我們，我們幫你製作作品集。",
         "features": [
           "包含個人原始碼方案的所有內容",
-          "協助代填內容、照片與專案",
-          "於你的專屬網域上線",
-          "依你的喜好調整配色與字體",
-          "30 天電子郵件支援"
+          "以 Word、README 或附圖的 PDF 提供需求，歡迎附上草圖",
+          "依照你的需求製作作品集",
+          "修改 1 次",
+          "30 天支援"
         ]
       },
       "ko": {
-        "name": "소스 + 설치",
-        "tagline": "소스 코드와 전체 설치: 내용을 보내주시면 포트폴리오를 게시해 드립니다.",
+        "name": "맞춤 제작",
+        "tagline": "요청 사항을 보내 주시면 포트폴리오를 만들어 드립니다.",
         "features": [
           "개인용 소스 모든 기능 포함",
-          "내용, 사진, 프로젝트 직접 등록",
-          "개인 도메인으로 온라인 게시",
-          "취향에 맞는 색상 및 폰트 설정",
-          "30일간 이메일 지원"
+          "Word, README 또는 이미지가 포함된 PDF로 요청 사항 전달 (스케치 환영)",
+          "요청 사항에 맞춘 포트폴리오 제작",
+          "수정 1회",
+          "30일간 지원"
         ]
       },
       "th": {
-        "name": "ซอร์สโค้ดพร้อมติดตั้ง",
-        "tagline": "ซอร์สโค้ดพร้อมบริการติดตั้งครบวงจร เพียงส่งข้อมูลมา เราจะนำพอร์ตโฟลิโอของคุณขึ้นออนไลน์ให้",
+        "name": "สร้างตามสั่ง",
+        "tagline": "ส่งความต้องการมา แล้วเราจะสร้างพอร์ตโฟลิโอให้คุณ",
         "features": [
           "ทุกอย่างที่มีในแพ็กเกจส่วนตัว",
-          "เราใส่เนื้อหา รูปภาพ และโปรเจกต์ให้คุณ",
-          "ออนไลน์บนโดเมนของคุณเอง",
-          "ปรับสีและฟอนต์ตามรสนิยมของคุณ",
-          "สนับสนุนทางอีเมล 30 วัน"
+          "ส่งความต้องการเป็นไฟล์ Word, README หรือ PDF พร้อมรูป มีภาพร่างยิ่งดี",
+          "สร้างพอร์ตโฟลิโอตามความต้องการของคุณ",
+          "แก้ไขได้ 1 ครั้ง",
+          "ดูแลช่วยเหลือ 30 วัน"
         ]
       },
       "id": {
-        "name": "Kode Sumber + Pengaturan",
-        "tagline": "Kode sumber dengan pengaturan penuh: kirimkan konten Anda dan kami akan membuat portofolio Anda online.",
+        "name": "Buat Sesuai Permintaan",
+        "tagline": "Kirim kebutuhan Anda, kami buatkan portofolionya untuk Anda.",
         "features": [
           "Semua yang ada di Kode Sumber Pribadi",
-          "Kami mengisi konten, foto, dan proyek Anda",
-          "Online di domain Anda sendiri",
-          "Warna dan font disesuaikan dengan selera Anda",
-          "Dukungan email 30 hari"
+          "Kirim kebutuhan dalam Word, README, atau PDF bergambar, sketsa juga boleh",
+          "Portofolio dibuat sesuai kebutuhan Anda",
+          "1 kali revisi",
+          "Dukungan 30 hari"
         ]
       },
       "ms": {
-        "name": "Kod Sumber + Penyediaan",
-        "tagline": "Kod sumber dengan penyediaan penuh: hantarkan kandungan anda dan kami akan letakkan portfolio anda dalam talian.",
+        "name": "Bina Ikut Permintaan",
+        "tagline": "Hantar keperluan anda dan kami bina portfolio untuk anda.",
         "features": [
           "Segala yang ada dalam Kod Sumber Peribadi",
-          "Kami isikan kandungan, foto dan projek anda",
-          "Dalam talian pada domain anda sendiri",
-          "Warna dan fon diselaraskan mengikut cita rasa anda",
-          "30 hari sokongan e-mel"
+          "Hantar keperluan dalam Word, README atau PDF bergambar, lakaran dialu-alukan",
+          "Portfolio dibina mengikut keperluan anda",
+          "1 pusingan pindaan",
+          "Sokongan 30 hari"
         ]
       },
       "fil": {
-        "name": "Source Code + Setup",
-        "tagline": "Source code na may kasamang full setup: ipadala sa amin ang iyong content at kami na ang maglalagay ng portfolio mo online.",
+        "name": "Custom Build",
+        "tagline": "Ipadala ang requirements mo at gagawin namin ang portfolio para sa iyo.",
         "features": [
           "Lahat ng nasa Personal na Source Code",
-          "Kami ang maglalagay ng content, photos, at projects mo",
-          "Online sa sarili mong domain",
-          "Colors at fonts na naka-adjust sa gusto mo",
-          "30 araw ng email support"
+          "Ipadala ang requirements bilang Word, README o PDF na may larawan, puwede rin ang sketch",
+          "Gagawin ang portfolio ayon sa requirements mo",
+          "1 beses na revision",
+          "30 araw ng support"
         ]
       },
       "km": {
-        "name": "កូដប្រភព + ការរៀបចំ",
-        "tagline": "កូដប្រភពជាមួយនឹងការរៀបចំពេញលេញ៖ ផ្ញើខ្លឹមសាររបស់អ្នកមកយើង ហើយយើងនឹងដាក់ផលប័ត្ររបស់អ្នកលើអ៊ីនធឺណិត",
+        "name": "បង្កើតតាមតម្រូវការ",
+        "tagline": "ផ្ញើតម្រូវការរបស់អ្នកមក យើងនឹងបង្កើតផលប័ត្រជូនអ្នក។",
         "features": [
           "អ្វីគ្រប់យ៉ាងនៅក្នុងកូដប្រភពផ្ទាល់ខ្លួន",
-          "យើងបំពេញខ្លឹមសារ រូបថត និងគម្រោងរបស់អ្នក",
-          "នៅលើអ៊ីនធឺណិតជាមួយដែនផ្ទាល់ខ្លួនរបស់អ្នក",
-          "ពណ៌ និងពុម្ពអក្សរត្រូវបានកែសម្រួលតាមចំណូលចិត្តរបស់អ្នក",
-          "ការគាំទ្រតាមអ៊ីមែលរយៈពេល 30 ថ្ងៃ"
+          "ផ្ញើតម្រូវការជា Word, README ឬ PDF មានរូបភាព អាចភ្ជាប់គំនូរព្រាងបាន",
+          "បង្កើតផលប័ត្រតាមតម្រូវការរបស់អ្នក",
+          "កែប្រែ 1 ដង",
+          "ការគាំទ្ររយៈពេល 30 ថ្ងៃ"
         ]
       },
       "lo": {
-        "name": "ລະຫັດ + ຕັ້ງຄ່າ",
-        "tagline": "ລະຫັດແຫຼ່ງພ້ອມຕັ້ງຄ່າທັງໝົດ: ທ່ານສົ່ງເນື້ອຫາໃຫ້ເຮົາ ແລ້ວເຮົາຈະນຳ Portfolio ຂອງທ່ານອອນລາຍ.",
+        "name": "ສ້າງຕາມຄວາມຕ້ອງການ",
+        "tagline": "ສົ່ງຄວາມຕ້ອງການຂອງທ່ານມາ ແລ້ວພວກເຮົາຈະສ້າງ Portfolio ໃຫ້.",
         "features": [
           "ທຸກຢ່າງໃນລະຫັດສ່ວນຕົວ",
-          "ເຮົາໃສ່ເນື້ອຫາ, ຮູບພາບ ແລະ ຜົນງານໃຫ້ທ່ານ",
-          "ອອນລາຍຜ່ານໂດເມນຂອງທ່ານເອງ",
-          "ປັບສີ ແລະ ຟອນໃຫ້ຖືກໃຈທ່ານ",
-          "ຊ່ວຍເຫຼືອທາງອີເມລ໌ 30 ວັນ"
+          "ສົ່ງຄວາມຕ້ອງການເປັນ Word, README ຫຼື PDF ພ້ອມຮູບ ມີພາບຮ່າງຍິ່ງດີ",
+          "ສ້າງ Portfolio ຕາມຄວາມຕ້ອງການຂອງທ່ານ",
+          "ແກ້ໄຂ 1 ຄັ້ງ",
+          "ຊ່ວຍເຫຼືອ 30 ວັນ"
         ]
       },
       "hi": {
-        "name": "सोर्स + सेटअप",
-        "tagline": "पूरे सेटअप के साथ सोर्स कोड: अपना कंटेंट हमें भेजें और हम आपका पोर्टफोलियो ऑनलाइन डाल देंगे।",
+        "name": "कस्टम बिल्ड",
+        "tagline": "अपनी ज़रूरतें भेजें, हम आपके लिए पोर्टफोलियो बनाएंगे।",
         "features": [
           "पर्सनल सोर्स में सब कुछ",
-          "हम आपका कंटेंट, फोटो और प्रोजेक्ट्स भरते हैं",
-          "अपने खुद के डोमेन पर ऑनलाइन",
-          "आपकी पसंद के अनुसार रंग और फोंट एडजस्ट",
-          "30 दिनों का ईमेल सपोर्ट"
+          "ज़रूरतें Word, README या तस्वीरों वाली PDF में भेजें, स्केच भी चलेंगे",
+          "आपकी ज़रूरतों के मुताबिक बना पोर्टफोलियो",
+          "1 बार बदलाव",
+          "30 दिनों का सपोर्ट"
         ]
       },
       "bn": {
-        "name": "সোর্স + সেটআপ",
-        "tagline": "পুরো সেটআপসহ সোর্স কোড: আপনার কন্টেন্ট আমাদের পাঠান আর আমরা পোর্টফোলিও অনলাইনে দেব।",
+        "name": "কাস্টম বিল্ড",
+        "tagline": "আপনার চাহিদা পাঠান, আমরা আপনার জন্য পোর্টফোলিও বানিয়ে দেব।",
         "features": [
           "পার্সোনাল সোর্সের সব সুবিধা",
-          "আমরা আপনার কন্টেন্ট, ছবি এবং প্রজেক্ট বসিয়ে দেব",
-          "আপনার নিজস্ব ডোমেনে অনলাইনে",
-          "আপনার পছন্দ অনুযায়ী রঙ এবং ফন্ট সেট করা",
-          "৩০ দিনের ইমেইল সাপোর্ট"
+          "চাহিদা পাঠান Word, README বা ছবিসহ PDF-এ, স্কেচ দিলে আরও ভালো",
+          "আপনার চাহিদা অনুযায়ী তৈরি পোর্টফোলিও",
+          "১ বার সংশোধন",
+          "৩০ দিনের সাপোর্ট"
         ]
       },
       "ar": {
-        "name": "الكود مع الإعداد",
-        "tagline": "الكود المصدري مع إعداد كامل: أرسل لنا محتواك وسنضع معرض أعمالك على الإنترنت.",
+        "name": "تصميم حسب الطلب",
+        "tagline": "أرسل لنا متطلباتك ونبني لك معرض أعمالك.",
         "features": [
           "كل ما في باقة الكود الشخصي",
-          "نملأ المحتوى والصور والمشاريع بدلاً منك",
-          "موقع مباشر على نطاقك الخاص",
-          "تعديل الألوان والخطوط لتناسب ذوقك",
-          "30 يوماً من دعم البريد الإلكتروني"
+          "أرسل متطلباتك بصيغة Word أو README أو PDF مع صور، والرسومات الأولية مرحب بها",
+          "معرض أعمال مبني وفق متطلباتك",
+          "جولة تعديل واحدة",
+          "دعم لمدة 30 يوماً"
         ]
       },
       "fa": {
-        "name": "سورس + نصب",
-        "tagline": "سورس‌کد با نصب کامل: محتوای خود را برای ما بفرستید و ما نمونه‌کار شما را آنلاین می‌کنیم.",
+        "name": "ساخت سفارشی",
+        "tagline": "نیازهایتان را بفرستید تا نمونه‌کارتان را برایتان بسازیم.",
         "features": [
           "همه چیز در سورس شخصی",
-          "ما محتوا، عکس‌ها و پروژه‌های شما را وارد می‌کنیم",
-          "آنلاین روی دامنه شخصی خودتان",
-          "رنگ‌ها و فونت‌ها طبق سلیقه شما تنظیم می‌شوند",
-          "۳۰ روز پشتیبانی ایمیلی"
+          "نیازها را با Word، README یا PDF همراه تصویر بفرستید؛ طرح اولیه هم خوب است",
+          "ساخت نمونه‌کار مطابق نیازهای شما",
+          "۱ بار اصلاح",
+          "۳۰ روز پشتیبانی"
         ]
       },
       "he": {
-        "name": "קוד מקור + התקנה",
-        "tagline": "קוד מקור עם התקנה מלאה: שלחו לנו את התוכן שלכם ואנחנו נעלה את הפורטפוליו לאוויר.",
+        "name": "בנייה לפי דרישה",
+        "tagline": "שלחו לנו את הדרישות ואנחנו נבנה לכם את הפורטפוליו.",
         "features": [
           "כל מה שיש בקוד האישי",
-          "אנחנו נמלא את התוכן, התמונות והפרויקטים עבורכם",
-          "באוויר תחת דומיין משלכם",
-          "צבעים ופונטים מותאמים לטעם שלכם",
-          "30 ימי תמיכה במייל"
+          "שליחת דרישות בקובץ Word, README או PDF עם תמונות, אפשר לצרף סקיצות",
+          "פורטפוליו שנבנה לפי הדרישות שלכם",
+          "סבב תיקונים אחד",
+          "30 ימי תמיכה"
         ]
       },
       "ur": {
-        "name": "سورس + سیٹ اپ",
-        "tagline": "مکمل سیٹ اپ کے ساتھ سورس کوڈ: ہمیں اپنا مواد بھیجیں اور ہم آپ کا پورٹ فولیو آن لائن کر دیں گے۔",
+        "name": "کسٹم بلڈ",
+        "tagline": "اپنی ضروریات بھیجیں، ہم آپ کے لیے پورٹ فولیو بنائیں گے۔",
         "features": [
           "پرسنل سورس کی تمام چیزیں",
-          "ہم آپ کا مواد، تصاویر اور پروجیکٹس شامل کرتے ہیں",
-          "آپ کے اپنے ڈومین پر آن لائن",
-          "آپ کی پسند کے مطابق رنگ اور فونٹس",
-          "30 دن کی ای میل سپورٹ"
+          "ضروریات Word، README یا تصاویر والی PDF میں بھیجیں، خاکے بھی خوش آمدید",
+          "آپ کی ضروریات کے مطابق بنا پورٹ فولیو",
+          "1 بار ترمیم",
+          "30 دن کی سپورٹ"
         ]
       },
       "tr": {
-        "name": "Kaynak Kod + Kurulum",
-        "tagline": "Kurulum dahil kaynak kodu: içeriklerinizi bize gönderin, portfolyonuzu yayına alalım.",
+        "name": "İsteğe Özel Yapım",
+        "tagline": "İsteklerinizi gönderin, portfolyonuzu sizin için yapalım.",
         "features": [
           "Kişisel Kaynak Kod paketindeki her şey",
-          "İçerik, fotoğraf ve projelerinizi biz ekliyoruz",
-          "Kendi alan adınızda yayınlanma",
-          "Zevkinize uygun renk ve yazı tipi ayarları",
-          "30 gün e-posta desteği"
+          "İsteklerinizi Word, README veya görselli PDF olarak gönderin, eskizler de olur",
+          "İsteklerinize göre hazırlanan portfolyo",
+          "1 revizyon",
+          "30 gün destek"
         ]
       },
       "ru": {
-        "name": "Код + Настройка",
-        "tagline": "Исходный код с полной настройкой: вы присылаете контент, мы запускаем портфолио.",
+        "name": "Сборка под заказ",
+        "tagline": "Пришлите требования, и мы соберём портфолио за вас.",
         "features": [
           "Всё из пакета Личный",
-          "Мы сами добавим ваш контент, фото и проекты",
-          "Запуск на вашем домене",
-          "Настройка цветов и шрифтов под ваш вкус",
-          "Поддержка по почте 30 дней"
+          "Требования в Word, README или PDF с картинками, наброски приветствуются",
+          "Портфолио, собранное по вашим требованиям",
+          "1 раунд правок",
+          "30 дней поддержки"
         ]
       },
       "uk": {
-        "name": "Код + Установка",
-        "tagline": "Повний код із установкою: надішліть нам дані, і ми опублікуємо ваше портфоліо.",
+        "name": "Розробка на замовлення",
+        "tagline": "Надішліть вимоги, і ми зробимо портфоліо за вас.",
         "features": [
           "Все, що в Особистому коді",
-          "Ми самі внесемо ваші дані, фото та проекти",
-          "Сайт буде на вашому домені",
-          "Кольори та шрифти на ваш смак",
+          "Вимоги у Word, README або PDF із зображеннями, ескізи вітаються",
+          "Портфоліо, зроблене за вашими вимогами",
+          "1 раунд правок",
           "30 днів підтримки"
         ]
       },
       "pl": {
-        "name": "Kod + Konfiguracja",
-        "tagline": "Kod źródłowy z pełną konfiguracją: wyślij nam swoje dane, a my uruchomimy Twoje portfolio.",
+        "name": "Wykonanie na zamówienie",
+        "tagline": "Wyślij nam swoje wymagania, a zbudujemy portfolio za Ciebie.",
         "features": [
           "Wszystko z kodu osobistego",
-          "Wpiszemy Twoje dane, zdjęcia i projekty",
-          "Uruchomienie na Twojej domenie",
-          "Kolory i czcionki dopasowane do Twojego gustu",
-          "30 dni wsparcia mailowego"
+          "Wymagania w Word, README lub PDF ze zdjęciami, szkice mile widziane",
+          "Portfolio zbudowane według Twoich wymagań",
+          "1 runda poprawek",
+          "30 dni wsparcia"
         ]
       },
       "cs": {
-        "name": "Zdrojový kód + nastavení",
-        "tagline": "Zdrojový kód s kompletním nastavením: pošlete nám obsah a my portfolio zprovozníme.",
+        "name": "Výroba na míru",
+        "tagline": "Pošlete nám své požadavky a portfolio vytvoříme za vás.",
         "features": [
           "Vše z balíčku Osobní zdrojový kód",
-          "Vložíme váš obsah, fotky a projekty",
-          "Online na vaší vlastní doméně",
-          "Barvy a fonty dle vašeho vkusu",
-          "30 dní e-mailové podpory"
+          "Požadavky ve Wordu, README nebo PDF s obrázky, skici vítány",
+          "Portfolio vytvořené podle vašich požadavků",
+          "1 kolo úprav",
+          "30 dní podpory"
         ]
       },
       "de": {
-        "name": "Quellcode + Setup",
-        "tagline": "Quellcode inklusive Einrichtung: Sende uns deine Inhalte und wir bringen dein Portfolio online.",
+        "name": "Individuelle Umsetzung",
+        "tagline": "Schick uns deine Anforderungen, wir bauen das Portfolio für dich.",
         "features": [
           "Alles aus dem persönlichen Quellcode",
-          "Wir füllen deine Inhalte, Fotos und Projekte ein",
-          "Online unter deiner eigenen Domain",
-          "Farben und Schriften nach deinem Geschmack angepasst",
-          "30 Tage E-Mail-Support"
+          "Anforderungen als Word, README oder PDF mit Bildern, Skizzen willkommen",
+          "Dein Portfolio, gebaut nach deinen Anforderungen",
+          "1 Korrekturrunde",
+          "30 Tage Support"
         ]
       },
       "fr": {
-        "name": "Code source + Installation",
-        "tagline": "Code source avec installation complète : envoyez-nous votre contenu et nous mettons votre portfolio en ligne.",
+        "name": "Sur mesure",
+        "tagline": "Envoyez-nous vos besoins et nous créons le portfolio pour vous.",
         "features": [
           "Tout ce qui est dans le code source personnel",
-          "Nous remplissons votre contenu, vos photos et projets",
-          "En ligne sur votre propre domaine",
-          "Couleurs et polices ajustées à vos goûts",
-          "30 jours de support par e-mail"
+          "Besoins en Word, README ou PDF avec images, croquis bienvenus",
+          "Votre portfolio réalisé selon vos besoins",
+          "1 série de retouches",
+          "30 jours de support"
         ]
       },
       "es": {
-        "name": "Código + Configuración",
-        "tagline": "Código fuente con configuración completa: envíanos tu contenido y pondremos tu portafolio en línea.",
+        "name": "A medida",
+        "tagline": "Envíanos tus requisitos y creamos el portafolio por ti.",
         "features": [
           "Todo lo del código personal",
-          "Nosotros añadimos tu contenido, fotos y proyectos",
-          "En línea bajo tu propio dominio",
-          "Colores y fuentes ajustados a tu gusto",
-          "30 días de soporte por correo"
+          "Requisitos en Word, README o PDF con imágenes, se aceptan bocetos",
+          "Tu portafolio hecho según tus requisitos",
+          "1 ronda de cambios",
+          "30 días de soporte"
         ]
       },
       "pt": {
-        "name": "Código + Configuração",
-        "tagline": "Código-fonte com configuração completa: nos envie seu conteúdo e nós colocamos seu portfólio no ar.",
+        "name": "Sob Medida",
+        "tagline": "Envie seus requisitos e nós criamos o portfólio para você.",
         "features": [
           "Tudo do Código Pessoal",
-          "Nós preenchemos seu conteúdo, fotos e projetos",
-          "Online no seu próprio domínio",
-          "Cores e fontes ajustadas ao seu gosto",
-          "30 dias de suporte por e-mail"
+          "Requisitos em Word, README ou PDF com imagens, rascunhos são bem-vindos",
+          "Seu portfólio feito de acordo com seus requisitos",
+          "1 rodada de ajustes",
+          "30 dias de suporte"
         ]
       },
       "it": {
-        "name": "Codice sorgente + setup",
-        "tagline": "Codice sorgente con setup completo: inviaci i contenuti e pubblichiamo il tuo portfolio.",
+        "name": "Su misura",
+        "tagline": "Inviaci le tue richieste e creiamo il portfolio per te.",
         "features": [
           "Tutto quello del pacchetto Codice sorgente personale",
-          "Inseriamo noi contenuti, foto e progetti",
-          "Online sul tuo dominio",
-          "Colori e font adattati ai tuoi gusti",
-          "30 giorni di assistenza email"
+          "Richieste in Word, README o PDF con immagini, schizzi benvenuti",
+          "Il tuo portfolio realizzato secondo le tue richieste",
+          "1 giro di modifiche",
+          "30 giorni di assistenza"
         ]
       },
       "nl": {
-        "name": "Broncode + Setup",
-        "tagline": "Broncode inclusief volledige installatie: stuur ons je materiaal en wij zetten je portfolio online.",
+        "name": "Op maat gebouwd",
+        "tagline": "Stuur ons je wensen en wij bouwen het portfolio voor je.",
         "features": [
           "Alles in Persoonlijke Broncode",
-          "Wij vullen je inhoud, foto's en projecten in",
-          "Online op je eigen domein",
-          "Kleuren en lettertypes aangepast naar jouw smaak",
-          "30 dagen mailsupport"
+          "Wensen in Word, README of pdf met afbeeldingen, schetsen welkom",
+          "Je portfolio gebouwd volgens je wensen",
+          "1 correctieronde",
+          "30 dagen support"
         ]
       },
       "sv": {
-        "name": "Källkod + installation",
-        "tagline": "Källkod med full installation: skicka oss ditt innehåll så sätter vi upp din portfölj online.",
+        "name": "Skräddarsydd",
+        "tagline": "Skicka dina önskemål så bygger vi portföljen åt dig.",
         "features": [
           "Allt i Personlig källkod",
-          "Vi fyller i ditt innehåll, foton och projekt",
-          "Online på din egen domän",
-          "Färger och typsnitt anpassade efter din smak",
-          "30 dagars e-postsupport"
+          "Önskemål i Word, README eller PDF med bilder, skisser välkomna",
+          "Din portfölj byggd efter dina önskemål",
+          "1 omgång ändringar",
+          "30 dagars support"
         ]
       },
       "el": {
-        "name": "Πηγαίος Κώδικας + Εγκατάσταση",
-        "tagline": "Πηγαίος κώδικας με πλήρη εγκατάσταση: στείλτε μας το περιεχόμενό σας και εμείς ανεβάζουμε το portfolio online.",
+        "name": "Κατασκευή κατά παραγγελία",
+        "tagline": "Στείλτε μας τις απαιτήσεις σας και φτιάχνουμε το portfolio για εσάς.",
         "features": [
           "Όλα όσα περιλαμβάνει ο Προσωπικός Πηγαίος Κώδικας",
-          "Συμπληρώνουμε το περιεχόμενο, τις φωτογραφίες και τα έργα σας",
-          "Online στο δικό σας domain",
-          "Χρώματα και γραμματοσειρές προσαρμοσμένα στα γούστα σας",
-          "30 ημέρες υποστήριξης μέσω email"
+          "Απαιτήσεις σε Word, README ή PDF με εικόνες, ευπρόσδεκτα τα σκίτσα",
+          "Portfolio φτιαγμένο σύμφωνα με τις απαιτήσεις σας",
+          "1 γύρος διορθώσεων",
+          "30 ημέρες υποστήριξης"
         ]
       },
       "ro": {
-        "name": "Cod Sursă + Configurare",
-        "tagline": "Cod sursă cu configurare completă: trimite-ne conținutul tău și noi punem portofoliul online.",
+        "name": "La comandă",
+        "tagline": "Trimite-ne cerințele tale și construim portofoliul pentru tine.",
         "features": [
           "Tot ce este în Cod Sursă Personal",
-          "Noi introducem conținutul, fotografiile și proiectele",
-          "Online pe propriul tău domeniu",
-          "Culori și fonturi ajustate după gustul tău",
-          "30 de zile de asistență prin email"
+          "Cerințe în Word, README sau PDF cu imagini, schițele sunt binevenite",
+          "Portofoliul tău construit după cerințele tale",
+          "1 rundă de modificări",
+          "30 de zile de asistență"
         ]
       },
       "hu": {
-        "name": "Forráskód + Beállítás",
-        "tagline": "Forráskód teljes beállítással: küldd el a tartalmadat és mi online közzétesszük a portfóliódat.",
+        "name": "Egyedi kivitelezés",
+        "tagline": "Küldd el az igényeidet, és mi elkészítjük a portfóliót.",
         "features": [
           "Minden, ami a Személyes csomagban van",
-          "Feltöltjük a tartalmadat, fotóidat és projektjeidet",
-          "Online a saját domaineden",
-          "Színek és betűtípusok az ízlésedre igazítva",
-          "30 nap e-mail támogatás"
+          "Igények Wordben, README-ben vagy képes PDF-ben, vázlatokat is szívesen fogadunk",
+          "Az igényeid szerint elkészített portfólió",
+          "1 javítási kör",
+          "30 nap támogatás"
         ]
       }
     }
   },
   "commercial": {
     "source": {
-      "name": "Commercial Source",
-      "tagline": "Build client portfolios with the source code, for as many projects as you like.",
+      "name": "All-in-One A–Z",
+      "tagline": "We build it, put it online and take care of hosting and the domain.",
       "features": [
-        "Everything in Personal Source",
-        "Commercial license for client work",
-        "Build as many portfolios as you like",
-        "Free source updates for life",
-        "90 days of priority email support"
+        "Everything in Custom Build",
+        "3 rounds of revisions",
+        "Hosting for 1 year",
+        "Domain name for 1 year",
+        "90 days of priority support"
       ]
     },
     "text": {
       "ja": {
-        "name": "商用ソース",
-        "tagline": "ソースコードを使って、クライアントのポートフォリオを何件でも制作できます。",
+        "name": "オールインワン A–Z",
+        "tagline": "制作から公開、ホスティングとドメインまでお任せください。",
         "features": [
-          "個人用ソースの全内容",
-          "クライアントワーク用商用ライセンス",
-          "ポートフォリオ制作数無制限",
-          "ソースコードの無期限アップデート無料",
-          "90日間の優先メールサポート"
+          "オーダーメイド制作の全内容",
+          "修正3回",
+          "ホスティング1年分",
+          "ドメイン1年分",
+          "90日間の優先サポート"
         ]
       },
       "zh-CN": {
-        "name": "商业用途源码",
-        "tagline": "使用该源码为客户制作作品集，不限项目数量。",
+        "name": "全包 A–Z",
+        "tagline": "从制作、上线到主机和域名，我们全部搞定。",
         "features": [
-          "个人版源码的所有内容",
-          "用于客户项目的商业许可",
-          "制作任意数量的作品集",
-          "终身免费源码更新",
-          "90天优先电子邮件支持"
+          "包含按需定制的所有内容",
+          "3 次修改",
+          "1 年主机托管",
+          "1 年域名",
+          "90 天优先支持"
         ]
       },
       "zh-TW": {
-        "name": "商業原始碼",
-        "tagline": "使用原始碼為客戶建置作品集，專案數量不限。",
+        "name": "全包 A–Z",
+        "tagline": "從製作、上線到主機與網域，我們一手包辦。",
         "features": [
-          "包含個人原始碼方案的所有內容",
-          "客戶專案商業授權",
-          "可建置無限數量的作品集",
-          "原始碼終身免費更新",
-          "90 天優先電子郵件支援"
+          "包含客製化製作的所有內容",
+          "修改 3 次",
+          "1 年主機代管",
+          "1 年網域",
+          "90 天優先支援"
         ]
       },
       "ko": {
-        "name": "상업용 소스",
-        "tagline": "소스 코드를 사용하여 클라이언트 포트폴리오를 제한 없이 무제한으로 제작하세요.",
+        "name": "올인원 A–Z",
+        "tagline": "제작부터 게시, 호스팅과 도메인까지 모두 맡아 드립니다.",
         "features": [
-          "개인용 소스 모든 기능 포함",
-          "클라이언트 작업용 상업적 라이선스",
-          "원하는 만큼 많은 포트폴리오 제작 가능",
-          "평생 무료 소스 업데이트",
-          "90일간 우선 이메일 지원"
+          "맞춤 제작의 모든 기능 포함",
+          "수정 3회",
+          "호스팅 1년",
+          "도메인 1년",
+          "90일간 우선 지원"
         ]
       },
       "th": {
-        "name": "ซอร์สโค้ดเชิงพาณิชย์",
-        "tagline": "สร้างพอร์ตโฟลิโอให้ลูกค้าด้วยซอร์สโค้ดนี้ ได้ไม่จำกัดจำนวนโปรเจกต์",
+        "name": "ครบวงจร A–Z",
+        "tagline": "เราสร้าง นำขึ้นออนไลน์ และดูแลโฮสติ้งกับโดเมนให้ครบ",
         "features": [
-          "ทุกอย่างที่มีในแพ็กเกจส่วนตัว",
-          "สิทธิ์การใช้งานเชิงพาณิชย์สำหรับงานลูกค้า",
-          "สร้างกี่พอร์ตโฟลิโอก็ได้ตามต้องการ",
-          "อัปเดตซอร์สโค้ดฟรีตลอดชีพ",
-          "สนับสนุนพิเศษทางอีเมล 90 วัน"
+          "ทุกอย่างในแพ็กเกจสร้างตามสั่ง",
+          "แก้ไขได้ 3 ครั้ง",
+          "โฮสติ้ง 1 ปี",
+          "โดเมน 1 ปี",
+          "ดูแลช่วยเหลือแบบเร่งด่วน 90 วัน"
         ]
       },
       "id": {
-        "name": "Kode Sumber Komersial",
-        "tagline": "Bangun portofolio klien dengan kode sumber, untuk sebanyak mungkin proyek yang Anda inginkan.",
+        "name": "Paket Lengkap A–Z",
+        "tagline": "Kami buatkan, onlinekan, dan urus hosting serta domainnya.",
         "features": [
-          "Semua yang ada di Kode Sumber Pribadi",
-          "Lisensi komersial untuk pekerjaan klien",
-          "Buat portofolio sebanyak yang Anda inginkan",
-          "Pembaruan kode sumber gratis seumur hidup",
-          "Dukungan email prioritas 90 hari"
+          "Semua yang ada di Buat Sesuai Permintaan",
+          "3 kali revisi",
+          "Hosting 1 tahun",
+          "Domain 1 tahun",
+          "Dukungan prioritas 90 hari"
         ]
       },
       "ms": {
-        "name": "Kod Sumber Komersial",
-        "tagline": "Bina portfolio klien dengan kod sumber, untuk seberapa banyak projek yang anda suka.",
+        "name": "Pakej Lengkap A–Z",
+        "tagline": "Kami bina, letakkan dalam talian dan uruskan hosting serta domain.",
         "features": [
-          "Segala yang ada dalam Kod Sumber Peribadi",
-          "Lesen komersial untuk kerja klien",
-          "Bina sebanyak mungkin portfolio yang anda suka",
-          "Kemas kini kod sumber percuma seumur hidup",
-          "90 hari sokongan e-mel keutamaan"
+          "Segala yang ada dalam Bina Ikut Permintaan",
+          "3 pusingan pindaan",
+          "Hosting 1 tahun",
+          "Domain 1 tahun",
+          "Sokongan keutamaan 90 hari"
         ]
       },
       "fil": {
-        "name": "Pangkomersyal na Source Code",
-        "tagline": "Bumuo ng client portfolios gamit ang source code, para sa kahit ilang proyekto na gusto mo.",
+        "name": "All-in-One A–Z",
+        "tagline": "Kami ang gagawa, maglalagay online, at bahala sa hosting at domain.",
         "features": [
-          "Lahat ng nasa Personal na Source Code",
-          "Commercial license para sa trabaho sa client",
-          "Gumawa ng kahit gaano karaming portfolio",
-          "Libreng source updates habangbuhay",
-          "90 araw ng priority email support"
+          "Lahat ng nasa Custom Build",
+          "3 beses na revision",
+          "Hosting sa loob ng 1 taon",
+          "Domain sa loob ng 1 taon",
+          "90 araw ng priority support"
         ]
       },
       "km": {
-        "name": "កូដប្រភពពាណិជ្ជកម្ម",
-        "tagline": "បង្កើតផលប័ត្រសម្រាប់អតិថិជនដោយប្រើកូដប្រភព សម្រាប់គម្រោងជាច្រើនតាមដែលអ្នកចង់បាន",
+        "name": "កញ្ចប់ពេញលេញ A–Z",
+        "tagline": "យើងបង្កើត ដាក់លើអ៊ីនធឺណិត និងរៀបចំ hosting និងដូមែនជូនទាំងអស់។",
         "features": [
-          "អ្វីគ្រប់យ៉ាងនៅក្នុងកូដប្រភពផ្ទាល់ខ្លួន",
-          "អាជ្ញាប័ណ្ណពាណិជ្ជកម្មសម្រាប់ការងារអតិថិជន",
-          "បង្កើតផលប័ត្របានច្រើនតាមចិត្ត",
-          "អាប់ដេតកូដប្រភពដោយឥតគិតថ្លៃពេញមួយជីវិត",
-          "ការគាំទ្រតាមអ៊ីមែលជាអាទិភាពរយៈពេល 90 ថ្ងៃ"
+          "អ្វីគ្រប់យ៉ាងនៅក្នុងបង្កើតតាមតម្រូវការ",
+          "កែប្រែ 3 ដង",
+          "Hosting រយៈពេល 1 ឆ្នាំ",
+          "ដូមែនរយៈពេល 1 ឆ្នាំ",
+          "ការគាំទ្រជាអាទិភាពរយៈពេល 90 ថ្ងៃ"
         ]
       },
       "lo": {
-        "name": "ລະຫັດແຫຼ່ງຮູບແບບການຄ້າ",
-        "tagline": "ໃຊ້ລະຫັດແຫຼ່ງເພື່ອສ້າງ Portfolio ໃຫ້ລູກຄ້າໄດ້ບໍ່ຈຳກັດຈຳນວນໂຄງການ.",
+        "name": "ຄົບຊຸດ A–Z",
+        "tagline": "ພວກເຮົາສ້າງ, ອອນລາຍ ແລະ ດູແລ hosting ກັບໂດເມນໃຫ້ຄົບ.",
         "features": [
-          "ທຸກຢ່າງໃນລະຫັດສ່ວນຕົວ",
-          "ໃບອະນຸຍາດການຄ້າສຳລັບງານລູກຄ້າ",
-          "ສ້າງໄດ້ຈັກ Portfolio ກໍໄດ້ຕາມໃຈ",
-          "ອັບເດດລະຫັດຟຣີຕະຫຼອດຊີວິດ",
-          "ຊ່ວຍເຫຼືອພິເສດທາງອີເມລ໌ 90 ວັນ"
+          "ທຸກຢ່າງໃນຊຸດສ້າງຕາມຄວາມຕ້ອງການ",
+          "ແກ້ໄຂ 3 ຄັ້ງ",
+          "Hosting 1 ປີ",
+          "ໂດເມນ 1 ປີ",
+          "ຊ່ວຍເຫຼືອພິເສດ 90 ວັນ"
         ]
       },
       "hi": {
-        "name": "कमर्शियल सोर्स",
-        "tagline": "क्लाइंट पोर्टफोलियो बनाने के लिए सोर्स कोड का उपयोग करें, जितने प्रोजेक्ट्स आप चाहें उतने के लिए।",
+        "name": "ऑल-इन-वन A–Z",
+        "tagline": "हम बनाते हैं, ऑनलाइन डालते हैं और होस्टिंग व डोमेन भी संभालते हैं।",
         "features": [
-          "पर्सनल सोर्स में सब कुछ",
-          "क्लाइंट के काम के लिए कमर्शियल लाइसेंस",
-          "जितने चाहें उतने पोर्टफोलियो बनाएं",
-          "जीवन भर के लिए मुफ्त सोर्स अपडेट",
-          "90 दिनों के लिए प्राथमिकता ईमेल सपोर्ट"
+          "कस्टम बिल्ड में सब कुछ",
+          "3 बार बदलाव",
+          "1 साल की होस्टिंग",
+          "1 साल का डोमेन",
+          "90 दिनों का प्राथमिकता सपोर्ट"
         ]
       },
       "bn": {
-        "name": "কমার্শিয়াল সোর্স",
-        "tagline": "সোর্স কোড দিয়ে ক্লায়েন্টের পোর্টফোলিও তৈরি করুন, যত খুশি প্রজেক্টের জন্য।",
+        "name": "অল-ইন-ওয়ান A–Z",
+        "tagline": "আমরা বানাই, অনলাইনে দিই, আর হোস্টিং ও ডোমেইনও দেখি।",
         "features": [
-          "পার্সোনাল সোর্সের সব সুবিধা",
-          "ক্লায়েন্টের কাজের জন্য কমার্শিয়াল লাইসেন্স",
-          "যত খুশি পোর্টফোলিও তৈরি করুন",
-          "আজীবন বিনামূল্যে সোর্স আপডেট",
-          "৯০ দিনের প্রায়োরিটি ইমেইল সাপোর্ট"
+          "কাস্টম বিল্ডের সব সুবিধা",
+          "৩ বার সংশোধন",
+          "১ বছরের হোস্টিং",
+          "১ বছরের ডোমেইন",
+          "৯০ দিনের প্রায়োরিটি সাপোর্ট"
         ]
       },
       "ar": {
-        "name": "الكود التجاري",
-        "tagline": "ابنِ معارض أعمال للعملاء باستخدام الكود المصدري، لعدد غير محدود من المشاريع.",
+        "name": "الباقة الشاملة A–Z",
+        "tagline": "نبنيه وننشره ونتولى الاستضافة والنطاق أيضاً.",
         "features": [
-          "كل ما في باقة الكود الشخصي",
-          "رخصة تجارية لأعمال العملاء",
-          "ابنِ عدداً غير محدود من المواقع",
-          "تحديثات مجانية للكود مدى الحياة",
-          "90 يوماً من دعم البريد الإلكتروني ذي الأولوية"
+          "كل ما في تصميم حسب الطلب",
+          "3 جولات تعديل",
+          "استضافة لمدة سنة",
+          "نطاق (دومين) لمدة سنة",
+          "دعم ذو أولوية لمدة 90 يوماً"
         ]
       },
       "fa": {
-        "name": "سورس تجاری",
-        "tagline": "با سورس‌کد، برای هر تعداد پروژه‌ای که دوست دارید، نمونه‌کار مشتری بسازید.",
+        "name": "بسته کامل A–Z",
+        "tagline": "می‌سازیم، آنلاین می‌کنیم و هاست و دامنه را هم فراهم می‌کنیم.",
         "features": [
-          "همه چیز در سورس شخصی",
-          "مجوز تجاری برای کارهای مشتری",
-          "به هر تعداد که می‌خواهید نمونه‌کار بسازید",
-          "به‌روزرسانی‌های رایگان مادام‌العمر سورس",
-          "۹۰ روز پشتیبانی اولویت‌دار ایمیلی"
+          "همه چیز در ساخت سفارشی",
+          "۳ بار اصلاح",
+          "هاست ۱ ساله",
+          "دامنه ۱ ساله",
+          "۹۰ روز پشتیبانی اولویت‌دار"
         ]
       },
       "he": {
-        "name": "קוד מקור מסחרי",
-        "tagline": "בנו אתרי פורטפוליו ללקוחות בעזרת קוד המקור, לכל פרויקט שתרצו.",
+        "name": "חבילה מלאה A–Z",
+        "tagline": "אנחנו בונים, מעלים לרשת ודואגים גם לאחסון ולדומיין.",
         "features": [
-          "כל מה שיש בקוד האישי",
-          "רישיון מסחרי לעבודות עבור לקוחות",
-          "בנו כמה פורטפוליואים שתרצו",
-          "עדכוני קוד בחינם לכל החיים",
-          "90 ימי תמיכה טכנית בעדיפות"
+          "כל מה שיש בבנייה לפי דרישה",
+          "3 סבבי תיקונים",
+          "אחסון לשנה",
+          "דומיין לשנה",
+          "90 ימי תמיכה בעדיפות"
         ]
       },
       "ur": {
-        "name": "کمرشل سورس",
-        "tagline": "سور س کوڈ کے ساتھ کلائنٹ پورٹ فولیوز بنائیں، جتنے پروجیکٹس چاہیں کریں۔",
+        "name": "آل اِن ون A–Z",
+        "tagline": "ہم بناتے ہیں، آن لائن کرتے ہیں اور ہوسٹنگ اور ڈومین بھی سنبھالتے ہیں۔",
         "features": [
-          "پرسنل سورس کی تمام چیزیں",
-          "کلائنٹ کے کام کے لیے کمرشل لائسنس",
-          "جتنے چاہیں پورٹ فولیوز بنائیں",
-          "زندگی بھر مفت سورس اپ ڈیٹس",
-          "90 دن کی ترجیحی ای میل سپورٹ"
+          "کسٹم بلڈ کی تمام چیزیں",
+          "3 بار ترمیم",
+          "1 سال کی ہوسٹنگ",
+          "1 سال کا ڈومین",
+          "90 دن کی ترجیحی سپورٹ"
         ]
       },
       "tr": {
-        "name": "Ticari Kaynak Kod",
-        "tagline": "Kaynak kodu ile dilediğiniz kadar müşteri portfolyosu oluşturun.",
+        "name": "Hepsi Bir Arada A–Z",
+        "tagline": "Yapıyoruz, yayına alıyoruz, hosting ve alan adını da hallediyoruz.",
         "features": [
-          "Kişisel Kaynak Kod paketindeki her şey",
-          "Müşteri projeleri için ticari lisans",
-          "İstediğiniz kadar portfolyo oluşturun",
-          "Ömür boyu ücretsiz güncellemeler",
-          "90 gün öncelikli e-posta desteği"
+          "İsteğe Özel Yapım paketindeki her şey",
+          "3 revizyon",
+          "1 yıl hosting",
+          "1 yıl alan adı",
+          "90 gün öncelikli destek"
         ]
       },
       "ru": {
-        "name": "Коммерческий исходный код",
-        "tagline": "Используйте код для создания портфолио для клиентов в любых количествах.",
+        "name": "Всё включено A–Z",
+        "tagline": "Соберём, запустим и возьмём на себя хостинг и домен.",
         "features": [
-          "Всё из пакета Личный",
-          "Коммерческая лицензия для работы с клиентами",
-          "Неограниченное число портфолио",
-          "Бесплатные обновления кода навсегда",
-          "Приоритетная поддержка по почте 90 дней"
+          "Всё из пакета «Сборка под заказ»",
+          "3 раунда правок",
+          "Хостинг на 1 год",
+          "Домен на 1 год",
+          "90 дней приоритетной поддержки"
         ]
       },
       "uk": {
-        "name": "Комерційний код",
-        "tagline": "Використовуйте код для створення портфоліо клієнтів без обмежень за кількістю проектів.",
+        "name": "Усе включено A–Z",
+        "tagline": "Зробимо, запустимо й подбаємо про хостинг і домен.",
         "features": [
-          "Все, що в Особистому коді",
-          "Комерційна ліцензія для клієнтської роботи",
-          "Створюйте стільки портфоліо, скільки хочете",
-          "Довічні оновлення коду",
+          "Усе з пакета «Розробка на замовлення»",
+          "3 раунди правок",
+          "Хостинг на 1 рік",
+          "Домен на 1 рік",
           "90 днів пріоритетної підтримки"
         ]
       },
       "pl": {
-        "name": "Kod komercyjny",
-        "tagline": "Buduj portfolio dla klientów, bez limitu projektów.",
+        "name": "Wszystko w jednym A–Z",
+        "tagline": "Budujemy, publikujemy i zajmujemy się hostingiem oraz domeną.",
         "features": [
-          "Wszystko z kodu osobistego",
-          "Licencja komercyjna na projekty dla klientów",
-          "Buduj dowolną liczbę portfolio",
-          "Dożywotnie darmowe aktualizacje kodu",
-          "90 dni priorytetowego wsparcia mailowego"
+          "Wszystko z pakietu Wykonanie na zamówienie",
+          "3 rundy poprawek",
+          "Hosting na 1 rok",
+          "Domena na 1 rok",
+          "90 dni priorytetowego wsparcia"
         ]
       },
       "cs": {
-        "name": "Komerční zdrojový kód",
-        "tagline": "Vytvářejte klientská portfolia pomocí tohoto kódu pro libovolný počet projektů.",
+        "name": "Vše v jednom A–Z",
+        "tagline": "Vytvoříme, spustíme a postaráme se i o hosting a doménu.",
         "features": [
-          "Vše z balíčku Osobní zdrojový kód",
-          "Komerční licence pro práci s klienty",
-          "Vytvořte kolik portfolií chcete",
-          "Doživotní aktualizace kódu zdarma",
-          "90 dní prioritní e-mailové podpory"
+          "Vše z balíčku Výroba na míru",
+          "3 kola úprav",
+          "Hosting na 1 rok",
+          "Doména na 1 rok",
+          "90 dní prioritní podpory"
         ]
       },
       "de": {
-        "name": "Kommerzieller Quellcode",
-        "tagline": "Baue Kunden-Portfolios mit dem Quellcode, für so viele Projekte wie du möchtest.",
+        "name": "Rundum-Paket A–Z",
+        "tagline": "Wir bauen es, bringen es online und kümmern uns um Hosting und Domain.",
         "features": [
-          "Alles aus dem persönlichen Quellcode",
-          "Kommerzielle Lizenz für Kundenarbeit",
-          "Erstelle so viele Portfolios wie du willst",
-          "Lebenslange kostenlose Quellcode-Updates",
-          "90 Tage bevorzugter E-Mail-Support"
+          "Alles aus Individuelle Umsetzung",
+          "3 Korrekturrunden",
+          "Hosting für 1 Jahr",
+          "Domain für 1 Jahr",
+          "90 Tage bevorzugter Support"
         ]
       },
       "fr": {
-        "name": "Code source commercial",
-        "tagline": "Créez des portfolios pour vos clients avec le code source, pour autant de projets que vous voulez.",
+        "name": "Tout-en-un A–Z",
+        "tagline": "Nous le créons, le mettons en ligne et gérons l'hébergement et le domaine.",
         "features": [
-          "Tout ce qui est dans le code source personnel",
-          "Licence commerciale pour le travail client",
-          "Créez autant de portfolios que vous voulez",
-          "Mises à jour gratuites du code source à vie",
-          "90 jours de support e-mail prioritaire"
+          "Tout ce qui est dans Sur mesure",
+          "3 séries de retouches",
+          "Hébergement pendant 1 an",
+          "Nom de domaine pendant 1 an",
+          "90 jours de support prioritaire"
         ]
       },
       "es": {
-        "name": "Código comercial",
-        "tagline": "Crea portafolios para clientes con este código, para tantos proyectos como quieras.",
+        "name": "Todo incluido A–Z",
+        "tagline": "Lo creamos, lo publicamos y nos ocupamos del hosting y el dominio.",
         "features": [
-          "Todo lo del código personal",
-          "Licencia comercial para trabajos de clientes",
-          "Crea tantos portafolios como quieras",
-          "Actualizaciones de código gratuitas de por vida",
-          "90 días de soporte técnico prioritario"
+          "Todo lo de A medida",
+          "3 rondas de cambios",
+          "Hosting por 1 año",
+          "Dominio por 1 año",
+          "90 días de soporte prioritario"
         ]
       },
       "pt": {
-        "name": "Código Comercial",
-        "tagline": "Crie portfólios para clientes com o código-fonte, para quantos projetos quiser.",
+        "name": "Tudo Incluído A–Z",
+        "tagline": "Nós criamos, publicamos e cuidamos da hospedagem e do domínio.",
         "features": [
-          "Tudo do Código Pessoal",
-          "Licença comercial para trabalho com clientes",
-          "Crie quantos portfólios desejar",
-          "Atualizações de código grátis para sempre",
-          "90 dias de suporte prioritário por e-mail"
+          "Tudo do Sob Medida",
+          "3 rodadas de ajustes",
+          "Hospedagem por 1 ano",
+          "Domínio por 1 ano",
+          "90 dias de suporte prioritário"
         ]
       },
       "it": {
-        "name": "Codice sorgente commerciale",
-        "tagline": "Costruisci portfolio per clienti con il codice sorgente, per tutti i progetti che vuoi.",
+        "name": "Tutto incluso A–Z",
+        "tagline": "Lo creiamo, lo pubblichiamo e pensiamo noi a hosting e dominio.",
         "features": [
-          "Tutto quello del pacchetto Codice sorgente personale",
-          "Licenza commerciale per lavori per clienti",
-          "Costruisci quanti portfolio vuoi",
-          "Aggiornamenti gratuiti a vita",
-          "90 giorni di assistenza email prioritaria"
+          "Tutto quello del pacchetto Su misura",
+          "3 giri di modifiche",
+          "Hosting per 1 anno",
+          "Dominio per 1 anno",
+          "90 giorni di assistenza prioritaria"
         ]
       },
       "nl": {
-        "name": "Commerciële Broncode",
-        "tagline": "Bouw portfolio's voor klanten met deze broncode, voor zoveel projecten als je wilt.",
+        "name": "Alles-in-één A–Z",
+        "tagline": "Wij bouwen het, zetten het online en regelen hosting en domein.",
         "features": [
-          "Alles in Persoonlijke Broncode",
-          "Commerciële licentie voor klantwerk",
-          "Maak zoveel portfolio's als je wilt",
-          "Levenslang gratis updates",
-          "90 dagen prioriteits-mailsupport"
+          "Alles uit Op maat gebouwd",
+          "3 correctierondes",
+          "1 jaar hosting",
+          "1 jaar domeinnaam",
+          "90 dagen voorrangssupport"
         ]
       },
       "sv": {
-        "name": "Kommersiell källkod",
-        "tagline": "Bygg klientportföljer med källkoden, för så många projekt du vill.",
+        "name": "Allt-i-ett A–Z",
+        "tagline": "Vi bygger den, publicerar den och sköter webbhotell och domän.",
         "features": [
-          "Allt i Personlig källkod",
-          "Kommersiell licens för klientarbete",
-          "Bygg så många portföljer du vill",
-          "Gratis uppdateringar av källkod för livet",
-          "90 dagars prioriterad e-postsupport"
+          "Allt i Skräddarsydd",
+          "3 omgångar ändringar",
+          "Webbhotell i 1 år",
+          "Domän i 1 år",
+          "90 dagars prioriterad support"
         ]
       },
       "el": {
-        "name": "Εμπορικός Πηγαίος Κώδικας",
-        "tagline": "Χρησιμοποιήστε τον κώδικα για να φτιάξετε portfolio για πελάτες, για όσα έργα θέλετε.",
+        "name": "Όλα σε ένα A–Z",
+        "tagline": "Το φτιάχνουμε, το ανεβάζουμε online και αναλαμβάνουμε hosting και domain.",
         "features": [
-          "Όλα όσα περιλαμβάνει ο Προσωπικός Πηγαίος Κώδικας",
-          "Εμπορική άδεια για εργασία με πελάτες",
-          "Φτιάξτε όσα portfolio θέλετε",
-          "Δωρεάν ενημερώσεις κώδικα για πάντα",
-          "90 ημέρες προτεραιότητας στην υποστήριξη email"
+          "Όλα όσα περιλαμβάνει η Κατασκευή κατά παραγγελία",
+          "3 γύροι διορθώσεων",
+          "Hosting για 1 χρόνο",
+          "Domain για 1 χρόνο",
+          "90 ημέρες υποστήριξης με προτεραιότητα"
         ]
       },
       "ro": {
-        "name": "Cod Sursă Comercial",
-        "tagline": "Construiește portofolii pentru clienți cu acest cod, pentru oricâte proiecte dorești.",
+        "name": "Totul inclus A–Z",
+        "tagline": "Îl construim, îl punem online și ne ocupăm de găzduire și domeniu.",
         "features": [
-          "Tot ce este în Cod Sursă Personal",
-          "Licență comercială pentru proiecte clienți",
-          "Construiește oricâte portofolii dorești",
-          "Actualizări de cod gratuite pe viață",
-          "90 de zile de asistență prioritară prin email"
+          "Tot ce este în La comandă",
+          "3 runde de modificări",
+          "Găzduire pentru 1 an",
+          "Domeniu pentru 1 an",
+          "90 de zile de asistență prioritară"
         ]
       },
       "hu": {
-        "name": "Kereskedelmi forráskód",
-        "tagline": "Építs portfóliókat ügyfeleidnek a forráskóddal, tetszőleges számú projektben.",
+        "name": "Minden egyben A–Z",
+        "tagline": "Elkészítjük, közzétesszük, és a tárhelyet meg a domaint is intézzük.",
         "features": [
-          "Minden, ami a Személyes csomagban van",
-          "Kereskedelmi licenc ügyfélmunkákhoz",
-          "Annyi portfóliót építesz, amennyit csak szeretnél",
-          "Ingyenes forráskód frissítések örökre",
-          "90 nap elsőbbségi e-mail támogatás"
+          "Minden, ami az Egyedi kivitelezés csomagban van",
+          "3 javítási kör",
+          "1 év tárhely",
+          "1 év domain",
+          "90 nap elsőbbségi támogatás"
         ]
       }
     }

@@ -94,6 +94,7 @@
     "errorBody": "Le système de paiement ne répond pas pour le moment. Cela revient généralement en quelques secondes.",
     "retry": "Réessayer",
     "empty": "Les forfaits sont en cours de mise à jour. Revenez dans quelques minutes.",
+    "note": "Chaque forfait permet de réaliser 1 portfolio. L'hébergement et le nom de domaine sont inclus uniquement dans Tout-en-un A–Z. Les prix sont ajustés selon la TVA de votre pays au paiement.",
     "footnote": "Paiement par Whop · Lien source envoyé par e-mail",
     "toastTitle": "Impossible d'ouvrir le paiement",
     "toastBody": "La connexion a été interrompue. Attendez quelques secondes et réessayez.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Je ne suis pas développeur. Puis-je quand même l'utiliser ?",
-        "a": "Votre nom, biographie, projets et photos sont stockés au même endroit pour être faciles à modifier. Si vous préférez qu'on le fasse pour vous, choisissez un forfait incluant l'installation."
+        "a": "Oui. Votre nom, votre bio, vos projets et vos photos sont regroupés au même endroit, et le README explique chaque étape. Vous ne voulez pas toucher au code ? Choisissez Sur mesure ou Tout-en-un A–Z : envoyez vos besoins et nous le réalisons."
       },
       {
-        "q": "Puis-je l'utiliser pour un client ?",
-        "a": "Cela dépend du forfait. Chaque forfait liste ce que vous êtes autorisé à faire dans la section tarifs. Pas sûr ? Écrivez-nous avant d'acheter."
+        "q": "Combien de portfolios un forfait permet-il de réaliser ?",
+        "a": "Chaque forfait permet de réaliser 1 portfolio. Il vous en faut plusieurs ? Achetez un forfait par portfolio."
       },
       {
         "q": "Comment le mettre en ligne ?",
-        "a": "Choisissez l'hébergeur web de votre choix et téléchargez le code source. Nous ne vous enfermons pas sur une plateforme spécifique."
+        "a": "Avec Tout-en-un A–Z, nous le mettons en ligne pour vous, avec l'hébergement et le nom de domaine pendant 1 an. Avec les autres forfaits, choisissez l'hébergeur de votre choix et envoyez-y le code source ; le README explique comment faire. Nous ne vous enfermons dans aucune plateforme."
       },
       {
         "q": "Que faire si quelque chose est cassé ou manquant ?",

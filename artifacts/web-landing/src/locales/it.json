@@ -94,6 +94,7 @@
     "errorBody": "Il sistema di pagamento non risponde al momento. Di solito torna disponibile in pochi secondi.",
     "retry": "Riprova",
     "empty": "I pacchetti sono in aggiornamento. Riprova tra qualche minuto.",
+    "note": "Ogni pacchetto serve per 1 portfolio. Hosting e dominio sono inclusi solo in Tutto incluso A–Z. I prezzi vengono adeguati all'IVA del tuo paese al momento del pagamento.",
     "footnote": "Checkout tramite Whop · Link sorgente inviato via email",
     "toastTitle": "Impossibile aprire il checkout",
     "toastBody": "La connessione è caduta. Attendi qualche secondo e riprova.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Non sono un programmatore. Posso usarlo?",
-        "a": "Il tuo nome, la bio, i progetti e le foto sono conservati in posti separati per essere facili da cambiare. Se preferisci che venga configurato per te, scegli un pacchetto che includa il setup."
+        "a": "Sì. Nome, bio, progetti e foto sono raccolti in un unico punto e il README spiega ogni passaggio. Non vuoi toccare il codice? Scegli Su misura o Tutto incluso A–Z: inviaci le tue richieste e lo realizziamo noi."
       },
       {
-        "q": "Posso usarlo per lavori per clienti?",
-        "a": "Dipende dal pacchetto. Ognuno elenca ciò che ti è permesso fare nella sezione prezzi. Non sei sicuro? Scrivici prima di acquistare."
+        "q": "Per quanti portfolio vale un pacchetto?",
+        "a": "Ogni pacchetto serve per 1 portfolio. Te ne servono di più? Acquista un pacchetto per ciascun portfolio."
       },
       {
         "q": "Come lo metto online?",
-        "a": "Scegli l'host web che preferisci e carica il codice. Non ti vincoliamo a nessuna piattaforma."
+        "a": "Con Tutto incluso A–Z lo pubblichiamo noi per te, con hosting e dominio per 1 anno. Con gli altri pacchetti scegli l'hosting che preferisci e carica il codice; il README spiega come. Non ti leghiamo a nessuna piattaforma."
       },
       {
         "q": "Cosa succede se qualcosa è rotto o manca?",

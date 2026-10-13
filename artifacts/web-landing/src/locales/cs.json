@@ -94,6 +94,7 @@
     "errorBody": "Platební systém právě neodpovídá. Obvykle je zpět během pár sekund.",
     "retry": "Zkusit znovu",
     "empty": "Balíčky se právě aktualizují. Zkuste to za chvíli.",
+    "note": "Každý balíček je na 1 portfolio. Hosting a doménu obsahuje jen balíček Vše v jednom A–Z. Cena se při platbě upraví podle DPH vaší země.",
     "footnote": "Platba přes Whop · Odkaz ke stažení dorazí e-mailem",
     "toastTitle": "Pokladnu nelze otevřít",
     "toastBody": "Spojení vypadlo. Počkejte pár sekund a zkuste to znovu.",
@@ -108,15 +109,15 @@
       },
       {
         "q": "Nejsem programátor. Mohu to přesto použít?",
-        "a": "Vaše jméno, životopis, projekty a fotky jsou uloženy na jednom místě, takže se snadno mění. Pokud byste raději chtěli nastavení od nás, vyberte balíček, který obsahuje i zprovoznění."
+        "a": "Ano. Jméno, popis, projekty a fotky jsou na jednom místě a README vás provede každým krokem. Nechcete sahat do kódu? Vyberte balíček Výroba na míru nebo Vše v jednom A–Z: pošlete požadavky a my to uděláme."
       },
       {
-        "q": "Mohu to použít pro práci pro klienty?",
-        "a": "Záleží na balíčku. Povolené použití je uvedeno v ceníku. Nejste si jistí? Napište nám před nákupem."
+        "q": "Na kolik portfolií stačí jeden balíček?",
+        "a": "Každý balíček je na 1 portfolio. Potřebujete jich víc? Kupte balíček pro každé portfolio."
       },
       {
         "q": "Jak to dostanu online?",
-        "a": "Vyberte si libovolný webhosting a nahrajte tam zdrojový kód. Nikoho k ničemu nenutíme."
+        "a": "S balíčkem Vše v jednom A–Z web spustíme za vás, s hostingem a doménou na 1 rok. U ostatních balíčků si vyberte libovolný hosting a nahrajte kód; postup najdete v README. Nevážeme vás na žádnou platformu."
       },
       {
         "q": "Co když je něco rozbité nebo chybí?",

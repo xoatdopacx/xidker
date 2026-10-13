@@ -13,3 +13,5 @@ description: Non-obvious Whop SDK/API behavior hit while wiring hosted checkout 
 - Whop also accepts `currency: "usd"` plans under the same product, and PATCHing a plan's `metadata` over REST works (send the full object).
   **Why:** the site sells each package in VND and USD as twin plans sharing a `key`; this is how they were created.
   **How to apply:** when adding a currency, create twin plans with the same `key` and set `title_lang` to the language the plan title is written in.
+- Changing a package's English text means updating three things so they match exactly: the USD plan title/description, the VND plan's `name_en`/`tagline_en`/`features_en` metadata (these win over the USD text), and the `source` in the built-in translations file. Any mismatch makes the site fall back to English for the other 31 languages (the API logs a warning).
+- The plans have `collect_tax: true` and `tax_type: "exclusive"` (tax added on top at checkout). The pricing note promises VAT is adjusted per country, so keep these on for any new plan.
