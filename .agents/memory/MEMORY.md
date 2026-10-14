@@ -7,3 +7,4 @@
 - [Backend gotchas](backend-gotchas.md) — drizzle prints unqualified columns in subqueries; run typecheck:libs after schema changes.
 - [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script plus a key-path check against vi.json.
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
+- [SEO rendering policy](seo-rendering.md) — same React sales content for bots and visitors; finite real-catalog cache; SSR build bundling differs from dev.

@@ -156,12 +156,14 @@ type Ctx = {
 };
 const I18nCtx = createContext<Ctx | null>(null);
 
-export function I18nProvider({ children }: { children: ReactNode }) {
+export function I18nProvider({ children, initial }: { children: ReactNode; initial?: { lang: Language; dict: Dict } }) {
   const [state, setState] = useState(() => {
+    if (initial) return { lang: initial.lang, t: initial.dict };
     const code = initialLang();
     return { lang: code, t: DICTS.get(code) ?? (en as Dict) };
   });
-  const [pickedCurrency, setPickedCurrency] = useState<Currency | null>(savedCurrency);
+  const [pickedCurrency, setPickedCurrency] = useState<Currency | null>(() => initial ? null : savedCurrency());
+  useEffect(() => { if (initial) setPickedCurrency(savedCurrency()); }, []);
   const request = useRef(0);
 
   const applyLanguage = useCallback((code: Language) => {
@@ -202,13 +204,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     html.dir = info.dir;
     html.dataset.script = info.script;
     ensureFont(info.script);
-    document.title = t.meta.title;
     const set = (sel: string, v: string) => document.querySelector(sel)?.setAttribute("content", v);
-    set('meta[name="description"]', t.meta.description);
-    set('meta[property="og:title"]', t.meta.title);
-    set('meta[property="og:description"]', t.meta.description);
-    set('meta[name="twitter:title"]', t.meta.title);
-    set('meta[name="twitter:description"]', t.meta.description);
     if (isHomePath(window.location.pathname, import.meta.env.BASE_URL)) {
       const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
       if (canonical) {

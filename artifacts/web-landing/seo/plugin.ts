@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import type { Plugin } from "vite";
 import { LANGUAGES } from "../src/lib/languages.ts";
-import { isHomePath, localePath } from "../src/lib/locale-url.ts";
+import { localePath } from "../src/lib/locale-url.ts";
 import { renderLocaleHtml, type LocaleMeta } from "./html.ts";
 
 export function localeSeo(base: string, origin: string): Plugin {
@@ -24,6 +24,7 @@ export function localeSeo(base: string, origin: string): Plugin {
     generateBundle: {
       order: "post",
       handler(_options, bundle) {
+        if (!bundle["index.html"]) return; // Server bundle has no HTML entry.
         const index = bundle["index.html"];
         if (!index || index.type !== "asset") throw new Error("Missing built index.html");
         // Keep Vite's final hashed scripts/CSS, replacing only locale-specific metadata.
@@ -33,19 +34,6 @@ export function localeSeo(base: string, origin: string): Plugin {
           this.emitFile({ type: "asset", fileName: `${l.code}/index.html`, source: output });
         }
       },
-    },
-    configureServer(server) {
-      server.middlewares.use(async (req, res, next) => {
-        const pathname = (req.url ?? "/").split("?")[0];
-        if (!isHomePath(pathname, base)) return next();
-        try {
-          const shell = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-          const html = await server.transformIndexHtml(req.url!, shell);
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "text/html; charset=utf-8");
-          res.end(html);
-        } catch (error) { next(error); }
-      });
     },
   };
 }

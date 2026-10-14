@@ -76,15 +76,12 @@ test("the built HTML for all locales keeps Vite assets and the correct metadata"
   }
 });
 
-test("production routes select locale-specific HTML before the SPA fallback", () => {
+test("production uses the HTML server instead of a wildcard SPA rewrite", () => {
   const config = read("../.replit-artifact/artifact.toml");
-  for (const { code } of LANGUAGES) {
-    for (const path of [`/${code}`, `/${code}/`]) {
-      const rewrite = `from = "${path}"\nto = "/${code}/index.html"`;
-      assert.ok(config.includes(rewrite));
-      assert.ok(config.indexOf(rewrite) < config.indexOf('from = "/*"'));
-    }
-  }
+  assert.ok(config.includes("[services.production.run]"));
+  assert.ok(config.includes('"serve"'));
+  assert.ok(!config.includes('serve = "static"'));
+  assert.ok(!config.includes('from = "/*"'));
 });
 
 test("public sharing asset is an actual 1200×630 PNG", () => {

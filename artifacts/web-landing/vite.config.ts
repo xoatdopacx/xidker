@@ -64,9 +64,10 @@ export default defineConfig({
   },
   root: path.resolve(import.meta.dirname),
   build: {
-    outDir: path.resolve(import.meta.dirname, 'dist/public'),
+    outDir: path.resolve(import.meta.dirname, process.env.SSR_BUILD ? 'dist/server' : 'dist/public'),
     emptyOutDir: true,
   },
+  ssr: { noExternal: process.env.SSR_BUILD ? true : ['@workspace/api-client-react'] },
   server: {
     port,
     strictPort: true,
