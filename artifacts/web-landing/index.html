@@ -21,7 +21,13 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      </head>
+    <!-- Discover fonts in HTML without blocking screen rendering; CSS keeps system fallbacks.
+         Other writing systems are still loaded on demand by i18n. No font-file preloads. -->
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.media='all'" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Pixelify+Sans:wght@500;700&amp;family=Silkscreen:wght@400;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Pixelify+Sans:wght@500;700&amp;family=Silkscreen:wght@400;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap">
+    </noscript>
+  </head>
   <body>
     <!-- locale-links -->
     <div id="root"></div>
