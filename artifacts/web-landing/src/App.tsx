@@ -79,7 +79,7 @@ function App({ initial, ssrPath, requestClient }: { initial?: InitialPage; ssrPa
   // A request-local cache prevents cross-language or cross-visitor SSR state.
   const [queryClient] = useState(() => {
     const client = requestClient ?? new QueryClient();
-    if (initial) client.setQueryData(getListPackagesQueryKey({ lang: initial.lang }), initial.packages);
+    if (initial?.packages) client.setQueryData(getListPackagesQueryKey({ lang: initial.lang }), initial.packages);
     return client;
   });
   return (

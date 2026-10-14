@@ -12,7 +12,8 @@ import { siteOrigin } from "./site";
 const dictionaries = import.meta.glob("../src/locales/*.json", { eager: true, import: "default" }) as Record<string, { meta: { title: string; description: string } }>;
 const metas = Object.fromEntries(LANGUAGES.map(({ code }) => [code, dictionaries[`../src/locales/${code}.json`].meta]));
 
-export async function renderPage(shell: string, pathname: string, base: string, packages: Package[] = []) {
+/** `packages: null` means no fresh catalog: the pricing section renders its loading state and the browser fetches. */
+export async function renderPage(shell: string, pathname: string, base: string, packages: Package[] | null = null) {
   const lang = (pathLanguage(pathname, base) ?? "en") as Language;
   const dict = await loadDict(lang);
   let html = renderLocaleHtml(shell, pathname, siteOrigin, base, metas);

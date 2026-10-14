@@ -11,14 +11,34 @@ const base = process.env.BASE_PATH;
 if (!port || !base) throw new Error("PORT and BASE_PATH are required");
 const publicDir = resolve(root, development ? "public" : "dist/public");
 const mime = { ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".ico": "image/x-icon", ".txt": "text/plain", ".xml": "application/xml", ".woff2": "font/woff2", ".json": "application/json" };
+// Never a visitor-supplied host. Development goes through the shared path router on localhost:80. A deployment
+// runs every service in one container with nothing listening on localhost:80, so production calls the API service
+// on the port its artifact.toml declares (artifacts/api-server: PORT 8080).
+const catalogOrigin = development ? "http://localhost:80" : "http://127.0.0.1:8080";
 const catalog = createCatalogCache({
   fetchCatalog: async (lang) => {
-    // Use the artifact router, not the API service's private port or a visitor-supplied host.
-    const response = await fetch(`http://localhost:80/api/packages?lang=${encodeURIComponent(lang)}`, { signal: AbortSignal.timeout(12_000) });
+    const response = await fetch(`${catalogOrigin}/api/packages?lang=${encodeURIComponent(lang)}`, { signal: AbortSignal.timeout(12_000) });
     if (!response.ok) throw new Error(`Catalog unavailable (${response.status})`);
     return response.json();
   },
 });
+const CATALOG_WAIT_MS = 3_000;
+/** Fresh catalog for the server render, or null. Without it the page still renders (HTTP 200) with the pricing
+ * section loading, and the browser fetches prices after hydration — never stale prices, and never a 503 that
+ * would also fail the deployment's startup check on "/". A slow fetch keeps running and fills the cache. */
+async function catalogForPage(lang) {
+  const job = catalog(lang).catch((error) => {
+    process.stderr.write(`Catalog unavailable for server render: ${error.message}\n`);
+    return null;
+  });
+  let timer;
+  const timeout = new Promise((resolve) => { timer = setTimeout(resolve, CATALOG_WAIT_MS, null); });
+  try {
+    return await Promise.race([job, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 let vite;
 let productionRenderer;
 const server = createServer(async (req, res) => {
@@ -54,7 +74,7 @@ const server = createServer(async (req, res) => {
     }
     let shell = await readFile(resolve(root, development ? "index.html" : "dist/public/index.html"), "utf8");
     if (development) shell = await vite.transformIndexHtml(req.url, shell);
-    const packages = home ? await catalog(renderer.pathLanguage(pathname, base) ?? "en") : [];
+    const packages = home ? await catalogForPage(renderer.pathLanguage(pathname, base) ?? "en") : null;
     const page = await renderer.renderPage(shell, pathname, base, packages);
     const headers = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" };
     if (!page.indexable) headers["X-Robots-Tag"] = "noindex, follow";

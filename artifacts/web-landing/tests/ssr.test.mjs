@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { renderPage, LANGUAGES } from "../dist/server/render.js";
 import { createCatalogCache } from "../seo/catalog-cache.mjs";
 
@@ -79,6 +81,50 @@ test("catalog cache revalidates, coalesces requests and refuses expired data on 
   now = 120; fail = true;
   await assert.rejects(get("en"), /Unavailable/);
   fail = false; assert.equal((await get("en"))[0].price, 5);
+});
+
+const bootData = (html) => JSON.parse(html.match(/<script id="initial-page" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+
+test("without catalog data the home page still renders, with prices left to the browser", async () => {
+  const page = await renderPage(shell, "/en/", "/", null);
+  assert.equal(page.status, 200);
+  assert.equal(page.indexable, true);
+  for (const id of ["bang-gia", "hoi-dap"]) assert.ok(page.html.includes(`id="${id}"`));
+  assert.ok(!page.html.includes('data-testid="button-buy-'));
+  assert.equal(bootData(page.html).packages, null);
+});
+
+async function startProductionServer(port, nodeArgs) {
+  const child = spawn(process.execPath, [...nodeArgs, fileURLToPath(new URL("../seo/server.mjs", import.meta.url))], {
+    env: { ...process.env, PORT: String(port), BASE_PATH: "/", NODE_ENV: "production" },
+    stdio: ["ignore", "ignore", "pipe"],
+  });
+  let stderr = "";
+  child.stderr.on("data", (chunk) => { stderr += chunk; });
+  for (let i = 0; i < 100; i++) {
+    if (await fetch(`http://127.0.0.1:${port}/favicon.svg`).then(() => true, () => false)) return child;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  child.kill();
+  throw new Error(`Production server did not start: ${stderr}`);
+}
+
+test("production server passes the deployment startup check on / with and without a reachable catalog", async () => {
+  // Simulates a catalog outage inside the server process; the startup check must still get 200.
+  const blockCatalog = "data:text/javascript," + encodeURIComponent(
+    'const f = globalThis.fetch; globalThis.fetch = (i, o) => String(i?.url ?? i).includes("/api/packages") ? Promise.reject(new TypeError("simulated outage")) : f(i, o);');
+  for (const [port, nodeArgs, catalogReachable] of [[18597, [], true], [18596, ["--import", blockCatalog], false]]) {
+    const child = await startProductionServer(port, nodeArgs);
+    try {
+      const response = await fetch(`http://127.0.0.1:${port}/`);
+      assert.equal(response.status, 200);
+      const html = await response.text();
+      assert.equal(Array.isArray(bootData(html).packages), catalogReachable);
+      assert.equal(html.includes('data-testid="button-buy-'), catalogReachable);
+    } finally {
+      child.kill();
+    }
+  }
 });
 
 test("catalog input cannot break out of serialized hydration data", async () => {
