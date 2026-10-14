@@ -147,6 +147,8 @@ export interface ChatMessage {
   sender: ChatMessageSender;
   body: string;
   createdAt: string;
+  /** The reply is shown machine-translated into the customer's language */
+  translated: boolean;
 }
 
 export type ChatThreadStatus = typeof ChatThreadStatus[keyof typeof ChatThreadStatus];
@@ -177,6 +179,63 @@ export interface AdminMessageInput {
      * @maxLength 2000
      */
   message: string;
+}
+
+export type AdminChatMessageSender = typeof AdminChatMessageSender[keyof typeof AdminChatMessageSender];
+
+
+export const AdminChatMessageSender = {
+  visitor: 'visitor',
+  admin: 'admin',
+} as const;
+
+/**
+ * null when not tried yet; same when there is nothing to translate; failed means a customer reads the reply as written
+ * @nullable
+ */
+export type AdminChatMessageTranslationStatus = typeof AdminChatMessageTranslationStatus[keyof typeof AdminChatMessageTranslationStatus] | null;
+
+
+export const AdminChatMessageTranslationStatus = {
+  done: 'done',
+  same: 'same',
+  failed: 'failed',
+} as const;
+
+export interface AdminChatMessage {
+  id: number;
+  sender: AdminChatMessageSender;
+  /** The text as written */
+  body: string;
+  createdAt: string;
+  /**
+     * Language of the body (BCP 47); null while unknown
+     * @nullable
+     */
+  lang: string | null;
+  /**
+     * Customer messages in Vietnamese; replies in the customer's language, which is what the customer reads
+     * @nullable
+     */
+  translation: string | null;
+  /**
+     * Language of the translation, or that a failed reply was meant for
+     * @nullable
+     */
+  translationLang: string | null;
+  /**
+     * null when not tried yet; same when there is nothing to translate; failed means a customer reads the reply as written
+     * @nullable
+     */
+  translationStatus: AdminChatMessageTranslationStatus;
+}
+
+export interface AdminTranslateInput {
+  /**
+     * @minItems 1
+     * @maxItems 10
+     */
+  messageIds: number[];
 }
 
 export interface SupportActivateInput {

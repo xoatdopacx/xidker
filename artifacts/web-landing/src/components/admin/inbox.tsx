@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Languages } from "lucide-react";
 import {
   useListAdminConversations, getListAdminConversationsQueryKey,
   useListAdminMessages, getListAdminMessagesQueryKey,
-  useSendAdminMessage, useUpdateAdminConversation,
-  type AdminConversation, type ChatMessage,
+  useSendAdminMessage, useUpdateAdminConversation, useTranslateAdminMessages,
+  type AdminConversation, type AdminChatMessage,
 } from "@workspace/api-client-react";
 import { statusOf } from "@/lib/http";
 import {
@@ -20,6 +20,16 @@ const FILTERS: { value: Filter; label: string }[] = [
 ];
 const MAX_MESSAGE = 2000;
 const LIST_KEY = getListAdminConversationsQueryKey();
+/** Most messages per translation request (the API's limit). */
+const TRANSLATE_BATCH = 10;
+
+const isVietnamese = (code: string) => code.toLowerCase().split("-")[0] === "vi";
+/** "tiếng Anh", for use inside a sentence. */
+const langInSentence = (code: string | null) => {
+  if (!code) return "ngôn ngữ của khách";
+  const name = languageName(code);
+  return name.charAt(0).toLowerCase() + name.slice(1);
+};
 
 type SignedOut = (notice: string | null) => void;
 
@@ -124,7 +134,11 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
   const msgs = useListAdminMessages(conv.id, { query: { queryKey: key, refetchInterval: 3000, retry: false } });
   const send = useSendAdminMessage();
   const update = useUpdateAdminConversation();
+  const { mutateAsync: requestTranslations } = useTranslateAdminMessages();
   useSignOutOn401(msgs.error, onSignedOut);
+  // Ids already asked for while this thread is open: after a failed request only the retry button asks again.
+  const asked = useRef(new Set<number>());
+  const [translating, setTranslating] = useState<ReadonlySet<number>>(() => new Set());
 
   /** Updates this conversation's row in the cached list; writes nothing when the row is unchanged. */
   const patchListItem = useCallback((patch: (c: AdminConversation) => AdminConversation) => {
@@ -148,10 +162,52 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
 
   const messages = msgs.data ?? [];
 
+  const translate = useCallback(async (ids: number[]) => {
+    ids.forEach((id) => asked.current.add(id));
+    setTranslating((s) => new Set([...s, ...ids]));
+    try {
+      const fresh = await requestTranslations({ id: conv.id, data: { messageIds: ids } });
+      // Drop a poll that started before the translations were stored, so it cannot bring the old rows back.
+      await qc.cancelQueries({ queryKey: key });
+      const byId = new Map(fresh.map((m) => [m.id, m]));
+      qc.setQueryData<AdminChatMessage[]>(key, (old) => old?.map((m) => byId.get(m.id) ?? m));
+    } catch (err) {
+      if (statusOf(err) === 401) onSignedOut(adminErrorText(err));
+    } finally {
+      setTranslating((s) => {
+        const next = new Set(s);
+        ids.forEach((id) => next.delete(id));
+        return next;
+      });
+    }
+  }, [requestTranslations, conv.id, qc, key, onSignedOut]);
+
+  // Customer messages get a Vietnamese line: ask for the ones never tried, newest first, one batch at a time.
+  useEffect(() => {
+    if (translating.size) return;
+    const todo: number[] = [];
+    for (let i = messages.length - 1; i >= 0 && todo.length < TRANSLATE_BATCH; i--) {
+      const m = messages[i];
+      if (m.sender === "visitor" && m.translationStatus === null && !asked.current.has(m.id)) todo.push(m.id);
+    }
+    if (todo.length) void translate(todo);
+  }, [messages, translating.size, translate]);
+
+  // Same rule as the server: the language of the customer's newest message we know, else their site language.
+  const replyLang = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const m = messages[i];
+      if (m.sender === "visitor" && m.lang) return m.lang;
+    }
+    return conv.lang;
+  }, [messages, conv.lang]);
+  const translatesReplies = !isVietnamese(replyLang);
+
+  // Translations make bubbles taller, so follow those too while the admin is at the bottom.
   useLayoutEffect(() => {
     const el = log.current;
     if (el && atBottom.current) el.scrollTop = el.scrollHeight;
-  }, [messages.length]);
+  }, [messages, translating]);
 
   useEffect(() => {
     if (window.matchMedia("(pointer: fine)").matches) composer.current?.focus({ preventScroll: true });
@@ -176,9 +232,9 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
     send.mutate(
       { id: conv.id, data: { message } },
       {
-        onSuccess: async (m: ChatMessage) => {
+        onSuccess: async (m: AdminChatMessage) => {
           await qc.cancelQueries({ queryKey: key });
-          qc.setQueryData<ChatMessage[]>(key, (old) => (old?.some((x) => x.id === m.id) ? old : [...(old ?? []), m]));
+          qc.setQueryData<AdminChatMessage[]>(key, (old) => (old?.some((x) => x.id === m.id) ? old : [...(old ?? []), m]));
           patchListItem((c) => ({ ...c, status: "open", lastMessage: m.body, lastSender: "admin", lastMessageAt: m.createdAt }));
           atBottom.current = true;
           setDraft("");
@@ -261,7 +317,10 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
             <div key={m.id} className={`cw-row ${mine ? "me" : "them"}`} data-testid={`admin-message-${m.id}`}>
               {/* The label stays outside the dir="auto" bubble so it never decides the text direction. */}
               <span className="sr-only">{mine ? "Bạn" : guestName(conv)}:</span>
-              <p className="cw-msg" dir="auto">{m.body}</p>
+              <div className="cw-msg">
+                <p dir="auto" lang={m.lang ?? undefined}>{m.body}</p>
+                <Translation m={m} busy={translating.has(m.id)} asked={asked.current.has(m.id)} onRetry={() => void translate([m.id])} />
+              </div>
               <time className="cw-time" dateTime={m.createdAt}>{messageWhen(m.createdAt)}</time>
             </div>
           );
@@ -280,11 +339,53 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
           </label>
           <button type="button" onClick={reply} disabled={!draft.trim() || send.isPending || gone}
             className="adm-btn red h-11 px-4 shrink-0" data-testid="button-admin-send">
-            {send.isPending ? "Đang gửi…" : "Gửi"}
+            {send.isPending ? (translatesReplies ? "Đang dịch…" : "Đang gửi…") : "Gửi"}
           </button>
         </div>
-        <p className="mt-1.5 hidden sm:block text-[11px] text-[#5b6a5b]">Enter để gửi, Shift + Enter để xuống dòng.</p>
+        <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-[#5b6a5b]">
+          <span className="inline-flex items-center gap-1" data-testid="text-reply-language">
+            <Languages className="h-3 w-3 shrink-0" strokeWidth={2.5} aria-hidden="true" />
+            {translatesReplies
+              ? `Viết tiếng Việt, khách nhận bản dịch ${langInSentence(replyLang)}.`
+              : "Khách dùng tiếng Việt nên tin được gửi nguyên văn."}
+          </span>
+          <span className="hidden sm:inline">Enter để gửi, Shift + Enter để xuống dòng.</span>
+        </p>
       </div>
     </>
+  );
+}
+
+/** Under a message: the Vietnamese of a customer message, or what the customer reads for a reply. */
+function Translation({ m, busy, asked, onRetry }: {
+  m: AdminChatMessage; busy: boolean; asked: boolean; onRetry: () => void;
+}) {
+  const fromCustomer = m.sender === "visitor";
+  if (m.translationStatus === "done" && m.translation) {
+    const label = fromCustomer
+      ? (m.lang ? `Dịch từ ${langInSentence(m.lang)}` : "Bản dịch")
+      : `Khách đọc bằng ${langInSentence(m.translationLang)}`;
+    return (
+      <div className="adm-tr" data-testid={`text-translation-${m.id}`}>
+        <span className="adm-tr-label">
+          <Languages className="h-3 w-3 shrink-0" strokeWidth={2.5} aria-hidden="true" />{label}
+        </span>
+        <p dir="auto" lang={fromCustomer ? "vi" : m.translationLang ?? undefined}>{m.translation}</p>
+      </div>
+    );
+  }
+  if (busy) return <p className="adm-tr is-muted" data-testid={`text-translating-${m.id}`}>Đang dịch…</p>;
+  // A customer message never comes back unasked; one asked for and still untried means the request itself failed.
+  const failed = m.translationStatus === "failed" || (fromCustomer && m.translationStatus === null && asked);
+  if (!failed) return null;
+  return (
+    <p className={`adm-tr ${fromCustomer ? "is-muted" : "is-warn"}`} data-testid={`text-translation-failed-${m.id}`}>
+      {fromCustomer
+        ? "Chưa dịch được."
+        : `Chưa dịch được sang ${langInSentence(m.translationLang)}, khách đang đọc nguyên văn tiếng Việt.`}{" "}
+      <button type="button" onClick={onRetry} className="adm-tr-retry" data-testid={`button-retranslate-${m.id}`}>
+        {fromCustomer ? "Thử lại" : "Dịch lại"}
+      </button>
+    </p>
   );
 }

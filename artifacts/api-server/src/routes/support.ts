@@ -318,12 +318,20 @@ async function threadOf(conversation: ChatConversationRow) {
       sender: chatMessagesTable.sender,
       body: chatMessagesTable.body,
       createdAt: chatMessagesTable.createdAt,
+      translation: chatMessagesTable.translation,
+      translationStatus: chatMessagesTable.translationStatus,
     })
     .from(chatMessagesTable)
     .where(eq(chatMessagesTable.conversationId, conversation.id))
     .orderBy(desc(chatMessagesTable.id))
     .limit(200);
-  return { status: conversation.status, messages: newestFirst.reverse() };
+  // Replies are written in Vietnamese; the customer reads them translated when that worked.
+  const messages = newestFirst.reverse().map(({ translation, translationStatus, ...m }) =>
+    m.sender === "admin" && translationStatus === "done" && translation
+      ? { ...m, body: translation, translated: true }
+      : { ...m, translated: false },
+  );
+  return { status: conversation.status, messages };
 }
 
 /** The account's conversation id, created on its first message. */
@@ -405,14 +413,15 @@ router.post(
           body: chatMessagesTable.body,
           createdAt: chatMessagesTable.createdAt,
         });
-      // Writing again reopens a closed conversation.
+      // Writing again reopens a closed conversation. The site language is kept up to date:
+      // replies go out in it until a message of theirs shows the language they write in.
       await tx
         .update(chatConversationsTable)
-        .set({ lastMessageAt: sql`now()`, status: "open" })
+        .set({ lastMessageAt: sql`now()`, status: "open", lang: parsed.data.lang })
         .where(eq(chatConversationsTable.id, conversationId));
       return created;
     });
-    res.status(201).json(SendSupportMessageResponse.parse(message));
+    res.status(201).json(SendSupportMessageResponse.parse({ ...message, translated: false }));
   },
 );
 

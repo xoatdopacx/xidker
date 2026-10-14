@@ -4,6 +4,7 @@
 - [Font delivery policy](font-delivery.md) — prioritize readable fallback text over waiting for base fonts; preserve on-demand script fonts and covered language switches.
 - [Pricing rules](pricing-rules.md) — user-defined contents of the $12/$50/$250 packages; only A–Z has hosting+domain; no invented client-use policy.
 - [Support chat and admin sign-in](admin-chat.md) — buyers-only since 2026-10-14; Whop buyer email unverified; Gmail via connector proxy; test recipes.
+- [Chat translation](chat-translation.md) — VI⇄customer-language rules; gpt-6-luna needs effort "none"; test with a 2nd API + CDP request forwarding.
 - [Backend gotchas](backend-gotchas.md) — drizzle prints unqualified columns in subqueries; run typecheck:libs after schema changes.
 - [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script plus a key-path check against vi.json.
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.

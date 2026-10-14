@@ -210,6 +210,7 @@
     "sending": "Mengirim…",
     "you": "Anda",
     "waiting": "Terkirim. Balasan akan muncul di sini. Anda bisa menutup chat dan kembali lagi nanti.",
+    "autoTranslated": "Diterjemahkan otomatis",
     "closed": "Percakapan ini sudah ditutup. Kirim pesan lagi untuk membukanya kembali.",
     "newMessages": "Pesan baru: {n}",
     "errorSend": "Gagal mengirim. Silakan coba lagi.",

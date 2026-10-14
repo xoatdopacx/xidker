@@ -210,6 +210,7 @@
     "sending": "Odesílání…",
     "you": "Vy",
     "waiting": "Odesláno. Odpověď se zobrazí tady. Chat můžete zavřít a vrátit se později.",
+    "autoTranslated": "Automaticky přeloženo",
     "closed": "Tato konverzace byla uzavřena. Napište znovu a znovu se otevře.",
     "newMessages": "Nové zprávy: {n}",
     "errorSend": "Nepodařilo se odeslat. Zkuste to znovu.",

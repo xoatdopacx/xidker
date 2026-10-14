@@ -1,6 +1,6 @@
 import { randomInt } from "node:crypto";
 import { Router, type IRouter, type Request } from "express";
-import { and, count, desc, eq, gt, isNull, lt, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, inArray, isNull, lt, sql } from "drizzle-orm";
 import {
   db,
   adminLoginChallengesTable,
@@ -20,6 +20,9 @@ import {
   SendAdminMessageBody,
   SendAdminMessageParams,
   SendAdminMessageResponse,
+  TranslateAdminMessagesBody,
+  TranslateAdminMessagesParams,
+  TranslateAdminMessagesResponse,
   UpdateAdminConversationBody,
   UpdateAdminConversationParams,
   UpdateAdminConversationResponse,
@@ -38,6 +41,7 @@ import {
   safeEqual,
   sha256,
 } from "../lib/security";
+import { customerLanguage, translateMessages, translateReply } from "../lib/chatTranslate";
 import {
   ADMIN_CHALLENGE_COOKIE,
   ADMIN_SESSION_COOKIE,
@@ -346,6 +350,17 @@ router.patch(
   },
 );
 
+const messageColumns = {
+  id: chatMessagesTable.id,
+  sender: chatMessagesTable.sender,
+  body: chatMessagesTable.body,
+  createdAt: chatMessagesTable.createdAt,
+  lang: chatMessagesTable.lang,
+  translation: chatMessagesTable.translation,
+  translationLang: chatMessagesTable.translationLang,
+  translationStatus: chatMessagesTable.translationStatus,
+};
+
 router.get("/admin/conversations/:id/messages", requireAdmin, async (req, res): Promise<void> => {
   const params = ListAdminMessagesParams.safeParse(req.params);
   if (!params.success) {
@@ -361,12 +376,7 @@ router.get("/admin/conversations/:id/messages", requireAdmin, async (req, res): 
     return;
   }
   const newestFirst = await db
-    .select({
-      id: chatMessagesTable.id,
-      sender: chatMessagesTable.sender,
-      body: chatMessagesTable.body,
-      createdAt: chatMessagesTable.createdAt,
-    })
+    .select(messageColumns)
     .from(chatMessagesTable)
     .where(eq(chatMessagesTable.conversationId, conversation.id))
     .orderBy(desc(chatMessagesTable.id))
@@ -403,22 +413,28 @@ router.post(
       res.status(400).json({ error: "Message is empty" });
       return;
     }
+    const [target] = await db
+      .select({ id: chatConversationsTable.id, lang: chatConversationsTable.lang })
+      .from(chatConversationsTable)
+      .where(eq(chatConversationsTable.id, params.data.id));
+    if (!target) {
+      res.status(404).json({ error: "Conversation not found" });
+      return;
+    }
+    // The owner writes Vietnamese; the customer reads the reply in their own language.
+    // Translated before the transaction so no row lock is held while waiting on it.
+    const translated = await translateReply(body, await customerLanguage(target.id, target.lang));
     const message = await db.transaction(async (tx) => {
       const [conversation] = await tx
         .select({ id: chatConversationsTable.id })
         .from(chatConversationsTable)
-        .where(eq(chatConversationsTable.id, params.data.id))
+        .where(eq(chatConversationsTable.id, target.id))
         .for("update");
       if (!conversation) return null;
       const [created] = await tx
         .insert(chatMessagesTable)
-        .values({ conversationId: conversation.id, sender: "admin", body })
-        .returning({
-          id: chatMessagesTable.id,
-          sender: chatMessagesTable.sender,
-          body: chatMessagesTable.body,
-          createdAt: chatMessagesTable.createdAt,
-        });
+        .values({ conversationId: conversation.id, sender: "admin", body, ...translated })
+        .returning(messageColumns);
       // Replying reopens a closed conversation.
       await tx
         .update(chatConversationsTable)
@@ -431,6 +447,47 @@ router.post(
       return;
     }
     res.status(201).json(SendAdminMessageResponse.parse(message));
+  },
+);
+
+router.post(
+  "/admin/conversations/:id/translations",
+  requireSameOrigin,
+  requireAdmin,
+  limitByIp("admin-translate", MINUTE, 40),
+  async (req, res): Promise<void> => {
+    const params = TranslateAdminMessagesParams.safeParse(req.params);
+    const parsed = TranslateAdminMessagesBody.safeParse(req.body);
+    if (!params.success || !parsed.success) {
+      res.status(400).json({ error: "Invalid input" });
+      return;
+    }
+    const [conversation] = await db
+      .select({ id: chatConversationsTable.id, lang: chatConversationsTable.lang })
+      .from(chatConversationsTable)
+      .where(eq(chatConversationsTable.id, params.data.id));
+    if (!conversation) {
+      res.status(404).json({ error: "Conversation not found" });
+      return;
+    }
+    const ofThisConversation = and(
+      eq(chatMessagesTable.conversationId, conversation.id),
+      inArray(chatMessagesTable.id, [...new Set(parsed.data.messageIds)]),
+    );
+    const asked = await db.select(messageColumns).from(chatMessagesTable).where(ofThisConversation);
+    const todo = asked.filter((m) => m.translationStatus === null || m.translationStatus === "failed");
+    if (todo.length) {
+      const replyLang = todo.some((m) => m.sender === "admin" && !m.translationLang)
+        ? await customerLanguage(conversation.id, conversation.lang)
+        : conversation.lang;
+      await translateMessages(todo, replyLang);
+    }
+    const fresh = await db
+      .select(messageColumns)
+      .from(chatMessagesTable)
+      .where(ofThisConversation)
+      .orderBy(chatMessagesTable.id);
+    res.json(TranslateAdminMessagesResponse.parse(fresh));
   },
 );
 

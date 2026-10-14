@@ -152,7 +152,8 @@ export const GetSupportThreadResponse = zod.object({
   "id": zod.number().int(),
   "sender": zod.enum(['visitor', 'admin']),
   "body": zod.string(),
-  "createdAt": zod.coerce.date()
+  "createdAt": zod.coerce.date(),
+  "translated": zod.boolean().describe('The reply is shown machine-translated into the customer\'s language')
 }))
 })
 
@@ -174,7 +175,8 @@ export const SendSupportMessageResponse = zod.object({
   "id": zod.number().int(),
   "sender": zod.enum(['visitor', 'admin']),
   "body": zod.string(),
-  "createdAt": zod.coerce.date()
+  "createdAt": zod.coerce.date(),
+  "translated": zod.boolean().describe('The reply is shown machine-translated into the customer\'s language')
 })
 
 
@@ -282,8 +284,12 @@ export const ListAdminMessagesParams = zod.object({
 export const ListAdminMessagesResponseItem = zod.object({
   "id": zod.number().int(),
   "sender": zod.enum(['visitor', 'admin']),
-  "body": zod.string(),
-  "createdAt": zod.coerce.date()
+  "body": zod.string().describe('The text as written'),
+  "createdAt": zod.coerce.date(),
+  "lang": zod.string().nullable().describe('Language of the body (BCP 47); null while unknown'),
+  "translation": zod.string().nullable().describe('Customer messages in Vietnamese; replies in the customer\'s language, which is what the customer reads'),
+  "translationLang": zod.string().nullable().describe('Language of the translation, or that a failed reply was meant for'),
+  "translationStatus": zod.union([zod.literal('done'),zod.literal('same'),zod.literal('failed'),zod.literal(null)]).nullable().describe('null when not tried yet; same when there is nothing to translate; failed means a customer reads the reply as written')
 })
 export const ListAdminMessagesResponse = zod.array(ListAdminMessagesResponseItem)
 
@@ -306,9 +312,42 @@ export const SendAdminMessageBody = zod.object({
 export const SendAdminMessageResponse = zod.object({
   "id": zod.number().int(),
   "sender": zod.enum(['visitor', 'admin']),
-  "body": zod.string(),
-  "createdAt": zod.coerce.date()
+  "body": zod.string().describe('The text as written'),
+  "createdAt": zod.coerce.date(),
+  "lang": zod.string().nullable().describe('Language of the body (BCP 47); null while unknown'),
+  "translation": zod.string().nullable().describe('Customer messages in Vietnamese; replies in the customer\'s language, which is what the customer reads'),
+  "translationLang": zod.string().nullable().describe('Language of the translation, or that a failed reply was meant for'),
+  "translationStatus": zod.union([zod.literal('done'),zod.literal('same'),zod.literal('failed'),zod.literal(null)]).nullable().describe('null when not tried yet; same when there is nothing to translate; failed means a customer reads the reply as written')
 })
+
+
+/**
+ * Customer messages are translated into Vietnamese and their language is detected; a reply is translated into the customer's language. Only messages never tried or whose translation failed are translated again.
+ * @summary Translate messages that have no translation yet
+ */
+export const TranslateAdminMessagesParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const translateAdminMessagesBodyMessageIdsMax = 10;
+
+
+
+export const TranslateAdminMessagesBody = zod.object({
+  "messageIds": zod.array(zod.number().int()).min(1).max(translateAdminMessagesBodyMessageIdsMax)
+})
+
+export const TranslateAdminMessagesResponseItem = zod.object({
+  "id": zod.number().int(),
+  "sender": zod.enum(['visitor', 'admin']),
+  "body": zod.string().describe('The text as written'),
+  "createdAt": zod.coerce.date(),
+  "lang": zod.string().nullable().describe('Language of the body (BCP 47); null while unknown'),
+  "translation": zod.string().nullable().describe('Customer messages in Vietnamese; replies in the customer\'s language, which is what the customer reads'),
+  "translationLang": zod.string().nullable().describe('Language of the translation, or that a failed reply was meant for'),
+  "translationStatus": zod.union([zod.literal('done'),zod.literal('same'),zod.literal('failed'),zod.literal(null)]).nullable().describe('null when not tried yet; same when there is nothing to translate; failed means a customer reads the reply as written')
+})
+export const TranslateAdminMessagesResponse = zod.array(TranslateAdminMessagesResponseItem)
 
 
 /**

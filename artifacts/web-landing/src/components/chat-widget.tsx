@@ -486,7 +486,11 @@ export function ChatWidget() {
                       {/* Labels stay outside the dir="auto" bubble so they never decide the text direction. */}
                       {mine ? <span className="sr-only">{t.chat.you}:</span> : <span className="cw-from font-pixel font-bold">xidker</span>}
                       <p className="cw-msg" dir="auto">{m.body}</p>
-                      <time className="cw-time" dateTime={m.createdAt}>{when(m.createdAt)}</time>
+                      <span className="cw-time">
+                        <time dateTime={m.createdAt}>{when(m.createdAt)}</time>
+                        {/* Replies are written in Vietnamese and reach the customer machine-translated. */}
+                        {m.translated && <> · <span data-testid={`text-chat-translated-${m.id}`}>{t.chat.autoTranslated}</span></>}
+                      </span>
                     </div>
                   );
                 })}

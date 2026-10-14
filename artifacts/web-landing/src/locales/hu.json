@@ -210,6 +210,7 @@
     "sending": "Küldés…",
     "you": "Te",
     "waiting": "Elküldve. A válasz itt jelenik meg. Bezárhatod a csevegést, és később visszanézhetsz.",
+    "autoTranslated": "Automatikusan lefordítva",
     "closed": "Ez a beszélgetés lezárult. Írj újra, és a beszélgetés újra megnyílik.",
     "newMessages": "Új üzenetek: {n}",
     "errorSend": "Nem sikerült elküldeni. Próbáld újra.",

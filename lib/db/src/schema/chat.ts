@@ -39,6 +39,15 @@ export const chatMessagesTable = pgTable(
     // "visitor" is the customer.
     sender: text("sender", { enum: ["visitor", "admin"] }).notNull(),
     body: text("body").notNull(),
+    // Language of the body: detected for customer messages, "vi" for replies; null while unknown.
+    lang: text("lang"),
+    // Machine translation shown next to the body: customer messages in Vietnamese
+    // for the admin, replies in the customer's language (what the customer reads).
+    translation: text("translation"),
+    translationLang: text("translation_lang"),
+    // null: not tried yet (customer messages are translated once the admin opens
+    // them); "same": nothing to translate; "failed": the customer reads the original.
+    translationStatus: text("translation_status", { enum: ["done", "same", "failed"] }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

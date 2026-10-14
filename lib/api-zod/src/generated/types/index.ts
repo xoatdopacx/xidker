@@ -6,6 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './adminChatMessage';
+export * from './adminChatMessageSender';
+export * from './adminChatMessageTranslationStatus';
 export * from './adminCodeChallenge';
 export * from './adminCodeInput';
 export * from './adminConversation';
@@ -21,6 +24,7 @@ export * from './adminPackageTextInput';
 export * from './adminPackageTranslations';
 export * from './adminSession';
 export * from './adminTokenInput';
+export * from './adminTranslateInput';
 export * from './chatMessage';
 export * from './chatMessageInput';
 export * from './chatMessageSender';

@@ -48,13 +48,14 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - "Already activated" (409) is answered only after the order and email match, so the endpoint cannot be used to find out which emails are customers. Failed activations and wrong passwords are counted in the database (works across server instances).
 - Admin sign-in: `ADMIN_TOKEN`, then a 6-digit code emailed to `ADMIN_EMAIL`. Changing `ADMIN_TOKEN` signs every admin out. Admin replies use their own input schema (`AdminMessageInput`, no language field).
 - Chat updates by polling the database (customer panel every 3s while open, admin list 5s, admin thread 3s), because the app runs on autoscale and in-memory state would split across instances.
+- Chat translation (`artifacts/api-server/src/lib/chatTranslate.ts`, Replit AI Integrations → OpenAI; no API key, usage is billed to Replit credits): customer messages get a Vietnamese translation when the admin's inbox asks for it (on opening a thread, never during the customer's send). Admin replies are translated before saving into the language of the customer's newest message with a known language, else the conversation's site language. If translating fails, the reply is saved as written, the customer reads the Vietnamese and the admin sees "Dịch lại". The conversation list keeps the original text.
 
 ## Product
 
 - Sales page in 33 languages (pixel globe picker in the header and footer; Arabic, Persian, Hebrew and Urdu read right to left): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop with a VND/USD switch, FAQ, contact email.
 - "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise). The pricing grid adapts to 1–5+ packages.
 - `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, amount, date, order ID) and a card to switch on support chat with the order ID filled in.
-- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; `/admin` in Vietnamese only: inbox showing each customer's email, package and order ID, and "Sản phẩm & giá" to change prices and text, hide/show, mark the recommended package, list a new source for sale, or delete an unsold one. Files are still delivered by hand.
+- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; replies reach the customer in their language, marked "Translated automatically". `/admin` in Vietnamese only: inbox showing each customer's email, package and order ID, a Vietnamese line under every customer message and the translation each reply was sent with, and "Sản phẩm & giá" to change prices and text, hide/show, mark the recommended package, list a new source for sale, or delete an unsold one. Files are still delivered by hand.
 
 ## User preferences
 

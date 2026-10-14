@@ -210,6 +210,7 @@
     "sending": "Wird gesendet…",
     "you": "Du",
     "waiting": "Gesendet. Die Antwort erscheint hier. Du kannst den Chat schließen und später wieder vorbeischauen.",
+    "autoTranslated": "Automatisch übersetzt",
     "closed": "Dieses Gespräch wurde geschlossen. Schreib erneut, um es wieder zu öffnen.",
     "newMessages": "Neue Nachrichten: {n}",
     "errorSend": "Senden fehlgeschlagen. Bitte versuch es noch einmal.",

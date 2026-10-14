@@ -210,6 +210,7 @@
     "sending": "Sending…",
     "you": "You",
     "waiting": "Sent. The reply will show up here. You can close the chat and check back later.",
+    "autoTranslated": "Translated automatically",
     "closed": "This conversation was closed. Write again to reopen it.",
     "newMessages": "New messages: {n}",
     "errorSend": "Couldn't send. Please try again.",

@@ -210,6 +210,7 @@
     "sending": "发送中…",
     "you": "您",
     "waiting": "已发送。回复会显示在这里。您可以先关闭聊天，稍后再回来查看。",
+    "autoTranslated": "已自动翻译",
     "closed": "此对话已关闭。再次发送消息即可重新打开。",
     "newMessages": "新消息：{n}",
     "errorSend": "发送失败，请重试。",

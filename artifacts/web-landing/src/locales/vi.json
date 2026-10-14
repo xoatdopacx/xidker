@@ -210,6 +210,7 @@
     "sending": "Đang gửi…",
     "you": "Bạn",
     "waiting": "Đã gửi. Câu trả lời sẽ hiện ở đây. Bạn có thể đóng chat rồi quay lại xem sau.",
+    "autoTranslated": "Đã dịch tự động",
     "closed": "Cuộc trò chuyện đã đóng. Nhắn tiếp để mở lại.",
     "newMessages": "Tin nhắn mới: {n}",
     "errorSend": "Chưa gửi được. Thử lại nhé.",

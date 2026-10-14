@@ -210,6 +210,7 @@
     "sending": "Enviando…",
     "you": "Tú",
     "waiting": "Enviado. La respuesta aparecerá aquí. Puedes cerrar el chat y volver más tarde.",
+    "autoTranslated": "Traducido automáticamente",
     "closed": "Esta conversación se cerró. Escribe de nuevo para reabrirla.",
     "newMessages": "Mensajes nuevos: {n}",
     "errorSend": "No se pudo enviar. Inténtalo de nuevo.",

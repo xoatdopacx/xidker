@@ -210,6 +210,7 @@
     "sending": "Envoi…",
     "you": "Vous",
     "waiting": "Envoyé. La réponse s'affichera ici. Vous pouvez fermer la discussion et revenir plus tard.",
+    "autoTranslated": "Traduit automatiquement",
     "closed": "Cette conversation est fermée. Écrivez à nouveau pour la rouvrir.",
     "newMessages": "Nouveaux messages : {n}",
     "errorSend": "Échec de l'envoi. Veuillez réessayer.",

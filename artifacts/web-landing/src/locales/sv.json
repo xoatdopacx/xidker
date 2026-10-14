@@ -210,6 +210,7 @@
     "sending": "Skickar…",
     "you": "Du",
     "waiting": "Skickat. Svaret visas här. Du kan stänga chatten och titta in senare.",
+    "autoTranslated": "Automatiskt översatt",
     "closed": "Den här konversationen är stängd. Skriv igen för att öppna den.",
     "newMessages": "Nya meddelanden: {n}",
     "errorSend": "Det gick inte att skicka. Försök igen.",

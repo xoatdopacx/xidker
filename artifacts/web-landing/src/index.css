@@ -735,6 +735,13 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .adm-item.is-closed:not([aria-current="true"]){opacity:.62}
 .adm-badge{min-width:22px;height:22px;padding:0 4px;display:inline-grid;place-items:center;background:hsl(var(--pin));color:#fff;border:2px solid #1b2a1c;font-size:10px;line-height:1}
 .adm-lang{font-size:9px;padding:1px 3px;border:2px solid #8d8a80;color:#5b6a5b;line-height:1.2}
+.adm-tr{margin-top:.45rem;padding-top:.4rem;border-top:2px dashed rgba(27,42,28,.35);font-size:13px;line-height:1.45;color:#24302a}
+.adm-tr-label{display:flex;align-items:center;gap:4px;margin-bottom:1px;font-size:11px;font-weight:800;color:#3d4a3d}
+.adm-tr.is-muted{color:#4b5a4b;font-style:italic}
+.adm-tr.is-warn{color:#a5231d;font-weight:600}
+.adm-tr-retry{font-style:normal;font-weight:800;color:#1b2a1c;text-decoration:underline;text-underline-offset:2px}
+.adm-tr-retry:hover{color:hsl(var(--pin))}
+.adm-tr-retry:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:1px}
 .adm-notice{font-size:14px;line-height:1.45;padding:.55rem .7rem;border:3px solid currentColor}
 .adm-notice.error{color:hsl(var(--pin));background:#fff2f0}
 .adm-notice.info{color:#1b2a1c;background:#fff6d8;border-color:#c99a1e}

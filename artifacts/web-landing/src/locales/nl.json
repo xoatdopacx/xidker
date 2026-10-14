@@ -210,6 +210,7 @@
     "sending": "Versturen…",
     "you": "Jij",
     "waiting": "Verstuurd. Het antwoord verschijnt hier. Je kunt de chat sluiten en later terugkomen.",
+    "autoTranslated": "Automatisch vertaald",
     "closed": "Dit gesprek is gesloten. Stuur opnieuw een bericht om het weer te openen.",
     "newMessages": "Nieuwe berichten: {n}",
     "errorSend": "Versturen mislukt. Probeer het opnieuw.",

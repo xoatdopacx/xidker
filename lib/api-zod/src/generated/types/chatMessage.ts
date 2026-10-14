@@ -12,4 +12,6 @@ export interface ChatMessage {
   sender: ChatMessageSender;
   body: string;
   createdAt: Date;
+  /** The reply is shown machine-translated into the customer's language */
+  translated: boolean;
 }

@@ -20,6 +20,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AdminChatMessage,
   AdminCodeChallenge,
   AdminCodeInput,
   AdminConversation,
@@ -29,6 +30,7 @@ import type {
   AdminPackageInput,
   AdminSession,
   AdminTokenInput,
+  AdminTranslateInput,
   ChatMessage,
   ChatMessageInput,
   ChatThread,
@@ -1403,9 +1405,9 @@ export const getListAdminMessagesUrl = (id: string,) => {
 /**
  * @summary Read a conversation and mark it as read
  */
-export const listAdminMessages = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<ChatMessage[]> => {
+export const listAdminMessages = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<AdminChatMessage[]> => {
 
-  return customFetch<ChatMessage[]>(getListAdminMessagesUrl(id),
+  return customFetch<AdminChatMessage[]>(getListAdminMessagesUrl(id),
   {
     ...options,
     method: 'GET'
@@ -1481,7 +1483,7 @@ export const getSendAdminMessageUrl = (id: string,) => {
  * @summary Reply in a conversation
  */
 export const sendAdminMessage = async (id: string,
-    adminMessageInput: AdminMessageInput, options?: Parameters<typeof customFetch>[1]): Promise<ChatMessage> => {
+    adminMessageInput: AdminMessageInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminChatMessage> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -1497,7 +1499,7 @@ export const sendAdminMessage = async (id: string,
     }
     return headers;
   };
-return customFetch<ChatMessage>(getSendAdminMessageUrl(id),
+return customFetch<AdminChatMessage>(getSendAdminMessageUrl(id),
   {
     ...options,
     method: 'POST',
@@ -1556,6 +1558,96 @@ export const useSendAdminMessage = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getSendAdminMessageMutationOptions(options));
+    }
+
+export const getTranslateAdminMessagesUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/conversations/${id}/translations`
+}
+
+/**
+ * Customer messages are translated into Vietnamese and their language is detected; a reply is translated into the customer's language. Only messages never tried or whose translation failed are translated again.
+ * @summary Translate messages that have no translation yet
+ */
+export const translateAdminMessages = async (id: string,
+    adminTranslateInput: AdminTranslateInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminChatMessage[]> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminChatMessage[]>(getTranslateAdminMessagesUrl(id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminTranslateInput)
+  }
+);}
+
+
+
+
+
+export const getTranslateAdminMessagesMutationKey = () => ['translateAdminMessages'] as const;
+
+export const getTranslateAdminMessagesMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof translateAdminMessages>>, TError,TranslateAdminMessagesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof translateAdminMessages>>, TError,TranslateAdminMessagesMutationVariables, TContext> => {
+
+const mutationKey = getTranslateAdminMessagesMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof translateAdminMessages>>, TranslateAdminMessagesMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  translateAdminMessages(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TranslateAdminMessagesMutationResult = NonNullable<Awaited<ReturnType<typeof translateAdminMessages>>>
+    export type TranslateAdminMessagesMutationBody = BodyType<AdminTranslateInput>
+    export type TranslateAdminMessagesMutationError = ErrorType<ErrorResponse>
+    export type TranslateAdminMessagesMutationVariables = {id: string;data: BodyType<AdminTranslateInput>}
+
+    /**
+ * @summary Translate messages that have no translation yet
+ */
+export const useTranslateAdminMessages = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof translateAdminMessages>>, TError,TranslateAdminMessagesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof translateAdminMessages>>,
+        TError,
+        TranslateAdminMessagesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getTranslateAdminMessagesMutationOptions(options));
     }
 
 export const getListAdminPackagesUrl = () => {

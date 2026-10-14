@@ -538,7 +538,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ChatMessage"
+                  $ref: "#/components/schemas/AdminChatMessage"
         "401":
           description: Not signed in
           content:
@@ -573,7 +573,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ChatMessage"
+                $ref: "#/components/schemas/AdminChatMessage"
         "400":
           description: Invalid input
           content:
@@ -600,6 +600,66 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "429":
           description: Too many messages, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/conversations/{id}/translations:
+    post:
+      operationId: translateAdminMessages
+      tags: [admin]
+      summary: Translate messages that have no translation yet
+      description: >-
+        Customer messages are translated into Vietnamese and their language is
+        detected; a reply is translated into the customer's language. Only
+        messages never tried or whose translation failed are translated again.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTranslateInput"
+      responses:
+        "200":
+          description: The asked messages after translating, in order
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminChatMessage"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many translations, try again later
           content:
             application/json:
               schema:
@@ -945,11 +1005,15 @@ components:
         createdAt:
           type: string
           format: date-time
+        translated:
+          type: boolean
+          description: The reply is shown machine-translated into the customer's language
       required:
         - id
         - sender
         - body
         - createdAt
+        - translated
     ChatThread:
       type: object
       properties:
@@ -984,6 +1048,57 @@ components:
           maxLength: 2000
       required:
         - message
+    AdminChatMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        sender:
+          type: string
+          enum: [visitor, admin]
+        body:
+          type: string
+          description: The text as written
+        createdAt:
+          type: string
+          format: date-time
+        lang:
+          type: ["string", "null"]
+          description: Language of the body (BCP 47); null while unknown
+        translation:
+          type: ["string", "null"]
+          description: >-
+            Customer messages in Vietnamese; replies in the customer's language,
+            which is what the customer reads
+        translationLang:
+          type: ["string", "null"]
+          description: Language of the translation, or that a failed reply was meant for
+        translationStatus:
+          type: ["string", "null"]
+          enum: [done, same, failed, null]
+          description: >-
+            null when not tried yet; same when there is nothing to translate;
+            failed means a customer reads the reply as written
+      required:
+        - id
+        - sender
+        - body
+        - createdAt
+        - lang
+        - translation
+        - translationLang
+        - translationStatus
+    AdminTranslateInput:
+      type: object
+      properties:
+        messageIds:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            type: integer
+      required:
+        - messageIds
     SupportActivateInput:
       type: object
       properties:
