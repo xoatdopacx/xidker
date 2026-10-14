@@ -31,7 +31,21 @@ test("production SSR includes all localized sales sections, FAQ and live Whop pa
     }
     for (let i = 0; i < dict(code).faq.items.length; i++) assert.ok(html.includes(`id="faq-a-${i}"`));
     assert.ok(html.includes(`lang="${code}"`));
-    assert.ok(html.includes(`href="https://shopoatdopac.com/${code}/"`));
+    const canonical = `https://shopoatdopac.com/${code === "en" ? "" : `${code}/`}`;
+    assert.ok(html.includes(`href="${canonical}"`));
+    const product = JSON.parse(html.match(/<script id="product-schema" type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    assert.equal(product["@type"], "Product");
+    assert.equal(product.name, dict(code).hero.eyebrow);
+    assert.equal(product.url, canonical);
+    const cards = visible.length ? visible : packages.filter((p) => p.currency === packages[0].currency);
+    assert.equal(product.offers.length, cards.length);
+    for (const p of cards) {
+      const offer = product.offers.find((o) => o.identifier === p.id);
+      assert.equal(offer.name, p.name);
+      assert.equal(offer.price, p.price);
+      assert.equal(offer.priceCurrency, p.currency.toUpperCase());
+      for (const f of p.features) assert.ok(offer.description.includes(f));
+    }
   }
 });
 
@@ -43,6 +57,7 @@ test("utility pages are noindex and unknown paths return 404 in the production r
     assert.ok(page.html.includes('content="noindex, follow"'));
     assert.ok(!page.html.includes('rel="canonical"'));
     assert.ok(!page.html.includes('id="initial-page"'));
+    assert.ok(!page.html.includes("application/ld+json"));
   }
 });
 
@@ -93,6 +108,28 @@ test("without catalog data the home page still renders, with prices left to the 
   for (const id of ["bang-gia", "hoi-dap"]) assert.ok(page.html.includes(`id="${id}"`));
   assert.ok(!page.html.includes('data-testid="button-buy-'));
   assert.equal(bootData(page.html).packages, null);
+  const product = JSON.parse(page.html.match(/<script id="product-schema" type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  assert.ok(!("offers" in product));
+});
+
+test("English duplicates redirect permanently; discovery files are XML/text for GET and HEAD", async () => {
+  for (const path of ["/en", "/en/", "/en/?utm_source=test&ref=example"]) {
+    const response = await fetch(`http://localhost:80${path}`, { redirect: "manual" });
+    assert.equal(response.status, 301);
+    assert.equal(response.headers.get("location"), `/${new URL(path, "http://localhost").search}`);
+  }
+  const legacy = await fetch("http://localhost:80/?lang=en&utm_source=test", { redirect: "manual" });
+  assert.equal(legacy.headers.get("location"), "/?utm_source=test");
+  for (const [path, type] of [["sitemap.xml", "application/xml"], ["robots.txt", "text/plain"]]) {
+    const response = await fetch(`http://localhost:80/${path}`);
+    assert.equal(response.status, 200);
+    assert.ok(response.headers.get("content-type").startsWith(type));
+    assert.equal(response.headers.get("x-robots-tag"), null);
+    assert.equal(await response.text(), readFileSync(new URL(`../dist/public/${path}`, import.meta.url), "utf8"));
+    const head = await fetch(`http://localhost:80/${path}`, { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+  }
 });
 
 async function startProductionServer(port, nodeArgs) {
@@ -134,6 +171,8 @@ test("catalog input cannot break out of serialized hydration data", async () => 
   assert.ok(!page.html.includes(malicious));
   const data = page.html.match(/<script id="initial-page" type="application\/json">([\s\S]*?)<\/script>/)[1];
   assert.equal(JSON.parse(data).packages[0].name, malicious);
+  const product = JSON.parse(page.html.match(/<script id="product-schema" type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  assert.equal(product.offers[0].name, malicious);
 });
 
 test("published pages send security headers, and only the shell's own scripts carry the per-response nonce", async () => {

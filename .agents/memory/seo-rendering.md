@@ -9,6 +9,12 @@ Render the same sales components for bots and visitors; do not maintain a separa
 
 **How to apply:** future content changes should continue to appear in initial HTML and in the hydrated UI. Catalog caching must expire and revalidate; unavailable catalog data must not become indefinitely stale advertised prices.
 
+Model the storefront's source code as one product with alternative package offers, not separate products for each support tier or currency. Do not infer a license policy from package names.
+
+**Why:** the packages describe ways to purchase the same source code, with different build/support services, and the user has not supplied separate product identities or client-use rights.
+
+**How to apply:** when extending structured product data, preserve this relationship unless the user defines genuinely distinct products; advertise only prices and billing terms supplied by the fresh displayed catalog.
+
 Vite's development SSR cannot safely inline every dependency with `noExternal: true`; CommonJS React entry points then fail with `module is not defined`. Full bundling can work for the production SSR build, but development needs Node to load third-party CommonJS dependencies.
 
 **Why:** the built renderer worked while the development renderer failed on the same React imports.

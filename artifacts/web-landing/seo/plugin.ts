@@ -3,6 +3,7 @@ import type { Plugin } from "vite";
 import { LANGUAGES } from "../src/lib/languages.ts";
 import { localePath } from "../src/lib/locale-url.ts";
 import { renderLocaleHtml, type LocaleMeta } from "./html.ts";
+import { sitemapXml, robotsTxt } from "./discovery.ts";
 
 export function localeSeo(base: string, origin: string): Plugin {
   const site = new URL(origin);
@@ -30,9 +31,12 @@ export function localeSeo(base: string, origin: string): Plugin {
         // Keep Vite's final hashed scripts/CSS, replacing only locale-specific metadata.
         const built = String(index.source);
         for (const l of LANGUAGES) {
+          if (l.code === "en") continue; // English lives at the root, not a second indexable shell.
           const output = renderLocaleHtml(built, localePath(l.code, base), origin, base, metas);
           this.emitFile({ type: "asset", fileName: `${l.code}/index.html`, source: output });
         }
+        this.emitFile({ type: "asset", fileName: "sitemap.xml", source: sitemapXml(origin, base) });
+        this.emitFile({ type: "asset", fileName: "robots.txt", source: robotsTxt(origin, base) });
       },
     },
   };

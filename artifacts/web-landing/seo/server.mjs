@@ -93,6 +93,15 @@ const server = createServer(async (req, res) => {
     const url = new URL(req.url, "http://localhost");
     const pathname = decodeURIComponent(url.pathname);
     const relative = pathname.startsWith(base) ? pathname.slice(base.length) : pathname.slice(1);
+    if (pathname === `${base}en/` || pathname === `${base}en`) {
+      res.writeHead(301, { ...commonHeaders, Location: `${base}${url.search}` }); res.end(); return;
+    }
+    if (pathname === `${base}sitemap.xml` || pathname === `${base}robots.txt`) {
+      const renderer = development ? await vite.ssrLoadModule("/seo/render.tsx") : productionRenderer;
+      const body = renderer.discoveryFiles(base)[relative];
+      res.writeHead(200, { ...assetHeaders(relative), "Content-Type": relative === "sitemap.xml" ? "application/xml; charset=utf-8" : "text/plain; charset=utf-8", "Cache-Control": "public, max-age=300" });
+      res.end(req.method === "HEAD" ? undefined : body); return;
+    }
     const file = resolve(publicDir, relative);
     // Only public assets, never generated index shells or private source files in production.
     if (file.startsWith(publicDir + sep) && ![".html", ""].includes(extname(file))) {
@@ -112,7 +121,7 @@ const server = createServer(async (req, res) => {
     const queryLang = url.searchParams.get("lang");
     const match = renderer.LANGUAGES.find((l) => l.code.toLowerCase() === queryLang?.toLowerCase());
     if (home && match && !renderer.pathLanguage(pathname, base)) {
-      url.pathname = `${base}${match.code}/`;
+      url.pathname = renderer.localePath(match.code, base);
       url.searchParams.delete("lang");
       res.writeHead(302, { ...commonHeaders, Location: `${url.pathname}${url.search}` }); res.end(); return;
     }

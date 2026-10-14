@@ -5,6 +5,7 @@ import { LANGUAGES } from "../src/lib/languages.ts";
 import { languageHref, localePath, pathLanguage, isHomePath } from "../src/lib/locale-url.ts";
 import { renderLocaleHtml, escapeHtml } from "../seo/html.ts";
 import { localeSeo } from "../seo/plugin.ts";
+import { sitemapXml, robotsTxt } from "../seo/discovery.ts";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const origin = "https://shopoatdopac.com";
@@ -14,8 +15,8 @@ const shell = read("../index.html");
 test("33 stable locale URLs, including regional Chinese, respect artifact prefixes", () => {
   assert.equal(LANGUAGES.length, 33);
   for (const { code } of LANGUAGES) {
-    assert.equal(pathLanguage(localePath(code)), code);
-    assert.equal(pathLanguage(localePath(code, "/shop/"), "/shop/"), code);
+    assert.equal(pathLanguage(localePath(code)) ?? "en", code);
+    assert.equal(pathLanguage(localePath(code, "/shop/"), "/shop/") ?? "en", code);
     assert.equal(pathLanguage(`/shop/${code}`, "/shop/"), code);
     assert.equal(isHomePath(localePath(code)), true);
   }
@@ -28,6 +29,8 @@ test("switching languages preserves unrelated parameters and hashes, including p
   assert.equal(languageHref("ja", new URL(`${origin}/vi/?lang=vi&utm_source=test#bang-gia`)), "/ja/?utm_source=test#bang-gia");
   assert.equal(languageHref("ar", new URL(`${origin}/cam-on?ref=payment-reference#receipt`)), "/cam-on?ref=payment-reference&lang=ar#receipt");
   assert.equal(languageHref("zh-TW", new URL(`${origin}/shop/vi/?test=1`), "/shop/"), "/shop/zh-TW/?test=1");
+  assert.equal(languageHref("en", new URL(`${origin}/vi/?utm_source=test#bang-gia`)), "/?utm_source=test#bang-gia");
+  assert.equal(languageHref("en", new URL(`${origin}/shop/vi/`), "/shop/"), "/shop/");
 });
 
 function checkHtml(html, code, path) {
@@ -37,8 +40,8 @@ function checkHtml(html, code, path) {
   assert.ok(html.includes(`rel="canonical" href="${origin}${path}"`));
   assert.equal((html.match(/rel="alternate" hreflang=/g) ?? []).length, 34);
   for (const { code: alt } of LANGUAGES) {
-    assert.ok(html.includes(`hreflang="${alt}" href="${origin}/${alt}/"`));
-    assert.ok(html.includes(`<a href="/${alt}/" hreflang="${alt}"`));
+    assert.ok(html.includes(`hreflang="${alt}" href="${origin}${localePath(alt)}"`));
+    assert.ok(html.includes(`<a href="${localePath(alt)}" hreflang="${alt}"`));
   }
   assert.ok(html.includes(`hreflang="x-default" href="${origin}/"`));
   assert.ok(html.includes(`property="og:url" content="${origin}${path}"`));
@@ -50,8 +53,8 @@ test("every initial HTML response has reciprocal alternates, localized metadata 
   checkHtml(renderLocaleHtml(shell, "/", origin, "/", metas), "en", "/");
   for (const { code } of LANGUAGES) {
     const html = renderLocaleHtml(shell, `/${code}/`, origin, "/", metas);
-    checkHtml(html, code, `/${code}/`);
-    checkHtml(renderLocaleHtml(html, `/${code}/`, origin, "/", metas), code, `/${code}/`);
+    checkHtml(html, code, localePath(code));
+    checkHtml(renderLocaleHtml(html, `/${code}/`, origin, "/", metas), code, localePath(code));
   }
 });
 
@@ -59,7 +62,7 @@ test("Vite's dev transform uses path when originalUrl is not supplied", () => {
   const plugin = localeSeo("/", origin);
   for (const { code } of LANGUAGES) {
     const html = plugin.transformIndexHtml.handler(shell, { path: `/${code}/` });
-    checkHtml(html, code, `/${code}/`);
+    checkHtml(html, code, localePath(code));
   }
 });
 
@@ -67,13 +70,28 @@ test("the built HTML for all locales keeps Vite assets and the correct metadata"
   assert.ok(existsSync(new URL("../dist/public/index.html", import.meta.url)), "Run the landing build first");
   checkHtml(read("../dist/public/index.html"), "en", "/");
   for (const { code } of LANGUAGES) {
-    const html = read(`../dist/public/${code}/index.html`);
-    checkHtml(html, code, `/${code}/`);
+    const html = read(code === "en" ? "../dist/public/index.html" : `../dist/public/${code}/index.html`);
+    checkHtml(html, code, localePath(code));
     const script = html.match(/<script[^>]+src="([^"]+)"/)?.[1];
     assert.match(script ?? "", /^\/assets\/.*\.js$/);
     assert.ok(existsSync(new URL(`../dist/public${script}`, import.meta.url)));
     assert.ok(!html.includes("<!-- locale-seo -->"));
   }
+});
+
+test("sitemap and robots list only the 33 canonical sales URLs and honor origin/base", () => {
+  for (const base of ["/", "/shop/"]) {
+    const xml = sitemapXml(origin, base);
+    const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
+    assert.equal(urls.length, 33);
+    assert.equal(new Set(urls).size, 33);
+    for (const { code } of LANGUAGES) assert.ok(urls.includes(`${origin}${localePath(code, base)}`));
+    assert.ok(!/\/en\/|\/admin|\/cam-on|<lastmod>/.test(xml));
+    assert.ok(robotsTxt(origin, base).includes(`Sitemap: ${origin}${base}sitemap.xml`));
+  }
+  assert.equal(read("../dist/public/sitemap.xml"), sitemapXml(origin, "/"));
+  assert.equal(read("../dist/public/robots.txt"), robotsTxt(origin, "/"));
+  assert.ok(!existsSync(new URL("../dist/public/en/index.html", import.meta.url)));
 });
 
 test("production uses the HTML server instead of a wildcard SPA rewrite", () => {

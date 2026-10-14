@@ -6,7 +6,7 @@ export function normalizedBase(base = "/"): string {
 }
 
 export function localePath(code: Language, base = "/"): string {
-  return `${normalizedBase(base)}${code}/`;
+  return code === "en" ? normalizedBase(base) : `${normalizedBase(base)}${code}/`;
 }
 
 export function pathLanguage(pathname: string, base = "/"): Language | null {

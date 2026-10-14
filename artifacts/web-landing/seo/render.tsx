@@ -8,6 +8,9 @@ import { LANGUAGES } from "../src/lib/languages";
 import { isHomePath, pathLanguage } from "../src/lib/locale-url";
 import { renderLocaleHtml, escapeHtml } from "./html";
 import { siteOrigin } from "./site";
+import { sitemapXml, robotsTxt } from "./discovery";
+import { localePath } from "../src/lib/locale-url";
+import { productSchema, serializeJson } from "../src/lib/product-schema";
 
 const dictionaries = import.meta.glob("../src/locales/*.json", { eager: true, import: "default" }) as Record<string, { meta: { title: string; description: string } }>;
 const metas = Object.fromEntries(LANGUAGES.map(({ code }) => [code, dictionaries[`../src/locales/${code}.json`].meta]));
@@ -28,6 +31,8 @@ export async function renderPage(shell: string, pathname: string, base: string, 
     }
     // JSON script data cannot terminate the element or introduce HTML, even with catalog input.
     const data = JSON.stringify(initial).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+    const product = productSchema(dict, packages, lang === "vi" ? "vnd" : "usd", new URL(localePath(lang, base), siteOrigin).href);
+    html = html.replace("</head>", () => `<script id="product-schema" type="application/ld+json">${serializeJson(product)}</script>\n</head>`);
     html = html.replace('<div id="root"></div>', () => `<div id="root">${markup}</div><script id="initial-page" type="application/json">${data}</script>`);
     return { html, status: 200, indexable: true };
   }
@@ -46,3 +51,8 @@ export async function renderPage(shell: string, pathname: string, base: string, 
 }
 
 export { isHomePath, pathLanguage, LANGUAGES };
+export { localePath };
+export const discoveryFiles = (base: string) => ({
+  "sitemap.xml": sitemapXml(siteOrigin, base),
+  "robots.txt": robotsTxt(siteOrigin, base),
+});

@@ -3,7 +3,7 @@ import type { Language } from "@workspace/api-client-react";
 import vi from "@/locales/vi.json";
 import en from "@/locales/en.json";
 import { LANGUAGES, type LangInfo, type Script } from "./languages";
-import { isHomePath, languageHref, pathLanguage } from "./locale-url";
+import { isHomePath, languageHref, localePath, pathLanguage } from "./locale-url";
 export { LANGUAGES, type LangInfo } from "./languages";
 
 export const CONTACT_EMAIL = "hello@idkworkshop.com";
@@ -208,7 +208,7 @@ export function I18nProvider({ children, initial }: { children: ReactNode; initi
     if (isHomePath(window.location.pathname, import.meta.env.BASE_URL)) {
       const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
       if (canonical) {
-        const url = new URL(window.location.pathname, new URL(canonical.href).origin).href;
+        const url = new URL(localePath(lang, import.meta.env.BASE_URL), new URL(canonical.href).origin).href;
         canonical.href = url;
         set('meta[property="og:url"]', url);
       }

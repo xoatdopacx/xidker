@@ -11,7 +11,7 @@ export function renderLocaleHtml(shell: string, pathname: string, origin: string
   const code = pathLanguage(pathname, base) ?? "en";
   const lang = LANGUAGES.find((l) => l.code === code)!;
   const meta = metas[code];
-  const canonical = new URL(pathLanguage(pathname, base) ? localePath(code, base) : normalizedBase(base), origin).href;
+  const canonical = new URL(localePath(code, base), origin).href;
   const absolute = (path: string) => escapeHtml(new URL(path, origin).href);
   const alternates = LANGUAGES.map((l) =>
     `    <link rel="alternate" hreflang="${l.code}" href="${absolute(localePath(l.code, base))}" />`).join("\n");

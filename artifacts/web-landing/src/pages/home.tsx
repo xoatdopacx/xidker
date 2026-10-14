@@ -9,6 +9,8 @@ import { CloudArt, Scene, type SceneName } from "@/components/scenes";
 import { useI18n, LangSwitch, CONTACT_EMAIL, tpl, type Dict, type Currency } from "@/lib/i18n";
 import { Hero as HeroSprite, Pine, Sunflower, Log, Pin, Trophy, MapIcon, Cat, Raccoon, Chest, Logo, Wordmark, PixelTitle, Vehicle, VEHICLES } from "@/components/sprites";
 import { supportChat } from "@/lib/support-chat";
+import { billingLabel, packageCurrencies, productSchema, serializeJson } from "@/lib/product-schema";
+import { localePath } from "@/lib/locale-url";
 
 /* ---------------- Road + walking character ---------------- */
 
@@ -380,14 +382,6 @@ function PagesMock({ items }: { items: string[] }) {
 
 /* ---------------- Pricing ---------------- */
 
-function billingLabel(p: Package, t: Dict) {
-  if (p.billing === "one_time") return t.pricing.oneTime;
-  if (p.billingPeriodDays === 30 || p.billingPeriodDays === 31) return t.pricing.monthly;
-  if (p.billingPeriodDays === 365) return t.pricing.yearly;
-  if (p.billingPeriodDays) return tpl(t.pricing.everyNDays, { n: p.billingPeriodDays });
-  return t.pricing.recurring;
-}
-
 /** `prices`: this package in every currency. All of them sit in the same spot (only the active one visible),
  *  so switching currency never changes the card height. */
 function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; prices: Package[]; i: number; busy: boolean; disabled: boolean; onBuy: () => void }) {
@@ -430,8 +424,6 @@ function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; pric
   );
 }
 
-const CURRENCY_ORDER: Currency[] = ["vnd", "usd"];
-
 /** Package grid by card count (packages are added from the admin screen); 5 means five or more. */
 const GRID_FOR_COUNT: Record<number, string> = {
   1: "max-w-md mx-auto",
@@ -463,12 +455,17 @@ function Pricing() {
   const [pendingId, setPendingId] = useState<string | null>(null);
 
   // Every currency comes back from the API; show the visitor's currency, or whichever one exists.
-  const currencies = [...new Set((data ?? []).map((p) => p.currency))].sort((a, b) => {
-    const ia = CURRENCY_ORDER.indexOf(a as Currency), ib = CURRENCY_ORDER.indexOf(b as Currency);
-    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b);
-  });
+  const currencies = packageCurrencies(data ?? []);
   const active = currencies.includes(currency) ? currency : currencies[0];
   const shown = (data ?? []).filter((p) => p.currency === active);
+  // Keep the SSR data block aligned with the cards after a language/currency change or catalog refresh.
+  useEffect(() => {
+    const script = document.getElementById("product-schema");
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!script || !canonical) return;
+    const url = new URL(localePath(lang, import.meta.env.BASE_URL), new URL(canonical.href).origin).href;
+    script.textContent = serializeJson(productSchema(t, data ?? null, currency, url));
+  }, [data, t, currency, lang]);
   // Cards are keyed by package group, so switching currency only swaps the price (no remount, no rebuild).
   const seen = new Set<string>();
   const cardKey = (p: Package) => (seen.has(p.key) ? p.id : (seen.add(p.key), p.key));
