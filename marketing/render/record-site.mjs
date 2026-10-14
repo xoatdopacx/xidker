@@ -1,6 +1,6 @@
 // Films the live site at phone size in real time (CDP screencast during a scripted smooth scroll)
 // and writes a constant-frame-rate JPEG sequence for the promo composition.
-// Usage: node marketing/render/record-site.mjs <outDir> [fps]
+// Usage: node marketing/render/record-site.mjs <outDir> [fps] [lang]   (lang: vi | en | ...; the site serves /<lang>/)
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -8,6 +8,7 @@ import { launch } from "./cdp.mjs";
 
 const OUT = process.argv[2] || "generated-artifacts/promo/footage";
 const FPS = Number(process.argv[3] || 30);
+const LANG = process.argv[4] || "vi";
 const W = 390, H = 844, DPR = 2;
 
 // Timeline in page milliseconds: hold on the hero, glide down the road, settle.
@@ -18,7 +19,7 @@ const browser = await launch({ port: 9353 });
 try {
   const page = await browser.newPage({ width: W, height: H, dpr: DPR, mobile: true });
   await page.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 5 });
-  await page.goto("http://localhost:80/?lang=vi");
+  await page.goto(`http://localhost:80/${LANG}/`);
   await page.eval(`document.fonts.ready.then(() => true)`);
   await sleep(3500); // let the first-load cover and hero build finish
 

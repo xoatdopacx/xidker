@@ -2,6 +2,7 @@
 // Usage:
 //   node marketing/render/promo.mjs --stills <montage.jpg> <t1> <t2> ...   review chosen moments
 //   node marketing/render/promo.mjs --frames <dir> [from] [to]            JPEG frames at 30 fps
+//   add --lang=en anywhere for the English version (default: Vietnamese)
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -11,11 +12,13 @@ import { launch } from "./cdp.mjs";
 const PAGE = pathToFileURL(resolve("marketing/promo/promo.html")).href;
 const FPS = 30, DUR = 25;
 
-const [mode, out, ...rest] = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const lang = (argv.find((a) => a.startsWith("--lang=")) || "--lang=vi").slice(7);
+const [mode, out, ...rest] = argv.filter((a) => !a.startsWith("--lang="));
 const browser = await launch({ port: 9361, args: ["--allow-file-access-from-files"] });
 try {
   const page = await browser.newPage({ width: 1080, height: 1920 });
-  await page.goto(PAGE);
+  await page.goto(`${PAGE}?lang=${lang}`);
   if (!(await page.eval("window.__ready"))) throw new Error("fonts did not load");
   const shot = async (t) => {
     await page.eval(`window.renderAt(${t})`);

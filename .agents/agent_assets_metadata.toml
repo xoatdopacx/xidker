@@ -36,3 +36,17 @@ mtime_ms = 1791948890417
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/42598ad0-807b-47ba-ae5f-2f39ec07a82c/51a2f24b-ed2f-4ddc-b6af-69f052c5eeb8"
 storage_version_token = "1791948922382464"
 content_type = "video/mp4"
+
+[[outputs]]
+id = "V8WbgDzn7Outq8nxRv4gj"
+uri = "file://generated-artifacts/promo/xidker-intro-en.mp4"
+type = "video"
+title = "xidker intro video – English (25s)"
+description = "Video dọc 1080×1920 bản tiếng Anh, cùng nhạc và bố cục với bản tiếng Việt. Cảnh quay trang web cũng là bản tiếng Anh."
+logical_id = "07c23ded-c840-42b7-8983-ee27e8f5ee75"
+content_hash = "sha256:658e6bd37081fcd3f0331c5df5ed0d01531044bf1370e408c9e94a721f578199"
+size = 4375294
+mtime_ms = 1791949687284
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/07c23ded-c840-42b7-8983-ee27e8f5ee75/ce46b721-99da-4f0c-9907-2abd5df92d5c"
+storage_version_token = "1791949746877500"
+content_type = "video/mp4"

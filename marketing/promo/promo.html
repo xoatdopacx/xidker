@@ -35,7 +35,7 @@
   /* cards */
   .card { width: 750px; height: 250px; padding: 26px 34px; }
   .card .row { display: flex; align-items: center; gap: 18px; }
-  .card h3 { margin: 0; font-weight: 800; font-size: 44px; line-height: 1.1; flex: 1; white-space: nowrap; }
+  .card h3 { margin: 0; font-weight: 800; font-size: 44px; line-height: 1.1; flex: 1; min-width: 0; white-space: nowrap; }
   .card .price { font-weight: 800; font-size: 58px; line-height: 1; letter-spacing: -0.02em; text-align: right; }
   .card .bill { font-size: 24px; font-weight: 600; color: #3d4a3d; text-align: right; margin-top: 4px; }
   .card p { margin: 14px 0 0; font-size: 30px; line-height: 1.3; font-weight: 500; color: #3d4a3d; }
@@ -58,9 +58,57 @@
 const W = 1080, H = 1920, FPS = 30, DUR = 25;
 const INK = "#1b2a1c";
 const LETTER_COLORS = ["#e98a8a", "#c9c08a", "#f2d36b", "#7fb8a8", "#e98a8a", "#f2d36b"];
-const FOOT_DIR = "../../generated-artifacts/promo/footage/";
-const FOOT_FRAMES = 201;
 const CX = 570; // centre of the content column (the road owns the left edge)
+
+/* ===== copy per language (?lang=en); wording follows the site's own locale files and package data ===== */
+const LANG = new URLSearchParams(location.search).get("lang") === "en" ? "en" : "vi";
+document.documentElement.lang = LANG;
+const COPY = {
+  vi: {
+    foot: { dir: "../../generated-artifacts/promo/footage/", frames: 201 },
+    hook: { eb: "Bạn cần", lines: ["một web", "portfolio", "nhưng không muốn", "làm từ đầu?"], red: 1 },
+    tag: "Source code web portfolio",
+    caps: [ // each beat matches what the phone footage shows at that moment
+      { eb: "Đây là xidker", title: "Web portfolio làm sẵn", sub: "Mua về, thay thông tin là dùng được" },
+      { eb: "Bạn mua gì?", title: "Nhận toàn bộ source", sub: "Sửa thoải mái theo ý mình" },
+      { eb: "Trong web có gì?", title: "Đủ trang, có chuyển động", sub: "Trang chủ, dự án, giới thiệu, liên hệ" },
+      { eb: "Bảng giá", title: "3 gói, từ 299.000đ", sub: "Trả một lần, thanh toán qua Whop" },
+      { eb: "Cách dùng", title: "Mua xong thì làm gì?", sub: "4 bước đơn giản" },
+    ],
+    packs: [
+      { name: "Source Cá Nhân", price: "$12", tag: "Toàn bộ mã nguồn portfolio, tự tay cài đặt theo hướng dẫn." },
+      { name: "Build Theo Yêu Cầu", price: "$50", tag: "Bạn gửi yêu cầu, chúng tôi dựng portfolio giúp bạn.", rec: true },
+      { name: "Trọn Gói A–Z", price: "$250", tag: "Dựng, đưa lên mạng, kèm hosting và tên miền 1 năm." },
+    ],
+    bill: "trả một lần", badge: "Nên chọn", pay: "Có cả giá VND và USD",
+    steps: ["Chọn gói, thanh toán qua Whop", "Nhận link source qua email", "Thay tên, dự án, ảnh của bạn", "Đưa lên mạng, gửi link đi"],
+    chat: "Có chat hỗ trợ cho khách đã mua",
+    visit: "Ghé xem ngay",
+  },
+  en: {
+    foot: { dir: "../../generated-artifacts/promo/footage-en/", frames: 201 },
+    hook: { eb: "Want a", lines: ["portfolio", "website without", "building it", "from scratch?"], red: 0 },
+    tag: "Portfolio website source code",
+    caps: [
+      { eb: "This is xidker", title: "Ready-made portfolio", sub: "Buy it, add your work, go live" },
+      { eb: "What are you buying?", title: "The full source code", sub: "Yours to keep and change" },
+      { eb: "What's inside?", title: "Pages that move", sub: "Home, projects, about, contact" },
+      { eb: "Pricing", title: "3 packages, from $12", sub: "One-time payment" },
+      { eb: "How it works", title: "After you buy", sub: "4 simple steps" },
+    ],
+    packs: [
+      { name: "Personal Source", price: "$12", tag: "The complete portfolio source code. Set it up yourself with our guide." },
+      { name: "Custom Build", price: "$50", tag: "Send us your requirements and we build the portfolio for you.", rec: true },
+      { name: "All-in-One A–Z", price: "$250", tag: "We build it, put it online and take care of hosting and the domain." },
+    ],
+    bill: "one-time", badge: "Recommended", pay: "Secure checkout by Whop",
+    steps: ["Pick a package, pay via Whop", "Get the source link by email", "Add your name and projects", "Publish it, share the link"],
+    chat: "Support chat for customers",
+    visit: "Take a look",
+  },
+}[LANG];
+const FOOT_DIR = COPY.foot.dir;
+const FOOT_FRAMES = COPY.foot.frames;
 
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const prog = (t, t0, d) => clamp((t - t0) / d);
@@ -263,12 +311,9 @@ const riderB = el(sprite(HERO_B, HERO_PAL, 9));
 
 // S1: hook
 const hook = el(`<div class="tile" style="width:750px;padding:34px 40px 40px">
-  <div class="eyebrow" style="margin-bottom:18px">Bạn cần</div>
+  <div class="eyebrow" style="margin-bottom:18px">${COPY.hook.eb}</div>
   <div class="hl" style="font-weight:800;font-size:84px;line-height:1.1">
-    <div class="ln nowrap">một web</div>
-    <div class="ln nowrap pin-red">portfolio</div>
-    <div class="ln nowrap">nhưng không muốn</div>
-    <div class="ln nowrap">làm từ đầu?</div>
+    ${COPY.hook.lines.map((l, i) => `<div class="ln nowrap${i === COPY.hook.red ? " pin-red" : ""}">${l}</div>`).join("")}
   </div></div>`);
 hook.style.zIndex = 5; // the falling logo passes behind the question
 const hookLines = [...hook.querySelectorAll(".ln")];
@@ -278,17 +323,12 @@ const hookEyebrow = hook.querySelector(".eyebrow");
 const mark = el(markSVG(14));
 const word = el(wordmarkHTML(150));
 const wordLetters = [...word.querySelectorAll("span")];
-const tag = el(`<div class="chip" style="background:#ebe9e0;color:#10230f;border:9px solid #8d8a80;box-shadow:12px 12px 0 rgba(16,64,20,.35)">Source code web portfolio</div>`);
+const tag = el(`<div class="chip" style="background:#ebe9e0;color:#10230f;border:9px solid #8d8a80;box-shadow:12px 12px 0 rgba(16,64,20,.35)">${COPY.tag}</div>`);
 const dust = [0, 1, 2, 3, 4, 5].map((i) => el(`<div style="width:18px;height:18px;background:${i % 2 ? "#ffffff" : "#e9e6d8"}"></div>`));
 
 // S2-S4: caption tile with swapping content
-const CAPS = [ // each beat matches what the phone footage shows at that moment
-  { t0: 3.45, eb: "Đây là xidker", title: "Web portfolio làm sẵn", sub: "Mua về, thay thông tin là dùng được" },
-  { t0: 5.75, eb: "Bạn mua gì?", title: "Nhận toàn bộ source", sub: "Sửa thoải mái theo ý mình" },
-  { t0: 8.0, eb: "Trong web có gì?", title: "Đủ trang, có chuyển động", sub: "Trang chủ, dự án, giới thiệu, liên hệ" },
-  { t0: 10.0, eb: "Bảng giá", title: "3 gói, từ 299.000đ", sub: "Trả một lần, thanh toán qua Whop" },
-  { t0: 16.5, eb: "Cách dùng", title: "Mua xong thì làm gì?", sub: "4 bước đơn giản" },
-];
+const CAP_T0 = [3.45, 5.75, 8.0, 10.0, 16.5];
+const CAPS = COPY.caps.map((c, i) => ({ t0: CAP_T0[i], ...c }));
 const capTile = el(`<div class="tile" style="width:750px;height:236px;padding:28px 36px"></div>`);
 const caps = CAPS.map((c) => {
   const d = document.createElement("div");
@@ -306,26 +346,22 @@ phone.querySelector(".shadow").style.clipPath = getComputedStyle(phone.querySele
 const foot = document.getElementById("foot");
 
 // S3: packages (names, taglines and USD prices as listed on the site)
-const PACKS = [
-  { name: "Source Cá Nhân", price: "$12", tag: "Toàn bộ mã nguồn portfolio, tự tay cài đặt theo hướng dẫn." },
-  { name: "Build Theo Yêu Cầu", price: "$50", tag: "Bạn gửi yêu cầu, chúng tôi dựng portfolio giúp bạn.", rec: true },
-  { name: "Trọn Gói A–Z", price: "$250", tag: "Dựng, đưa lên mạng, kèm hosting và tên miền 1 năm." },
-];
+const PACKS = COPY.packs;
 const cards = PACKS.map((p) => el(`<div class="tile card${p.rec ? " gold" : ""}">
-  ${p.rec ? `<div class="badge">Nên chọn</div>` : ""}
+  ${p.rec ? `<div class="badge">${COPY.badge}</div>` : ""}
   <div class="row">${sprite(CHEST, CHEST_PAL, 6)}<h3>${p.name}</h3>
-    <div><div class="price">${p.price}</div><div class="bill">trả một lần</div></div></div>
+    <div><div class="price">${p.price}</div><div class="bill">${COPY.bill}</div></div></div>
   <p>${p.tag}</p></div>`));
 const badge = cards[1].querySelector(".badge");
-const payChip = el(`<div class="chip">Có cả giá VND và USD</div>`);
+const payChip = el(`<div class="chip">${COPY.pay}</div>`);
 
 // S4: after buying (the site's "Mua xong thì làm gì?" steps) + buyers-only support chat
-const STEPS = ["Chọn gói, thanh toán qua Whop", "Nhận link source qua email", "Thay tên, dự án, ảnh của bạn", "Đưa lên mạng, gửi link đi"];
+const STEPS = COPY.steps;
 const steps = STEPS.map((s, i) => el(`<div class="tile step"><div class="num">0${i + 1}</div><div class="txt">${s}</div></div>`));
-const chat = el(`<div class="redtile">${sprite(BUBBLE, { K: INK, W: "#ffffff" }, 7)}<span class="ct">Có chat hỗ trợ cho khách đã mua</span></div>`);
+const chat = el(`<div class="redtile">${sprite(BUBBLE, { K: INK, W: "#ffffff" }, 7)}<span class="ct">${COPY.chat}</span></div>`);
 
 // S5: end card
-const visit = el(`<div style="font-weight:800;font-size:44px;color:#10230f;background:#f6c945;border:9px solid #1b2a1c;padding:6px 22px;box-shadow:12px 12px 0 rgba(16,64,20,.35)">Ghé xem ngay</div>`);
+const visit = el(`<div style="font-weight:800;font-size:44px;color:#10230f;background:#f6c945;border:9px solid #1b2a1c;padding:6px 22px;box-shadow:12px 12px 0 rgba(16,64,20,.35)">${COPY.visit}</div>`);
 const url = el(`<div class="tile" style="padding:26px 40px"><div class="word" style="font-size:66px;color:#10230f;letter-spacing:0">shopoatdopac.com</div></div>`);
 const sparks = Array.from({ length: 10 }, (_, i) => el(`<div style="width:15px;height:15px;background:${i % 2 ? "#f6c945" : "#e3392b"}"></div>`));
 const mush = [el(sprite(MUSHROOM, MUSH_PAL, 9)), el(sprite(MUSHROOM, MUSH_PAL, 7))];
@@ -523,8 +559,16 @@ window.__ready = Promise.all([
 ]).then(() => document.fonts.ready).then(async () => {
   // measure + fit once fonts are in
   caps.forEach((c) => { fitText(c.querySelector(".ttl"), 650, 44); fitText(c.querySelector(".sub"), 650, 26); });
-  cards.forEach((c) => fitText(c.querySelector("h3"), 750 - 68 - 60 - 18 - 18 - 150, 30));
-  steps.forEach((s) => fitText(s.querySelector(".txt"), 750 - 24 - 56 - 78 - 26 - 8, 28));
+  cards.forEach((c) => { // shrink a package name only if it overflows the space left beside its price
+    const h = c.querySelector("h3");
+    let size = 44;
+    while (h.scrollWidth > h.clientWidth && size > 30) { size -= 1; h.style.fontSize = size + "px"; }
+  });
+  { // all step lines share one size: shrink until the widest fits
+    const txts = steps.map((s) => s.querySelector(".txt"));
+    let size = 40;
+    while (Math.max(...txts.map((x) => x.scrollWidth)) > 750 - 24 - 56 - 78 - 26 - 8 && size > 28) { size -= 1; txts.forEach((x) => (x.style.fontSize = size + "px")); }
+  }
   fitText(chat.querySelector(".ct"), 750 - 60 - 24 - 77 - 26, 26);
   { // one size for every hook line: shrink the block until its widest line fits
     const hl = hook.querySelector(".hl");
