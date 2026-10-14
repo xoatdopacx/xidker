@@ -2,11 +2,12 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 import { usePixelTransition, type CardSpec } from "@/components/pixel-transition";
 import { useSearch, Link } from "wouter";
 import { useGetCheckoutStatus, getGetCheckoutStatusQueryKey, useListPackages } from "@workspace/api-client-react";
-import { ArrowLeft, Check, Clock, Receipt, RefreshCw, Mail } from "lucide-react";
+import { ArrowLeft, Check, Clock, Receipt, RefreshCw, Mail, MessageSquare } from "lucide-react";
 import { formatPrice } from "@/lib/motion";
 import { useI18n, LangSwitch, CONTACT_EMAIL } from "@/lib/i18n";
 import { Logo, Wordmark } from "@/components/sprites";
 import { MiniRoad } from "@/components/mini-road";
+import { supportChat } from "@/lib/support-chat";
 
 function Shell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
@@ -81,6 +82,11 @@ export default function ThankYou() {
     if (!isLoading) { release.current?.(); release.current = null; }
   }, [isLoading]);
   const pkgName = (id: string, fallback: string) => pkgs?.find((p) => p.id === id)?.name ?? fallback;
+  // Support chat is for customers only: a verified paid order shows the chat button on this page.
+  const paid = data?.status === "paid";
+  useEffect(() => {
+    if (paid) supportChat.reveal();
+  }, [paid]);
 
   const body = (() => {
   if (!ref) {
@@ -142,6 +148,8 @@ export default function ThankYou() {
 
   if (data.status === "paid") {
     const paidAt = data.paidAt ? new Date(data.paidAt).toLocaleString(locale, { dateStyle: "long", timeStyle: "short" }) : null;
+    // The Whop payment id is what the customer types to switch on support chat; older orders fall back to our reference.
+    const orderCode = data.orderId ?? data.ref;
     return (
       <Shell>
         <Card testId="status-paid">
@@ -155,8 +163,15 @@ export default function ThankYou() {
               <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.pkg}</dt><dd className="font-bold text-end" data-testid="text-package-name">{pkgName(data.packageId, data.packageName)}</dd></div>
               {data.amount != null && data.currency && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.amount}</dt><dd className="font-display text-lg" data-testid="text-amount">{formatPrice(data.amount, data.currency, numLocale)}</dd></div>}
               {paidAt && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.time}</dt><dd className="text-end" data-testid="text-paid-at">{paidAt}</dd></div>}
-              <div className="flex justify-between gap-4 border-t-2 border-dashed border-[#8d8a80] pt-2.5"><dt className="text-[#3d4a3d]">{t.thanks.ref}</dt><dd className="font-mono text-xs break-all text-end" data-testid="text-ref">{data.ref}</dd></div>
+              <div className="flex justify-between gap-4 border-t-2 border-dashed border-[#8d8a80] pt-2.5"><dt className="text-[#3d4a3d]">{t.thanks.ref}</dt><dd className="font-mono text-xs break-all text-end" dir="ltr" data-testid="text-ref">{orderCode}</dd></div>
             </dl>
+          </div>
+          <div className="mt-4 text-start border-[3px] border-[#1b2a1c] bg-[#fff6d8] p-5" data-testid="card-activate-support">
+            <p className="flex items-center gap-2 font-bold"><MessageSquare className="h-4 w-4 shrink-0" strokeWidth={2.5} /> {t.thanks.activateTitle}</p>
+            <p className="mt-2 text-sm text-[#2c3a2c]">{t.thanks.activateBody}</p>
+            <button type="button" onClick={() => supportChat.open("activate", orderCode)} className="pbtn red mt-4 px-4 py-2 text-sm font-bold" data-testid="button-activate-support">
+              {t.thanks.activateButton}
+            </button>
           </div>
           <div className="mt-7 flex flex-wrap gap-4 justify-center items-center"><BackHome /><SupportLink /></div>
         </Card>

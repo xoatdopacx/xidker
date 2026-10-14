@@ -10,7 +10,7 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL`, `WHOP_COMPANY_ID` (biz_…), `WHOP_PRODUCT_ID` (prod_…). The Whop API key comes from the Whop integration at runtime and is never stored in code.
+- Required env: `DATABASE_URL`, `WHOP_COMPANY_ID` (biz_…), `WHOP_PRODUCT_ID` (prod_…), `SESSION_SECRET` (keys every stored hash), `ADMIN_TOKEN` (secret, at least 24 characters, or admin sign-in stays off), `ADMIN_EMAIL` (where admin sign-in codes are sent through the Gmail integration). The Whop API key comes from the Whop integration at runtime and is never stored in code.
 - Whop catalog admin from the shell: `node whop-api.mjs <METHOD> <path> '<json>'` (REST) and `node whop-mcp.mjs` (MCP tools), both in the project root.
 
 ## Stack
@@ -24,10 +24,11 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 
 ## Where things live
 
-- API contract: `lib/api-spec/openapi.yaml` (packages, checkout, checkout status)
+- API contract: `lib/api-spec/openapi.yaml` (packages, checkout, checkout status, customer support chat `/support/*`, admin inbox `/admin/*`)
 - Whop access (server-only): `artifacts/api-server/src/lib/whopClient.ts`, `artifacts/api-server/src/lib/whopStore.ts`
-- DB schema: `lib/db/src/schema/checkoutSessions.ts` (ref → Whop checkout configuration)
-- Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), theme in `src/index.css`
+- DB schema: `lib/db/src/schema/checkoutSessions.ts` (ref → Whop checkout configuration), `support.ts` (customer chat accounts, sessions, sign-in attempt log), `chat.ts` (conversations, messages), `adminAuth.ts`
+- Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), `admin.tsx` (`/admin` inbox, screens in `src/components/admin/`), theme in `src/index.css`
+- Support chat: `src/components/chat-widget.tsx` (button + panel), `src/lib/support-chat.ts` (show/open from other pages); server in `artifacts/api-server/src/routes/support.ts` and `src/lib/supportAuth.ts`
 - UI text: `artifacts/web-landing/src/locales/<code>.json` (`vi.json` is the source, `en.json` the fallback); languages, detection, fonts and currency in `src/lib/i18n.tsx`; picker in `src/components/lang-picker.tsx`
 - Package text translations: `artifacts/api-server/src/lib/packageTranslations.ts`
 
@@ -39,12 +40,17 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - Checkout: server creates a Whop checkout configuration with `redirect_url = <site>/cam-on?ref=<random>` and stores ref → checkout id. The redirect itself proves nothing.
 - `/cam-on` shows "paid" only when Whop reports a payment with status `paid` for that checkout configuration (server-side lookup); otherwise it polls as "pending".
 - The redirect origin is taken from the request's Origin/Referer only if the host is in `REPLIT_DOMAINS`/`REPLIT_DEV_DOMAIN`, so a forged header cannot redirect buyers elsewhere.
+- Support chat is for buyers only. The chat button appears after a verified paid order on `/cam-on`, from the footer link "Chat hỗ trợ cho khách đã mua", or on a browser that has signed in before. Activation = purchase email + order ID (Whop `pay_…` id, or the `/cam-on` ref) + a new password; the server checks with Whop that the order is paid and that its buyer email matches. Later visits sign in with email + password. A new sign-in ends every other session for that account, so only one browser is signed in at a time. No password reset; customers write to the contact email.
+- "Already activated" (409) is answered only after the order and email match, so the endpoint cannot be used to find out which emails are customers. Failed activations and wrong passwords are counted in the database (works across server instances).
+- Admin sign-in: `ADMIN_TOKEN`, then a 6-digit code emailed to `ADMIN_EMAIL`. Changing `ADMIN_TOKEN` signs every admin out. Admin replies use their own input schema (`AdminMessageInput`, no language field).
+- Chat updates by polling the database (customer panel every 3s while open, admin list 5s, admin thread 3s), because the app runs on autoscale and in-memory state would split across instances.
 
 ## Product
 
 - Sales page in 33 languages (pixel globe picker in the header and footer; Arabic, Persian, Hebrew and Urdu read right to left): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop with a VND/USD switch, FAQ, contact email.
 - "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise).
-- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, amount, date, ref).
+- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, amount, date, order ID) and a card to switch on support chat with the order ID filled in.
+- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; `/admin` inbox in Vietnamese only, showing each customer's email, package and order ID.
 
 ## User preferences
 

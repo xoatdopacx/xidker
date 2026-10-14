@@ -1,33 +1,32 @@
 import { index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { supportAccountsTable } from "./support";
 
-// One conversation per visitor browser. The visitor is identified only by a
-// random token kept in an httpOnly cookie; the database stores its SHA-256 hash.
+// One support conversation per customer account (see support.ts). Only
+// customers who activated support chat with a paid order can write.
 export const chatConversationsTable = pgTable(
   "chat_conversations",
   {
     id: text("id").primaryKey(),
-    visitorTokenHash: text("visitor_token_hash").notNull().unique(),
+    accountId: text("account_id")
+      .notNull()
+      .unique()
+      .references(() => supportAccountsTable.id, { onDelete: "cascade" }),
     name: text("name"),
     email: text("email"),
     lang: text("lang").notNull(),
     status: text("status", { enum: ["open", "closed"] })
       .notNull()
       .default("open"),
-    // Keyed hash of the visitor IP, only used for abuse limits.
-    ipHash: text("ip_hash"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
     lastMessageAt: timestamp("last_message_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
-    // Highest message id the admin has opened; later visitor messages are unread.
+    // Highest message id the admin has opened; later customer messages are unread.
     adminLastReadId: integer("admin_last_read_id").notNull().default(0),
   },
-  (t) => [
-    index("chat_conversations_last_message_idx").on(t.lastMessageAt),
-    index("chat_conversations_ip_created_idx").on(t.ipHash, t.createdAt),
-  ],
+  (t) => [index("chat_conversations_last_message_idx").on(t.lastMessageAt)],
 );
 
 export const chatMessagesTable = pgTable(
@@ -37,6 +36,7 @@ export const chatMessagesTable = pgTable(
     conversationId: text("conversation_id")
       .notNull()
       .references(() => chatConversationsTable.id, { onDelete: "cascade" }),
+    // "visitor" is the customer.
     sender: text("sender", { enum: ["visitor", "admin"] }).notNull(),
     body: text("body").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })

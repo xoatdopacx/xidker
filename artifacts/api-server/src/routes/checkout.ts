@@ -103,6 +103,7 @@ router.get("/checkout/:ref", async (req, res): Promise<void> => {
       amount: payment?.amount ?? null,
       currency: payment?.currency ?? null,
       paidAt: payment?.paidAt ?? null,
+      orderId: payment?.id ?? null,
     }),
   );
 });

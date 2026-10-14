@@ -21,4 +21,9 @@ export interface CheckoutStatus {
   currency: string | null;
   /** @nullable */
   paidAt: Date | null;
+  /**
+     * Whop payment id, null until paid. The customer uses it to switch on support chat.
+     * @nullable
+     */
+  orderId: string | null;
 }

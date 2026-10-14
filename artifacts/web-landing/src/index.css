@@ -683,6 +683,16 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .cw-field{width:100%;background:#fff;border:3px solid #1b2a1c;border-radius:0;padding:.45rem .6rem;font-size:16px;line-height:1.4;color:#1b2a1c;box-shadow:inset 3px 3px 0 #e4e0d4}
 .cw-field::placeholder{color:#7d877d}
 @media (pointer:fine){.cw-field{font-size:14px}}
+/* Password fields are always left-to-right, so the eye button sits on the physical right in every language. */
+.cw-field.cw-has-eye{padding-right:2.75rem}
+.cw-eye{position:absolute;top:3px;right:3px;bottom:3px;width:2.4rem;display:grid;place-items:center;color:#3d4a3d;background:transparent}
+.cw-eye:hover,.cw-eye[aria-pressed="true"]{color:#1b2a1c;background:#f1eee5}
+.cw-eye:focus-visible,.cw-tab:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:1px}
+.cw-tabs{display:grid;grid-template-columns:1fr 1fr;border:3px solid #1b2a1c;background:#fff8}
+.cw-tab{padding:.45rem .5rem;font-size:13px;font-weight:700;color:#3d4a3d;line-height:1.25}
+.cw-tab + .cw-tab{border-inline-start:3px solid #1b2a1c}
+.cw-tab:hover{background:#fff}
+.cw-tab[aria-pressed="true"]{background:hsl(var(--gold));color:#1b2a1c;box-shadow:inset -3px -3px 0 #c99a1e}
 .cw-log{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:.9rem;display:flex;flex-direction:column;gap:.7rem}
 .cw-row{display:flex;flex-direction:column;max-width:86%}
 .cw-row.me{align-self:flex-end;align-items:flex-end}

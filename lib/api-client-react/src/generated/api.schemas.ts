@@ -127,6 +127,11 @@ export interface CheckoutStatus {
   currency: string | null;
   /** @nullable */
   paidAt: string | null;
+  /**
+     * Whop payment id, null until paid. The customer uses it to switch on support chat.
+     * @nullable
+     */
+  orderId: string | null;
 }
 
 export type ChatMessageSender = typeof ChatMessageSender[keyof typeof ChatMessageSender];
@@ -154,30 +159,7 @@ export const ChatThreadStatus = {
 
 export interface ChatThread {
   status: ChatThreadStatus;
-  /** @nullable */
-  name: string | null;
   messages: ChatMessage[];
-}
-
-export interface ChatStartInput {
-  /**
-     * @minLength 1
-     * @maxLength 2000
-     */
-  message: string;
-  /** @maxLength 80 */
-  name?: string;
-  /**
-     * Optional; an empty string means not given
-     * @maxLength 200
-     */
-  email?: string;
-  lang: Language;
-  /**
-     * Must stay empty. Hidden from people; automated form fillers fill it in.
-     * @maxLength 200
-     */
-  website?: string;
 }
 
 export interface ChatMessageInput {
@@ -186,6 +168,74 @@ export interface ChatMessageInput {
      * @maxLength 2000
      */
   message: string;
+  lang: Language;
+}
+
+export interface AdminMessageInput {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  message: string;
+}
+
+export interface SupportActivateInput {
+  /**
+     * The email used to pay on Whop
+     * @minLength 1
+     * @maxLength 200
+     */
+  email: string;
+  /**
+     * Whop payment id (pay_…) or the reference from the thank-you link
+     * @minLength 1
+     * @maxLength 100
+     */
+  orderId: string;
+  /**
+     * @minLength 8
+     * @maxLength 128
+     */
+  password: string;
+  lang: Language;
+}
+
+export interface SupportSignInInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  email: string;
+  /**
+     * @minLength 1
+     * @maxLength 128
+     */
+  password: string;
+}
+
+export interface SupportSession {
+  email: string;
+  /** Whop payment id the support chat was switched on with */
+  orderId: string;
+  /** @nullable */
+  packageName: string | null;
+}
+
+/**
+ * replaced means the account signed in on another browser, which signed this one out
+ */
+export type SupportAuthErrorReason = typeof SupportAuthErrorReason[keyof typeof SupportAuthErrorReason];
+
+
+export const SupportAuthErrorReason = {
+  signed_out: 'signed_out',
+  replaced: 'replaced',
+} as const;
+
+export interface SupportAuthError {
+  error: string;
+  /** replaced means the account signed in on another browser, which signed this one out */
+  reason: SupportAuthErrorReason;
 }
 
 export interface AdminTokenInput {
@@ -236,6 +286,13 @@ export interface AdminConversation {
   name: string | null;
   /** @nullable */
   email: string | null;
+  /**
+     * Whop payment id the customer switched on support chat with
+     * @nullable
+     */
+  orderId: string | null;
+  /** @nullable */
+  packageName: string | null;
   lang: string;
   status: AdminConversationStatus;
   createdAt: string;

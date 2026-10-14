@@ -5,6 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { Language } from './language';
 
 export interface ChatMessageInput {
   /**
@@ -12,4 +13,5 @@ export interface ChatMessageInput {
      * @maxLength 2000
      */
   message: string;
+  lang: Language;
 }

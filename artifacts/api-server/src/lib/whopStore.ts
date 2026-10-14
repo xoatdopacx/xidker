@@ -227,7 +227,35 @@ export type VerifiedPayment = {
   amount: number | null;
   currency: string;
   paidAt: string | null;
+  planId: string | null;
+  /** Buyer email as Whop holds it; null when Whop does not share it with this API key. */
+  email: string | null;
 };
+
+type PaymentLike = {
+  id: string;
+  status: string | null;
+  substatus: string;
+  total: number | null;
+  subtotal: number | null;
+  currency: string;
+  paid_at: string | null;
+  plan: { id: string } | null;
+  user: { email: string | null } | null;
+};
+
+function verified(payment: PaymentLike): VerifiedPayment | null {
+  if (payment.status !== "paid") return null;
+  if (payment.substatus === "refunded" || payment.substatus === "auto_refunded") return null;
+  return {
+    id: payment.id,
+    amount: payment.total ?? payment.subtotal ?? null,
+    currency: payment.currency,
+    paidAt: payment.paid_at,
+    planId: payment.plan?.id ?? null,
+    email: payment.user?.email ?? null,
+  };
+}
 
 // Asks Whop (never the redirect) whether this checkout has a successful payment.
 export async function findPaidPayment(
@@ -242,16 +270,25 @@ export async function findPaidPayment(
     first: 20,
   })) {
     if (payment.checkout_configuration_id !== checkoutConfigurationId) continue;
-    if (payment.status !== "paid") continue;
-    if (payment.substatus === "refunded" || payment.substatus === "auto_refunded") {
-      continue;
-    }
-    return {
-      id: payment.id,
-      amount: payment.total ?? payment.subtotal ?? null,
-      currency: payment.currency,
-      paidAt: payment.paid_at,
-    };
+    const paid = verified(payment);
+    if (paid) return paid;
   }
   return null;
+}
+
+/** The payment with this Whop id if it belongs to this store, is paid and was not refunded; else null. */
+export async function findPaidPaymentById(paymentId: string): Promise<VerifiedPayment | null> {
+  const client = await getWhopClient();
+  const companyId = requireEnv("WHOP_COMPANY_ID");
+  let payment;
+  try {
+    payment = await client.payments.retrieve(paymentId);
+  } catch (err) {
+    const status = (err as { status?: unknown }).status;
+    // Unknown, malformed or other stores' ids are a plain "no such order".
+    if (status === 400 || status === 403 || status === 404 || status === 422) return null;
+    throw err;
+  }
+  if (payment.company && payment.company.id !== companyId) return null;
+  return verified(payment);
 }

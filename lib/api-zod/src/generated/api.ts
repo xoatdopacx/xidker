@@ -72,17 +72,82 @@ export const GetCheckoutStatusResponse = zod.object({
   "packageName": zod.string(),
   "amount": zod.number().nullable().describe('Amount paid in major currency units, null until paid'),
   "currency": zod.string().nullable(),
-  "paidAt": zod.coerce.date().nullable()
+  "paidAt": zod.coerce.date().nullable(),
+  "orderId": zod.string().nullable().describe('Whop payment id, null until paid. The customer uses it to switch on support chat.')
 })
 
 
 /**
- * The conversation is identified by the httpOnly chat cookie set when it was started. Returns 404 when this browser has not started one.
- * @summary Get this visitor's chat conversation
+ * Checks with Whop that the order is paid, not refunded, and was bought with this email, then creates the customer's support account with the chosen password and signs this browser in. The order can be given as the Whop payment id (pay_…) or the reference from the thank-you link.
+ * @summary Switch on support chat with a paid order
  */
-export const GetChatThreadResponse = zod.object({
+export const activateSupportBodyEmailMax = 200;
+
+export const activateSupportBodyOrderIdMax = 100;
+
+export const activateSupportBodyPasswordMin = 8;
+export const activateSupportBodyPasswordMax = 128;
+
+
+
+export const ActivateSupportBody = zod.object({
+  "email": zod.string().min(1).max(activateSupportBodyEmailMax).describe('The email used to pay on Whop'),
+  "orderId": zod.string().min(1).max(activateSupportBodyOrderIdMax).describe('Whop payment id (pay_…) or the reference from the thank-you link'),
+  "password": zod.string().min(activateSupportBodyPasswordMin).max(activateSupportBodyPasswordMax),
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)')
+})
+
+export const ActivateSupportResponse = zod.object({
+  "email": zod.string(),
+  "orderId": zod.string().describe('Whop payment id the support chat was switched on with'),
+  "packageName": zod.string().nullable()
+})
+
+
+/**
+ * Only one browser stays signed in per account. Signing in here signs every other browser out.
+ * @summary Sign in to support chat with email and password
+ */
+export const signInSupportBodyEmailMax = 200;
+
+export const signInSupportBodyPasswordMax = 128;
+
+
+
+export const SignInSupportBody = zod.object({
+  "email": zod.string().min(1).max(signInSupportBodyEmailMax),
+  "password": zod.string().min(1).max(signInSupportBodyPasswordMax)
+})
+
+export const SignInSupportResponse = zod.object({
+  "email": zod.string(),
+  "orderId": zod.string().describe('Whop payment id the support chat was switched on with'),
+  "packageName": zod.string().nullable()
+})
+
+
+/**
+ * @summary Sign this browser out of support chat
+ */
+export const SignOutSupportResponse = zod.void()
+
+
+/**
+ * @summary Get the support account this browser is signed in to
+ */
+export const GetSupportSessionResponse = zod.object({
+  "email": zod.string(),
+  "orderId": zod.string().describe('Whop payment id the support chat was switched on with'),
+  "packageName": zod.string().nullable()
+})
+
+
+/**
+ * Empty until the customer sends a first message.
+ * @summary Get the signed-in customer's support conversation
+ */
+export const GetSupportThreadResponse = zod.object({
   "status": zod.enum(['open', 'closed']),
-  "name": zod.string().nullable(),
   "messages": zod.array(zod.object({
   "id": zod.number().int(),
   "sender": zod.enum(['visitor', 'admin']),
@@ -93,51 +158,19 @@ export const GetChatThreadResponse = zod.object({
 
 
 /**
- * Creates the conversation, stores the first message and sets the httpOnly chat cookie that identifies this browser from now on.
- * @summary Start a conversation with a first message
+ * The first message starts the conversation.
+ * @summary Send a message in the signed-in customer's conversation
  */
-export const startChatThreadBodyMessageMax = 2000;
-
-export const startChatThreadBodyNameMax = 80;
-
-export const startChatThreadBodyEmailMax = 200;
-
-export const startChatThreadBodyWebsiteMax = 200;
+export const sendSupportMessageBodyMessageMax = 2000;
 
 
 
-export const StartChatThreadBody = zod.object({
-  "message": zod.string().min(1).max(startChatThreadBodyMessageMax),
-  "name": zod.string().max(startChatThreadBodyNameMax).optional(),
-  "email": zod.string().max(startChatThreadBodyEmailMax).optional().describe('Optional; an empty string means not given'),
-  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)'),
-  "website": zod.string().max(startChatThreadBodyWebsiteMax).optional().describe('Must stay empty. Hidden from people; automated form fillers fill it in.')
+export const SendSupportMessageBody = zod.object({
+  "message": zod.string().min(1).max(sendSupportMessageBodyMessageMax),
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)')
 })
 
-export const StartChatThreadResponse = zod.object({
-  "status": zod.enum(['open', 'closed']),
-  "name": zod.string().nullable(),
-  "messages": zod.array(zod.object({
-  "id": zod.number().int(),
-  "sender": zod.enum(['visitor', 'admin']),
-  "body": zod.string(),
-  "createdAt": zod.coerce.date()
-}))
-})
-
-
-/**
- * @summary Send a message in this visitor's conversation
- */
-export const sendChatMessageBodyMessageMax = 2000;
-
-
-
-export const SendChatMessageBody = zod.object({
-  "message": zod.string().min(1).max(sendChatMessageBodyMessageMax)
-})
-
-export const SendChatMessageResponse = zod.object({
+export const SendSupportMessageResponse = zod.object({
   "id": zod.number().int(),
   "sender": zod.enum(['visitor', 'admin']),
   "body": zod.string(),
@@ -199,6 +232,8 @@ export const ListAdminConversationsResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string().nullable(),
   "email": zod.string().nullable(),
+  "orderId": zod.string().nullable().describe('Whop payment id the customer switched on support chat with'),
+  "packageName": zod.string().nullable(),
   "lang": zod.string(),
   "status": zod.enum(['open', 'closed']),
   "createdAt": zod.coerce.date(),
@@ -225,6 +260,8 @@ export const UpdateAdminConversationResponse = zod.object({
   "id": zod.string(),
   "name": zod.string().nullable(),
   "email": zod.string().nullable(),
+  "orderId": zod.string().nullable().describe('Whop payment id the customer switched on support chat with'),
+  "packageName": zod.string().nullable(),
   "lang": zod.string(),
   "status": zod.enum(['open', 'closed']),
   "createdAt": zod.coerce.date(),

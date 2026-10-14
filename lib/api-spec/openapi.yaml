@@ -14,8 +14,8 @@ tags:
     description: Landing page build packages sold through Whop
   - name: checkout
     description: Whop hosted checkout sessions and verified payment status
-  - name: chat
-    description: Live chat between site visitors and the studio
+  - name: support
+    description: Support chat for customers who bought a package
   - name: admin
     description: Studio admin sign-in and chat inbox
 paths:
@@ -134,43 +134,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /chat/thread:
-    get:
-      operationId: getChatThread
-      tags: [chat]
-      summary: Get this visitor's chat conversation
-      description: The conversation is identified by the httpOnly chat cookie set when it was started. Returns 404 when this browser has not started one.
-      responses:
-        "200":
-          description: The visitor's conversation, newest 200 messages in order
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ChatThread"
-        "404":
-          description: This browser has no conversation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+  /support/activate:
     post:
-      operationId: startChatThread
-      tags: [chat]
-      summary: Start a conversation with a first message
-      description: Creates the conversation, stores the first message and sets the httpOnly chat cookie that identifies this browser from now on.
+      operationId: activateSupport
+      tags: [support]
+      summary: Switch on support chat with a paid order
+      description: >-
+        Checks with Whop that the order is paid, not refunded, and was bought with this email,
+        then creates the customer's support account with the chosen password and signs this browser in.
+        The order can be given as the Whop payment id (pay_…) or the reference from the thank-you link.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChatStartInput"
+              $ref: "#/components/schemas/SupportActivateInput"
       responses:
         "201":
-          description: Conversation started
+          description: Activated and signed in
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ChatThread"
+                $ref: "#/components/schemas/SupportSession"
         "400":
           description: Invalid input
           content:
@@ -183,17 +168,130 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "429":
-          description: Too many conversations or messages, try again later
+        "404":
+          description: No paid order matches this email and order id
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /chat/thread/messages:
+        "409":
+          description: Support chat is already switched on for this email or order; sign in instead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: The order cannot be checked right now
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /support/login:
     post:
-      operationId: sendChatMessage
-      tags: [chat]
-      summary: Send a message in this visitor's conversation
+      operationId: signInSupport
+      tags: [support]
+      summary: Sign in to support chat with email and password
+      description: Only one browser stays signed in per account. Signing in here signs every other browser out.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SupportSignInInput"
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportSession"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Wrong email or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /support/logout:
+    post:
+      operationId: signOutSupport
+      tags: [support]
+      summary: Sign this browser out of support chat
+      responses:
+        "204":
+          description: Signed out
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /support/session:
+    get:
+      operationId: getSupportSession
+      tags: [support]
+      summary: Get the support account this browser is signed in to
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportSession"
+        "401":
+          description: Not signed in; reason "replaced" means the account signed in on another browser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportAuthError"
+  /support/thread:
+    get:
+      operationId: getSupportThread
+      tags: [support]
+      summary: Get the signed-in customer's support conversation
+      description: Empty until the customer sends a first message.
+      responses:
+        "200":
+          description: The conversation, newest 200 messages in order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatThread"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportAuthError"
+  /support/thread/messages:
+    post:
+      operationId: sendSupportMessage
+      tags: [support]
+      summary: Send a message in the signed-in customer's conversation
+      description: The first message starts the conversation.
       requestBody:
         required: true
         content:
@@ -213,14 +311,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "403":
-          description: Request did not come from this site
+        "401":
+          description: Not signed in
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: This browser has no conversation
+                $ref: "#/components/schemas/SupportAuthError"
+        "403":
+          description: Request did not come from this site
           content:
             application/json:
               schema:
@@ -468,7 +566,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ChatMessageInput"
+              $ref: "#/components/schemas/AdminMessageInput"
       responses:
         "201":
           description: Reply stored
@@ -612,6 +710,9 @@ components:
         paidAt:
           type: ["string", "null"]
           format: date-time
+        orderId:
+          type: ["string", "null"]
+          description: Whop payment id, null until paid. The customer uses it to switch on support chat.
       required:
         - ref
         - status
@@ -620,6 +721,7 @@ components:
         - amount
         - currency
         - paidAt
+        - orderId
     ChatMessage:
       type: object
       properties:
@@ -644,39 +746,13 @@ components:
         status:
           type: string
           enum: [open, closed]
-        name:
-          type: ["string", "null"]
         messages:
           type: array
           items:
             $ref: "#/components/schemas/ChatMessage"
       required:
         - status
-        - name
         - messages
-    ChatStartInput:
-      type: object
-      properties:
-        message:
-          type: string
-          minLength: 1
-          maxLength: 2000
-        name:
-          type: string
-          maxLength: 80
-        email:
-          type: string
-          maxLength: 200
-          description: Optional; an empty string means not given
-        lang:
-          $ref: "#/components/schemas/Language"
-        website:
-          type: string
-          maxLength: 200
-          description: Must stay empty. Hidden from people; automated form fillers fill it in.
-      required:
-        - message
-        - lang
     ChatMessageInput:
       type: object
       properties:
@@ -684,8 +760,84 @@ components:
           type: string
           minLength: 1
           maxLength: 2000
+        lang:
+          $ref: "#/components/schemas/Language"
       required:
         - message
+        - lang
+    AdminMessageInput:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+      required:
+        - message
+    SupportActivateInput:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: The email used to pay on Whop
+        orderId:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: Whop payment id (pay_…) or the reference from the thank-you link
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+        lang:
+          $ref: "#/components/schemas/Language"
+      required:
+        - email
+        - orderId
+        - password
+        - lang
+    SupportSignInInput:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 200
+        password:
+          type: string
+          minLength: 1
+          maxLength: 128
+      required:
+        - email
+        - password
+    SupportSession:
+      type: object
+      properties:
+        email:
+          type: string
+        orderId:
+          type: string
+          description: Whop payment id the support chat was switched on with
+        packageName:
+          type: ["string", "null"]
+      required:
+        - email
+        - orderId
+        - packageName
+    SupportAuthError:
+      type: object
+      properties:
+        error:
+          type: string
+        reason:
+          type: string
+          enum: [signed_out, replaced]
+          description: replaced means the account signed in on another browser, which signed this one out
+      required:
+        - error
+        - reason
     AdminTokenInput:
       type: object
       properties:
@@ -732,6 +884,11 @@ components:
           type: ["string", "null"]
         email:
           type: ["string", "null"]
+        orderId:
+          type: ["string", "null"]
+          description: Whop payment id the customer switched on support chat with
+        packageName:
+          type: ["string", "null"]
         lang:
           type: string
         status:
@@ -756,6 +913,8 @@ components:
         - id
         - name
         - email
+        - orderId
+        - packageName
         - lang
         - status
         - createdAt

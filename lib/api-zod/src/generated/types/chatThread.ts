@@ -10,7 +10,5 @@ import type { ChatThreadStatus } from './chatThreadStatus';
 
 export interface ChatThread {
   status: ChatThreadStatus;
-  /** @nullable */
-  name: string | null;
   messages: ChatMessage[];
 }

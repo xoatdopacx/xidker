@@ -14,6 +14,13 @@ export interface AdminConversation {
   name: string | null;
   /** @nullable */
   email: string | null;
+  /**
+     * Whop payment id the customer switched on support chat with
+     * @nullable
+     */
+  orderId: string | null;
+  /** @nullable */
+  packageName: string | null;
   lang: string;
   status: AdminConversationStatus;
   createdAt: Date;

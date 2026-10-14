@@ -1,20 +1,34 @@
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Eye, EyeOff, LogOut, X } from "lucide-react";
 import {
-  useGetChatThread, getGetChatThreadQueryKey, useStartChatThread, useSendChatMessage,
-  type ChatMessage, type ChatThread,
+  getSupportSession, getGetSupportSessionQueryKey, useGetSupportThread, getGetSupportThreadQueryKey,
+  useActivateSupport, useSignInSupport, useSignOutSupport, useSendSupportMessage,
+  type ChatMessage, type ChatThread, type SupportSession,
 } from "@workspace/api-client-react";
-import { useI18n, tpl } from "@/lib/i18n";
+import { useI18n, tpl, CONTACT_EMAIL } from "@/lib/i18n";
 import { statusOf, serverError } from "@/lib/http";
+import { supportChat, useSupportChat, type SupportMode } from "@/lib/support-chat";
 
-/** Set once this browser has started a conversation, so first-time visitors never poll the server. */
-const STARTED_KEY = "xidker-chat";
-/** Id of the newest reply the visitor has seen; replies above it count as unread. */
-const SEEN_KEY = "xidker-chat-seen";
+/** Set once this browser has activated or signed in, so the chat button keeps showing for this customer. */
+const KNOWN_KEY = "xidker-support";
+/** Per order: id of the newest reply seen; replies above it count as unread. */
+const SEEN_KEY = "xidker-support-seen";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_MESSAGE = 2000;
-const THREAD_KEY = getGetChatThreadQueryKey();
+const PASSWORD_MIN = 8;
+const PASSWORD_MAX = 128;
+const SESSION_KEY = getGetSupportSessionQueryKey();
+const THREAD_KEY = getGetSupportThreadQueryKey();
+
+type SignedOutReason = "signed_out" | "replaced";
+/** Signed-out is an ordinary answer here, not an error. */
+type SessionState = { account: SupportSession | null; reason: SignedOutReason | null };
+
+function reasonOf(err: unknown): SignedOutReason {
+  const reason = (err as { data?: { reason?: unknown } | null } | null)?.data?.reason;
+  return reason === "replaced" ? "replaced" : "signed_out";
+}
 
 const store = {
   get(key: string) { try { return localStorage.getItem(key); } catch { return null; } },
@@ -53,87 +67,145 @@ function AlertIcon({ className = "" }: { className?: string }) {
 
 /* ---------------- widget ---------------- */
 
+/**
+ * Support chat for customers. Hidden for ordinary visitors: the button appears
+ * after a paid order (thank-you page), when opened from the footer link, or on
+ * a browser that has signed in before.
+ */
 export function ChatWidget() {
   const { t, lang, locale } = useI18n();
   const qc = useQueryClient();
   const panelId = useId();
+  const { revealed, open, request } = useSupportChat();
 
-  const [open, setOpen] = useState(false);
-  const [started, setStarted] = useState(() => store.get(STARTED_KEY) === "1");
-  const [seen, setSeen] = useState(() => Number(store.get(SEEN_KEY)) || 0);
-  const [name, setName] = useState("");
+  const [known, setKnown] = useState(() => store.get(KNOWN_KEY) === "1");
+  const [seenTick, setSeenTick] = useState(0);
+  const [tab, setTab] = useState<SupportMode>("login");
   const [email, setEmail] = useState("");
-  const [trap, setTrap] = useState("");
+  const [orderId, setOrderId] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [replaced, setReplaced] = useState(false);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const fab = useRef<HTMLButtonElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const panel = useRef<HTMLElement>(null);
   const log = useRef<HTMLDivElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const emailInput = useRef<HTMLInputElement>(null);
+  const passwordInput = useRef<HTMLInputElement>(null);
   const atBottom = useRef(true);
+
+  const visible = known || revealed || open;
+
+  const session = useQuery<SessionState>({
+    queryKey: SESSION_KEY,
+    enabled: visible,
+    staleTime: 30_000,
+    queryFn: async ({ signal }) => {
+      try {
+        return { account: await getSupportSession({ signal }), reason: null };
+      } catch (err) {
+        if (statusOf(err) === 401) return { account: null, reason: reasonOf(err) };
+        throw err;
+      }
+    },
+  });
+  const account = session.data?.account ?? null;
 
   // Poll quickly while the panel is open and slowly otherwise (only for the unread badge).
   // React Query stops polling while the tab is hidden.
-  const thread = useGetChatThread({
+  const thread = useGetSupportThread({
     query: {
       queryKey: THREAD_KEY,
-      enabled: started,
+      enabled: !!account,
       refetchInterval: open ? 3000 : 15000,
-      retry: (n, err) => statusOf(err) !== 404 && n < 2,
+      retry: (n, err) => statusOf(err) !== 401 && n < 2,
     },
   });
-  const startMut = useStartChatThread();
-  const sendMut = useSendChatMessage();
+  const activateMut = useActivateSupport();
+  const signInMut = useSignInSupport();
+  const signOutMut = useSignOutSupport();
+  const sendMut = useSendSupportMessage();
 
-  const forget = () => {
-    store.set(STARTED_KEY, null);
-    setStarted(false);
+  const signedOut = (reason: SignedOutReason | null) => {
+    qc.setQueryData<SessionState>(SESSION_KEY, { account: null, reason });
     qc.removeQueries({ queryKey: THREAD_KEY });
   };
 
-  // The conversation is gone (cookie expired or cleared): go back to the start form.
+  const signedIn = (acc: SupportSession) => {
+    store.set(KNOWN_KEY, "1");
+    setKnown(true);
+    setReplaced(false);
+    setPassword("");
+    setShowPassword(false);
+    setError(null);
+    qc.removeQueries({ queryKey: THREAD_KEY });
+    qc.setQueryData<SessionState>(SESSION_KEY, { account: acc, reason: null });
+    atBottom.current = true;
+  };
+
+  // Another browser signed in to this account, which signed this one out. Keep saying so until the next sign-in.
   useEffect(() => {
-    if (statusOf(thread.error) === 404) forget();
+    if (session.data?.reason === "replaced") setReplaced(true);
+  }, [session.data]);
+
+  useEffect(() => {
+    if (statusOf(thread.error) === 401) signedOut(reasonOf(thread.error));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thread.error]);
+
+  // Opened from the thank-you page or the footer: switch to the asked tab, keep what was typed.
+  useEffect(() => {
+    if (!request.nonce) return;
+    opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setTab(request.mode);
+    if (request.orderId) setOrderId(request.orderId);
+    setError(null);
+  }, [request.nonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Keep several open tabs in step.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === STARTED_KEY) setStarted(e.newValue === "1");
-      if (e.key === SEEN_KEY) setSeen((s) => Math.max(s, Number(e.newValue) || 0));
+      if (e.key === KNOWN_KEY) setKnown(e.newValue === "1");
+      if (e.key?.startsWith(SEEN_KEY)) setSeenTick((n) => n + 1);
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const data = started ? thread.data : undefined;
+  const data = account ? thread.data : undefined;
   const messages = data?.messages ?? [];
+  const seenKey = account ? `${SEEN_KEY}:${account.orderId}` : null;
+  // Read straight from storage; seenTick re-renders when it changes.
+  void seenTick;
+  const seen = seenKey ? Number(store.get(seenKey)) || 0 : 0;
   const lastReplyId = messages.reduce((m, x) => (x.sender === "admin" && x.id > m ? x.id : m), 0);
   const unread = messages.filter((m) => m.sender === "admin" && m.id > seen).length;
 
   useEffect(() => {
-    if (open && lastReplyId > seen) {
-      setSeen(lastReplyId);
-      store.set(SEEN_KEY, String(lastReplyId));
+    if (open && seenKey && lastReplyId > seen) {
+      store.set(seenKey, String(lastReplyId));
+      setSeenTick((n) => n + 1);
     }
-  }, [open, lastReplyId, seen]);
+  }, [open, seenKey, lastReplyId, seen]);
 
   // Focus the first field on open (only with a mouse, so phones don't pop the keyboard up uninvited).
+  const view = !account ? (session.isPending ? "loading" : session.isError ? "error" : "auth") : "thread";
   useEffect(() => {
     if (!open) return;
     const fine = window.matchMedia("(pointer: fine)").matches;
     const target = fine ? panel.current?.querySelector<HTMLElement>("[data-autofocus]") : null;
     (target ?? panel.current)?.focus({ preventScroll: true });
-  }, [open, started]);
+  }, [open, view, tab]);
 
-  // Follow new messages unless the visitor scrolled up to read older ones.
+  // Follow new messages unless the customer scrolled up to read older ones.
   useLayoutEffect(() => {
     const el = log.current;
     if (el && atBottom.current) el.scrollTop = el.scrollHeight;
-  }, [messages.length, open, started]);
+  }, [messages.length, open, view]);
 
   const onLogScroll = () => {
     const el = log.current;
@@ -144,52 +216,111 @@ export function ChatWidget() {
     const el = composer.current;
     if (!el) return;
     el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 132)}px`;
+    // scrollHeight leaves out the border, and the box is sized border-box.
+    const border = el.offsetHeight - el.clientHeight;
+    el.style.height = `${Math.min(el.scrollHeight + border, 132)}px`;
   };
 
   const toggle = () => {
     setError(null);
-    setOpen((o) => !o);
+    opener.current = null;
+    supportChat.setOpen(!open);
     atBottom.current = true;
   };
 
   const close = () => {
-    setOpen(false);
-    fab.current?.focus();
+    supportChat.setOpen(false);
+    // Without a saved sign-in or a fresh order the button goes away again; give focus back to whatever opened the panel.
+    const target = known || revealed || !opener.current?.isConnected ? fab.current : opener.current;
+    target?.focus({ preventScroll: true });
   };
 
   const onRootKey = (e: KeyboardEvent) => {
     if (e.key === "Escape" && open) { e.stopPropagation(); close(); }
   };
 
-  const submitStart = (e: FormEvent) => {
-    e.preventDefault();
-    if (startMut.isPending) return;
-    const message = draft.trim();
-    const mail = email.trim();
-    if (!message) return;
-    if (mail && !EMAIL_RE.test(mail)) {
-      setError(t.chat.errorEmail);
-      emailInput.current?.focus();
-      return;
-    }
+  const switchTab = (next: SupportMode) => {
+    setTab(next);
     setError(null);
-    startMut.mutate(
-      { data: { message, name: name.trim() || undefined, email: mail || undefined, lang, website: trap || undefined } },
+  };
+
+  const checkEmail = (): string | null => {
+    const mail = email.trim();
+    if (EMAIL_RE.test(mail)) return mail;
+    setError(t.chat.errorEmail);
+    emailInput.current?.focus();
+    return null;
+  };
+
+  const submitLogin = (e: FormEvent) => {
+    e.preventDefault();
+    if (signInMut.isPending || !password) return;
+    const mail = checkEmail();
+    if (!mail) return;
+    setError(null);
+    signInMut.mutate(
+      { data: { email: mail, password } },
       {
-        onSuccess: (fresh: ChatThread) => {
-          store.set(STARTED_KEY, "1");
-          qc.setQueryData(THREAD_KEY, fresh);
-          atBottom.current = true;
-          setDraft("");
-          setStarted(true);
-        },
+        onSuccess: signedIn,
         onError: (err) => {
           const s = statusOf(err);
-          setError(s === 429 ? t.chat.errorRate : s === 400 && /email/i.test(serverError(err)) ? t.chat.errorEmail : t.chat.errorSend);
+          setError(s === 401 ? t.chat.errorLogin : s === 429 ? t.chat.errorTooMany : t.chat.errorSend);
+          if (s === 401) passwordInput.current?.select();
         },
       },
     );
+  };
+
+  const submitActivate = (e: FormEvent) => {
+    e.preventDefault();
+    if (activateMut.isPending || !orderId.trim()) return;
+    const mail = checkEmail();
+    if (!mail) return;
+    if (password.length < PASSWORD_MIN || password.length > PASSWORD_MAX) {
+      setError(t.chat.errorPassword);
+      passwordInput.current?.focus();
+      return;
+    }
+    setError(null);
+    activateMut.mutate(
+      { data: { email: mail, orderId: orderId.trim(), password, lang } },
+      {
+        onSuccess: signedIn,
+        onError: (err) => {
+          const s = statusOf(err);
+          const why = serverError(err);
+          if (s === 409) {
+            // Already switched on: the customer only needs to sign in.
+            setTab("login");
+            setPassword("");
+            setError(t.chat.errorActivated);
+            return;
+          }
+          setError(
+            s === 404 ? t.chat.errorNoOrder
+              : s === 429 ? t.chat.errorTooMany
+              : s === 503 ? t.chat.errorCheck
+              : s === 400 && /password/i.test(why) ? t.chat.errorPassword
+              : s === 400 && /email/i.test(why) ? t.chat.errorEmail
+              : t.chat.errorSend,
+          );
+        },
+      },
+    );
+  };
+
+  const signOut = () => {
+    if (signOutMut.isPending) return;
+    setError(null);
+    signOutMut.mutate(undefined, {
+      onSuccess: () => {
+        setEmail(account?.email ?? "");
+        setTab("login");
+        setDraft("");
+        signedOut(null);
+      },
+      onError: () => setError(t.chat.errorSend),
+    });
   };
 
   const submitReply = () => {
@@ -198,23 +329,22 @@ export function ChatWidget() {
     if (!message) return;
     setError(null);
     sendMut.mutate(
-      { data: { message } },
+      { data: { message, lang } },
       {
         onSuccess: async (m: ChatMessage) => {
           // Drop any poll that started before this send, so it cannot hide the new message.
           await qc.cancelQueries({ queryKey: THREAD_KEY });
-          qc.setQueryData<ChatThread>(THREAD_KEY, (old) => old && {
-            ...old,
+          qc.setQueryData<ChatThread>(THREAD_KEY, (old) => ({
             status: "open",
-            messages: old.messages.some((x) => x.id === m.id) ? old.messages : [...old.messages, m],
-          });
+            messages: !old ? [m] : old.messages.some((x) => x.id === m.id) ? old.messages : [...old.messages, m],
+          }));
           atBottom.current = true;
           setDraft("");
           requestAnimationFrame(resizeComposer);
         },
         onError: (err) => {
           const s = statusOf(err);
-          if (s === 404) { forget(); return; }
+          if (s === 401) { signedOut(reasonOf(err)); return; }
           setError(s === 429 ? t.chat.errorRate : t.chat.errorSend);
         },
       },
@@ -238,10 +368,13 @@ export function ChatWidget() {
     return (d.toDateString() === new Date().toDateString() ? timeFmt.today : timeFmt.other).format(d);
   };
 
+  if (!visible) return null;
+
   const closed = data?.status === "closed";
-  // The visitor wrote last and nobody has answered yet.
+  // The customer wrote last and nobody has answered yet.
   const waiting = messages[messages.length - 1]?.sender === "visitor" && !closed;
   const fabLabel = open ? t.chat.close : unread > 0 ? `${t.chat.title}. ${tpl(t.chat.newMessages, { n: unread })}` : t.chat.title;
+  const busy = activateMut.isPending || signInMut.isPending;
 
   return (
     <div className="cw-root" onKeyDown={onRootKey} data-testid="chat-widget">
@@ -249,52 +382,103 @@ export function ChatWidget() {
         <section ref={panel} id={panelId} role="dialog" aria-label={t.chat.title} tabIndex={-1} className="cw-panel tile" data-testid="panel-chat">
           <header className="cw-head">
             <BubbleIcon className="h-4 w-6 shrink-0 text-[#1b2a1c]" />
-            <h2 className="flex-1 min-w-0 truncate font-bold text-sm">{t.chat.title}</h2>
-            <button type="button" onClick={close} aria-label={t.chat.close} className="cw-close grid place-items-center h-8 w-8" data-testid="button-chat-close">
+            <div className="flex-1 min-w-0">
+              <h2 className="truncate font-bold text-sm">{t.chat.title}</h2>
+              {account && (
+                <p className="truncate text-[11px] leading-tight text-[#3d4a3d]" data-testid="text-chat-account">
+                  <span className="sr-only">{t.chat.signedInAs} </span><span dir="ltr">{account.email}</span>
+                </p>
+              )}
+            </div>
+            {account && (
+              <button type="button" onClick={signOut} disabled={signOutMut.isPending} aria-label={t.chat.signOut} title={t.chat.signOut}
+                className="cw-close grid place-items-center h-8 w-8 shrink-0" data-testid="button-chat-signout">
+                <LogOut className="h-4 w-4 rtl:-scale-x-100" strokeWidth={3} />
+              </button>
+            )}
+            <button type="button" onClick={close} aria-label={t.chat.close} className="cw-close grid place-items-center h-8 w-8 shrink-0" data-testid="button-chat-close">
               <X className="h-4 w-4" strokeWidth={3} />
             </button>
           </header>
 
-          {!started ? (
-            <form onSubmit={submitStart} className="cw-body overflow-y-auto overscroll-contain p-4 flex flex-col gap-3" noValidate>
-              <p className="text-sm text-[#2c3a2c]">{t.chat.intro}</p>
-              <div className="grid grid-cols-2 gap-2">
-                <label className="flex flex-col gap-1 min-w-0">
-                  <span className="cw-label">{t.chat.name} <span className="cw-opt">({t.chat.optional})</span></span>
-                  <input data-autofocus value={name} onChange={(e) => setName(e.target.value)} maxLength={80} autoComplete="name"
-                    className="cw-field" data-testid="input-chat-name" />
-                </label>
-                <label className="flex flex-col gap-1 min-w-0">
-                  <span className="cw-label">{t.chat.email} <span className="cw-opt">({t.chat.optional})</span></span>
-                  <input ref={emailInput} type="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={200} autoComplete="email"
-                    aria-describedby={`${panelId}-hint`} className="cw-field" data-testid="input-chat-email" />
-                </label>
+          {view === "loading" && (
+            <div className="cw-body grid place-items-center"><p className="cw-loading" aria-hidden="true"><i /><i /><i /></p></div>
+          )}
+
+          {view === "error" && (
+            <div className="cw-body grid place-items-center p-4 text-center text-sm">
+              <div>
+                <p>{t.chat.errorLoad}</p>
+                <button type="button" onClick={() => session.refetch()} className="pbtn paper mt-3 px-3 py-1.5 text-sm font-bold" data-testid="button-chat-retry-session">{t.chat.retry}</button>
               </div>
-              <p id={`${panelId}-hint`} className="-mt-1.5 text-xs text-[#5b6a5b]">{t.chat.emailHint}</p>
-              <label className="flex flex-col gap-1">
-                <span className="cw-label">{t.chat.message}</span>
-                <textarea value={draft} onChange={(e) => setDraft(e.target.value)} maxLength={MAX_MESSAGE} rows={4} required
-                  placeholder={t.chat.placeholder} className="cw-field resize-none" data-testid="input-chat-first-message" />
-              </label>
-              {/* Hidden from people; automated form fillers fill it in and the server drops the request. */}
-              <div className="sr-only" aria-hidden="true">
-                <input tabIndex={-1} name="xid-extra" autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+            </div>
+          )}
+
+          {view === "auth" && (
+            <div className="cw-body overflow-y-auto overscroll-contain p-4 flex flex-col gap-3">
+              {replaced && <p className="cw-note" role="status" data-testid="text-chat-replaced">{t.chat.replaced}</p>}
+              <div className="cw-tabs" role="group" aria-label={t.chat.title}>
+                <button type="button" aria-pressed={tab === "login"} onClick={() => switchTab("login")} className="cw-tab" data-testid="tab-chat-login">{t.chat.tabLogin}</button>
+                <button type="button" aria-pressed={tab === "activate"} onClick={() => switchTab("activate")} className="cw-tab" data-testid="tab-chat-activate">{t.chat.tabActivate}</button>
               </div>
-              {error && <ErrorLine text={error} />}
-              <button type="submit" disabled={startMut.isPending || !draft.trim()} className="pbtn red justify-center px-4 py-2.5 font-bold" data-testid="button-chat-start">
-                <SendIcon className="h-3.5 w-3.5 rtl:-scale-x-100" /> {startMut.isPending ? t.chat.sending : t.chat.start}
-              </button>
-            </form>
-          ) : (
+
+              <form onSubmit={tab === "login" ? submitLogin : submitActivate} className="flex flex-col gap-3" noValidate>
+                <p className="text-sm text-[#2c3a2c]">{tab === "login" ? t.chat.loginIntro : t.chat.activateIntro}</p>
+                <label className="flex flex-col gap-1">
+                  <span className="cw-label">{tab === "login" ? t.chat.email : t.chat.purchaseEmail}</span>
+                  <input ref={emailInput} data-autofocus type="email" name="email" dir="ltr" value={email} onChange={(e) => setEmail(e.target.value)}
+                    maxLength={200} autoComplete="username" autoCapitalize="none" spellCheck={false} className="cw-field" data-testid="input-chat-email" />
+                </label>
+                {tab === "activate" && (
+                  <label className="flex flex-col gap-1">
+                    <span className="cw-label">{t.chat.orderId}</span>
+                    <input name="order" dir="ltr" value={orderId} onChange={(e) => setOrderId(e.target.value)} maxLength={100} placeholder="pay_…"
+                      autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-describedby={`${panelId}-order-hint`}
+                      className="cw-field font-mono" data-testid="input-chat-order" />
+                    <span id={`${panelId}-order-hint`} className="text-xs text-[#5b6a5b]">{t.chat.orderHint}</span>
+                  </label>
+                )}
+                <div className="flex flex-col gap-1">
+                  <label htmlFor={`${panelId}-password`} className="cw-label">{tab === "login" ? t.chat.password : t.chat.newPassword}</label>
+                  <div className="relative">
+                    <input ref={passwordInput} id={`${panelId}-password`} name="password" type={showPassword ? "text" : "password"} dir="ltr"
+                      value={password} onChange={(e) => setPassword(e.target.value)} maxLength={PASSWORD_MAX}
+                      autoComplete={tab === "login" ? "current-password" : "new-password"} autoCapitalize="none" autoCorrect="off" spellCheck={false}
+                      aria-describedby={tab === "activate" ? `${panelId}-password-hint` : undefined}
+                      className="cw-field cw-has-eye" data-testid="input-chat-password" />
+                    <button type="button" onClick={() => setShowPassword((s) => !s)} aria-label={t.chat.showPassword} aria-pressed={showPassword}
+                      className="cw-eye" data-testid="button-chat-show-password">
+                      {showPassword ? <EyeOff className="h-4 w-4" strokeWidth={2.5} /> : <Eye className="h-4 w-4" strokeWidth={2.5} />}
+                    </button>
+                  </div>
+                  {tab === "activate" && <span id={`${panelId}-password-hint`} className="text-xs text-[#5b6a5b]">{t.chat.passwordHint}</span>}
+                </div>
+                {error && <ErrorLine text={error} />}
+                <button type="submit" disabled={busy || !email.trim() || !password || (tab === "activate" && !orderId.trim())}
+                  className="pbtn red justify-center px-4 py-2.5 font-bold" data-testid={tab === "login" ? "button-chat-login" : "button-chat-activate"}>
+                  {busy ? t.chat.checking : tab === "login" ? t.chat.login : t.chat.activate}
+                </button>
+              </form>
+
+              <p className="text-xs text-[#5b6a5b]">{t.chat.oneBrowser}</p>
+              <p className="text-xs text-[#5b6a5b]">
+                {t.chat.forgot}{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold underline underline-offset-2 break-all" dir="ltr" data-testid="link-chat-email">{CONTACT_EMAIL}</a>
+              </p>
+            </div>
+          )}
+
+          {view === "thread" && (
             <>
               <div ref={log} onScroll={onLogScroll} role="log" aria-live="polite" aria-label={t.chat.title} className="cw-log" data-testid="chat-log">
                 {thread.isPending && <p className="cw-loading m-auto" aria-hidden="true"><i /><i /><i /></p>}
-                {thread.isError && statusOf(thread.error) !== 404 && !data && (
+                {thread.isError && statusOf(thread.error) !== 401 && !data && (
                   <div className="m-auto text-center text-sm">
                     <p>{t.chat.errorLoad}</p>
                     <button type="button" onClick={() => thread.refetch()} className="pbtn paper mt-3 px-3 py-1.5 text-sm font-bold" data-testid="button-chat-retry">{t.chat.retry}</button>
                   </div>
                 )}
+                {data && messages.length === 0 && <p className="cw-note my-auto" data-testid="text-chat-intro">{t.chat.intro}</p>}
                 {messages.map((m) => {
                   const mine = m.sender === "visitor";
                   return (

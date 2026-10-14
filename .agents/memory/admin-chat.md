@@ -1,18 +1,25 @@
 ---
-name: Live chat and admin sign-in
-description: Design decisions behind the visitor live chat and the /admin inbox sign-in (token + emailed code); read before changing either.
+name: Support chat and admin sign-in
+description: Non-obvious facts and test recipes for the buyers-only support chat and the /admin inbox sign-in (token + emailed code); read before changing or testing either.
 ---
 
-Admin sign-in is two steps: the ADMIN_TOKEN secret (trimmed, at least 24 characters), then a 6-digit code emailed through the Gmail connector to the ADMIN_EMAIL env var. The code challenge is bound to the browser that asked for it by a `__Host-` cookie; codes and tokens are stored only as hashes. A session is tied to the ADMIN_TOKEN in force when it was created, so changing the token signs every admin out.
+The chat was an open visitor chat until 2026-10-14, when the user asked for a buyers-only support chat (purchase email + order ID + password to activate, one browser signed in at a time). The rules themselves are in `replit.md`.
+**Why:** the user's request; do not bring back anonymous visitor chat.
+
+Unverified: whether Whop returns the buyer email for real paid orders (the API key may need permission to read member emails). Activation answers 503 and logs "Whop returned no buyer email" when it is missing. Nobody has activated with a real purchase yet.
+**How to apply:** after the first real order, check the API log for that line before blaming the chat code.
+
+Admin sign-in is two steps: ADMIN_TOKEN (trimmed, NFC, at least 24 characters, or sign-in is off with a log line), then a 6-digit code emailed through the Gmail connector to ADMIN_EMAIL. The code challenge is bound to the browser by a `__Host-` cookie; codes and tokens are stored only as hashes. A session is tied to the ADMIN_TOKEN in force when it was created.
 **Why:** the user asked for "token + 6-digit code via Gmail" plus security hardening.
 **How to apply:** never put the code in the email subject; do not add /admin to robots.txt (it would advertise the URL) — the page sets noindex itself.
+When asking the user for a new ADMIN_TOKEN, ask for a sentence of 7–8 words joined by dashes, say that dashes count toward the 24 characters, and that the old value must be replaced, not confirmed. On 2026-10-14 the first request suggested 4–5 words. After the user submitted the form, the restarted server still said the key was under 24 characters. (Short Vietnamese words make 4–5 words too short.) Check by restarting the API and posting a wrong key: 401 means the key is long enough, 503 means sign-in is still off.
 
 Gmail is called only through the `@replit/connectors-sdk` proxy (`proxy("google-mail", ...)`); no googleapis client, no hand-fetched OAuth tokens. The proxy answers 404 "No google-mail connection found" when nothing is connected.
-**Why:** the old pattern (fetch `/api/v2/connection?include_secrets=true` with `depl ${WEB_REPL_RENEWAL}`) fails once published: the SDK source says raw WEB_REPL_RENEWAL credentials are no longer accepted and it mints an identity instead. The proxy also keeps the account's token out of app code.
-**How to apply:** the connected Gmail account is the admin address itself, so codes are self-sent and land in INBOX (verified). To test real delivery without the user's ADMIN_TOKEN: run a second API process on another port with a throwaway ADMIN_TOKEN, request a code, read it back through the Gmail proxy (gmail.readonly is granted), verify, sign out, then delete the new admin_login_* / admin_sessions rows. Each test sends one real email to the admin, so tell the user.
+**Why:** the old pattern (fetch `/api/v2/connection?include_secrets=true` with `depl ${WEB_REPL_RENEWAL}`) fails once published: the SDK source says raw WEB_REPL_RENEWAL credentials are no longer accepted and it mints an identity instead.
 
-Chat state lives in the database and both sides poll (visitor thread ~3s, admin list 5s, admin thread 3s); unread is tracked by last-read message id.
-**Why:** the app deploys on autoscale, so in-memory sockets or state would split across instances.
+Test recipes:
+- Real admin code delivery without the user's ADMIN_TOKEN: run a second API process on another port with a throwaway ADMIN_TOKEN, request a code, read it back through the Gmail proxy (gmail.readonly is granted; the connected account is the admin address, so codes land in INBOX), verify, sign out, then delete the new admin_login_* / admin_sessions rows. Each run sends one real email to the admin, so tell the user.
+- Customer chat without a real purchase: insert a support_accounts row whose password_hash comes from the server's own hashPassword, then sign in from the site. Activation can only be tested up to the "no paid order matches" answer. Afterwards delete the row (sessions and conversations cascade) and its support_auth_events rows (match by email_hash), or the failed-attempt counters keep blocking.
 
-The admin screens are Vietnamese only and force `<html lang="vi" dir="ltr">` while mounted; visitor-facing chat text goes into all 33 locales.
-**Why:** the only admin reads Vietnamese; visitors may arrive in any of the site languages, including RTL ones.
+The admin screens are Vietnamese only and force `<html lang="vi" dir="ltr">` while mounted; customer-facing chat text goes into all 33 locales.
+**Why:** the only admin reads Vietnamese; buyers may arrive in any of the site languages, including RTL ones.

@@ -17,6 +17,8 @@ CDP gotchas hit later: `Page.captureScreenshot` `clip` x/y are page coordinates,
 
 Testing POST endpoints from the headless browser: the API rejects requests whose Origin is not the app's own domain, so pages on `http://localhost` get 403 on POST. Either load the page from `https://$REPLIT_DEV_DOMAIN`, or intercept the API calls with CDP `Fetch` and forward them from Node with the dev-domain Origin. The dev domain injects a preview banner that adds height, so judge full-height (100dvh) layouts on `localhost:80`. After a new frontend dependency is added, the first load of a route that imports it makes Vite optimize it and reload the page once; load the route once before asserting anything.
 
+Screens that need a real Whop payment or an admin sign-in (paid `/cam-on`, the `/admin` inbox) can still be looked at: `Fetch.enable` with pattern `*/api/*` on the page session, answer the needed GETs with `Fetch.fulfillRequest` (fake JSON, base64 body) and `Fetch.continueRequest` the rest. For "only one browser signed in" checks, `Target.createBrowserContext` gives each page its own cookies, like separate browsers; attach with `flatten: true` and pass `sessionId` on each command. Set React inputs with the native value setter plus an `input` event.
+
 If WebGL is ever needed again in headless mode: drop `--disable-gpu` and add `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
 
 **Why:** pricing cards with live data, checkout navigation, the road character's per-leg vehicles and the FAQ height check could only be confirmed this way.

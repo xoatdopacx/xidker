@@ -10,10 +10,16 @@ export const ADMIN_SESSION_TTL_MS = 12 * 60 * 60_000;
 
 const MIN_TOKEN_LENGTH = 24;
 
+/** Applied to both the configured ADMIN_TOKEN and every submitted key before comparing. */
+export function normalizeAdminToken(value: string): string {
+  return value.trim().normalize("NFC");
+}
+
 /** ADMIN_TOKEN and ADMIN_EMAIL, or null (with the reason logged) when sign-in is not set up. */
 export function adminConfig(): { token: string; email: string } | null {
   // Trimmed so a stray space or newline pasted into the secret cannot lock the admin out.
-  const token = (process.env.ADMIN_TOKEN ?? "").trim();
+  // NFC so a Vietnamese key typed on another keyboard (decomposed accents) still matches.
+  const token = normalizeAdminToken(process.env.ADMIN_TOKEN ?? "");
   const email = (process.env.ADMIN_EMAIL ?? "").trim();
   if (!token || !email) {
     logger.error("Admin sign-in is off: ADMIN_TOKEN or ADMIN_EMAIL is not set");

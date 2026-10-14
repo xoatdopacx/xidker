@@ -101,7 +101,7 @@ export function AdminInbox({ session, onSignedOut }: { session: AdminSession; on
             <Thread key={selected.id} conv={selected} drafts={drafts.current} onBack={() => setSelectedId(null)} onSignedOut={onSignedOut} />
           ) : (
             <div className="m-auto p-6 text-center text-sm text-[#3d4a3d]">
-              {all.length ? "Chọn một cuộc trò chuyện ở bên trái." : "Khi có khách nhắn tin, cuộc trò chuyện sẽ hiện ở đây."}
+              {all.length ? "Chọn một cuộc trò chuyện ở bên trái." : "Khi khách đã mua nhắn tin, cuộc trò chuyện sẽ hiện ở đây."}
             </div>
           )}
         </section>
@@ -245,11 +245,18 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
           <ArrowLeft className="h-4 w-4" strokeWidth={3} />
         </button>
         <div className="min-w-0 flex-1">
-          <h2 className="font-extrabold truncate" dir="auto">{guestName(conv)}</h2>
+          {/* Customers have no name, only the email they bought with: then the email is the title. */}
+          <h2 className="font-extrabold truncate" dir="auto">
+            {!conv.name?.trim() && conv.email
+              ? <a href={`mailto:${conv.email}`} className="hover:underline" dir="ltr" data-testid="link-visitor-email">{conv.email}</a>
+              : guestName(conv)}
+          </h2>
           <p className="text-xs text-[#3d4a3d] flex flex-wrap gap-x-3 gap-y-0.5">
-            {conv.email
+            {conv.name?.trim() && (conv.email
               ? <a href={`mailto:${conv.email}`} className="underline font-semibold break-all" dir="ltr" data-testid="link-visitor-email">{conv.email}</a>
-              : <span>Không để lại email</span>}
+              : <span>Không có email</span>)}
+            {conv.packageName && <span data-testid="text-admin-package">Gói {conv.packageName}</span>}
+            {conv.orderId && <span className="font-mono break-all" dir="ltr" data-testid="text-admin-order">{conv.orderId}</span>}
             <span>{languageName(conv.lang)}</span>
             <span>Bắt đầu {fullWhen(conv.createdAt)}</span>
           </p>

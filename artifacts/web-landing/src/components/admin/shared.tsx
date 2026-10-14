@@ -105,7 +105,7 @@ export function languageName(code: string) {
   }
 }
 
-/** Visitors may skip their name; give each one a stable short label instead. */
-export function guestName(c: { id: string; name: string | null }) {
-  return c.name?.trim() || `Khách ${c.id.replace(/-/g, "").slice(0, 4).toUpperCase()}`;
+/** Customers are known by the email they bought with; older rows fall back to a stable short label. */
+export function guestName(c: { id: string; name: string | null; email?: string | null }) {
+  return c.name?.trim() || c.email?.trim() || `Khách ${c.id.replace(/-/g, "").slice(0, 4).toUpperCase()}`;
 }

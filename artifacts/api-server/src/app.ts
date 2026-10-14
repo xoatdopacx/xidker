@@ -50,8 +50,8 @@ app.use(cors({ origin: (origin, done) => done(null, Boolean(origin && isOwnOrigi
 app.use(express.json({ limit: "16kb" }));
 app.use(cookieParser());
 
-// Chat and admin answers belong to one browser; never let anything cache them.
-app.use(["/api/chat", "/api/admin"], (_req: Request, res: Response, next: NextFunction) => {
+// Support chat and admin answers belong to one browser; never let anything cache them.
+app.use(["/api/support", "/api/admin"], (_req: Request, res: Response, next: NextFunction) => {
   res.setHeader("Cache-Control", "no-store");
   next();
 });

@@ -2,12 +2,13 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefO
 import { useListPackages, useCreateCheckout, getListPackagesQueryKey } from "@workspace/api-client-react";
 import type { Package } from "@workspace/api-client-react";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown } from "lucide-react";
+import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Reveal, formatPrice } from "@/lib/motion";
 import { CloudArt, Scene, type SceneName } from "@/components/scenes";
 import { useI18n, LangSwitch, CONTACT_EMAIL, tpl, type Dict, type Currency } from "@/lib/i18n";
 import { Hero as HeroSprite, Pine, Sunflower, Log, Pin, Trophy, MapIcon, Cat, Raccoon, Chest, Logo, Wordmark, PixelTitle, Vehicle, VEHICLES } from "@/components/sprites";
+import { supportChat } from "@/lib/support-chat";
 
 /* ---------------- Road + walking character ---------------- */
 
@@ -652,6 +653,9 @@ export function Footer() {
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-widest opacity-50 font-semibold">{t.footer.contact}</p>
             <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-2 text-base font-bold hover:text-[hsl(var(--gold))] break-all" data-testid="link-email"><Mail className="h-4 w-4 shrink-0" /> {CONTACT_EMAIL}</a>
+            <button type="button" onClick={() => supportChat.open("login")} className="flex items-center gap-2 text-start font-semibold opacity-85 hover:opacity-100 hover:text-[hsl(var(--gold))] underline underline-offset-4 decoration-2 decoration-[#eaf7d6]/40" data-testid="button-footer-support">
+              <MessageSquare className="h-4 w-4 shrink-0" /> {t.footer.support}
+            </button>
             <LangSwitch tone="dark" />
           </div>
           <p className="md:text-right opacity-50 text-xs self-end">© {new Date().getFullYear()} xidker. {t.footer.rights}</p>

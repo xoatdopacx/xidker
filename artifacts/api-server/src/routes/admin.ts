@@ -8,6 +8,7 @@ import {
   adminSessionsTable,
   chatConversationsTable,
   chatMessagesTable,
+  supportAccountsTable,
 } from "@workspace/db";
 import {
   GetAdminSessionResponse,
@@ -44,6 +45,7 @@ import {
   adminConfig,
   credentialHash,
   maskEmail,
+  normalizeAdminToken,
   requireAdmin,
 } from "../lib/adminAuth";
 import { MailNotConfiguredError, sendMail } from "../lib/mailer";
@@ -125,7 +127,7 @@ router.post(
       res.status(429).json({ error: "Too many wrong attempts, wait 15 minutes" });
       return;
     }
-    if (!safeEqual(parsed.data.token, config.token)) {
+    if (!safeEqual(normalizeAdminToken(parsed.data.token), config.token)) {
       await recordEvent("bad_token", req);
       req.log.warn("Admin sign-in: wrong token");
       res.status(401).json({ error: "Wrong token" });
@@ -290,11 +292,14 @@ router.delete("/admin/session", requireSameOrigin, async (req, res): Promise<voi
 // to the message table inside these subqueries, so the outer columns are spelled out.
 const outerId = sql.raw(`"chat_conversations"."id"`);
 const outerLastReadId = sql.raw(`"chat_conversations"."admin_last_read_id"`);
+const outerAccountId = sql.raw(`"chat_conversations"."account_id"`);
 
 const conversationColumns = {
   id: chatConversationsTable.id,
   name: chatConversationsTable.name,
   email: chatConversationsTable.email,
+  orderId: sql<string | null>`(select a.order_id from ${supportAccountsTable} a where a.id = ${outerAccountId})`,
+  packageName: sql<string | null>`(select a.package_name from ${supportAccountsTable} a where a.id = ${outerAccountId})`,
   lang: chatConversationsTable.lang,
   status: chatConversationsTable.status,
   createdAt: chatConversationsTable.createdAt,

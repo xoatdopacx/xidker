@@ -24,11 +24,11 @@ import type {
   AdminCodeInput,
   AdminConversation,
   AdminConversationUpdate,
+  AdminMessageInput,
   AdminSession,
   AdminTokenInput,
   ChatMessage,
   ChatMessageInput,
-  ChatStartInput,
   ChatThread,
   CheckoutInput,
   CheckoutSession,
@@ -36,7 +36,11 @@ import type {
   ErrorResponse,
   HealthStatus,
   ListPackagesParams,
-  Package
+  Package,
+  SupportActivateInput,
+  SupportAuthError,
+  SupportSession,
+  SupportSignInInput
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -396,21 +400,272 @@ export function useGetCheckoutStatus<TData = Awaited<ReturnType<typeof getChecko
 
 
 
-export const getGetChatThreadUrl = () => {
+export const getActivateSupportUrl = () => {
 
 
 
 
-  return `/api/chat/thread`
+  return `/api/support/activate`
 }
 
 /**
- * The conversation is identified by the httpOnly chat cookie set when it was started. Returns 404 when this browser has not started one.
- * @summary Get this visitor's chat conversation
+ * Checks with Whop that the order is paid, not refunded, and was bought with this email, then creates the customer's support account with the chosen password and signs this browser in. The order can be given as the Whop payment id (pay_…) or the reference from the thank-you link.
+ * @summary Switch on support chat with a paid order
  */
-export const getChatThread = async ( options?: Parameters<typeof customFetch>[1]): Promise<ChatThread> => {
+export const activateSupport = async (supportActivateInput: SupportActivateInput, options?: Parameters<typeof customFetch>[1]): Promise<SupportSession> => {
 
-  return customFetch<ChatThread>(getGetChatThreadUrl(),
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SupportSession>(getActivateSupportUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(supportActivateInput)
+  }
+);}
+
+
+
+
+
+export const getActivateSupportMutationKey = () => ['activateSupport'] as const;
+
+export const getActivateSupportMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateSupport>>, TError,ActivateSupportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof activateSupport>>, TError,ActivateSupportMutationVariables, TContext> => {
+
+const mutationKey = getActivateSupportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof activateSupport>>, ActivateSupportMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  activateSupport(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ActivateSupportMutationResult = NonNullable<Awaited<ReturnType<typeof activateSupport>>>
+    export type ActivateSupportMutationBody = BodyType<SupportActivateInput>
+    export type ActivateSupportMutationError = ErrorType<ErrorResponse>
+    export type ActivateSupportMutationVariables = {data: BodyType<SupportActivateInput>}
+
+    /**
+ * @summary Switch on support chat with a paid order
+ */
+export const useActivateSupport = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof activateSupport>>, TError,ActivateSupportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof activateSupport>>,
+        TError,
+        ActivateSupportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getActivateSupportMutationOptions(options));
+    }
+
+export const getSignInSupportUrl = () => {
+
+
+
+
+  return `/api/support/login`
+}
+
+/**
+ * Only one browser stays signed in per account. Signing in here signs every other browser out.
+ * @summary Sign in to support chat with email and password
+ */
+export const signInSupport = async (supportSignInInput: SupportSignInInput, options?: Parameters<typeof customFetch>[1]): Promise<SupportSession> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<SupportSession>(getSignInSupportUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(supportSignInInput)
+  }
+);}
+
+
+
+
+
+export const getSignInSupportMutationKey = () => ['signInSupport'] as const;
+
+export const getSignInSupportMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signInSupport>>, TError,SignInSupportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof signInSupport>>, TError,SignInSupportMutationVariables, TContext> => {
+
+const mutationKey = getSignInSupportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof signInSupport>>, SignInSupportMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  signInSupport(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SignInSupportMutationResult = NonNullable<Awaited<ReturnType<typeof signInSupport>>>
+    export type SignInSupportMutationBody = BodyType<SupportSignInInput>
+    export type SignInSupportMutationError = ErrorType<ErrorResponse>
+    export type SignInSupportMutationVariables = {data: BodyType<SupportSignInInput>}
+
+    /**
+ * @summary Sign in to support chat with email and password
+ */
+export const useSignInSupport = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signInSupport>>, TError,SignInSupportMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof signInSupport>>,
+        TError,
+        SignInSupportMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSignInSupportMutationOptions(options));
+    }
+
+export const getSignOutSupportUrl = () => {
+
+
+
+
+  return `/api/support/logout`
+}
+
+/**
+ * @summary Sign this browser out of support chat
+ */
+export const signOutSupport = async ( options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getSignOutSupportUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getSignOutSupportMutationKey = () => ['signOutSupport'] as const;
+
+export const getSignOutSupportMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signOutSupport>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof signOutSupport>>, TError,void, TContext> => {
+
+const mutationKey = getSignOutSupportMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof signOutSupport>>, void> = () => {
+
+
+          return  signOutSupport(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SignOutSupportMutationResult = NonNullable<Awaited<ReturnType<typeof signOutSupport>>>
+
+    export type SignOutSupportMutationError = ErrorType<ErrorResponse>
+
+
+    /**
+ * @summary Sign this browser out of support chat
+ */
+export const useSignOutSupport = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof signOutSupport>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof signOutSupport>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getSignOutSupportMutationOptions(options));
+    }
+
+export const getGetSupportSessionUrl = () => {
+
+
+
+
+  return `/api/support/session`
+}
+
+/**
+ * @summary Get the support account this browser is signed in to
+ */
+export const getSupportSession = async ( options?: Parameters<typeof customFetch>[1]): Promise<SupportSession> => {
+
+  return customFetch<SupportSession>(getGetSupportSessionUrl(),
   {
     ...options,
     method: 'GET'
@@ -423,45 +678,45 @@ export const getChatThread = async ( options?: Parameters<typeof customFetch>[1]
 
 
 
-export const getGetChatThreadQueryKey = () => {
+export const getGetSupportSessionQueryKey = () => {
     return [
-    `/api/chat/thread`
+    `/api/support/session`
     ] as const;
     }
 
 
-export const getGetChatThreadQueryOptions = <TData = Awaited<ReturnType<typeof getChatThread>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChatThread>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export const getGetSupportSessionQueryOptions = <TData = Awaited<ReturnType<typeof getSupportSession>>, TError = ErrorType<SupportAuthError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSupportSession>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetChatThreadQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetSupportSessionQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChatThread>>> = ({ signal }) => getChatThread({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSupportSession>>> = ({ signal }) => getSupportSession({ signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChatThread>>, TError, TData> & { queryKey: QueryKey }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSupportSession>>, TError, TData> & { queryKey: QueryKey }
 }
 
-export type GetChatThreadQueryResult = NonNullable<Awaited<ReturnType<typeof getChatThread>>>
-export type GetChatThreadQueryError = ErrorType<ErrorResponse>
+export type GetSupportSessionQueryResult = NonNullable<Awaited<ReturnType<typeof getSupportSession>>>
+export type GetSupportSessionQueryError = ErrorType<SupportAuthError>
 
 
 /**
- * @summary Get this visitor's chat conversation
+ * @summary Get the support account this browser is signed in to
  */
 
-export function useGetChatThread<TData = Awaited<ReturnType<typeof getChatThread>>, TError = ErrorType<ErrorResponse>>(
-  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getChatThread>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+export function useGetSupportSession<TData = Awaited<ReturnType<typeof getSupportSession>>, TError = ErrorType<SupportAuthError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSupportSession>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
 
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
-  const queryOptions = getGetChatThreadQueryOptions(options)
+  const queryOptions = getGetSupportSessionQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 
@@ -474,40 +729,26 @@ export function useGetChatThread<TData = Awaited<ReturnType<typeof getChatThread
 
 
 
-export const getStartChatThreadUrl = () => {
+export const getGetSupportThreadUrl = () => {
 
 
 
 
-  return `/api/chat/thread`
+  return `/api/support/thread`
 }
 
 /**
- * Creates the conversation, stores the first message and sets the httpOnly chat cookie that identifies this browser from now on.
- * @summary Start a conversation with a first message
+ * Empty until the customer sends a first message.
+ * @summary Get the signed-in customer's support conversation
  */
-export const startChatThread = async (chatStartInput: ChatStartInput, options?: Parameters<typeof customFetch>[1]): Promise<ChatThread> => {
+export const getSupportThread = async ( options?: Parameters<typeof customFetch>[1]): Promise<ChatThread> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Symbol.iterator in h) {
-      return Object.fromEntries(
-        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
-      );
-    }
-    const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
-      if (value !== undefined) headers[name] = value;
-    }
-    return headers;
-  };
-return customFetch<ChatThread>(getStartChatThreadUrl(),
+  return customFetch<ChatThread>(getGetSupportThreadUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(chatStartInput)
+    method: 'GET'
+
+
   }
 );}
 
@@ -515,66 +756,70 @@ return customFetch<ChatThread>(getStartChatThreadUrl(),
 
 
 
-export const getStartChatThreadMutationKey = () => ['startChatThread'] as const;
-
-export const getStartChatThreadMutationOptions = <TError = ErrorType<ErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startChatThread>>, TError,StartChatThreadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof startChatThread>>, TError,StartChatThreadMutationVariables, TContext> => {
-
-const mutationKey = getStartChatThreadMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof startChatThread>>, StartChatThreadMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  startChatThread(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type StartChatThreadMutationResult = NonNullable<Awaited<ReturnType<typeof startChatThread>>>
-    export type StartChatThreadMutationBody = BodyType<ChatStartInput>
-    export type StartChatThreadMutationError = ErrorType<ErrorResponse>
-    export type StartChatThreadMutationVariables = {data: BodyType<ChatStartInput>}
-
-    /**
- * @summary Start a conversation with a first message
- */
-export const useStartChatThread = <TError = ErrorType<ErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof startChatThread>>, TError,StartChatThreadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
- ): UseMutationResult<
-        Awaited<ReturnType<typeof startChatThread>>,
-        TError,
-        StartChatThreadMutationVariables,
-        TContext
-      > => {
-      return useMutation(getStartChatThreadMutationOptions(options));
+export const getGetSupportThreadQueryKey = () => {
+    return [
+    `/api/support/thread`
+    ] as const;
     }
 
-export const getSendChatMessageUrl = () => {
+
+export const getGetSupportThreadQueryOptions = <TData = Awaited<ReturnType<typeof getSupportThread>>, TError = ErrorType<SupportAuthError>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSupportThread>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSupportThreadQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSupportThread>>> = ({ signal }) => getSupportThread({ signal, ...requestOptions });
 
 
 
 
-  return `/api/chat/thread/messages`
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSupportThread>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetSupportThreadQueryResult = NonNullable<Awaited<ReturnType<typeof getSupportThread>>>
+export type GetSupportThreadQueryError = ErrorType<SupportAuthError>
+
+
+/**
+ * @summary Get the signed-in customer's support conversation
+ */
+
+export function useGetSupportThread<TData = Awaited<ReturnType<typeof getSupportThread>>, TError = ErrorType<SupportAuthError>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getSupportThread>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetSupportThreadQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSendSupportMessageUrl = () => {
+
+
+
+
+  return `/api/support/thread/messages`
 }
 
 /**
- * @summary Send a message in this visitor's conversation
+ * The first message starts the conversation.
+ * @summary Send a message in the signed-in customer's conversation
  */
-export const sendChatMessage = async (chatMessageInput: ChatMessageInput, options?: Parameters<typeof customFetch>[1]): Promise<ChatMessage> => {
+export const sendSupportMessage = async (chatMessageInput: ChatMessageInput, options?: Parameters<typeof customFetch>[1]): Promise<ChatMessage> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -590,7 +835,7 @@ export const sendChatMessage = async (chatMessageInput: ChatMessageInput, option
     }
     return headers;
   };
-return customFetch<ChatMessage>(getSendChatMessageUrl(),
+return customFetch<ChatMessage>(getSendSupportMessageUrl(),
   {
     ...options,
     method: 'POST',
@@ -603,13 +848,13 @@ return customFetch<ChatMessage>(getSendChatMessageUrl(),
 
 
 
-export const getSendChatMessageMutationKey = () => ['sendChatMessage'] as const;
+export const getSendSupportMessageMutationKey = () => ['sendSupportMessage'] as const;
 
-export const getSendChatMessageMutationOptions = <TError = ErrorType<ErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendChatMessage>>, TError,SendChatMessageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof sendChatMessage>>, TError,SendChatMessageMutationVariables, TContext> => {
+export const getSendSupportMessageMutationOptions = <TError = ErrorType<ErrorResponse | SupportAuthError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendSupportMessage>>, TError,SendSupportMessageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendSupportMessage>>, TError,SendSupportMessageMutationVariables, TContext> => {
 
-const mutationKey = getSendChatMessageMutationKey();
+const mutationKey = getSendSupportMessageMutationKey();
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -619,10 +864,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendChatMessage>>, SendChatMessageMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendSupportMessage>>, SendSupportMessageMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  sendChatMessage(data,requestOptions)
+          return  sendSupportMessage(data,requestOptions)
         }
 
 
@@ -632,23 +877,23 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type SendChatMessageMutationResult = NonNullable<Awaited<ReturnType<typeof sendChatMessage>>>
-    export type SendChatMessageMutationBody = BodyType<ChatMessageInput>
-    export type SendChatMessageMutationError = ErrorType<ErrorResponse>
-    export type SendChatMessageMutationVariables = {data: BodyType<ChatMessageInput>}
+    export type SendSupportMessageMutationResult = NonNullable<Awaited<ReturnType<typeof sendSupportMessage>>>
+    export type SendSupportMessageMutationBody = BodyType<ChatMessageInput>
+    export type SendSupportMessageMutationError = ErrorType<ErrorResponse | SupportAuthError>
+    export type SendSupportMessageMutationVariables = {data: BodyType<ChatMessageInput>}
 
     /**
- * @summary Send a message in this visitor's conversation
+ * @summary Send a message in the signed-in customer's conversation
  */
-export const useSendChatMessage = <TError = ErrorType<ErrorResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendChatMessage>>, TError,SendChatMessageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+export const useSendSupportMessage = <TError = ErrorType<ErrorResponse | SupportAuthError>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendSupportMessage>>, TError,SendSupportMessageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
-        Awaited<ReturnType<typeof sendChatMessage>>,
+        Awaited<ReturnType<typeof sendSupportMessage>>,
         TError,
-        SendChatMessageMutationVariables,
+        SendSupportMessageMutationVariables,
         TContext
       > => {
-      return useMutation(getSendChatMessageMutationOptions(options));
+      return useMutation(getSendSupportMessageMutationOptions(options));
     }
 
 export const getRequestAdminCodeUrl = () => {
@@ -1234,7 +1479,7 @@ export const getSendAdminMessageUrl = (id: string,) => {
  * @summary Reply in a conversation
  */
 export const sendAdminMessage = async (id: string,
-    chatMessageInput: ChatMessageInput, options?: Parameters<typeof customFetch>[1]): Promise<ChatMessage> => {
+    adminMessageInput: AdminMessageInput, options?: Parameters<typeof customFetch>[1]): Promise<ChatMessage> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -1255,7 +1500,7 @@ return customFetch<ChatMessage>(getSendAdminMessageUrl(id),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(chatMessageInput)
+    body: JSON.stringify(adminMessageInput)
   }
 );}
 
@@ -1293,9 +1538,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type SendAdminMessageMutationResult = NonNullable<Awaited<ReturnType<typeof sendAdminMessage>>>
-    export type SendAdminMessageMutationBody = BodyType<ChatMessageInput>
+    export type SendAdminMessageMutationBody = BodyType<AdminMessageInput>
     export type SendAdminMessageMutationError = ErrorType<ErrorResponse>
-    export type SendAdminMessageMutationVariables = {id: string;data: BodyType<ChatMessageInput>}
+    export type SendAdminMessageMutationVariables = {id: string;data: BodyType<AdminMessageInput>}
 
     /**
  * @summary Reply in a conversation
