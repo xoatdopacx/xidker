@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { createHash, randomBytes } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import { resolve, extname, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -39,12 +40,55 @@ async function catalogForPage(lang) {
     clearTimeout(timer);
   }
 }
+// Security headers. The workspace preview frames the dev server and Vite adds inline scripts there, so framing,
+// isolation and script rules apply to the published server only.
+const WHOP_PIXEL = "https://t.whop.tw"; // index.html snippet: loads s.js and its chunks, posts page views back
+const commonHeaders = {
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()",
+  ...(development ? {} : { "X-Frame-Options": "SAMEORIGIN", "Cross-Origin-Opener-Policy": "same-origin" }),
+};
+/** Link previews may load the share card and the icon from other sites; every other file stays ours. */
+const embeddable = new Set(["share-card.png", "favicon.svg"]);
+const assetHeaders = (relative) => development ? commonHeaders
+  : { ...commonHeaders, "Cross-Origin-Resource-Policy": embeddable.has(relative) ? "cross-origin" : "same-origin" };
+const errorPageHeaders = development ? commonHeaders
+  : { ...commonHeaders, "Content-Security-Policy": "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'" };
+
+const decodeAttribute = (value) => value.replace(/&(amp|quot|#39|lt|gt);/g, (_, e) => ({ amp: "&", quot: '"', "#39": "'", lt: "<", gt: ">" })[e]);
+const sha256 = (text) => `'sha256-${createHash("sha256").update(text).digest("base64")}'`;
+/**
+ * Scripts a page may run: our own files, the Whop pixel, inline scripts carrying this response's nonce, and the
+ * inline event handlers written in the shell (the font stylesheet's onload). The nonce goes on the shell's scripts
+ * before any rendered content is added, so nothing that comes from data can carry it.
+ */
+function pagePolicy(shell) {
+  const nonce = randomBytes(16).toString("base64");
+  const handlers = [...new Set([...shell.matchAll(/\son[a-z]+="([^"]*)"/g)].map((m) => sha256(decodeAttribute(m[1]))))];
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' ${handlers.length ? `'unsafe-hashes' ${handlers.join(" ")} ` : ""}${WHOP_PIXEL}`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob:",
+    `connect-src 'self' ${WHOP_PIXEL}`,
+    "worker-src 'self' blob:", // the Whop pixel runs one check in a worker made from a blob
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'self'",
+    "upgrade-insecure-requests",
+  ].join("; ");
+  return { shell: shell.replace(/<script\b/g, `<script nonce="${nonce}"`), csp };
+}
+
 let vite;
 let productionRenderer;
 const server = createServer(async (req, res) => {
   try {
     if (!["GET", "HEAD"].includes(req.method)) {
-      res.writeHead(405, { Allow: "GET, HEAD" }); res.end(); return;
+      res.writeHead(405, { ...commonHeaders, Allow: "GET, HEAD" }); res.end(); return;
     }
     const url = new URL(req.url, "http://localhost");
     const pathname = decodeURIComponent(url.pathname);
@@ -54,7 +98,7 @@ const server = createServer(async (req, res) => {
     if (file.startsWith(publicDir + sep) && ![".html", ""].includes(extname(file))) {
       const info = await stat(file).catch(() => null);
       if (info?.isFile()) {
-        res.writeHead(200, { "Content-Type": mime[extname(file)] ?? "application/octet-stream",
+        res.writeHead(200, { ...assetHeaders(relative), "Content-Type": mime[extname(file)] ?? "application/octet-stream",
           "Cache-Control": relative.startsWith("assets/") ? "public, max-age=31536000, immutable" : "public, max-age=300" });
         res.end(req.method === "HEAD" ? undefined : await readFile(file)); return;
       }
@@ -70,13 +114,16 @@ const server = createServer(async (req, res) => {
     if (home && match && !renderer.pathLanguage(pathname, base)) {
       url.pathname = `${base}${match.code}/`;
       url.searchParams.delete("lang");
-      res.writeHead(302, { Location: `${url.pathname}${url.search}` }); res.end(); return;
+      res.writeHead(302, { ...commonHeaders, Location: `${url.pathname}${url.search}` }); res.end(); return;
     }
     let shell = await readFile(resolve(root, development ? "index.html" : "dist/public/index.html"), "utf8");
     if (development) shell = await vite.transformIndexHtml(req.url, shell);
+    const policy = development ? null : pagePolicy(shell);
+    if (policy) shell = policy.shell;
     const packages = home ? await catalogForPage(renderer.pathLanguage(pathname, base) ?? "en") : null;
     const page = await renderer.renderPage(shell, pathname, base, packages);
-    const headers = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" };
+    const headers = { ...commonHeaders, "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" };
+    if (policy) headers["Content-Security-Policy"] = policy.csp;
     if (!page.indexable) headers["X-Robots-Tag"] = "noindex, follow";
     res.writeHead(page.status, headers);
     res.end(req.method === "HEAD" ? undefined : page.html);
@@ -84,7 +131,7 @@ const server = createServer(async (req, res) => {
     vite?.ssrFixStacktrace(error);
     // No credentials, request URLs or order references in logs.
     process.stderr.write(`Page render failed: ${error.message}\n`);
-    res.writeHead(503, { "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex, follow", "Retry-After": "60", "Cache-Control": "no-store" });
+    res.writeHead(503, { ...errorPageHeaders, "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex, follow", "Retry-After": "60", "Cache-Control": "no-store" });
     res.end(req.method === "HEAD" ? undefined : '<!doctype html><html lang="en"><head><title>Temporarily unavailable — xidker</title><meta name="robots" content="noindex, follow"></head><body><h1>Temporarily unavailable</h1><p>Please try again shortly.</p></body></html>');
   }
 });

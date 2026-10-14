@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { renderPage, LANGUAGES } from "../dist/server/render.js";
 import { createCatalogCache } from "../seo/catalog-cache.mjs";
@@ -133,4 +134,40 @@ test("catalog input cannot break out of serialized hydration data", async () => 
   assert.ok(!page.html.includes(malicious));
   const data = page.html.match(/<script id="initial-page" type="application\/json">([\s\S]*?)<\/script>/)[1];
   assert.equal(JSON.parse(data).packages[0].name, malicious);
+});
+
+test("published pages send security headers, and only the shell's own scripts carry the per-response nonce", async () => {
+  const port = 18595;
+  const child = await startProductionServer(port, []);
+  try {
+    const response = await fetch(`http://127.0.0.1:${port}/`);
+    assert.equal(response.status, 200);
+    for (const [name, value] of [
+      ["x-content-type-options", "nosniff"], ["x-frame-options", "SAMEORIGIN"],
+      ["referrer-policy", "strict-origin-when-cross-origin"], ["cross-origin-opener-policy", "same-origin"],
+    ]) assert.equal(response.headers.get(name), value, name);
+    assert.match(response.headers.get("permissions-policy"), /camera=\(\), microphone=\(\), geolocation=\(\)/);
+    const csp = response.headers.get("content-security-policy");
+    const directive = (name) => csp.split(";").map((d) => d.trim()).find((d) => d.startsWith(`${name} `));
+    assert.equal(directive("frame-ancestors"), "frame-ancestors 'self'");
+    assert.equal(directive("object-src"), "object-src 'none'");
+    assert.ok(!directive("script-src").includes("'unsafe-inline'"), "inline scripts need the nonce");
+    const nonce = directive("script-src").match(/'nonce-([^']+)'/)[1];
+    const html = await response.text();
+    for (const tag of html.match(/<script\b[^>]*>/g)) {
+      if (/type="application\/(?:ld\+)?json"/.test(tag)) continue; // data blocks never run
+      assert.ok(tag.includes(`nonce="${nonce}"`), tag);
+    }
+    const handler = html.match(/onload="([^"]+)"/)[1];
+    assert.ok(directive("script-src").includes(`'sha256-${createHash("sha256").update(handler).digest("base64")}'`));
+    const next = (await fetch(`http://127.0.0.1:${port}/vi/`)).headers.get("content-security-policy");
+    assert.notEqual(next.match(/'nonce-([^']+)'/)[1], nonce);
+    const asset = await fetch(`http://127.0.0.1:${port}/robots.txt`);
+    assert.equal(asset.headers.get("x-content-type-options"), "nosniff");
+    assert.equal(asset.headers.get("cross-origin-resource-policy"), "same-origin");
+    const card = await fetch(`http://127.0.0.1:${port}/share-card.png`);
+    assert.equal(card.headers.get("cross-origin-resource-policy"), "cross-origin");
+  } finally {
+    child.kill();
+  }
 });

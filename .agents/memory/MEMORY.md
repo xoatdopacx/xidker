@@ -9,4 +9,5 @@
 - [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script plus a key-path check against vi.json.
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
 - [SEO rendering policy](seo-rendering.md) — same React content for bots and visitors; `/` must answer 200 within 5s without the catalog; check which code a failed publish built.
+- [Security headers and CSP](security-headers.md) — CSP only on the live site; verify with Whop pixel running but never let its events out; GAESA/Server header unfixable.
 - [Frontend gotchas](frontend-gotchas.md) — custom classes in index.css are unlayered and beat Tailwind v4 utilities (md:hidden, pe-9) on the same property.
