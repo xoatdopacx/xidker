@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>xidker promo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&family=Pixelify+Sans:wght@700&family=Silkscreen:wght@400;700&display=block">
+<style>
+  html, body { margin: 0; background: #000; }
+  #v { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Be Vietnam Pro', sans-serif; color: #10230f;
+       background-color: #61bf4a; background-size: 288px 288px; image-rendering: pixelated; }
+  .abs { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; }
+  svg { display: block; shape-rendering: crispEdges; }
+  .tile { box-sizing: border-box; background: #ebe9e0; border: 12px solid #8d8a80;
+          box-shadow: inset -12px -12px 0 #cfcbbf, inset 12px 12px 0 #f7f5ee, 18px 18px 0 rgba(16, 64, 20, .35); }
+  .tile.gold { border-color: #f6c945; }
+  .eyebrow { font-weight: 800; font-size: 28px; letter-spacing: .08em; text-transform: uppercase; color: #e3392b; line-height: 1; }
+  .eyebrow .n { font-family: 'Silkscreen', monospace; font-size: 34px; letter-spacing: 0; }
+  .nowrap { white-space: nowrap; }
+  .word { font-family: 'Pixelify Sans', monospace; font-weight: 700; line-height: 1; white-space: nowrap; letter-spacing: -0.01em; paint-order: stroke fill; }
+  .word span { display: inline-block; transform-origin: 50% 85%; }
+  .pin-red { color: #e3392b; }
+  /* phone */
+  #phone { width: 560px; height: 1228px; }
+  #phone .body { position: absolute; inset: 0; background: #1b2a1c;
+    clip-path: polygon(0 36px, 12px 36px, 12px 24px, 24px 24px, 24px 12px, 36px 12px, 36px 0, calc(100% - 36px) 0, calc(100% - 36px) 12px, calc(100% - 24px) 12px, calc(100% - 24px) 24px, calc(100% - 12px) 24px, calc(100% - 12px) 36px, 100% 36px,
+      100% calc(100% - 36px), calc(100% - 12px) calc(100% - 36px), calc(100% - 12px) calc(100% - 24px), calc(100% - 24px) calc(100% - 24px), calc(100% - 24px) calc(100% - 12px), calc(100% - 36px) calc(100% - 12px), calc(100% - 36px) 100%,
+      36px 100%, 36px calc(100% - 12px), 24px calc(100% - 12px), 24px calc(100% - 24px), 12px calc(100% - 24px), 12px calc(100% - 36px), 0 calc(100% - 36px)); }
+  #phone .shadow { position: absolute; inset: 0; transform: translate(18px, 18px); background: rgba(16, 64, 20, .35); clip-path: inherit; }
+  #phone .rim { position: absolute; left: 12px; right: 12px; top: 12px; bottom: 12px; border: 6px solid #3a4c3b; border-right-color: #0e170f; border-bottom-color: #0e170f; }
+  #phone .speaker { position: absolute; left: 50%; top: 30px; width: 96px; height: 12px; margin-left: -48px; background: #3a4c3b; }
+  #phone .screen { position: absolute; left: 24px; top: 70px; width: 512px; height: 1108px; overflow: hidden; background: #61bf4a; }
+  #phone .screen img { display: block; width: 512px; height: 1108px; }
+  /* cards */
+  .card { width: 750px; height: 250px; padding: 26px 34px; }
+  .card .row { display: flex; align-items: center; gap: 18px; }
+  .card h3 { margin: 0; font-weight: 800; font-size: 44px; line-height: 1.1; flex: 1; white-space: nowrap; }
+  .card .price { font-weight: 800; font-size: 58px; line-height: 1; letter-spacing: -0.02em; text-align: right; }
+  .card .bill { font-size: 24px; font-weight: 600; color: #3d4a3d; text-align: right; margin-top: 4px; }
+  .card p { margin: 14px 0 0; font-size: 30px; line-height: 1.3; font-weight: 500; color: #3d4a3d; }
+  .badge { position: absolute; top: -34px; left: 30px; background: #f6c945; color: #1b2a1c; border: 9px solid #1b2a1c; padding: 4px 20px; font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; transform-origin: 20% 80%; }
+  .chip { box-sizing: border-box; padding: 18px 30px; background: #1b2a1c; color: #f6c945; font-weight: 800; font-size: 34px; white-space: nowrap; box-shadow: 12px 12px 0 rgba(16, 64, 20, .35); }
+  /* steps */
+  .step { width: 750px; height: 122px; display: flex; align-items: center; gap: 26px; padding: 0 28px; }
+  .step .num { flex: none; width: 78px; height: 78px; box-sizing: border-box; background: #f6c945; border: 9px solid #1b2a1c; display: flex; align-items: center; justify-content: center;
+               font-family: 'Silkscreen', monospace; font-weight: 700; font-size: 32px; color: #1b2a1c; }
+  .step .txt { font-size: 40px; font-weight: 700; white-space: nowrap; }
+  .redtile { box-sizing: border-box; width: 750px; height: 134px; display: flex; align-items: center; gap: 26px; padding: 0 30px; background: #d6301f; color: #fff; border: 12px solid #5a0f0b;
+             box-shadow: inset -12px -12px 0 #a5231d, inset 12px 12px 0 #f27a70, 18px 18px 0 rgba(16, 64, 20, .35); font-weight: 800; font-size: 38px; white-space: nowrap; }
+  .sq { position: absolute; width: 12px; height: 12px; }
+</style>
+</head>
+<body>
+<div id="v"></div>
+<script>
+/* ===== helpers ===== */
+const W = 1080, H = 1920, FPS = 30, DUR = 25;
+const INK = "#1b2a1c";
+const LETTER_COLORS = ["#e98a8a", "#c9c08a", "#f2d36b", "#7fb8a8", "#e98a8a", "#f2d36b"];
+const FOOT_DIR = "../../generated-artifacts/promo/footage/";
+const FOOT_FRAMES = 201;
+const CX = 570; // centre of the content column (the road owns the left edge)
+
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, t0, d) => clamp((t - t0) / d);
+const eOut = (k) => 1 - Math.pow(1 - k, 3);
+const eIn = (k) => k * k * k;
+const eInOut = (k) => 0.5 - Math.cos(Math.PI * k) / 2;
+const eBack = (k, s = 1.5) => (k >= 1 ? 1 : 1 + (s + 1) * Math.pow(k - 1, 3) + s * Math.pow(k - 1, 2));
+const stepped = (k, n) => (k >= 1 ? 1 : Math.floor(k * n) / n);
+const snap = (v, s = 3) => Math.round(v / s) * s;
+function bounce(k) {
+  const n1 = 7.5625, d1 = 2.75;
+  if (k < 1 / d1) return n1 * k * k;
+  if (k < 2 / d1) return n1 * (k -= 1.5 / d1) * k + 0.75;
+  if (k < 2.5 / d1) return n1 * (k -= 2.25 / d1) * k + 0.9375;
+  return n1 * (k -= 2.625 / d1) * k + 0.984375;
+}
+// Pixel-stepped pop: jumps through a few scales like the site's steps() transitions.
+function pop(k) {
+  if (k <= 0) return 0;
+  if (k >= 1) return 1;
+  const seq = [0.4, 0.75, 1.1, 1.12, 1.04, 1];
+  return seq[Math.min(seq.length - 1, Math.floor(k * seq.length))];
+}
+// Negative top/bottom insets keep Vietnamese stacked accents (Ầ, Á...) that rise above the line box.
+const wipe = (k, n = 8) => `inset(-40px ${(100 - stepped(k, n) * 100).toFixed(2)}% -40px 0)`;
+
+function sprite(art, pal, px, extra = "") {
+  const rows = art.trim().split("\n").map((r) => r.trim());
+  const w = Math.max(...rows.map((r) => r.length)), h = rows.length;
+  let out = "";
+  rows.forEach((row, y) => {
+    let x = 0;
+    while (x < row.length) {
+      const c = row[x];
+      if (c === "." || !pal[c]) { x++; continue; }
+      let run = 1;
+      while (row[x + run] === c) run++;
+      out += `<rect x="${x}" y="${y}" width="${run}" height="1" fill="${pal[c]}"/>`;
+      x += run;
+    }
+  });
+  return `<svg width="${w * px}" height="${h * px}" viewBox="0 0 ${w} ${h}" ${extra}>${out}</svg>`;
+}
+function el(html, cls = "abs") {
+  const d = document.createElement("div");
+  d.className = cls;
+  d.innerHTML = html;
+  V.appendChild(d);
+  return d;
+}
+function place(node, { x = 0, y = 0, s = 1, o = 1, clip = null, origin = null, sx = null, sy = null }) {
+  if (o <= 0 || s <= 0 || (sx !== null && sx <= 0)) { node.style.display = "none"; return; }
+  node.style.display = "";
+  const scale = sx !== null ? `scale(${sx}, ${sy ?? sx})` : `scale(${s})`;
+  node.style.transform = `translate(${x}px, ${y}px) ${scale}`;
+  node.style.opacity = o >= 1 ? "" : String(o);
+  if (origin) node.style.transformOrigin = origin;
+  node.style.clipPath = clip || "";
+}
+
+/* ===== art (from the site's sprites) ===== */
+const HERO_PAL = { K: INK, Y: "#f6c945", y: "#d99a1e", S: "#f6c6a0", P: "#8b4fd0", p: "#5f2f9f", B: "#3a2a20", W: "#ffffff", E: INK };
+const HERO_A = `
+...KKKK...
+..KYYYYK..
+.KYYYYYYK.
+.KYSSSSyK.
+.KYSESEyK.
+.KYSSSSyK.
+.KyYSSyyK.
+..KPPPPK..
+.KPPWPPpK.
+.SPPPPPpS.
+..KPPPpK..
+..KPPPpK..
+..KB..BK..
+..KK..KK..`;
+const HERO_B = `
+...KKKK...
+..KYYYYK..
+.KYYYYYYK.
+.KYSSSSyK.
+.KYSESEyK.
+.KYSSSSyK.
+.KyYSSyyK.
+..KPPPPK..
+.KPPWPPpK.
+.SPPPPPpS.
+..KPPPpK..
+..KPPPpK..
+...KB.BK..
+...KK.KK..`;
+const PIN = `
+..KKK..
+.KRRRK.
+KRRWRrK
+KRWKWrK
+KRRWRrK
+.KRRrK.
+..KrK..
+..KrK..
+...K...`;
+const PIN_PAL = { K: "#2a0907", R: "#e3392b", r: "#a5231d", W: "#ffffff" };
+const TROPHY = `
+.KKKKKKKKK.
+KGKWGGGGgKG
+KGKWGGGGgKG
+.KGWGGGGgK.
+..KGGGGgK..
+...KGGgK...
+....KgK....
+....KgK....
+...KGGgK...
+..KKKKKKK..`;
+const TROPHY_PAL = { K: "#6b4a10", G: "#f6c945", g: "#d99a1e", W: "#fff6c8" };
+const CHEST = `
+.KKKKKKKK.
+KBBBBBBBBK
+KbbbGGbbbK
+KKKKGGKKKK
+KBBBBBBBBK
+KbbbbbbbbK
+.KKKKKKKK.`;
+const CHEST_PAL = { K: "#3b2410", B: "#9a5a22", b: "#6e3c14", G: "#f6c945" };
+const MUSHROOM = `
+.RRRR.
+RWRRWR
+RRRRRR
+.KSSK.
+..SS..`;
+const MUSH_PAL = { R: "#e3392b", W: "#ffffff", S: "#f1e6cf", K: INK };
+const BUBBLE = `
+.KKKKKKKKK.
+KWWWWWWWWWK
+KWWWWWWWWWK
+KWWKWKWKWWK
+KWWWWWWWWWK
+.KWWKKKKKK.
+.KWK.......
+.KK........`;
+// The logo mark (same art as marketing/logo/logo.html).
+const MARK = `
+.....KKKKKK.....
+...KKYYYYYYKK...
+..KYYYYYYYYYYK..
+.KYYWWYYYYYYYyK.
+.KYYYYYYYYYYYyK.
+KYYYYYYSSYYYYyyK
+KYYSSSSSSSSSSyyK
+KYSSSSSSSSSSSSyK
+KYSSESSSSSSESSyK
+KYSSESSSSSSESSyK
+KRSPSSKSSKSSPSrK
+KRRSSSSKKSSSSrrK
+.KRRSSSSSSSSrrK.
+.KRRRRRRRRRRrrK.
+..KRRHRRRRRrrK..
+...KRRRRRRrrK...
+....KRRRRrrK....
+.....KRRrrK.....
+......KRrK......
+.......KK.......`;
+const MARK_PAL = { K: INK, E: INK, Y: "#f6c945", y: "#d99a1e", W: "#fff3c4", S: "#f6c6a0", P: "#f08f7e", R: "#e3392b", r: "#a5231d", H: "#ff8b74" };
+
+function markSVG(unit) {
+  const rows = MARK.trim().split("\n").map((r) => r.trim());
+  const w = 16, h = rows.length;
+  const shadowPal = Object.fromEntries(Object.keys(MARK_PAL).map((k) => [k, INK]));
+  const body = sprite(MARK, MARK_PAL, 1).replace(/^<svg[^>]*>|<\/svg>$/g, "");
+  const shadow = sprite(MARK, shadowPal, 1).replace(/^<svg[^>]*>|<\/svg>$/g, "");
+  return `<svg width="${(w + 1) * unit}" height="${(h + 3) * unit}" viewBox="0 0 ${w + 1} ${h + 3}">
+    <g class="ground"><rect x="4" y="${h + 1}" width="9" height="1" fill="${INK}" opacity=".26"/><rect x="6" y="${h + 2}" width="5" height="1" fill="${INK}" opacity=".26"/></g>
+    <g transform="translate(1 1)" opacity=".35">${shadow}</g>
+    <g>${body}</g>
+  </svg>`;
+}
+function wordmarkHTML(size) {
+  const stroke = Math.round(size * 0.03), sh = Math.round(size * 0.045);
+  return `<div class="word" style="font-size:${size}px;-webkit-text-stroke:${stroke}px ${INK};text-shadow:${sh}px ${sh}px 0 ${INK}">` +
+    "xidker".split("").map((c, i) => `<span style="color:${LETTER_COLORS[i]}">${c}</span>`).join("") + `</div>`;
+}
+
+/* ===== build the scene ===== */
+const V = document.getElementById("v");
+V.style.backgroundImage = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges'%3E%3Cg fill='%2346a83a'%3E%3Crect x='10' y='14' width='4' height='4'/%3E%3Crect x='14' y='10' width='4' height='4'/%3E%3Crect x='60' y='52' width='4' height='4'/%3E%3Crect x='64' y='48' width='4' height='4'/%3E%3Crect x='30' y='76' width='4' height='4'/%3E%3C/g%3E%3Cg fill='%2370d65c'%3E%3Crect x='80' y='20' width='4' height='4'/%3E%3Crect x='44' y='34' width='4' height='4'/%3E%3Crect x='6' y='60' width='4' height='4'/%3E%3C/g%3E%3C/svg%3E")`;
+
+// Road: the site's mobile road at 3x (shadow, kerb, asphalt, dashed centre line, gold trail behind the rider).
+const ROAD_X = 102, RIDER_Y = 1190;
+const road = el(`
+  <div style="position:absolute;left:${ROAD_X - 66 + 15}px;top:0;width:132px;height:${H}px;background:rgba(31,61,28,.35)"></div>
+  <div style="position:absolute;left:${ROAD_X - 57}px;top:0;width:114px;height:${H}px;background:#6b6f78"></div>
+  <div style="position:absolute;left:${ROAD_X - 45}px;top:0;width:90px;height:${H}px;background:#33363d"></div>
+  <div id="dash" style="position:absolute;left:${ROAD_X - 3}px;top:0;width:6px;height:${H}px;background:repeating-linear-gradient(to bottom,#e9e6d8 0 24px,transparent 24px 54px)"></div>
+  <div style="position:absolute;left:${ROAD_X - 5}px;top:0;width:9px;height:${RIDER_Y - 20}px;background:#f6c945"></div>`);
+const pins = [0, 1, 2].map(() => el(sprite(PIN, PIN_PAL, 6)));
+const trophy = el(sprite(TROPHY, TROPHY_PAL, 6));
+const riderShadow = el(`<div style="width:96px;height:18px;background:rgba(0,0,0,.25)"></div>`);
+const riderA = el(sprite(HERO_A, HERO_PAL, 9));
+const riderB = el(sprite(HERO_B, HERO_PAL, 9));
+
+// S1: hook
+const hook = el(`<div class="tile" style="width:750px;padding:34px 40px 40px">
+  <div class="eyebrow" style="margin-bottom:18px">Bạn cần</div>
+  <div class="hl" style="font-weight:800;font-size:84px;line-height:1.1">
+    <div class="ln nowrap">một web</div>
+    <div class="ln nowrap pin-red">portfolio</div>
+    <div class="ln nowrap">nhưng không muốn</div>
+    <div class="ln nowrap">làm từ đầu?</div>
+  </div></div>`);
+hook.style.zIndex = 5; // the falling logo passes behind the question
+const hookLines = [...hook.querySelectorAll(".ln")];
+const hookEyebrow = hook.querySelector(".eyebrow");
+
+// Logo pieces (used by the hook drop and the end card).
+const mark = el(markSVG(14));
+const word = el(wordmarkHTML(150));
+const wordLetters = [...word.querySelectorAll("span")];
+const tag = el(`<div class="chip" style="background:#ebe9e0;color:#10230f;border:9px solid #8d8a80;box-shadow:12px 12px 0 rgba(16,64,20,.35)">Source code web portfolio</div>`);
+const dust = [0, 1, 2, 3, 4, 5].map((i) => el(`<div style="width:18px;height:18px;background:${i % 2 ? "#ffffff" : "#e9e6d8"}"></div>`));
+
+// S2-S4: caption tile with swapping content
+const CAPS = [ // each beat matches what the phone footage shows at that moment
+  { t0: 3.45, eb: "Đây là xidker", title: "Web portfolio làm sẵn", sub: "Mua về, thay thông tin là dùng được" },
+  { t0: 5.75, eb: "Bạn mua gì?", title: "Nhận toàn bộ source", sub: "Sửa thoải mái theo ý mình" },
+  { t0: 8.0, eb: "Trong web có gì?", title: "Đủ trang, có chuyển động", sub: "Trang chủ, dự án, giới thiệu, liên hệ" },
+  { t0: 10.0, eb: "Bảng giá", title: "3 gói, từ 299.000đ", sub: "Trả một lần, thanh toán qua Whop" },
+  { t0: 16.5, eb: "Cách dùng", title: "Mua xong thì làm gì?", sub: "4 bước đơn giản" },
+];
+const capTile = el(`<div class="tile" style="width:750px;height:236px;padding:28px 36px"></div>`);
+const caps = CAPS.map((c) => {
+  const d = document.createElement("div");
+  d.style.cssText = "position:absolute;left:36px;top:28px;right:36px";
+  d.innerHTML = `<div class="eyebrow">${c.eb}</div>
+    <div class="ttl nowrap" style="font-weight:800;font-size:64px;line-height:1.15;margin-top:10px">${c.title}</div>
+    <div class="sub nowrap" style="font-weight:600;font-size:34px;line-height:1.25;color:#2c3a2c;margin-top:6px">${c.sub}</div>`;
+  capTile.firstElementChild.appendChild(d);
+  return d;
+});
+
+// S2: phone with the real site footage
+const phone = el(`<div id="phone"><div class="shadow"></div><div class="body"><div class="rim"></div><div class="speaker"></div><div class="screen"><img id="foot" alt=""></div></div></div>`);
+phone.querySelector(".shadow").style.clipPath = getComputedStyle(phone.querySelector(".body")).clipPath;
+const foot = document.getElementById("foot");
+
+// S3: packages (names, taglines and USD prices as listed on the site)
+const PACKS = [
+  { name: "Source Cá Nhân", price: "$12", tag: "Toàn bộ mã nguồn portfolio, tự tay cài đặt theo hướng dẫn." },
+  { name: "Build Theo Yêu Cầu", price: "$50", tag: "Bạn gửi yêu cầu, chúng tôi dựng portfolio giúp bạn.", rec: true },
+  { name: "Trọn Gói A–Z", price: "$250", tag: "Dựng, đưa lên mạng, kèm hosting và tên miền 1 năm." },
+];
+const cards = PACKS.map((p) => el(`<div class="tile card${p.rec ? " gold" : ""}">
+  ${p.rec ? `<div class="badge">Nên chọn</div>` : ""}
+  <div class="row">${sprite(CHEST, CHEST_PAL, 6)}<h3>${p.name}</h3>
+    <div><div class="price">${p.price}</div><div class="bill">trả một lần</div></div></div>
+  <p>${p.tag}</p></div>`));
+const badge = cards[1].querySelector(".badge");
+const payChip = el(`<div class="chip">Có cả giá VND và USD</div>`);
+
+// S4: after buying (the site's "Mua xong thì làm gì?" steps) + buyers-only support chat
+const STEPS = ["Chọn gói, thanh toán qua Whop", "Nhận link source qua email", "Thay tên, dự án, ảnh của bạn", "Đưa lên mạng, gửi link đi"];
+const steps = STEPS.map((s, i) => el(`<div class="tile step"><div class="num">0${i + 1}</div><div class="txt">${s}</div></div>`));
+const chat = el(`<div class="redtile">${sprite(BUBBLE, { K: INK, W: "#ffffff" }, 7)}<span class="ct">Có chat hỗ trợ cho khách đã mua</span></div>`);
+
+// S5: end card
+const visit = el(`<div style="font-weight:800;font-size:44px;color:#10230f;background:#f6c945;border:9px solid #1b2a1c;padding:6px 22px;box-shadow:12px 12px 0 rgba(16,64,20,.35)">Ghé xem ngay</div>`);
+const url = el(`<div class="tile" style="padding:26px 40px"><div class="word" style="font-size:66px;color:#10230f;letter-spacing:0">shopoatdopac.com</div></div>`);
+const sparks = Array.from({ length: 10 }, (_, i) => el(`<div style="width:15px;height:15px;background:${i % 2 ? "#f6c945" : "#e3392b"}"></div>`));
+const mush = [el(sprite(MUSHROOM, MUSH_PAL, 9)), el(sprite(MUSHROOM, MUSH_PAL, 7))];
+
+// Layering: road + rider under everything, cards over the caption tile, etc. (DOM order is the z-order)
+
+/* ===== fit long single-line texts into their boxes ===== */
+function fitText(node, maxW, minPx) {
+  let size = parseFloat(getComputedStyle(node).fontSize);
+  while (node.scrollWidth > maxW && size > minPx) { size -= 1; node.style.fontSize = size + "px"; }
+}
+
+/* ===== timeline ===== */
+const T = {
+  hookIn: 0.08, hookOut: 2.95,
+  drop: 1.35, s2: 3.0, phoneIn: 3.05, footStart: 3.4,
+  s3: 10.0, cards: [10.35, 10.65, 10.95], badge: 11.5, pay: 12.1,
+  s4: 16.5, steps: [16.85, 17.2, 17.55, 17.9], chat: 18.5,
+  s5: 20.5, endMark: 20.75, endWord: 21.2, visit: 21.75, url: 21.95,
+};
+const SPEED = 60; // grass + road scroll, px/s (the rider walks down the road)
+function worldY(t) {
+  const stop0 = T.s5, stopLen = 1.0;
+  if (t <= stop0) return SPEED * t;
+  const tau = Math.min(t - stop0, stopLen);
+  return SPEED * stop0 + SPEED * (tau - (tau * tau) / (2 * stopLen));
+}
+
+/* ===== layout constants ===== */
+const CAP_X = CX - 375, CAP_Y = 248;
+const HOOK_X = CX - 375, HOOK_Y = 300;
+const PHONE_X = CX - 280, PHONE_Y = 520;
+const CARD_X = CX - 375, CARD_Y = [540, 830, 1120];
+const STEP_X = CX - 375, STEP_Y = [536, 683, 830, 977];
+let MARK_W, MARK_H, WORD_W, WORD_H, TAG_W, URL_W, URL_H, VISIT_W, CHIP_W;
+
+let lastFoot = -1;
+async function setFoot(i) {
+  if (i === lastFoot) return;
+  lastFoot = i;
+  foot.src = FOOT_DIR + "f" + String(i).padStart(4, "0") + ".jpg";
+  await foot.decode().catch(() => {});
+}
+
+function render(t) {
+  /* world */
+  const wy = worldY(t);
+  V.style.backgroundPosition = `0px ${-snap(wy, 3)}px`;
+  document.getElementById("dash").style.backgroundPosition = `0px ${-snap(wy, 3)}px`;
+  const walking = t < T.s5 + 0.9;
+  const fr = walking ? Math.floor(t / 0.22) % 2 : 0;
+  // A little hop when the address appears.
+  const hop = t > T.url && t < T.url + 0.45 ? -snap(Math.sin(prog(t, T.url, 0.45) * Math.PI) * 36, 9) : 0;
+  place(riderA, { x: ROAD_X - 45, y: RIDER_Y - 126 + hop, o: fr === 0 ? 1 : 0 });
+  place(riderB, { x: ROAD_X - 45, y: RIDER_Y - 126 + hop, o: fr === 1 ? 1 : 0 });
+  place(riderShadow, { x: ROAD_X - 48, y: RIDER_Y - 6 });
+  // Stop pins pass the rider at each scene change; the finish trophy parks just below her at the end.
+  [T.s2, T.s3, T.s4].forEach((tp, i) => {
+    const y = RIDER_Y + worldY(tp) - wy;
+    place(pins[i], { x: ROAD_X - 21, y: snap(y - 60, 3), o: y > -80 && y < H + 80 ? 1 : 0 });
+  });
+  const ty = RIDER_Y + 170 + worldY(DUR) - wy;
+  place(trophy, { x: ROAD_X - 33, y: snap(ty - 30, 3), o: ty < H + 80 ? 1 : 0 });
+
+  /* S1 hook */
+  const hIn = prog(t, T.hookIn, 0.3), hOut = eIn(prog(t, T.hookOut, 0.35));
+  place(hook, { x: HOOK_X, y: snap(HOOK_Y - hOut * 900), s: pop(hIn), o: t < T.hookOut + 0.36 ? 1 : 0 });
+  hookEyebrow.style.clipPath = wipe(prog(t, 0.18, 0.2), 6);
+  hookLines.forEach((ln, i) => { ln.style.clipPath = wipe(prog(t, 0.3 + i * 0.22, 0.22), 8); });
+
+  /* logo drop (S1) and end card (S5) share the mark + wordmark */
+  let mx, my, ms = 1, mo = 0, wo = 0, wyy, wsc = 1, tagO = 0, tagY = 0;
+  if (t < T.s5) {
+    const k = prog(t, T.drop, 0.6);
+    const landY = 870;
+    my = landY - (1 - bounce(k)) * 1100;
+    mx = CX - MARK_W / 2;
+    mo = t >= T.drop && t < T.s2 + 0.4 ? 1 : 0;
+    const out = eIn(prog(t, T.s2 - 0.05, 0.35));
+    my += out * 1100;
+    wyy = landY + MARK_H - 30 + out * 1100;
+    wo = mo;
+    tagY = wyy + WORD_H + 26;
+    tagO = mo && t > T.drop + 1.0 ? 1 : 0;
+    letterPop(t, T.drop + 0.55);
+    place(tag, { x: CX - TAG_W / 2, y: snap(tagY), s: pop(prog(t, T.drop + 1.0, 0.25)), o: tagO });
+  } else {
+    const k = prog(t, T.endMark, 0.6);
+    const landY = 430;
+    my = landY - (1 - bounce(k)) * 1300;
+    mx = CX - MARK_W * 1.25 / 2;
+    ms = 1.25;
+    mo = t >= T.endMark ? 1 : 0;
+    wyy = landY + MARK_H * 1.25 - 40;
+    wsc = 1.2;
+    wo = mo;
+    letterPop(t, T.endWord);
+    place(tag, { o: 0 });
+  }
+  place(mark, { x: snap(mx), y: snap(my), s: ms, o: mo, origin: "0 0" });
+  place(word, { x: snap(CX - (WORD_W * wsc) / 2), y: snap(wyy), s: wsc, o: wo, origin: "0 0" });
+  // landing dust
+  const landT = t < T.s5 ? T.drop + 0.6 * 0.36 : T.endMark + 0.6 * 0.36;
+  const dk = prog(t, landT, 0.35);
+  const baseY = t < T.s5 ? 870 + MARK_H - 40 : 430 + MARK_H * 1.25 - 50;
+  dust.forEach((d, i) => {
+    const dir = i < 3 ? -1 : 1, lane = i % 3;
+    const dx = dir * (40 + lane * 46 + stepped(dk, 4) * (60 + lane * 30));
+    const dy = -stepped(dk, 4) * (18 + lane * 14);
+    place(d, { x: snap(CX + dx - 9), y: snap(baseY + dy), o: dk > 0 && dk < 1 ? 1 - stepped(dk, 4) * 0.75 : 0 });
+  });
+
+  /* caption tile S2..S4 */
+  const capIn = prog(t, T.s2 + 0.35, 0.3), capOut = eIn(prog(t, T.s5, 0.35));
+  place(capTile, { x: CAP_X, y: snap(CAP_Y - capOut * 700), s: pop(capIn), o: t > T.s2 + 0.35 && t < T.s5 + 0.36 ? 1 : 0 });
+  CAPS.forEach((c, i) => {
+    const next = CAPS[i + 1];
+    const kin = prog(t, c.t0 + (i === 0 ? 0.25 : 0.12), 0.3);
+    const kout = next ? prog(t, next.t0 - 0.12, 0.16) : 0;
+    const on = t >= c.t0 && (!next || t < next.t0 + 0.05);
+    const node = caps[i];
+    node.style.visibility = on ? "visible" : "hidden";
+    node.style.clipPath = kout > 0 ? `inset(-40px 0 -40px ${(stepped(kout, 6) * 100).toFixed(1)}%)` : wipe(kin, 10);
+  });
+
+  /* phone */
+  const pk = prog(t, T.phoneIn, 0.5), pout = eIn(prog(t, T.s3, 0.4));
+  place(phone, { x: PHONE_X, y: snap(H + 40 - eBack(pk, 0.6) * (H + 40 - PHONE_Y) + pout * 1500), o: t >= T.phoneIn && t < T.s3 + 0.41 ? 1 : 0 });
+
+  /* cards */
+  // the recommended card bobs gently (in 3 pixel steps) after its badge pops
+  const bob = t > T.badge + 0.3 ? -stepped((1 - Math.cos((t - T.badge - 0.3) * Math.PI * 2 / 1.2)) / 2, 3) * 9 : 0;
+  cards.forEach((c, i) => {
+    const kin = eOut(prog(t, T.cards[i], 0.38));
+    const kout = eIn(prog(t, T.s4 + i * 0.08, 0.35));
+    const x = CARD_X + (1 - kin) * 900 - kout * 1100;
+    place(c, { x: snap(x), y: CARD_Y[i] + (i === 1 ? bob : 0), o: t >= T.cards[i] && kout < 1 ? 1 : 0 });
+  });
+  badge.style.transform = `scale(${pop(prog(t, T.badge, 0.25))})`;
+  badge.style.visibility = t >= T.badge ? "visible" : "hidden";
+  const payK = prog(t, T.pay, 0.25), payOut = eIn(prog(t, T.s4, 0.3));
+  place(payChip, { x: CX - CHIP_W / 2, y: snap(1402 + payOut * 600), s: pop(payK), o: t >= T.pay && payOut < 1 ? 1 : 0 });
+
+  /* steps + chat */
+  steps.forEach((s, i) => {
+    const kin = eOut(prog(t, T.steps[i], 0.35));
+    const kout = eIn(prog(t, T.s5 + i * 0.06, 0.35));
+    place(s, { x: snap(STEP_X + (1 - kin) * 900 - kout * 1100), y: STEP_Y[i], o: t >= T.steps[i] && kout < 1 ? 1 : 0 });
+  });
+  const ck = prog(t, T.chat, 0.3), cout = eIn(prog(t, T.s5 + 0.24, 0.35));
+  place(chat, { x: STEP_X, y: snap(1150 + cout * 900), s: pop(ck), o: t >= T.chat && cout < 1 ? 1 : 0 });
+
+  /* end card extras */
+  const urlY = 430 + MARK_H * 1.25 - 40 + WORD_H * 1.2 + 120;
+  place(visit, { x: CX - VISIT_W / 2, y: snap(urlY - 92), s: pop(prog(t, T.visit, 0.25)), o: t >= T.visit ? 1 : 0, origin: "50% 100%" });
+  place(url, { x: CX - URL_W / 2, y: snap(urlY), s: pop(prog(t, T.url, 0.3)), o: t >= T.url ? 1 : 0 });
+  const sk = prog(t, T.url + 0.1, 0.5);
+  sparks.forEach((s, i) => {
+    const a = (i / sparks.length) * Math.PI * 2 + 0.3;
+    const r = 70 + stepped(sk, 5) * 150;
+    const cx = CX + Math.cos(a) * (URL_W / 2 + r - 60), cy = urlY + URL_H / 2 + Math.sin(a) * (URL_H / 2 + r * 0.6);
+    place(s, { x: snap(cx), y: snap(cy), o: sk > 0 && sk < 1 ? 1 : 0 });
+  });
+  const mk = prog(t, T.endWord + 0.35, 0.3);
+  place(mush[0], { x: snap(CX - WORD_W * 0.6 * 0.5 + 40), y: snap(430 + MARK_H * 1.25 - 40 - 40), s: pop(mk), o: mk > 0 ? 1 : 0, origin: "50% 100%" });
+  place(mush[1], { x: snap(CX + WORD_W * 1.2 * 0.5 - 150), y: snap(430 + MARK_H * 1.25 - 40 - 30), s: pop(prog(t, T.endWord + 0.45, 0.3)), o: t > T.endWord + 0.45 ? 1 : 0, origin: "50% 100%" });
+
+  /* footage frame */
+  const fi = clamp(Math.round((t - T.footStart) * FPS), 0, FOOT_FRAMES - 1);
+  return fi;
+}
+
+function letterPop(t, t0) {
+  wordLetters.forEach((sp, i) => {
+    const k = prog(t, t0 + i * 0.07, 0.22);
+    sp.style.transform = `scale(${pop(k)})`;
+    sp.style.visibility = k > 0 ? "visible" : "hidden";
+  });
+}
+
+window.renderAt = async (t) => {
+  const fi = render(t);
+  if (t >= T.phoneIn - 0.05 && t < T.s3 + 0.45) await setFoot(fi);
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  return true;
+};
+
+window.__ready = Promise.all([
+  document.fonts.load("800 64px 'Be Vietnam Pro'"),
+  document.fonts.load("700 40px 'Be Vietnam Pro'"),
+  document.fonts.load("600 34px 'Be Vietnam Pro'"),
+  document.fonts.load("500 30px 'Be Vietnam Pro'"),
+  document.fonts.load("700 66px 'Pixelify Sans'"),
+  document.fonts.load("700 32px 'Silkscreen'"),
+]).then(() => document.fonts.ready).then(async () => {
+  // measure + fit once fonts are in
+  caps.forEach((c) => { fitText(c.querySelector(".ttl"), 650, 44); fitText(c.querySelector(".sub"), 650, 26); });
+  cards.forEach((c) => fitText(c.querySelector("h3"), 750 - 68 - 60 - 18 - 18 - 150, 30));
+  steps.forEach((s) => fitText(s.querySelector(".txt"), 750 - 24 - 56 - 78 - 26 - 8, 28));
+  fitText(chat.querySelector(".ct"), 750 - 60 - 24 - 77 - 26, 26);
+  { // one size for every hook line: shrink the block until its widest line fits
+    const hl = hook.querySelector(".hl");
+    let size = 84;
+    while (Math.max(...hookLines.map((l) => l.scrollWidth)) > 750 - 80 - 24 && size > 56) { size -= 1; hl.style.fontSize = size + "px"; }
+  }
+  const r = (n) => n.getBoundingClientRect();
+  MARK_W = r(mark.firstElementChild).width; MARK_H = r(mark.firstElementChild).height;
+  WORD_W = r(word.firstElementChild).width; WORD_H = r(word.firstElementChild).height;
+  TAG_W = r(tag.firstElementChild).width;
+  URL_W = r(url.firstElementChild).width; URL_H = r(url.firstElementChild).height;
+  VISIT_W = r(visit.firstElementChild).width;
+  CHIP_W = r(payChip.firstElementChild).width;
+  const fontsOk = document.fonts.check("800 64px 'Be Vietnam Pro'") && document.fonts.check("700 66px 'Pixelify Sans'") && document.fonts.check("700 32px 'Silkscreen'");
+  const q = new URLSearchParams(location.search);
+  if (q.has("t")) await window.renderAt(Number(q.get("t")));
+  return fontsOk;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "53hUwIgwz9ZAcQNepInXk"
+uri = "file://generated-artifacts/promo/music.mp3"
+type = "audio"
+title = "xidker promo chiptune"
+description = "Generated music: Cheerful 8-bit chiptune background track for a pixel-art adventure game map: bouncy square-wave lead melody, light arpeggios, punchy chip drums with a steady beat around 120 BPM, bri…"
+logical_id = "4b3ff29b-c488-4b2e-8e64-d61f5a7803ec"
+
+[[outputs]]
+id = "-ytC96JODPcVYIN6HEqwA"
+uri = "file://marketing/logo/xidker-logo.png"
+type = "image"
+title = "Logo xidker (ảnh đại diện IG)"
+description = "Ảnh vuông 1080×1080, nền cỏ xanh, cô bé trong ghim đỏ và chữ xidker. Đã thử ở cỡ vòng tròn nhỏ của Instagram, vẫn nhìn rõ."
+logical_id = "241bc1c3-9669-45f0-99cc-5eac72633dac"
+content_hash = "sha256:7e7e32adf92e85dc049b33fb80583f38ce9eb95fd83fe1f66b8a936857af8b4f"
+size = 9973
+mtime_ms = 1791947532581
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/241bc1c3-9669-45f0-99cc-5eac72633dac/366e2602-d452-4dfd-ad19-8424f9dfb651"
+storage_version_token = "1791948921029404"
+content_type = "image/png"
+
+[[outputs]]
+id = "5CxIdm-VkZ3wOreCffLbb"
+uri = "file://generated-artifacts/promo/xidker-intro.mp4"
+type = "video"
+title = "Video giới thiệu xidker (25 giây)"
+description = "Video dọc 1080×1920 cho Reels/Story, có nhạc 8-bit. Giới thiệu trang web, 3 gói giá, các bước sau khi mua và địa chỉ shopoatdopac.com."
+logical_id = "42598ad0-807b-47ba-ae5f-2f39ec07a82c"
+content_hash = "sha256:29933aff28e958a392f1e112b823c503247b66c36ae1fd10e775c7ece86352c7"
+size = 4435624
+mtime_ms = 1791948890417
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/42598ad0-807b-47ba-ae5f-2f39ec07a82c/51a2f24b-ed2f-4ddc-b6af-69f052c5eeb8"
+storage_version_token = "1791948922382464"
+content_type = "video/mp4"

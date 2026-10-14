@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>xidker logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&display=block">
+<style>
+  html, body { margin: 0; background: transparent; }
+  #stage { position: relative; width: 1080px; height: 1080px; overflow: hidden; }
+  #stage svg { position: absolute; display: block; shape-rendering: crispEdges; }
+  .word {
+    position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap;
+    font-family: 'Pixelify Sans', monospace; font-weight: 700; line-height: 1; letter-spacing: -0.01em;
+    -webkit-text-stroke: var(--stroke) #1b2a1c; paint-order: stroke fill;
+  }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+  // Brand colours from the site (src/index.css and components/sprites.tsx).
+  const INK = "#1b2a1c";
+  const BG = {
+    green: { fill: "#61bf4a", dark: "#46a83a", light: "#70d65c" },
+    gold: { fill: "#f6c945", dark: "#e3b02f", light: "#ffd968" },
+    ink: { fill: "#1b2a1c", dark: "#142015", light: "#26392a" },
+  };
+  const LETTER_COLORS = ["#e98a8a", "#c9c08a", "#f2d36b", "#7fb8a8", "#e98a8a", "#f2d36b"];
+
+  // The site's mark (hero head on a map pin), redrawn on a 16x20 grid.
+  const MARK = `
+.....KKKKKK.....
+...KKYYYYYYKK...
+..KYYYYYYYYYYK..
+.KYYWWYYYYYYYyK.
+.KYYYYYYYYYYYyK.
+KYYYYYYSSYYYYyyK
+KYYSSSSSSSSSSyyK
+KYSSSSSSSSSSSSyK
+KYSSESSSSSSESSyK
+KYSSESSSSSSESSyK
+KRSPSSKSSKSSPSrK
+KRRSSSSKKSSSSrrK
+.KRRSSSSSSSSrrK.
+.KRRRRRRRRRRrrK.
+..KRRHRRRRRrrK..
+...KRRRRRRrrK...
+....KRRRRrrK....
+.....KRRrrK.....
+......KRrK......
+.......KK.......`;
+  const MARK_PAL = {
+    K: INK, E: INK,
+    Y: "#f6c945", y: "#d99a1e", W: "#fff3c4",
+    S: "#f6c6a0", P: "#f08f7e",
+    R: "#e3392b", r: "#a5231d", H: "#ff8b74",
+  };
+
+  function grid(art) {
+    const rows = art.trim().split("\n").map((r) => r.trim());
+    return { rows, w: Math.max(...rows.map((r) => r.length)), h: rows.length };
+  }
+  function rects(rows, pal, dx = 0, dy = 0, only) {
+    let out = "";
+    rows.forEach((row, y) => {
+      let x = 0;
+      while (x < row.length) {
+        const c = row[x];
+        if (c === "." || !pal[c]) { x++; continue; }
+        let run = 1;
+        while (row[x + run] === c) run++;
+        out += `<rect x="${x + dx}" y="${y + dy}" width="${run}" height="1" fill="${only || pal[c]}"/>`;
+        x += run;
+      }
+    });
+    return out;
+  }
+
+  const q = new URLSearchParams(location.search);
+  const bgKey = q.get("bg") || "green";
+  const bg = BG[bgKey];
+  const unit = Number(q.get("unit") || 22);
+  const wordSize = Number(q.get("word") || 176);
+  const showWord = q.get("wordmark") !== "0";
+
+  const stage = document.getElementById("stage");
+  const S = 1080;
+
+  // Background: flat brand field + the site's grass tufts on the same pixel unit as the mark,
+  // kept clear of the mark and wordmark.
+  function drawBackground(keepOut) {
+    const cells = Math.ceil(S / unit);
+    const blocked = (x, y) => keepOut.some((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1);
+    let tufts = "";
+    if (bgKey !== "ink") {
+      // Tuft positions follow the site's 96px tile (4px squares) => a 24-cell tile.
+      const dark = [[2, 3], [3, 2], [15, 13], [16, 12], [7, 19]];
+      const light = [[20, 5], [11, 8], [1, 15]];
+      for (let ty = -1; ty < cells / 24 + 1; ty++) {
+        for (let tx = -1; tx < cells / 24 + 1; tx++) {
+          for (const [pts, fill] of [[dark, bg.dark], [light, bg.light]]) {
+            for (const [x, y] of pts) {
+              const cx = tx * 24 + x, cy = ty * 24 + y;
+              if (!blocked(cx, cy)) tufts += `<rect x="${cx}" y="${cy}" width="1" height="1" fill="${fill}"/>`;
+            }
+          }
+        }
+      }
+    }
+    stage.insertAdjacentHTML("afterbegin",
+      `<svg width="${S}" height="${S}" viewBox="0 0 ${S / unit} ${S / unit}" style="left:0;top:0">
+         <rect width="100%" height="100%" fill="${bg.fill}"/>${tufts}
+       </svg>`);
+  }
+
+  // Mark with a hard drop shadow and a ground shadow under the tip.
+  const m = grid(MARK);
+  const markW = m.w * unit, markH = (m.h + 3) * unit;
+  const gap = Number(q.get("gap") || 0);
+  const groupH = markH + (showWord ? gap + wordSize * 0.86 : 0);
+  const markTop = q.has("top") ? Number(q.get("top")) : Math.round((S - groupH) / 2);
+  const markLeft = (S - markW) / 2;
+  const groundRow = m.h + 1;
+  const ground = `
+    <rect x="4" y="${groundRow}" width="9" height="1" fill="${INK}" opacity=".26"/>
+    <rect x="6" y="${groundRow + 1}" width="5" height="1" fill="${INK}" opacity=".26"/>`;
+  stage.insertAdjacentHTML("beforeend",
+    `<svg width="${markW + unit}" height="${markH + unit}" viewBox="0 0 ${m.w + 1} ${m.h + 4}" style="left:${markLeft}px;top:${markTop}px">
+       ${ground}
+       <g opacity=".35">${rects(m.rows, MARK_PAL, 1, 1, INK)}</g>
+       ${rects(m.rows, MARK_PAL)}
+     </svg>`);
+
+  if (showWord) {
+    const w = document.createElement("div");
+    w.className = "word";
+    w.style.fontSize = wordSize + "px";
+    const strokeR = Number(q.get("stroke") || 0.03), shadowR = Number(q.get("shadow") || 0.045);
+    w.style.setProperty("--stroke", Math.round(wordSize * strokeR) + "px");
+    w.style.textShadow = `${Math.round(wordSize * shadowR)}px ${Math.round(wordSize * shadowR)}px 0 ${INK}`;
+    w.style.top = (markTop + markH + gap - wordSize * 0.12) + "px";
+    w.innerHTML = "xidker".split("").map((c, i) => `<span style="color:${LETTER_COLORS[i]}">${c}</span>`).join("");
+    stage.appendChild(w);
+  }
+
+  window.__ready = document.fonts.load("700 40px 'Pixelify Sans'")
+    .then(() => document.fonts.ready)
+    .then(() => {
+      const toCells = (r) => ({ x0: Math.floor(r.left / unit) - 1, x1: Math.ceil(r.right / unit), y0: Math.floor(r.top / unit) - 1, y1: Math.ceil(r.bottom / unit) });
+      const keepOut = [toCells({ left: markLeft, right: markLeft + markW + unit, top: markTop, bottom: markTop + markH + unit })];
+      const word = stage.querySelector(".word");
+      if (word) {
+        const spans = [...word.children].map((c) => c.getBoundingClientRect());
+        keepOut.push(toCells({
+          left: Math.min(...spans.map((r) => r.left)), right: Math.max(...spans.map((r) => r.right)) + wordSize * 0.05,
+          top: Math.min(...spans.map((r) => r.top)), bottom: Math.max(...spans.map((r) => r.bottom)) + wordSize * 0.05,
+        }));
+      }
+      drawBackground(keepOut);
+      return document.fonts.check("700 40px 'Pixelify Sans'");
+    });
+</script>
+</body>
+</html>

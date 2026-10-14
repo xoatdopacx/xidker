@@ -6,3 +6,4 @@
 - [Support chat and admin sign-in](admin-chat.md) — buyers-only since 2026-10-14; Whop buyer email unverified; Gmail via connector proxy; test recipes.
 - [Backend gotchas](backend-gotchas.md) — drizzle prints unqualified columns in subqueries; run typecheck:libs after schema changes.
 - [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script plus a key-path check against vi.json.
+- [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
