@@ -8,7 +8,8 @@ export const ADMIN_SESSION_COOKIE = "__Host-xid_admin";
 export const ADMIN_CHALLENGE_COOKIE = "__Host-xid_admin_ch";
 export const ADMIN_SESSION_TTL_MS = 12 * 60 * 60_000;
 
-const MIN_TOKEN_LENGTH = 24;
+// The owner chose a short, memorable key; the 6-digit code emailed to ADMIN_EMAIL is the second lock.
+const MIN_TOKEN_LENGTH = 8;
 
 /** Applied to both the configured ADMIN_TOKEN and every submitted key before comparing. */
 export function normalizeAdminToken(value: string): string {

@@ -10,7 +10,7 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL`, `WHOP_COMPANY_ID` (biz_…), `WHOP_PRODUCT_ID` (prod_…), `SESSION_SECRET` (keys every stored hash), `ADMIN_TOKEN` (secret, at least 24 characters, or admin sign-in stays off), `ADMIN_EMAIL` (where admin sign-in codes are sent through the Gmail integration). The Whop API key comes from the Whop integration at runtime and is never stored in code.
+- Required env: `DATABASE_URL`, `WHOP_COMPANY_ID` (biz_…), `WHOP_PRODUCT_ID` (prod_…), `SESSION_SECRET` (keys every stored hash), `ADMIN_TOKEN` (secret, at least 8 characters, or admin sign-in stays off), `ADMIN_EMAIL` (where admin sign-in codes are sent through the Gmail integration). The Whop API key comes from the Whop integration at runtime and is never stored in code.
 - Whop catalog admin from the shell: `node whop-api.mjs <METHOD> <path> '<json>'` (REST) and `node whop-mcp.mjs` (MCP tools), both in the project root.
 
 ## Stack
