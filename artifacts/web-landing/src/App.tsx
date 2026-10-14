@@ -4,6 +4,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { I18nProvider } from '@/lib/i18n';
+import { LANGUAGES } from '@/lib/languages';
 import { PixelTransitionProvider } from '@/components/pixel-transition';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
@@ -20,6 +21,7 @@ const queryClient = new QueryClient();
 
 // Visitors never download the admin screens.
 const Admin = lazy(() => import('@/pages/admin'));
+const homeRoute = new RegExp(`^/(?:${LANGUAGES.map((l) => l.code).join('|')})?/?$`);
 
 function Router() {
   return (
@@ -27,7 +29,7 @@ function Router() {
     // survives a page crash.
     <RoutedErrorBoundary>
       <Switch>
-        <Route path="/" component={Home} />
+        <Route path={homeRoute} component={Home} />
         <Route path="/cam-on" component={ThankYou} />
         <Route path="/admin">
           <Suspense fallback={null}>

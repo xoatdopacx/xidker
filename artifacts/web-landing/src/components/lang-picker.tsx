@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import type { Language } from "@workspace/api-client-react";
 import { useI18n, LANGUAGES, shortCode } from "@/lib/i18n";
 import { usePixelTransition } from "@/components/pixel-transition";
+import { languageHref } from "@/lib/locale-url";
 
 /** 9x9 pixel globe drawn with rects so it stays crisp. */
 function PixelGlobe({ className = "" }: { className?: string }) {
@@ -57,7 +58,7 @@ export function LangPicker({ className = "", tone = "light" }: { className?: str
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { e.preventDefault(); close(true); }
       if (e.key === "Tab" && panel.current) {
-        const f = panel.current.querySelectorAll<HTMLElement>("button");
+        const f = panel.current.querySelectorAll<HTMLElement>("button, a[href]");
         const first = f[0], last = f[f.length - 1];
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -112,12 +113,18 @@ export function LangPicker({ className = "", tone = "light" }: { className?: str
               const cur = l.code === lang;
               return (
                 <li key={l.code}>
-                  <button type="button" lang={l.code} dir={l.dir} onClick={() => pick(l.code)} aria-current={cur ? "true" : undefined}
+                  <a href={languageHref(l.code, new URL(window.location.href), import.meta.env.BASE_URL)}
+                    hrefLang={l.code} lang={l.code} dir={l.dir}
+                    onClick={(e) => {
+                      if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+                      e.preventDefault();
+                      pick(l.code);
+                    }} aria-current={cur ? "true" : undefined}
                     className={`lp-opt ${cur ? "on" : ""} w-full flex items-center gap-2 px-2.5 py-2 text-sm font-semibold text-start`} data-testid={`option-lang-${l.code}`}>
                     <span className="lp-dot shrink-0" aria-hidden="true" />
                     <span className="truncate flex-1">{l.native}</span>
                     <span className="font-num text-[10px] opacity-60 shrink-0" dir="ltr">{shortCode(l.code)}</span>
-                  </button>
+                  </a>
                 </li>
               );
             })}

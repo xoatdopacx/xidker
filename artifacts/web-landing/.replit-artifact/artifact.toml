@@ -20,6 +20,270 @@ serve = "static"
 publicDir = "artifacts/web-landing/dist/public"
 
 [[services.production.rewrites]]
+from = "/vi"
+to = "/vi/index.html"
+
+[[services.production.rewrites]]
+from = "/vi/"
+to = "/vi/index.html"
+
+[[services.production.rewrites]]
+from = "/en"
+to = "/en/index.html"
+
+[[services.production.rewrites]]
+from = "/en/"
+to = "/en/index.html"
+
+[[services.production.rewrites]]
+from = "/zh-CN"
+to = "/zh-CN/index.html"
+
+[[services.production.rewrites]]
+from = "/zh-CN/"
+to = "/zh-CN/index.html"
+
+[[services.production.rewrites]]
+from = "/zh-TW"
+to = "/zh-TW/index.html"
+
+[[services.production.rewrites]]
+from = "/zh-TW/"
+to = "/zh-TW/index.html"
+
+[[services.production.rewrites]]
+from = "/ja"
+to = "/ja/index.html"
+
+[[services.production.rewrites]]
+from = "/ja/"
+to = "/ja/index.html"
+
+[[services.production.rewrites]]
+from = "/ko"
+to = "/ko/index.html"
+
+[[services.production.rewrites]]
+from = "/ko/"
+to = "/ko/index.html"
+
+[[services.production.rewrites]]
+from = "/th"
+to = "/th/index.html"
+
+[[services.production.rewrites]]
+from = "/th/"
+to = "/th/index.html"
+
+[[services.production.rewrites]]
+from = "/id"
+to = "/id/index.html"
+
+[[services.production.rewrites]]
+from = "/id/"
+to = "/id/index.html"
+
+[[services.production.rewrites]]
+from = "/ms"
+to = "/ms/index.html"
+
+[[services.production.rewrites]]
+from = "/ms/"
+to = "/ms/index.html"
+
+[[services.production.rewrites]]
+from = "/fil"
+to = "/fil/index.html"
+
+[[services.production.rewrites]]
+from = "/fil/"
+to = "/fil/index.html"
+
+[[services.production.rewrites]]
+from = "/km"
+to = "/km/index.html"
+
+[[services.production.rewrites]]
+from = "/km/"
+to = "/km/index.html"
+
+[[services.production.rewrites]]
+from = "/lo"
+to = "/lo/index.html"
+
+[[services.production.rewrites]]
+from = "/lo/"
+to = "/lo/index.html"
+
+[[services.production.rewrites]]
+from = "/hi"
+to = "/hi/index.html"
+
+[[services.production.rewrites]]
+from = "/hi/"
+to = "/hi/index.html"
+
+[[services.production.rewrites]]
+from = "/bn"
+to = "/bn/index.html"
+
+[[services.production.rewrites]]
+from = "/bn/"
+to = "/bn/index.html"
+
+[[services.production.rewrites]]
+from = "/ar"
+to = "/ar/index.html"
+
+[[services.production.rewrites]]
+from = "/ar/"
+to = "/ar/index.html"
+
+[[services.production.rewrites]]
+from = "/fa"
+to = "/fa/index.html"
+
+[[services.production.rewrites]]
+from = "/fa/"
+to = "/fa/index.html"
+
+[[services.production.rewrites]]
+from = "/he"
+to = "/he/index.html"
+
+[[services.production.rewrites]]
+from = "/he/"
+to = "/he/index.html"
+
+[[services.production.rewrites]]
+from = "/ur"
+to = "/ur/index.html"
+
+[[services.production.rewrites]]
+from = "/ur/"
+to = "/ur/index.html"
+
+[[services.production.rewrites]]
+from = "/tr"
+to = "/tr/index.html"
+
+[[services.production.rewrites]]
+from = "/tr/"
+to = "/tr/index.html"
+
+[[services.production.rewrites]]
+from = "/ru"
+to = "/ru/index.html"
+
+[[services.production.rewrites]]
+from = "/ru/"
+to = "/ru/index.html"
+
+[[services.production.rewrites]]
+from = "/uk"
+to = "/uk/index.html"
+
+[[services.production.rewrites]]
+from = "/uk/"
+to = "/uk/index.html"
+
+[[services.production.rewrites]]
+from = "/pl"
+to = "/pl/index.html"
+
+[[services.production.rewrites]]
+from = "/pl/"
+to = "/pl/index.html"
+
+[[services.production.rewrites]]
+from = "/cs"
+to = "/cs/index.html"
+
+[[services.production.rewrites]]
+from = "/cs/"
+to = "/cs/index.html"
+
+[[services.production.rewrites]]
+from = "/de"
+to = "/de/index.html"
+
+[[services.production.rewrites]]
+from = "/de/"
+to = "/de/index.html"
+
+[[services.production.rewrites]]
+from = "/fr"
+to = "/fr/index.html"
+
+[[services.production.rewrites]]
+from = "/fr/"
+to = "/fr/index.html"
+
+[[services.production.rewrites]]
+from = "/es"
+to = "/es/index.html"
+
+[[services.production.rewrites]]
+from = "/es/"
+to = "/es/index.html"
+
+[[services.production.rewrites]]
+from = "/pt"
+to = "/pt/index.html"
+
+[[services.production.rewrites]]
+from = "/pt/"
+to = "/pt/index.html"
+
+[[services.production.rewrites]]
+from = "/it"
+to = "/it/index.html"
+
+[[services.production.rewrites]]
+from = "/it/"
+to = "/it/index.html"
+
+[[services.production.rewrites]]
+from = "/nl"
+to = "/nl/index.html"
+
+[[services.production.rewrites]]
+from = "/nl/"
+to = "/nl/index.html"
+
+[[services.production.rewrites]]
+from = "/sv"
+to = "/sv/index.html"
+
+[[services.production.rewrites]]
+from = "/sv/"
+to = "/sv/index.html"
+
+[[services.production.rewrites]]
+from = "/el"
+to = "/el/index.html"
+
+[[services.production.rewrites]]
+from = "/el/"
+to = "/el/index.html"
+
+[[services.production.rewrites]]
+from = "/ro"
+to = "/ro/index.html"
+
+[[services.production.rewrites]]
+from = "/ro/"
+to = "/ro/index.html"
+
+[[services.production.rewrites]]
+from = "/hu"
+to = "/hu/index.html"
+
+[[services.production.rewrites]]
+from = "/hu/"
+to = "/hu/index.html"
+
+[[services.production.rewrites]]
 from = "/*"
 to = "/index.html"
 

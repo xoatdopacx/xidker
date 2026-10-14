@@ -2,64 +2,15 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import type { Language } from "@workspace/api-client-react";
 import vi from "@/locales/vi.json";
 import en from "@/locales/en.json";
+import { LANGUAGES, type LangInfo, type Script } from "./languages";
+import { isHomePath, languageHref, pathLanguage } from "./locale-url";
+export { LANGUAGES, type LangInfo } from "./languages";
 
 export const CONTACT_EMAIL = "hello@idkworkshop.com";
 
 /** Vietnamese is the source text; every other language has the same shape (missing keys fall back to English). */
 export type Dict = typeof vi;
 export type Currency = "vnd" | "usd";
-
-type Script = "latin" | "cyrl" | "greek" | "sc" | "tc" | "jp" | "kr" | "thai" | "lao" | "khmer" | "deva" | "beng" | "arab" | "hebr";
-
-export type LangInfo = {
-  code: Language;
-  /** Language name written in that language, shown in the language picker. */
-  native: string;
-  dir: "ltr" | "rtl";
-  script: Script;
-  /** Locale for dates and number formatting. */
-  locale: string;
-};
-
-const L = (code: Language, native: string, script: Script = "latin", dir: "ltr" | "rtl" = "ltr", locale: string = code): LangInfo =>
-  ({ code, native, script, dir, locale });
-
-/** Picker order: Vietnamese and English, then Asia, the Middle East, Europe. */
-export const LANGUAGES: LangInfo[] = [
-  L("vi", "Tiếng Việt", "latin", "ltr", "vi-VN"),
-  L("en", "English", "latin", "ltr", "en-US"),
-  L("zh-CN", "简体中文", "sc"),
-  L("zh-TW", "繁體中文", "tc"),
-  L("ja", "日本語", "jp"),
-  L("ko", "한국어", "kr"),
-  L("th", "ไทย", "thai"),
-  L("id", "Bahasa Indonesia"),
-  L("ms", "Bahasa Melayu"),
-  L("fil", "Filipino"),
-  L("km", "ខ្មែរ", "khmer"),
-  L("lo", "ລາວ", "lao"),
-  L("hi", "हिन्दी", "deva"),
-  L("bn", "বাংলা", "beng"),
-  L("ar", "العربية", "arab", "rtl"),
-  L("fa", "فارسی", "arab", "rtl"),
-  L("he", "עברית", "hebr", "rtl"),
-  L("ur", "اردو", "arab", "rtl"),
-  L("tr", "Türkçe"),
-  L("ru", "Русский", "cyrl"),
-  L("uk", "Українська", "cyrl"),
-  L("pl", "Polski"),
-  L("cs", "Čeština"),
-  L("de", "Deutsch"),
-  L("fr", "Français"),
-  L("es", "Español"),
-  L("pt", "Português"),
-  L("it", "Italiano"),
-  L("nl", "Nederlands"),
-  L("sv", "Svenska"),
-  L("el", "Ελληνικά", "greek"),
-  L("ro", "Română"),
-  L("hu", "Magyar"),
-];
 
 const BY_CODE = new Map(LANGUAGES.map((l) => [l.code, l]));
 export const langInfo = (code: Language): LangInfo => BY_CODE.get(code) ?? LANGUAGES[1];
@@ -149,14 +100,17 @@ function matchCode(raw: string | null | undefined): Language | null {
   return LANGUAGES.find((l) => l.code.toLowerCase() === (alias[base] ?? base))?.code ?? null;
 }
 
-/** ?lang= in the URL, then the saved choice, then the browser languages, then English. */
+/** Home URLs are deterministic for crawlers; other pages still use saved/browser preferences. */
 export function initialLang(): Language {
+  const fromPath = pathLanguage(window.location.pathname, import.meta.env.BASE_URL);
+  const fromUrl = matchCode(new URLSearchParams(window.location.search).get("lang"));
+  const explicit = fromPath ?? fromUrl;
+  if (explicit) {
+    try { localStorage.setItem(LANG_KEY, explicit); } catch { /* storage blocked */ }
+    return explicit;
+  }
+  if (isHomePath(window.location.pathname, import.meta.env.BASE_URL)) return "en";
   try {
-    const fromUrl = matchCode(new URLSearchParams(window.location.search).get("lang"));
-    if (fromUrl) {
-      localStorage.setItem(LANG_KEY, fromUrl);
-      return fromUrl;
-    }
     const saved = matchCode(localStorage.getItem(LANG_KEY));
     if (saved) return saved;
   } catch { /* storage blocked */ }
@@ -171,6 +125,9 @@ export function initialLang(): Language {
 /** Loads the first language (and starts its font) before the first render, so the page never flashes another language. */
 export async function prepareI18n(): Promise<void> {
   const code = initialLang();
+  if (isHomePath(window.location.pathname, import.meta.env.BASE_URL) && new URLSearchParams(window.location.search).has("lang")) {
+    history.replaceState(history.state, "", languageHref(code, new URL(window.location.href), import.meta.env.BASE_URL));
+  }
   ensureFont(langInfo(code).script);
   try { await loadDict(code); } catch { /* falls back to English in the provider */ }
 }
@@ -207,7 +164,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [pickedCurrency, setPickedCurrency] = useState<Currency | null>(savedCurrency);
   const request = useRef(0);
 
-  const setLang = useCallback((code: Language) => {
+  const applyLanguage = useCallback((code: Language) => {
     try { localStorage.setItem(LANG_KEY, code); } catch { /* ignore */ }
     ensureFont(langInfo(code).script);
     const id = ++request.current;
@@ -217,6 +174,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       .then((t) => { if (id === request.current) setState({ lang: code, t }); })
       .catch(() => { if (id === request.current) setState({ lang: code, t: en as Dict }); });
   }, []);
+
+  const setLang = useCallback((code: Language) => {
+    const href = languageHref(code, new URL(window.location.href), import.meta.env.BASE_URL);
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (href !== current) history.pushState(null, "", href);
+    applyLanguage(code);
+  }, [applyLanguage]);
+
+  useEffect(() => {
+    const onHistory = () => applyLanguage(initialLang());
+    window.addEventListener("popstate", onHistory);
+    return () => window.removeEventListener("popstate", onHistory);
+  }, [applyLanguage]);
 
   const setCurrency = useCallback((c: Currency) => {
     setPickedCurrency(c);
@@ -239,6 +209,15 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     set('meta[property="og:description"]', t.meta.description);
     set('meta[name="twitter:title"]', t.meta.title);
     set('meta[name="twitter:description"]', t.meta.description);
+    if (isHomePath(window.location.pathname, import.meta.env.BASE_URL)) {
+      const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+      if (canonical) {
+        const url = new URL(window.location.pathname, new URL(canonical.href).origin).href;
+        canonical.href = url;
+        set('meta[property="og:url"]', url);
+      }
+      set('meta[property="og:locale"]', info.locale.replace(/-/g, "_"));
+    }
   }, [lang, info, t]);
 
   const value = useMemo<Ctx>(() => ({
