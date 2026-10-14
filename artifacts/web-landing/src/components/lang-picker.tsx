@@ -101,7 +101,7 @@ export function LangPicker({ className = "", tone = "light" }: { className?: str
       {open && (
         <div ref={panel} role="dialog" aria-label={t.lang.switchLabel} className="lp-panel tile fixed! z-[90] flex flex-col" style={pos} data-testid="panel-language">
           <div className="flex items-center justify-between gap-3 px-4 pt-3 pb-2 border-b-[3px] border-dashed border-[#8d8a80]">
-            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin))]">
+            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin-text))]">
               <PixelGlobe className="h-4 w-4 text-[#1b2a1c]" /> {t.lang.switchLabel}
               <span className="font-num text-[#1b2a1c]" dir="ltr">{LANGUAGES.length}</span>
             </p>

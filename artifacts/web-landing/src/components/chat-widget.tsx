@@ -531,7 +531,7 @@ export function ChatWidget() {
 
 function ErrorLine({ text }: { text: string }) {
   return (
-    <p role="alert" className="flex items-start gap-2 text-sm font-semibold text-[hsl(var(--pin))]" data-testid="text-chat-error">
+    <p role="alert" className="flex items-start gap-2 text-sm font-semibold text-[hsl(var(--pin-text))]" data-testid="text-chat-error">
       <AlertIcon className="h-4 w-2 mt-0.5 shrink-0" /> <span>{text}</span>
     </p>
   );

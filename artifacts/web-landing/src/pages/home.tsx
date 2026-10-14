@@ -331,7 +331,7 @@ function Stop({ id, n, side, title, children, wide = false, decor, scene, classN
           <Reveal>
             <div className="tile p-5 md:p-8">
               <div className="flex items-center justify-between gap-3 mb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin))]">{t.stage} <span className="font-num text-base">0{n}</span></span>
+                <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin-text))]">{t.stage} <span className="font-num text-base">0{n}</span></span>
                 <span className="check inline-flex items-center gap-1 bg-[hsl(var(--gold))] text-[#1b2a1c] text-xs font-bold px-2 py-0.5 border-2 border-[#1b2a1c]"><Check className="h-3 w-3" strokeWidth={3} /> {t.reached}</span>
               </div>
               <h2 className="font-display text-2xl md:text-3xl leading-tight">{title}</h2>
@@ -503,7 +503,7 @@ function Pricing() {
         <div className="relative z-20 ml-[56px] md:ml-0 pt-4 md:pt-24">
           <Reveal>
             <div className="tile p-5 md:p-7 md:max-w-2xl md:mx-auto md:text-center mb-10 md:mb-14">
-              <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin))]">{t.stage} <span className="font-num text-base">06</span></span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin-text))]">{t.stage} <span className="font-num text-base">06</span></span>
               <h2 className="font-display text-3xl md:text-4xl leading-tight mt-1">{t.pricing.title}</h2>
               <p className="mt-3 text-[#2c3a2c]">{t.pricing.sub}</p>
               {/* fixed-height slot: the toggle appearing or switching never changes the section height */}

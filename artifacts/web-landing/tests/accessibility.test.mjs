@@ -50,6 +50,42 @@ test("green and red button text meet WCAG AA in normal, hover and active states"
   }
 });
 
+test("small red labels on paper meet WCAG AA without changing the decorative red", () => {
+  const token = (name) => {
+    const value = css.match(new RegExp(`--${name}:([^;}]+)`))?.[1];
+    assert.ok(value, `Missing --${name}`);
+    return `hsl(${value})`;
+  };
+  assert.match(css, /\.tile\{[^}]*background:hsl\(var\(--paper\)\)/);
+  const values = [luminance(token("pin-text")), luminance(token("paper"))]
+    .sort((a, b) => b - a);
+  const ratio = (values[0] + 0.05) / (values[1] + 0.05);
+  assert.ok(ratio >= 4.5, `Small red label contrast is ${ratio.toFixed(2)}:1`);
+  console.log(`Small red labels on paper: ${ratio.toFixed(2)}:1`);
+  assert.equal(token("pin"), "hsl(3 78% 52%)");
+
+  // Stage labels, the language-dialog heading and transition-card label
+  // must use the accessible text token, not the decorative color.
+  for (const [path, expected] of [
+    ["../src/pages/home.tsx", 2],
+    ["../src/components/lang-picker.tsx", 1],
+    ["../src/components/pixel-transition.tsx", 1],
+  ]) {
+    const source = read(path);
+    const labels = source.match(/className="[^"]*\btext-xs\b[^"]*text-\[hsl\(var\(--pin-text\)\)\][^"]*"/g) ?? [];
+    assert.equal(labels.length, expected, `Accessible label count in ${path}`);
+    assert.doesNotMatch(source, /className="[^"]*\btext-xs\b[^"]*text-\[hsl\(var\(--pin\)\)\]/);
+  }
+  const transition = read("../src/components/pixel-transition.tsx");
+  assert.match(transition, /className="px-card tile p-5 text-center"/);
+  const chat = read("../src/components/chat-widget.tsx");
+  assert.match(chat, /className="cw-panel tile"/);
+  assert.match(chat, /className="cw-from font-pixel font-bold"/);
+  assert.match(css, /\.cw-from\{[^}]*color:hsl\(var\(--pin-text\)\)/);
+  assert.match(chat, /text-\[hsl\(var\(--pin-text\)\)\]" data-testid="text-chat-error"/);
+  assert.doesNotMatch(chat, /className="[^"]*\btext-(?:xs|sm)\b[^"]*text-\[hsl\(var\(--pin\)\)\]/);
+});
+
 test("viewport allows browser zoom without an explicit ceiling", () => {
   const viewport = read("../index.html").match(/<meta name="viewport" content="([^"]+)"/)?.[1];
   assert.equal(viewport, "width=device-width, initial-scale=1.0");

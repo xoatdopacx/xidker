@@ -505,7 +505,7 @@ export function PixelTransitionProvider({ children }: { children: ReactNode }) {
         {card && (
           <div className="px-card tile p-5 text-center">
             <div className="px-dio"><Scene name={card.scene} className="relative mx-auto" /></div>
-            <p className="mt-3 text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin))]">{card.label(t)}</p>
+            <p className="mt-3 text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin-text))]">{card.label(t)}</p>
             <p className="font-display text-xl leading-tight mt-1 text-[#10230f]">{card.title(t)}</p>
             {card.sub && <p className="mt-1 text-sm font-semibold text-[#2c3a2c]">{card.sub(t)}</p>}
             <div ref={bar} className="px-bar mt-9" dir="ltr">
