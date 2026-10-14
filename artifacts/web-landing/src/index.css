@@ -445,10 +445,11 @@ body{overflow-x:hidden;background-color:hsl(var(--grass));background-image:url("
 .pixel{image-rendering:pixelated}
 .tile{position:relative;background:hsl(var(--paper));border:4px solid #8d8a80;box-shadow:inset -4px -4px 0 #cfcbbf,inset 4px 4px 0 #f7f5ee,6px 6px 0 rgba(16,64,20,.35);transition:border-color .3s steps(3),transform .3s}
 [data-ms].reached .tile{border-color:hsl(var(--gold))}
-.pbtn{display:inline-flex;align-items:center;gap:.6rem;background:#3d8a3a;color:#eaf7d6;border:4px solid #1b3a1a;box-shadow:inset -4px -4px 0 #2a6a28,inset 4px 4px 0 #74c862,0 6px 0 #1b3a1a;transition:transform .12s steps(2),box-shadow .12s steps(2)}
+/* Button text meets WCAG AA (4.5:1); keep the brighter shared --pin for decoration. */
+.pbtn{display:inline-flex;align-items:center;gap:.6rem;background:#327530;color:#eaf7d6;border:4px solid #1b3a1a;box-shadow:inset -4px -4px 0 #2a6a28,inset 4px 4px 0 #74c862,0 6px 0 #1b3a1a;transition:transform .12s steps(2),box-shadow .12s steps(2)}
 .pbtn:hover{transform:translateY(-2px);box-shadow:inset -4px -4px 0 #2a6a28,inset 4px 4px 0 #74c862,0 8px 0 #1b3a1a}
 .pbtn:active{transform:translateY(5px);box-shadow:inset -4px -4px 0 #2a6a28,inset 4px 4px 0 #74c862,0 1px 0 #1b3a1a}
-.pbtn.red{background:hsl(var(--pin));border-color:#5a0f0b;box-shadow:inset -4px -4px 0 #a5231d,inset 4px 4px 0 #f27a70,0 6px 0 #5a0f0b;color:#fff}
+.pbtn.red{background:hsl(3 78% 46%);border-color:#5a0f0b;box-shadow:inset -4px -4px 0 #a5231d,inset 4px 4px 0 #f27a70,0 6px 0 #5a0f0b;color:#fff}
 .pbtn.paper{background:hsl(var(--paper));color:hsl(var(--ink));border-color:#3b3a35;box-shadow:inset -4px -4px 0 #cfcbbf,inset 4px 4px 0 #fff,0 6px 0 #3b3a35}
 .pbtn:disabled{opacity:.7;cursor:not-allowed;transform:none}
 [data-reveal]{position:relative}
