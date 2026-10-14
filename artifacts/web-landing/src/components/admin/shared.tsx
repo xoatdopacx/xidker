@@ -22,12 +22,23 @@ const SERVER_TEXT: Record<string, string> = {
   "Not signed in": EXPIRED_TEXT,
   "Request did not come from this site": "Yêu cầu bị chặn vì không gửi từ trang này. Tải lại trang rồi thử lại.",
   "Too many requests, try again later": "Thao tác hơi nhanh. Đợi một lát rồi thử lại.",
+  "Package not found": "Gói này không còn trên Whop. Tải lại danh sách nhé.",
+  "This package has buyers, hide it instead": "Gói đã có người mua nên không xóa được. Bạn có thể bỏ đánh dấu \"Đang bán\" để ẩn gói.",
+  "Payment provider unavailable": "Chưa kết nối được Whop. Thử lại sau ít phút.",
+  "Name is empty": "Tên gói đang trống.",
+  "USD price can have at most 2 decimals": "Giá USD chỉ được có tối đa 2 chữ số sau dấu chấm.",
 };
+
+/** Whop's own reason for refusing a change comes back as "Whop: …" (in English). */
+const WHOP_REASON = /^Whop: (.+)$/s;
 
 /** A short Vietnamese explanation for any failed admin request. */
 export function adminErrorText(err: unknown): string {
-  const known = SERVER_TEXT[serverError(err)];
+  const message = serverError(err);
+  const known = SERVER_TEXT[message];
   if (known) return known;
+  const whop = message.match(WHOP_REASON);
+  if (whop) return `Whop không nhận thay đổi này. Lý do Whop đưa ra: ${whop[1]}`;
   const s = statusOf(err);
   if (s === 0) return "Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.";
   if (s === 401) return EXPIRED_TEXT;

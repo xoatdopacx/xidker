@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useGetAdminSession, getGetAdminSessionQueryKey, type AdminSession } from "@workspace/api-client-react";
 import { statusOf } from "@/lib/http";
 import { AdminSignIn } from "@/components/admin/sign-in";
-import { AdminInbox } from "@/components/admin/inbox";
+import { AdminShell } from "@/components/admin/shell";
 import { adminErrorText } from "@/components/admin/shared";
 
 const SESSION_KEY = getGetAdminSessionQueryKey();
@@ -53,14 +53,18 @@ export default function AdminPage() {
   }, [qc]);
 
   const signedOut = useCallback((message: string | null) => {
-    qc.removeQueries({ predicate: (q) => String(q.queryKey[0]).startsWith("/api/admin/conversations") });
+    // Everything the admin screens loaded, except the session entry that is set to signed-out below.
+    qc.removeQueries({ predicate: (q) => {
+      const key = String(q.queryKey[0]);
+      return key.startsWith("/api/admin/") && key !== SESSION_KEY[0];
+    } });
     setNotice(message);
     qc.setQueryData<AdminSession | null>(SESSION_KEY, null);
   }, [qc]);
 
   let body;
   if (session.data) {
-    body = <AdminInbox session={session.data} onSignedOut={signedOut} />;
+    body = <AdminShell session={session.data} onSignedOut={signedOut} />;
   } else if (session.isPending) {
     body = <p className="min-h-[100dvh] grid place-items-center text-sm text-[#3d4a3d]">Đang tải…</p>;
   } else if (session.isError && statusOf(session.error) !== 401) {

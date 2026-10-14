@@ -13,5 +13,11 @@ description: Non-obvious Whop SDK/API behavior hit while wiring hosted checkout 
 - Whop also accepts `currency: "usd"` plans under the same product, and PATCHing a plan's `metadata` over REST works (send the full object).
   **Why:** the site sells each package in VND and USD as twin plans sharing a `key`; this is how they were created.
   **How to apply:** when adding a currency, create twin plans with the same `key` and set `title_lang` to the language the plan title is written in.
-- Changing a package's English text means updating three things so they match exactly: the USD plan title/description, the VND plan's `name_en`/`tagline_en`/`features_en` metadata (these win over the USD text), and the `source` in the built-in translations file. Any mismatch makes the site fall back to English for the other 31 languages (the API logs a warning).
+- Changing a package's English text (now done from the admin screen, which writes it to the USD plan and drops the per-language metadata copies) makes the other 31 languages show English until the `source` in the built-in translations file is refreshed to match exactly (the API logs a warning). The admin editor warns before saving such a change.
 - The plans have `collect_tax: true` and `tax_type: "exclusive"` (tax added on top at checkout). The pricing note promises VAT is adjusted per country, so keep these on for any new plan.
+- Plan limits found by trial (2026-10-14): title at most 30 characters, description at most 1000, each metadata value at most 500. 10,000 VND is accepted as a price. PATCH replaces `metadata` whole. New plans default to collect_tax on, tax exclusive and adaptive pricing.
+  **Why:** the admin package editor's input limits are set from these; a longer name is rejected by Whop with a 4xx.
+  **How to apply:** keep the API spec limits (name 30, tagline 160, 8 features of 100) inside these if they ever change.
+- The Whop pixel (`https://t.whop.tw/s.js`) adds `_swuid=<visitor token>` only to whop.com links clicked as real `<a>` elements (capture-phase click listener), so `location.assign()` to checkout loses attribution. It also wraps `history.pushState/replaceState` and counts every change of the full URL (hash included) as a new page view.
+  **Why:** read from the script source when installing it; confirmed in headless chromium.
+  **How to apply:** leave for Whop through a link click; avoid needless URL rewrites on the visitor site.

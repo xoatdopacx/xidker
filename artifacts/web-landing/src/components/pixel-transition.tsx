@@ -201,11 +201,30 @@ function restoreAnchor(a: Anchor) {
   if (Math.abs(delta) > 1) window.scrollTo({ top: window.scrollY + delta, behavior: "instant" as ScrollBehavior });
 }
 
-function land(el: HTMLElement, id: string, href: string) {
+/** The address bar keeps only the page and its language (/vi/): section jumps never add "#section". */
+function clearHash() {
+  if (location.hash) history.replaceState(history.state, "", `${location.pathname}${location.search}`);
+}
+
+function jumpTo(el: HTMLElement, id: string) {
   const top = id === "top" ? 0 : Math.max(0, el.getBoundingClientRect().top + window.scrollY - HEADER);
   window.scrollTo({ top, behavior: "instant" as ScrollBehavior });
-  if (location.hash !== href) history.pushState(null, "", href);
   settleRevealsInView();
+}
+
+/** An older shared link such as /vi/#hoi-dap still opens at its section, then the "#…" is dropped. */
+function landFromAddress() {
+  let id = "";
+  try { id = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+  const el = id ? document.getElementById(id) : null;
+  if (!el) return;
+  clearHash();
+  requestAnimationFrame(() => jumpTo(el, id));
+}
+
+function land(el: HTMLElement, id: string) {
+  jumpTo(el, id);
+  clearHash();
   const h = el.querySelector<HTMLElement>("h1, h2") ?? el;
   if (!h.hasAttribute("tabindex")) h.setAttribute("tabindex", "-1");
   h.focus({ preventScroll: true });
@@ -354,8 +373,8 @@ export function PixelTransitionProvider({ children }: { children: ReactNode }) {
       await play(tok, IN, "shrink");
     };
 
-    const go = async (el: HTMLElement, id: string, href: string, origin: Point) => {
-      const tok = begin(stageCard(id), () => land(el, id, href), 3200);
+    const go = async (el: HTMLElement, id: string, origin: Point) => {
+      const tok = begin(stageCard(id), () => land(el, id), 3200);
       if (!(await cover(tok, origin))) { abort(tok); return; }
       creep(tok, 0, SEGS, 380, 110);
       await sleep(250); // the card finishes opening before the page jumps underneath it
@@ -450,16 +469,17 @@ export function PixelTransitionProvider({ children }: { children: ReactNode }) {
       if (!el) return;
       e.preventDefault();
       if (busy) return;
-      if (reducedMotion() || !getMos()) { land(el, id, href); return; }
+      if (reducedMotion() || !getMos()) { land(el, id); return; }
       const ar = a.getBoundingClientRect();
       const origin = e.detail === 0 ? { x: ar.left + ar.width / 2, y: ar.top + ar.height / 2 } : { x: e.clientX, y: e.clientY };
-      void go(el, id, href, origin);
+      void go(el, id, origin);
     };
 
     return { api, onClick, warm: () => getMos()?.warm(), stop: () => abort(token) };
   }, []);
 
   useEffect(() => {
+    landFromAddress();
     document.addEventListener("click", engine.onClick);
     const r = root.current;
     // the cover must not let the page scroll underneath it

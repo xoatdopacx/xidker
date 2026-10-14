@@ -742,3 +742,16 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .adm-slot.on{outline:3px solid hsl(var(--gold));outline-offset:0;z-index:1}
 .adm-caret{position:absolute;width:3px;height:26px;background:#1b2a1c;animation:cwDot 1s steps(1) infinite}
 @media (max-width:380px){.adm-slot{width:40px;height:50px;font-size:20px}}
+.adm-nav{height:36px;padding:0 .75rem;display:inline-flex;align-items:center;gap:.4rem;font-size:14px;font-weight:700;color:#eaf7d6;border:3px solid #eaf7d6}
+.adm-nav:hover:not([aria-current="page"]){background:#24382a}
+.adm-nav[aria-current="page"]{background:hsl(var(--gold));border-color:hsl(var(--gold));color:#1b2a1c}
+.adm-nav:focus-visible{outline:3px solid hsl(var(--gold));outline-offset:2px}
+.adm-area{height:auto;min-height:8.5rem;padding:.55rem .7rem;line-height:1.5;resize:vertical}
+.adm-field[aria-invalid="true"]{border-color:hsl(var(--pin));box-shadow:inset 3px 3px 0 #f6d6d2}
+.adm-check{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:#1b2a1c}
+.adm-check:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:2px}
+.adm-group{border-top:3px solid #1b2a1c;padding-top:1rem}
+.adm-item.is-hidden:not([aria-current="true"]){opacity:.62}
+/* Back buttons only exist for the one-pane phone layout. Plain CSS here beats Tailwind's layered md:hidden. */
+@media (min-width:768px){.adm-btn.adm-back{display:none}}
+.adm-field.has-unit{padding-inline-end:2.25rem}

@@ -432,6 +432,26 @@ function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; pric
 
 const CURRENCY_ORDER: Currency[] = ["vnd", "usd"];
 
+/** Package grid by card count (packages are added from the admin screen); 5 means five or more. */
+const GRID_FOR_COUNT: Record<number, string> = {
+  1: "max-w-md mx-auto",
+  2: "md:grid-cols-2 max-w-4xl mx-auto",
+  3: "md:grid-cols-3",
+  4: "md:grid-cols-2 xl:grid-cols-4",
+  5: "md:grid-cols-2 lg:grid-cols-3",
+};
+
+/** Leaves for Whop checkout through a real link click, so the Whop pixel can add its visitor id to the address. */
+function openCheckout(url: string) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.hidden = true;
+  // In the document, or the pixel's click listener never sees the click.
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
 function Pricing() {
   const { t, lang, currency, setCurrency } = useI18n();
   // Keep the previous language's cards while the new language loads: no skeleton flash and no
@@ -463,7 +483,7 @@ function Pricing() {
       {
         onSuccess: (s) => {
           if (inFrame && tab) { tab.location.href = s.purchaseUrl; setPendingId(null); }
-          else window.location.assign(s.purchaseUrl);
+          else openCheckout(s.purchaseUrl);
         },
         onError: () => {
           tab?.close();
@@ -530,7 +550,7 @@ function Pricing() {
           {data && shown.length === 0 && <div className="tile p-6 text-center" data-testid="status-packages-empty">{t.pricing.empty}</div>}
 
           {shown.length > 0 && (
-            <div className={`grid gap-8 md:gap-6 items-stretch ${shown.length === 1 ? "max-w-md mx-auto" : shown.length === 2 ? "md:grid-cols-2 max-w-4xl mx-auto" : "md:grid-cols-3"}`}>
+            <div className={`grid gap-8 md:gap-6 items-stretch ${GRID_FOR_COUNT[Math.min(shown.length, 5)]}`}>
               {shown.map((p, i) => (
                 <PackageCard key={cardKey(p)} p={p} i={i} busy={pendingId === p.id} disabled={checkout.isPending} onBuy={() => buy(p.id)}
                   prices={(data ?? []).filter((v) => v.key === p.key && (v.currency !== p.currency || v.id === p.id))} />

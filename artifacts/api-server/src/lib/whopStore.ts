@@ -13,6 +13,8 @@ import { PACKAGE_TRANSLATIONS, type PackageText } from "./packageTranslations";
 //   title_lang: "vi"     -> language of the plan title + description (default "vi")
 //   recommended: "true"  -> the recommended package (set on any plan of the group)
 //   name_<lang>, tagline_<lang>, features_<lang> (one per line) -> text in another language
+// The admin screen (whopAdmin.ts) writes each package as a VND plan with the Vietnamese text
+// and a USD plan with the English text, with no per-language metadata copies.
 // Languages Whop holds no text for use the built-in translations (packageTranslations.ts).
 // Those only apply while the group's English text still matches the text they were
 // translated from, so an edit in Whop never leaves outdated translations on the site:
@@ -31,7 +33,12 @@ type Group = {
 const PACKAGES_CACHE_TTL_MS = 60_000;
 let catalogCache: { fetchedAt: number; groups: Group[] } | null = null;
 
-function requireEnv(name: "WHOP_COMPANY_ID" | "WHOP_PRODUCT_ID"): string {
+/** After an admin change: the next request on this server reads Whop again (other servers within a minute). */
+export function clearCatalogCache(): void {
+  catalogCache = null;
+}
+
+export function requireEnv(name: "WHOP_COMPANY_ID" | "WHOP_PRODUCT_ID"): string {
   const value = process.env[name];
   if (!value) {
     throw new Error(`${name} is not set`);
@@ -39,7 +46,7 @@ function requireEnv(name: "WHOP_COMPANY_ID" | "WHOP_PRODUCT_ID"): string {
   return value;
 }
 
-function parseDescription(description: string | null): {
+export function parseDescription(description: string | null): {
   tagline: string | null;
   features: string[];
 } {
@@ -63,30 +70,30 @@ function parseDescription(description: string | null): {
   return { tagline, features };
 }
 
-function metadataRecord(metadata: unknown): Record<string, unknown> {
+export function metadataRecord(metadata: unknown): Record<string, unknown> {
   return metadata && typeof metadata === "object" ? (metadata as Record<string, unknown>) : {};
 }
 
-function metadataText(metadata: Record<string, unknown>, key: string): string | null {
+export function metadataText(metadata: Record<string, unknown>, key: string): string | null {
   const value = metadata[key];
   return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
-function parseFeatureLines(text: string | null): string[] {
+export function parseFeatureLines(text: string | null): string[] {
   return (text ?? "")
     .split(/\r?\n/)
     .map((line) => line.trim().replace(/^[-•*+]\s*/, ""))
     .filter(Boolean);
 }
 
-function productIdOf(product: unknown): string | null {
+export function productIdOf(product: unknown): string | null {
   const id = metadataRecord(product).id;
   return typeof id === "string" ? id : null;
 }
 
 const normalize = (text: string | null) => (text ?? "").replace(/\s+/g, " ").trim();
 
-function sameText(a: PackageText, b: PackageText): boolean {
+export function sameText(a: PackageText, b: PackageText): boolean {
   return (
     normalize(a.name) === normalize(b.name) &&
     normalize(a.tagline) === normalize(b.tagline) &&
@@ -95,18 +102,64 @@ function sameText(a: PackageText, b: PackageText): boolean {
   );
 }
 
+export type PlanTexts = {
+  /** Language of the plan's own title and description. */
+  titleLang: string;
+  titleText: PackageText;
+  /** Entries from name_<lang> metadata. */
+  metaTexts: Record<string, PackageText>;
+};
+
+/** The text one plan carries: its title + description, and any per-language metadata entries. */
+export function readPlanTexts(plan: { title: string | null; description: string | null; metadata: unknown }): PlanTexts {
+  const meta = metadataRecord(plan.metadata);
+  const { tagline, features } = parseDescription(plan.description);
+  const titleText: PackageText = { name: plan.title?.trim() || "xidker", tagline, features };
+
+  // name_<lang> starts a language entry; missing tagline/features fall back to the plan's own text.
+  const metaTexts: Record<string, PackageText> = {};
+  for (const field of Object.keys(meta)) {
+    const lang = field.match(/^name_(.+)$/)?.[1];
+    const name = lang ? metadataText(meta, field) : null;
+    if (!lang || !name) continue;
+    const langFeatures = parseFeatureLines(metadataText(meta, `features_${lang}`));
+    metaTexts[lang] = {
+      name,
+      tagline: metadataText(meta, `tagline_${lang}`) ?? tagline,
+      features: langFeatures.length > 0 ? langFeatures : features,
+    };
+  }
+  return { titleLang: metadataText(meta, "title_lang") ?? "vi", titleText, metaTexts };
+}
+
+/** One package's text per language, from all of its plans. */
+export function mergeGroupTexts(items: PlanTexts[]): Partial<Record<string, PackageText>> {
+  // Vietnamese-titled plans (the original VND plans) take precedence over their twins.
+  const ordered = [...items].sort((a, b) => Number(a.titleLang !== "vi") - Number(b.titleLang !== "vi"));
+  const texts: Partial<Record<string, PackageText>> = {};
+  for (const item of ordered) for (const [lang, text] of Object.entries(item.metaTexts)) texts[lang] ??= text;
+  for (const item of ordered) texts[item.titleLang] ??= item.titleText;
+  return texts;
+}
+
+/** Whether the built-in translations of this package still match its English text. */
+export function translationState(key: string, en: PackageText | undefined): "built_in" | "outdated" | "none" {
+  const builtIn = PACKAGE_TRANSLATIONS[key];
+  if (!builtIn) return "none";
+  return en && sameText(builtIn.source, en) ? "built_in" : "outdated";
+}
+
+export function isRecommended(metadata: unknown): boolean {
+  const value = metadataRecord(metadata).recommended;
+  return value === true || value === "true";
+}
+
 async function fetchCatalog(): Promise<Group[]> {
   const client = await getWhopClient();
   const companyId = requireEnv("WHOP_COMPANY_ID");
   const productId = requireEnv("WHOP_PRODUCT_ID");
 
-  type Collected = {
-    row: PlanRow;
-    recommended: boolean;
-    titleLang: string;
-    titleText: PackageText;
-    metaTexts: Record<string, PackageText>;
-  };
+  type Collected = { row: PlanRow; recommended: boolean; texts: PlanTexts };
   const byKey = new Map<string, Collected[]>();
 
   for await (const plan of client.plans.list({
@@ -118,26 +171,8 @@ async function fetchCatalog(): Promise<Group[]> {
     if (productIdOf(plan.product) !== productId) continue;
     if (plan.visibility !== "visible") continue;
 
-    const meta = metadataRecord(plan.metadata);
-    const key = metadataText(meta, "key") ?? plan.id;
+    const key = metadataText(metadataRecord(plan.metadata), "key") ?? plan.id;
     const recurring = plan.plan_type === "renewal";
-    const { tagline, features } = parseDescription(plan.description);
-    const titleText: PackageText = { name: plan.title?.trim() || "xidker", tagline, features };
-
-    // name_<lang> starts a language entry; missing tagline/features fall back to the plan's own text.
-    const metaTexts: Record<string, PackageText> = {};
-    for (const field of Object.keys(meta)) {
-      const lang = field.match(/^name_(.+)$/)?.[1];
-      const name = lang ? metadataText(meta, field) : null;
-      if (!lang || !name) continue;
-      const langFeatures = parseFeatureLines(metadataText(meta, `features_${lang}`));
-      metaTexts[lang] = {
-        name,
-        tagline: metadataText(meta, `tagline_${lang}`) ?? tagline,
-        features: langFeatures.length > 0 ? langFeatures : features,
-      };
-    }
-
     const collected: Collected = {
       row: {
         id: plan.id,
@@ -148,27 +183,18 @@ async function fetchCatalog(): Promise<Group[]> {
         billingPeriodDays: recurring ? plan.billing_period : null,
         recommended: false,
       },
-      recommended: meta.recommended === true || meta.recommended === "true",
-      titleLang: metadataText(meta, "title_lang") ?? "vi",
-      titleText,
-      metaTexts,
+      recommended: isRecommended(plan.metadata),
+      texts: readPlanTexts(plan),
     };
     byKey.set(key, [...(byKey.get(key) ?? []), collected]);
   }
 
-  return [...byKey.entries()].map(([key, items]) => {
-    // Vietnamese-titled plans (the original VND plans) take precedence over their twins.
-    const ordered = [...items].sort((a, b) => Number(a.titleLang !== "vi") - Number(b.titleLang !== "vi"));
-    const texts: Partial<Record<string, PackageText>> = {};
-    for (const item of ordered) for (const [lang, text] of Object.entries(item.metaTexts)) texts[lang] ??= text;
-    for (const item of ordered) texts[item.titleLang] ??= item.titleText;
-    return {
-      key,
-      recommended: items.some((item) => item.recommended),
-      texts,
-      plans: items.map((item) => item.row),
-    };
-  });
+  return [...byKey.entries()].map(([key, items]) => ({
+    key,
+    recommended: items.some((item) => item.recommended),
+    texts: mergeGroupTexts(items.map((item) => item.texts)),
+    plans: items.map((item) => item.row),
+  }));
 }
 
 function textFor(group: Group, language: CatalogLanguage): PackageText {
@@ -176,7 +202,7 @@ function textFor(group: Group, language: CatalogLanguage): PackageText {
   if (own) return own;
   const en = group.texts.en;
   const builtIn = PACKAGE_TRANSLATIONS[group.key];
-  if (builtIn && en && sameText(builtIn.source, en)) {
+  if (builtIn && translationState(group.key, en) === "built_in") {
     const translated = builtIn.text[language];
     if (translated) return translated;
   }
@@ -188,10 +214,7 @@ export async function listPackages(language: CatalogLanguage = "vi"): Promise<Pa
   if (!catalogCache || Date.now() - catalogCache.fetchedAt >= PACKAGES_CACHE_TTL_MS) {
     catalogCache = { fetchedAt: Date.now(), groups: await fetchCatalog() };
     const stale = catalogCache.groups
-      .filter((group) => {
-        const builtIn = PACKAGE_TRANSLATIONS[group.key];
-        return builtIn && group.texts.en && !sameText(builtIn.source, group.texts.en);
-      })
+      .filter((group) => translationState(group.key, group.texts.en) === "outdated")
       .map((group) => group.key);
     if (stale.length > 0) {
       logger.warn({ keys: stale }, "Package English text changed in Whop; built-in translations skipped until refreshed");

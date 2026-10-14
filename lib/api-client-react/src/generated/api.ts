@@ -25,6 +25,8 @@ import type {
   AdminConversation,
   AdminConversationUpdate,
   AdminMessageInput,
+  AdminPackage,
+  AdminPackageInput,
   AdminSession,
   AdminTokenInput,
   ChatMessage,
@@ -1554,5 +1556,337 @@ export const useSendAdminMessage = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getSendAdminMessageMutationOptions(options));
+    }
+
+export const getListAdminPackagesUrl = () => {
+
+
+
+
+  return `/api/admin/packages`
+}
+
+/**
+ * Read straight from Whop, uncached. A package is the group of one-time plans under the shop's Whop product that share a metadata key: its VND plan carries the Vietnamese text and its USD plan the English text.
+ * @summary List every package on Whop, hidden ones included
+ */
+export const listAdminPackages = async ( options?: Parameters<typeof customFetch>[1]): Promise<AdminPackage[]> => {
+
+  return customFetch<AdminPackage[]>(getListAdminPackagesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminPackagesQueryKey = () => {
+    return [
+    `/api/admin/packages`
+    ] as const;
+    }
+
+
+export const getListAdminPackagesQueryOptions = <TData = Awaited<ReturnType<typeof listAdminPackages>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminPackages>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminPackagesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminPackages>>> = ({ signal }) => listAdminPackages({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminPackages>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminPackagesQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminPackages>>>
+export type ListAdminPackagesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List every package on Whop, hidden ones included
+ */
+
+export function useListAdminPackages<TData = Awaited<ReturnType<typeof listAdminPackages>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminPackages>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminPackagesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateAdminPackageUrl = () => {
+
+
+
+
+  return `/api/admin/packages`
+}
+
+/**
+ * Creates the package's VND and USD plans on Whop. The site shows the change within about a minute.
+ * @summary Put a new package on sale
+ */
+export const createAdminPackage = async (adminPackageInput: AdminPackageInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminPackage> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminPackage>(getCreateAdminPackageUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminPackageInput)
+  }
+);}
+
+
+
+
+
+export const getCreateAdminPackageMutationKey = () => ['createAdminPackage'] as const;
+
+export const getCreateAdminPackageMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminPackage>>, TError,CreateAdminPackageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminPackage>>, TError,CreateAdminPackageMutationVariables, TContext> => {
+
+const mutationKey = getCreateAdminPackageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminPackage>>, CreateAdminPackageMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminPackage(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminPackageMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminPackage>>>
+    export type CreateAdminPackageMutationBody = BodyType<AdminPackageInput>
+    export type CreateAdminPackageMutationError = ErrorType<ErrorResponse>
+    export type CreateAdminPackageMutationVariables = {data: BodyType<AdminPackageInput>}
+
+    /**
+ * @summary Put a new package on sale
+ */
+export const useCreateAdminPackage = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminPackage>>, TError,CreateAdminPackageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminPackage>>,
+        TError,
+        CreateAdminPackageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateAdminPackageMutationOptions(options));
+    }
+
+export const getUpdateAdminPackageUrl = (key: string,) => {
+
+
+
+
+  return `/api/admin/packages/${key}`
+}
+
+/**
+ * Only the Whop fields that differ are sent. A missing VND or USD plan is created. Marking a package recommended clears the mark on every other package.
+ * @summary Change a package's prices, text, recommended mark or whether it is on sale
+ */
+export const updateAdminPackage = async (key: string,
+    adminPackageInput: AdminPackageInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminPackage> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminPackage>(getUpdateAdminPackageUrl(key),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminPackageInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateAdminPackageMutationKey = () => ['updateAdminPackage'] as const;
+
+export const getUpdateAdminPackageMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPackage>>, TError,UpdateAdminPackageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminPackage>>, TError,UpdateAdminPackageMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAdminPackageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminPackage>>, UpdateAdminPackageMutationVariables> = (props) => {
+          const {key,data} = props ?? {};
+
+          return  updateAdminPackage(key,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminPackageMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminPackage>>>
+    export type UpdateAdminPackageMutationBody = BodyType<AdminPackageInput>
+    export type UpdateAdminPackageMutationError = ErrorType<ErrorResponse>
+    export type UpdateAdminPackageMutationVariables = {key: string;data: BodyType<AdminPackageInput>}
+
+    /**
+ * @summary Change a package's prices, text, recommended mark or whether it is on sale
+ */
+export const useUpdateAdminPackage = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminPackage>>, TError,UpdateAdminPackageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminPackage>>,
+        TError,
+        UpdateAdminPackageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAdminPackageMutationOptions(options));
+    }
+
+export const getDeleteAdminPackageUrl = (key: string,) => {
+
+
+
+
+  return `/api/admin/packages/${key}`
+}
+
+/**
+ * Deletes all of the package's plans on Whop. Packages with buyers can only be hidden.
+ * @summary Delete a package nobody has bought
+ */
+export const deleteAdminPackage = async (key: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminPackageUrl(key),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteAdminPackageMutationKey = () => ['deleteAdminPackage'] as const;
+
+export const getDeleteAdminPackageMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPackage>>, TError,DeleteAdminPackageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPackage>>, TError,DeleteAdminPackageMutationVariables, TContext> => {
+
+const mutationKey = getDeleteAdminPackageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminPackage>>, DeleteAdminPackageMutationVariables> = (props) => {
+          const {key} = props ?? {};
+
+          return  deleteAdminPackage(key,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminPackageMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminPackage>>>
+
+    export type DeleteAdminPackageMutationError = ErrorType<ErrorResponse>
+    export type DeleteAdminPackageMutationVariables = {key: string}
+
+    /**
+ * @summary Delete a package nobody has bought
+ */
+export const useDeleteAdminPackage = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminPackage>>, TError,DeleteAdminPackageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminPackage>>,
+        TError,
+        DeleteAdminPackageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteAdminPackageMutationOptions(options));
     }
 

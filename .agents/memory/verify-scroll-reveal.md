@@ -19,6 +19,8 @@ Testing POST endpoints from the headless browser: the API rejects requests whose
 
 Screens that need a real Whop payment or an admin sign-in (paid `/cam-on`, the `/admin` inbox) can still be looked at: `Fetch.enable` with pattern `*/api/*` on the page session, answer the needed GETs with `Fetch.fulfillRequest` (fake JSON, base64 body) and `Fetch.continueRequest` the rest. For "only one browser signed in" checks, `Target.createBrowserContext` gives each page its own cookies, like separate browsers; attach with `flatten: true` and pass `sessionId` on each command. Set React inputs with the native value setter plus an `input` event.
 
+Scripts gated on the host name (the Whop pixel skips `localhost` and `*.replit.dev`) can be tested by starting chromium with `--host-resolver-rules=MAP shop.test 127.0.0.1` and loading `http://shop.test/...`. Intercept the tracker's origin with `Fetch`, answer `s.js` with a downloaded copy and every other request with 204, so no test traffic reaches the user's dashboard.
+
 If WebGL is ever needed again in headless mode: drop `--disable-gpu` and add `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
 
 **Why:** pricing cards with live data, checkout navigation, the road character's per-leg vehicles and the FAQ height check could only be confirmed this way.

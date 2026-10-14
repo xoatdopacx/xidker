@@ -24,21 +24,23 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 
 ## Where things live
 
-- API contract: `lib/api-spec/openapi.yaml` (packages, checkout, checkout status, customer support chat `/support/*`, admin inbox `/admin/*`)
-- Whop access (server-only): `artifacts/api-server/src/lib/whopClient.ts`, `artifacts/api-server/src/lib/whopStore.ts`
+- API contract: `lib/api-spec/openapi.yaml` (packages, checkout, checkout status, customer support chat `/support/*`, admin inbox and packages `/admin/*`)
+- Whop access (server-only): `artifacts/api-server/src/lib/whopClient.ts`, `artifacts/api-server/src/lib/whopStore.ts` (site catalog, checkout), `whopAdmin.ts` (admin package editing)
 - DB schema: `lib/db/src/schema/checkoutSessions.ts` (ref → Whop checkout configuration), `support.ts` (customer chat accounts, sessions, sign-in attempt log), `chat.ts` (conversations, messages), `adminAuth.ts`
-- Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), `admin.tsx` (`/admin` inbox, screens in `src/components/admin/`), theme in `src/index.css`
+- Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), `admin.tsx` (`/admin`: inbox + products & prices tabs, screens in `src/components/admin/`), theme in `src/index.css`
 - Support chat: `src/components/chat-widget.tsx` (button + panel), `src/lib/support-chat.ts` (show/open from other pages); server in `artifacts/api-server/src/routes/support.ts` and `src/lib/supportAuth.ts`
 - UI text: `artifacts/web-landing/src/locales/<code>.json` (`vi.json` is the source, `en.json` the fallback); languages, detection, fonts and currency in `src/lib/i18n.tsx`; picker in `src/components/lang-picker.tsx`
 - Package text translations: `artifacts/api-server/src/lib/packageTranslations.ts`
 
 ## Architecture decisions
 
-- Whop is the catalog: each package is a visible Whop plan under `WHOP_PRODUCT_ID`. Edit name/price/description in Whop; the site picks it up within 60s (in-memory cache). Plans are grouped into packages by metadata `key` (`personal`, `setup`, `commercial`); each package has one VND plan and one USD plan with the same `key`. Metadata `title_lang` says which language the plan title + description are written in (`vi` on the VND plans, `en` on the USD plans; description: first line = tagline, `- ` lines = features). Other metadata: `recommended: "true"` = highlighted package; `name_<lang>`, `tagline_<lang>`, `features_<lang>` (one feature per line) override the text for one language. When updating plan metadata, send every key.
+- Whop is the catalog: each package is a visible Whop plan under `WHOP_PRODUCT_ID`. Edit name/price/description from `/admin` → "Sản phẩm & giá" (or in Whop); the site picks it up within 60s (in-memory cache; admin saves clear it on the server they hit). Plans are grouped into packages by metadata `key` (`personal`, `setup`, `commercial`); each package has one VND plan and one USD plan with the same `key`. Metadata `title_lang` says which language the plan title + description are written in (`vi` on the VND plans, `en` on the USD plans; description: first line = tagline, `- ` lines = features). Other metadata: `recommended: "true"` = highlighted package; `name_<lang>`, `tagline_<lang>`, `features_<lang>` (one feature per line) override the text for one language. When updating plan metadata, send every key (Whop replaces it whole). The admin screen manages one-time plans only: it writes the Vietnamese text to the VND plan and the English text to the USD plan, drops the `name_/tagline_/features_` vi/en metadata copies, creates new packages with a `<slug>-<hex>` key (both plans hidden first, then shown together), allows one recommended package, and deletes only packages without buyers (others can be hidden).
 - Package text per language: own Whop text → built-in translation (only while Whop's English text still equals the translation's `source`; otherwise the server logs a warning and shows English) → English → Vietnamese. After rewording a package in Whop, refresh `packageTranslations.ts` or those languages show English.
 - Language: `GET /api/packages?lang=<code>` (33 codes) localizes package text server-side. Home translations use stable `/<code>/` URLs; `/` is the English default (`x-default`). The home URL wins over stored/browser preferences so crawlers and visitors see the same language. Legacy home `?lang=` links are normalized in the browser; other pages retain query/saved/browser language selection. Currency: VND by default for Vietnamese, USD for every other language; the visitor can switch and the choice is saved. The checkout-status endpoint is not localized; the thank-you page maps `packageId` to the localized name from the package list.
 - Locale SEO: the Vite plugin generates 33 localized HTML shells with self-canonical, reciprocal hreflang, crawlable language links and social metadata. `seo/site.ts` uses the confirmed production origin; set build-time `SEO_SITE_ORIGIN` when moving domains. `public/share-card.png` is the 1200×630 preview (editable source in `seo/share-card.svg`).
 - Server rendering: dev and production both run `seo/server.mjs`, which renders the sales page with live Whop prices in the HTML. It reads the catalog from the API through `localhost:80` in dev and directly on the API's own port (8080) in production. If the catalog is down or slower than 3s, the page still answers 200 without prices and the browser loads them. Never let `/` depend on the API, because the publish health check calls `/`. Check with a landing build (`PORT=18500 BASE_PATH=/` must be set) followed by `node --test artifacts/web-landing/tests/ssr.test.mjs artifacts/web-landing/tests/seo.test.mjs`.
+- Addresses carry no `#section`: nav links scroll without touching the URL, and an old `/vi#hoi-dap` link lands on the section and then drops the hash.
+- Whop pixel (Whop's snippet, scope = `WHOP_COMPANY_ID`) sits in the `<head>` of `index.html`; it is skipped on `/admin`, `localhost` and `*.replit.dev`, so only the published site reports visitors. It adds a visitor id (`_swuid`) to clicked `<a>` links to whop.com, which is why checkout leaves through a real link click.
 - Checkout: server creates a Whop checkout configuration with `redirect_url = <site>/cam-on?ref=<random>` and stores ref → checkout id. The redirect itself proves nothing.
 - `/cam-on` shows "paid" only when Whop reports a payment with status `paid` for that checkout configuration (server-side lookup); otherwise it polls as "pending".
 - The redirect origin is taken from the request's Origin/Referer only if the host is in `REPLIT_DOMAINS`/`REPLIT_DEV_DOMAIN`, so a forged header cannot redirect buyers elsewhere.
@@ -50,9 +52,9 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 ## Product
 
 - Sales page in 33 languages (pixel globe picker in the header and footer; Arabic, Persian, Hebrew and Urdu read right to left): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop with a VND/USD switch, FAQ, contact email.
-- "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise).
+- "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise). The pricing grid adapts to 1–5+ packages.
 - `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, amount, date, order ID) and a card to switch on support chat with the order ID filled in.
-- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; `/admin` inbox in Vietnamese only, showing each customer's email, package and order ID.
+- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; `/admin` in Vietnamese only: inbox showing each customer's email, package and order ID, and "Sản phẩm & giá" to change prices and text, hide/show, mark the recommended package, list a new source for sale, or delete an unsold one. Files are still delivered by hand.
 
 ## User preferences
 
@@ -60,7 +62,7 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - Use SVG icons, no emoji anywhere in the UI. Motion and look follow the user's pixel-art game "ROAD MAP" reference (attached_assets/__1791889422870.jpg); this replaced the earlier artsy 3D sculpture direction.
 - Vietnamese copy must be plain, natural everyday Vietnamese; the user rejected the poetic headline "Trang bán hàng khách dừng lại để ngắm."
 - Brand is "xidker" (lowercase). The only real contact detail is hello@idkworkshop.com; do not add phone numbers or addresses unless the user provides them.
-- The product is portfolio source code. The three packages (Source Cá Nhân / Source + Cài Đặt / Source Thương Mại) and their prices are sample content until the user provides real ones. Whop grants access per product, not per plan, so different templates would need separate Whop products.
+- The product is portfolio source code. Packages are managed by the user from `/admin` (see the pricing-rules memory for the agreed contents of the current three). Whop grants access per product, not per plan, so different templates would need separate Whop products.
 - No invented social proof (customer names, testimonials, counts, statistics).
 
 ## Gotchas

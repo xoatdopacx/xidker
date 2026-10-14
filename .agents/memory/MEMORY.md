@@ -1,4 +1,4 @@
-- [Whop integration quirks](whop-integration.md) — SDK pinned to 0.0.42; account_id vs company_id per method; VND works; MCP helper flaky, use REST.
+- [Whop integration quirks](whop-integration.md) — SDK pinned to 0.0.42; id param names; plan text/metadata limits; pixel tags only real <a> clicks to whop.com.
 - [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; fake API answers via Fetch; POSTs need the dev-domain Origin.
 - [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.
 - [Font delivery policy](font-delivery.md) — prioritize readable fallback text over waiting for base fonts; preserve on-demand script fonts and covered language switches.
@@ -8,3 +8,4 @@
 - [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script plus a key-path check against vi.json.
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
 - [SEO rendering policy](seo-rendering.md) — same React content for bots and visitors; `/` must answer 200 within 5s without the catalog; check which code a failed publish built.
+- [Frontend gotchas](frontend-gotchas.md) — custom classes in index.css are unlayered and beat Tailwind v4 utilities (md:hidden, pe-9) on the same property.

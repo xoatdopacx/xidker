@@ -311,3 +311,180 @@ export const SendAdminMessageResponse = zod.object({
 })
 
 
+/**
+ * Read straight from Whop, uncached. A package is the group of one-time plans under the shop's Whop product that share a metadata key: its VND plan carries the Vietnamese text and its USD plan the English text.
+ * @summary List every package on Whop, hidden ones included
+ */
+export const ListAdminPackagesResponseItem = zod.object({
+  "key": zod.string().describe('Package group shared by its plans (Whop plan metadata "key")'),
+  "vi": zod.object({
+  "name": zod.string(),
+  "tagline": zod.string().nullable(),
+  "features": zod.array(zod.string())
+}).describe('A package\'s text in one language, as stored on Whop'),
+  "en": zod.object({
+  "name": zod.string(),
+  "tagline": zod.string().nullable(),
+  "features": zod.array(zod.string())
+}).describe('A package\'s text in one language, as stored on Whop'),
+  "priceVnd": zod.number().nullable().describe('Null when the package has no VND plan'),
+  "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
+  "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
+  "recommended": zod.boolean(),
+  "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
+  "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
+})
+export const ListAdminPackagesResponse = zod.array(ListAdminPackagesResponseItem)
+
+
+/**
+ * Creates the package's VND and USD plans on Whop. The site shows the change within about a minute.
+ * @summary Put a new package on sale
+ */
+export const createAdminPackageBodyViNameMax = 30;
+
+export const createAdminPackageBodyViTaglineMax = 160;
+
+export const createAdminPackageBodyViFeaturesItemMax = 100;
+
+export const createAdminPackageBodyViFeaturesMax = 8;
+
+export const createAdminPackageBodyEnNameMax = 30;
+
+export const createAdminPackageBodyEnTaglineMax = 160;
+
+export const createAdminPackageBodyEnFeaturesItemMax = 100;
+
+export const createAdminPackageBodyEnFeaturesMax = 8;
+
+export const createAdminPackageBodyPriceVndMin = 10000;
+export const createAdminPackageBodyPriceVndMax = 1000000000;
+
+export const createAdminPackageBodyPriceUsdMax = 100000;
+
+
+
+export const CreateAdminPackageBody = zod.object({
+  "vi": zod.object({
+  "name": zod.string().min(1).max(createAdminPackageBodyViNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "tagline": zod.string().max(createAdminPackageBodyViTaglineMax).nullable(),
+  "features": zod.array(zod.string().min(1).max(createAdminPackageBodyViFeaturesItemMax)).max(createAdminPackageBodyViFeaturesMax)
+}),
+  "en": zod.object({
+  "name": zod.string().min(1).max(createAdminPackageBodyEnNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "tagline": zod.string().max(createAdminPackageBodyEnTaglineMax).nullable(),
+  "features": zod.array(zod.string().min(1).max(createAdminPackageBodyEnFeaturesItemMax)).max(createAdminPackageBodyEnFeaturesMax)
+}),
+  "priceVnd": zod.number().int().min(createAdminPackageBodyPriceVndMin).max(createAdminPackageBodyPriceVndMax),
+  "priceUsd": zod.number().min(1).max(createAdminPackageBodyPriceUsdMax).describe('At most 2 decimals'),
+  "onSale": zod.boolean(),
+  "recommended": zod.boolean()
+})
+
+export const CreateAdminPackageResponse = zod.object({
+  "key": zod.string().describe('Package group shared by its plans (Whop plan metadata "key")'),
+  "vi": zod.object({
+  "name": zod.string(),
+  "tagline": zod.string().nullable(),
+  "features": zod.array(zod.string())
+}).describe('A package\'s text in one language, as stored on Whop'),
+  "en": zod.object({
+  "name": zod.string(),
+  "tagline": zod.string().nullable(),
+  "features": zod.array(zod.string())
+}).describe('A package\'s text in one language, as stored on Whop'),
+  "priceVnd": zod.number().nullable().describe('Null when the package has no VND plan'),
+  "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
+  "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
+  "recommended": zod.boolean(),
+  "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
+  "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
+})
+
+
+/**
+ * Only the Whop fields that differ are sent. A missing VND or USD plan is created. Marking a package recommended clears the mark on every other package.
+ * @summary Change a package's prices, text, recommended mark or whether it is on sale
+ */
+export const updateAdminPackagePathKeyRegExp = new RegExp('^[A-Za-z0-9_-]{1,64}$');
+
+
+export const UpdateAdminPackageParams = zod.object({
+  "key": zod.coerce.string().regex(updateAdminPackagePathKeyRegExp)
+})
+
+export const updateAdminPackageBodyViNameMax = 30;
+
+export const updateAdminPackageBodyViTaglineMax = 160;
+
+export const updateAdminPackageBodyViFeaturesItemMax = 100;
+
+export const updateAdminPackageBodyViFeaturesMax = 8;
+
+export const updateAdminPackageBodyEnNameMax = 30;
+
+export const updateAdminPackageBodyEnTaglineMax = 160;
+
+export const updateAdminPackageBodyEnFeaturesItemMax = 100;
+
+export const updateAdminPackageBodyEnFeaturesMax = 8;
+
+export const updateAdminPackageBodyPriceVndMin = 10000;
+export const updateAdminPackageBodyPriceVndMax = 1000000000;
+
+export const updateAdminPackageBodyPriceUsdMax = 100000;
+
+
+
+export const UpdateAdminPackageBody = zod.object({
+  "vi": zod.object({
+  "name": zod.string().min(1).max(updateAdminPackageBodyViNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "tagline": zod.string().max(updateAdminPackageBodyViTaglineMax).nullable(),
+  "features": zod.array(zod.string().min(1).max(updateAdminPackageBodyViFeaturesItemMax)).max(updateAdminPackageBodyViFeaturesMax)
+}),
+  "en": zod.object({
+  "name": zod.string().min(1).max(updateAdminPackageBodyEnNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "tagline": zod.string().max(updateAdminPackageBodyEnTaglineMax).nullable(),
+  "features": zod.array(zod.string().min(1).max(updateAdminPackageBodyEnFeaturesItemMax)).max(updateAdminPackageBodyEnFeaturesMax)
+}),
+  "priceVnd": zod.number().int().min(updateAdminPackageBodyPriceVndMin).max(updateAdminPackageBodyPriceVndMax),
+  "priceUsd": zod.number().min(1).max(updateAdminPackageBodyPriceUsdMax).describe('At most 2 decimals'),
+  "onSale": zod.boolean(),
+  "recommended": zod.boolean()
+})
+
+export const UpdateAdminPackageResponse = zod.object({
+  "key": zod.string().describe('Package group shared by its plans (Whop plan metadata "key")'),
+  "vi": zod.object({
+  "name": zod.string(),
+  "tagline": zod.string().nullable(),
+  "features": zod.array(zod.string())
+}).describe('A package\'s text in one language, as stored on Whop'),
+  "en": zod.object({
+  "name": zod.string(),
+  "tagline": zod.string().nullable(),
+  "features": zod.array(zod.string())
+}).describe('A package\'s text in one language, as stored on Whop'),
+  "priceVnd": zod.number().nullable().describe('Null when the package has no VND plan'),
+  "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
+  "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
+  "recommended": zod.boolean(),
+  "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
+  "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
+})
+
+
+/**
+ * Deletes all of the package's plans on Whop. Packages with buyers can only be hidden.
+ * @summary Delete a package nobody has bought
+ */
+export const deleteAdminPackagePathKeyRegExp = new RegExp('^[A-Za-z0-9_-]{1,64}$');
+
+
+export const DeleteAdminPackageParams = zod.object({
+  "key": zod.coerce.string().regex(deleteAdminPackagePathKeyRegExp)
+})
+
+export const DeleteAdminPackageResponse = zod.void()
+
+

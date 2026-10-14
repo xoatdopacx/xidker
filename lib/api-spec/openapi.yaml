@@ -17,7 +17,7 @@ tags:
   - name: support
     description: Support chat for customers who bought a package
   - name: admin
-    description: Studio admin sign-in and chat inbox
+    description: Studio admin sign-in, chat inbox and the packages on sale
 paths:
   /healthz:
     get:
@@ -604,6 +604,216 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /admin/packages:
+    get:
+      operationId: listAdminPackages
+      tags: [admin]
+      summary: List every package on Whop, hidden ones included
+      description: >-
+        Read straight from Whop, uncached. A package is the group of one-time plans under the shop's
+        Whop product that share a metadata key: its VND plan carries the Vietnamese text and its USD plan the English text.
+      responses:
+        "200":
+          description: Packages, cheapest VND price first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminPackage"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminPackage
+      tags: [admin]
+      summary: Put a new package on sale
+      description: Creates the package's VND and USD plans on Whop. The site shows the change within about a minute.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPackageInput"
+      responses:
+        "201":
+          description: Created on Whop
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPackage"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Whop refused the change; the error says why
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/packages/{key}:
+    put:
+      operationId: updateAdminPackage
+      tags: [admin]
+      summary: Change a package's prices, text, recommended mark or whether it is on sale
+      description: >-
+        Only the Whop fields that differ are sent. A missing VND or USD plan is created.
+        Marking a package recommended clears the mark on every other package.
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]{1,64}$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPackageInput"
+      responses:
+        "200":
+          description: Saved on Whop
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPackage"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Package not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Whop refused the change; the error says why
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminPackage
+      tags: [admin]
+      summary: Delete a package nobody has bought
+      description: Deletes all of the package's plans on Whop. Packages with buyers can only be hidden.
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]{1,64}$"
+      responses:
+        "204":
+          description: Deleted on Whop
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Package not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The package has buyers, so it can only be hidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Whop refused the change; the error says why
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -930,3 +1140,109 @@ components:
           enum: [open, closed]
       required:
         - status
+    AdminPackageText:
+      type: object
+      description: A package's text in one language, as stored on Whop
+      properties:
+        name:
+          type: string
+        tagline:
+          type: ["string", "null"]
+        features:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - tagline
+        - features
+    AdminPackage:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Package group shared by its plans (Whop plan metadata "key")
+        vi:
+          $ref: "#/components/schemas/AdminPackageText"
+        en:
+          $ref: "#/components/schemas/AdminPackageText"
+        priceVnd:
+          type: ["number", "null"]
+          description: Null when the package has no VND plan
+        priceUsd:
+          type: ["number", "null"]
+          description: Null when the package has no USD plan
+        onSale:
+          type: boolean
+          description: Shown on the site (at least one of its plans is visible on Whop)
+        recommended:
+          type: boolean
+        buyers:
+          type: integer
+          description: Current Whop members across the package's plans
+        translations:
+          type: string
+          enum: [built_in, outdated, none]
+          description: >-
+            built_in: the site has ready translations for the other languages and they match the English text.
+            outdated: the English text changed since they were made. none: no ready translations.
+            Languages without a translation show the English text.
+      required:
+        - key
+        - vi
+        - en
+        - priceVnd
+        - priceUsd
+        - onSale
+        - recommended
+        - buyers
+        - translations
+    AdminPackageTextInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 30
+          description: Whop allows at most 30 characters in a plan title
+        tagline:
+          type: ["string", "null"]
+          maxLength: 160
+        features:
+          type: array
+          maxItems: 8
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+      required:
+        - name
+        - tagline
+        - features
+    AdminPackageInput:
+      type: object
+      properties:
+        vi:
+          $ref: "#/components/schemas/AdminPackageTextInput"
+        en:
+          $ref: "#/components/schemas/AdminPackageTextInput"
+        priceVnd:
+          type: integer
+          minimum: 10000
+          maximum: 1000000000
+        priceUsd:
+          type: number
+          minimum: 1
+          maximum: 100000
+          description: At most 2 decimals
+        onSale:
+          type: boolean
+        recommended:
+          type: boolean
+      required:
+        - vi
+        - en
+        - priceVnd
+        - priceUsd
+        - onSale
+        - recommended

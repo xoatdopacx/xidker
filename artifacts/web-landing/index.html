@@ -18,6 +18,15 @@
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:alt" content="xidker — portfolio website source code, pixel-art road map" />
     <meta name="twitter:image:alt" content="xidker — portfolio website source code, pixel-art road map" />
+    <!-- Whop pixel (Whop's snippet as given): page views, and the visitor id on links to Whop checkout.
+         Left out of the admin screens and the dev preview, so Whop only counts real visitors. -->
+    <script>
+      if (!/^\/admin(\/|$)/.test(location.pathname) && !/^(localhost|127\.0\.0\.1)$|\.replit\.dev$/.test(location.hostname)) {
+        !function(w,d,s,u,n,a,b){if(w[n])return;a=w[n]={q:[],t:+new Date,s:[],o:u,track:function(){a.q.push([+new Date].concat([].slice.call(arguments)))},setScope:function(){a.s=[].slice.call(arguments).filter(function(x){return typeof x==="string"});a.q.push([+new Date,"setScope"].concat(a.s))},scope:function(){var c=[].slice.call(arguments);return{track:function(){a.q.push([+new Date].concat([].slice.call(arguments)).concat([{__scope:c}]))}}}};b=d.createElement(s);b.async=1;b.src=u+"/s.js";d.getElementsByTagName(s)[0].parentNode.insertBefore(b,d.getElementsByTagName(s)[0])}(window,document,"script","https://t.whop.tw","whop");
+        whop.setScope("biz_5Vqfd5DSoYsIXO");
+        whop.track("page");
+      }
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

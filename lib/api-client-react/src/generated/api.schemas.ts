@@ -320,6 +320,90 @@ export interface AdminConversationUpdate {
   status: AdminConversationUpdateStatus;
 }
 
+/**
+ * A package's text in one language, as stored on Whop
+ */
+export interface AdminPackageText {
+  name: string;
+  /** @nullable */
+  tagline: string | null;
+  features: string[];
+}
+
+/**
+ * built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.
+ */
+export type AdminPackageTranslations = typeof AdminPackageTranslations[keyof typeof AdminPackageTranslations];
+
+
+export const AdminPackageTranslations = {
+  built_in: 'built_in',
+  outdated: 'outdated',
+  none: 'none',
+} as const;
+
+export interface AdminPackage {
+  /** Package group shared by its plans (Whop plan metadata "key") */
+  key: string;
+  vi: AdminPackageText;
+  en: AdminPackageText;
+  /**
+     * Null when the package has no VND plan
+     * @nullable
+     */
+  priceVnd: number | null;
+  /**
+     * Null when the package has no USD plan
+     * @nullable
+     */
+  priceUsd: number | null;
+  /** Shown on the site (at least one of its plans is visible on Whop) */
+  onSale: boolean;
+  recommended: boolean;
+  /** Current Whop members across the package's plans */
+  buyers: number;
+  /** built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text. */
+  translations: AdminPackageTranslations;
+}
+
+export interface AdminPackageTextInput {
+  /**
+     * Whop allows at most 30 characters in a plan title
+     * @minLength 1
+     * @maxLength 30
+     */
+  name: string;
+  /**
+     * @maxLength 160
+     * @nullable
+     */
+  tagline: string | null;
+  /**
+     * @maxItems 8
+     * @items.minLength 1
+     * @items.maxLength 100
+     */
+  features: string[];
+}
+
+export interface AdminPackageInput {
+  vi: AdminPackageTextInput;
+  en: AdminPackageTextInput;
+  /**
+     * @minimum 10000
+     * @maximum 1000000000
+     */
+  priceVnd: number;
+  /**
+     * At most 2 decimals
+     * @minimum 1
+     * @maximum 100000
+     */
+  priceUsd: number;
+  onSale: boolean;
+  recommended: boolean;
+}
+
 export type ListPackagesParams = {
 /**
  * Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.

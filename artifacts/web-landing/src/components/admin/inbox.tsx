@@ -4,14 +4,12 @@ import { ArrowLeft } from "lucide-react";
 import {
   useListAdminConversations, getListAdminConversationsQueryKey,
   useListAdminMessages, getListAdminMessagesQueryKey,
-  useSendAdminMessage, useUpdateAdminConversation, useSignOutAdmin,
-  type AdminConversation, type AdminSession, type ChatMessage,
+  useSendAdminMessage, useUpdateAdminConversation,
+  type AdminConversation, type ChatMessage,
 } from "@workspace/api-client-react";
-import { Wordmark } from "@/components/sprites";
 import { statusOf } from "@/lib/http";
 import {
-  adminErrorText, clock, fullWhen, guestName, languageName, messageWhen, shortWhen,
-  useDocTitle, useSignOutOn401,
+  adminErrorText, fullWhen, guestName, languageName, messageWhen, shortWhen, useSignOutOn401,
 } from "./shared";
 
 type Filter = "open" | "closed" | "all";
@@ -25,13 +23,12 @@ const LIST_KEY = getListAdminConversationsQueryKey();
 
 type SignedOut = (notice: string | null) => void;
 
-export function AdminInbox({ session, onSignedOut }: { session: AdminSession; onSignedOut: SignedOut }) {
+/** The conversation list and the open thread; the admin shell above owns the header and the polling. */
+export function AdminInbox({ drafts, onSignedOut }: { drafts: Map<string, string>; onSignedOut: SignedOut }) {
   const [filter, setFilter] = useState<Filter>("open");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const drafts = useRef(new Map<string, string>());
-  const signOut = useSignOutAdmin();
 
-  // Keeps polling in a background tab so the unread count in the tab title stays current.
+  // Same query (and cache entry) as the shell's, which keeps it polling.
   const list = useListAdminConversations({
     query: { queryKey: LIST_KEY, refetchInterval: 5000, refetchIntervalInBackground: true, retry: false },
   });
@@ -41,71 +38,52 @@ export function AdminInbox({ session, onSignedOut }: { session: AdminSession; on
   const shown = filter === "all" ? all : all.filter((c) => c.status === filter);
   const count = (f: Filter) => (f === "all" ? all.length : all.filter((c) => c.status === f).length);
   const selected = all.find((c) => c.id === selectedId) ?? null;
-  const unreadTotal = all.reduce((n, c) => n + c.unread, 0);
-
-  useDocTitle(unreadTotal > 0 ? `(${unreadTotal}) Hộp thư — xidker` : "Hộp thư — xidker");
-
-  const leave = () => {
-    signOut.mutate(undefined, { onSettled: () => onSignedOut(null) });
-  };
 
   return (
-    <div className="h-[100dvh] flex flex-col">
-      <header className="adm-bar flex items-center gap-3 px-4 h-14 shrink-0">
-        <Wordmark size="text-xl" />
-        <span className="font-bold text-sm">Hộp thư</span>
-        {unreadTotal > 0 && <span className="adm-badge font-num" aria-label={`${unreadTotal} tin chưa đọc`}>{unreadTotal > 99 ? "99+" : unreadTotal}</span>}
-        <span className="ms-auto hidden sm:inline text-xs text-[#b9c9b0]">Phiên hết hạn lúc {clock(session.expiresAt)}</span>
-        <button type="button" onClick={leave} disabled={signOut.isPending} className="adm-btn dark h-9 px-3 text-sm ms-auto sm:ms-0" data-testid="button-admin-sign-out">
-          {signOut.isPending ? "Đang thoát…" : "Đăng xuất"}
-        </button>
-      </header>
-
-      <div className="flex-1 min-h-0 flex">
-        <section aria-label="Danh sách cuộc trò chuyện"
-          className={`${selected ? "hidden md:flex" : "flex"} w-full md:w-[340px] lg:w-[380px] shrink-0 flex-col border-e-[3px] border-[#1b2a1c] bg-[hsl(var(--paper))]`}>
-          <div className="flex gap-1.5 p-3 border-b-[3px] border-[#1b2a1c]" role="group" aria-label="Lọc">
-            {FILTERS.map((f) => (
-              <button key={f.value} type="button" onClick={() => setFilter(f.value)} aria-pressed={filter === f.value}
-                className="adm-tab flex-1 h-9 text-sm font-bold" data-testid={`button-filter-${f.value}`}>
-                {f.label} <span className="font-num text-[11px]">{count(f.value)}</span>
-              </button>
-            ))}
-          </div>
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
-            {list.isPending ? (
-              <p className="p-6 text-sm text-[#3d4a3d]">Đang tải…</p>
-            ) : list.isError && !list.data ? (
-              <div className="p-6 text-sm">
-                <p>{adminErrorText(list.error)}</p>
-                <button type="button" onClick={() => list.refetch()} className="adm-btn h-9 px-3 mt-3">Thử lại</button>
-              </div>
-            ) : shown.length === 0 ? (
-              <p className="p-6 text-sm text-[#3d4a3d]">
-                {filter === "closed" ? "Chưa có cuộc trò chuyện nào đã đóng." : filter === "open" ? "Không có cuộc trò chuyện nào đang mở." : "Chưa có ai nhắn tin."}
-              </p>
-            ) : (
-              <ul>
-                {shown.map((c) => (
-                  <li key={c.id}>
-                    <ConversationRow conv={c} active={c.id === selectedId} onOpen={() => setSelectedId(c.id)} />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </section>
-
-        <section aria-label="Cuộc trò chuyện" className={`${selected ? "flex" : "hidden md:flex"} flex-1 min-w-0 flex-col`}>
-          {selected ? (
-            <Thread key={selected.id} conv={selected} drafts={drafts.current} onBack={() => setSelectedId(null)} onSignedOut={onSignedOut} />
-          ) : (
-            <div className="m-auto p-6 text-center text-sm text-[#3d4a3d]">
-              {all.length ? "Chọn một cuộc trò chuyện ở bên trái." : "Khi khách đã mua nhắn tin, cuộc trò chuyện sẽ hiện ở đây."}
+    <div className="flex-1 min-h-0 flex">
+      <section aria-label="Danh sách cuộc trò chuyện"
+        className={`${selected ? "hidden md:flex" : "flex"} w-full md:w-[340px] lg:w-[380px] shrink-0 flex-col border-e-[3px] border-[#1b2a1c] bg-[hsl(var(--paper))]`}>
+        <div className="flex gap-1.5 p-3 border-b-[3px] border-[#1b2a1c]" role="group" aria-label="Lọc">
+          {FILTERS.map((f) => (
+            <button key={f.value} type="button" onClick={() => setFilter(f.value)} aria-pressed={filter === f.value}
+              className="adm-tab flex-1 h-9 text-sm font-bold" data-testid={`button-filter-${f.value}`}>
+              {f.label} <span className="font-num text-[11px]">{count(f.value)}</span>
+            </button>
+          ))}
+        </div>
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+          {list.isPending ? (
+            <p className="p-6 text-sm text-[#3d4a3d]">Đang tải…</p>
+          ) : list.isError && !list.data ? (
+            <div className="p-6 text-sm">
+              <p>{adminErrorText(list.error)}</p>
+              <button type="button" onClick={() => list.refetch()} className="adm-btn h-9 px-3 mt-3">Thử lại</button>
             </div>
+          ) : shown.length === 0 ? (
+            <p className="p-6 text-sm text-[#3d4a3d]">
+              {filter === "closed" ? "Chưa có cuộc trò chuyện nào đã đóng." : filter === "open" ? "Không có cuộc trò chuyện nào đang mở." : "Chưa có ai nhắn tin."}
+            </p>
+          ) : (
+            <ul>
+              {shown.map((c) => (
+                <li key={c.id}>
+                  <ConversationRow conv={c} active={c.id === selectedId} onOpen={() => setSelectedId(c.id)} />
+                </li>
+              ))}
+            </ul>
           )}
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <section aria-label="Cuộc trò chuyện" className={`${selected ? "flex" : "hidden md:flex"} flex-1 min-w-0 flex-col`}>
+        {selected ? (
+          <Thread key={selected.id} conv={selected} drafts={drafts} onBack={() => setSelectedId(null)} onSignedOut={onSignedOut} />
+        ) : (
+          <div className="m-auto p-6 text-center text-sm text-[#3d4a3d]">
+            {all.length ? "Chọn một cuộc trò chuyện ở bên trái." : "Khi khách đã mua nhắn tin, cuộc trò chuyện sẽ hiện ở đây."}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
@@ -241,7 +219,7 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
   return (
     <>
       <div className="flex items-start gap-3 px-4 py-3 border-b-[3px] border-[#1b2a1c] bg-[hsl(var(--paper))]">
-        <button type="button" onClick={onBack} aria-label="Quay lại danh sách" className="adm-btn md:hidden h-9 w-9 shrink-0" data-testid="button-admin-back-to-list">
+        <button type="button" onClick={onBack} aria-label="Quay lại danh sách" className="adm-btn adm-back h-9 w-9 shrink-0" data-testid="button-admin-back-to-list">
           <ArrowLeft className="h-4 w-4" strokeWidth={3} />
         </button>
         <div className="min-w-0 flex-1">

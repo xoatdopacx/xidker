@@ -109,7 +109,7 @@ export function AdminSignIn({ notice, onSignedIn }: { notice: string | null; onS
         {step === "token" ? (
           <form onSubmit={askForCode} className="mt-6 flex flex-col gap-4">
             <div>
-              <h1 className="text-lg font-extrabold">Đăng nhập hộp thư</h1>
+              <h1 className="text-lg font-extrabold">Đăng nhập trang quản trị</h1>
               <p className="mt-1 text-sm text-[#3d4a3d]">Nhập khóa quản trị. Sau đó một mã 6 số sẽ được gửi tới email quản trị.</p>
             </div>
             {info && <Notice tone="info" text={info} />}
