@@ -911,6 +911,22 @@ bbb
 .b.
 SSS`;
 
+/* ---------- the meadow around the 404 card ---------- */
+
+const MUSHROOMS = `
+..RRRR.......
+.RRWRRR......
+RRRRRWRR.....
+RRRRRRRR.RRR.
+.KwwwwK.RRWRR
+...ww...KwwK.
+...ww....ww..`;
+
+const LOG = `
+.BBBBBBBBT.
+bBBBBBBBTbT
+.bbbbbbbbT.`;
+
 /* ---------- compositions ---------- */
 
 export type Part = {
@@ -930,7 +946,8 @@ export type Fx = { k: "smoke" | "steam" | "confetti" | "burst"; x: number; y: nu
 export type SceneDef = { w: number; h: number; parts: Part[]; fx?: Fx[]; swap?: { x: number; y: number } };
 
 export type SceneName = "home" | "bike" | "cafe" | "fuel" | "bus" | "balloon" | "air" | "launch" | "finish" | "signpost"
-  | "pond" | "farm" | "windmill" | "camp" | "bees" | "icecream" | "garden" | "dock" | "works";
+  | "pond" | "farm" | "windmill" | "camp" | "bees" | "icecream" | "garden" | "dock" | "works"
+  | "grove" | "meadow" | "blooms" | "bedside" | "harvest";
 
 export const SCENES: Record<SceneName, SceneDef> = {
   home: {
@@ -1178,6 +1195,59 @@ export const SCENES: Record<SceneName, SceneDef> = {
       { a: CONE, x: 27, y: 6 },
       { a: SHOVEL, x: 35, y: 2 },
       { a: SAND, x: 32, y: 8 },
+    ],
+  },
+  /* the meadow around the 404 card (components/not-found-meadow.tsx) */
+  grove: {
+    w: 26, h: 21,
+    parts: [
+      { a: PINE, x: 9, y: 0 },
+      { a: PINE, x: 0, y: 5 },
+      { a: PINE, x: 17, y: 7 },
+      { a: BUSH, x: 8, y: 15 },
+      { a: FLOWERS, x: 2, y: 18 },
+    ],
+  },
+  meadow: {
+    w: 16, h: 5,
+    parts: [
+      { a: FLOWERS, x: 0, y: 2 },
+      { a: ROCK, x: 6, y: 2 },
+      { a: FLOWERS_B, x: 11, y: 0 },
+    ],
+  },
+  blooms: {
+    w: 14, h: 8,
+    parts: [
+      { a: TALL_FLOWER, x: 0, y: 0 },
+      { a: TALL_FLOWER, x: 4, y: 2 },
+      { a: FLOWERS, x: 9, y: 1 },
+      { a: FLOWERS_B, x: 8, y: 5 },
+    ],
+  },
+  /* drawn around the sleeping-cat bed (54x39, placed at 0,1 on top): a bush behind its foot, a pine at its
+     head, mushrooms and flowers in the empty corner in front */
+  bedside: {
+    w: 65, h: 40,
+    parts: [
+      { a: BUSH, x: 2, y: 4 },
+      { a: FLOWERS, x: 8, y: 9 },
+      { a: PINE, x: 56, y: 12 },
+      { a: MUSHROOMS, x: 36, y: 33 },
+      { a: FLOWERS_B, x: 50, y: 37 },
+      { a: TALL_FLOWER, x: 58, y: 31 },
+      { a: TALL_FLOWER, x: 62, y: 34 },
+    ],
+  },
+  harvest: {
+    w: 30, h: 14,
+    parts: [
+      { a: HAY, x: 0, y: 6 },
+      { a: HAY, x: 5, y: 10 },
+      { a: LOG, x: 12, y: 11 },
+      { a: TALL_FLOWER, x: 23, y: 2 },
+      { a: TALL_FLOWER, x: 27, y: 5 },
+      { a: FLOWERS_B, x: 19, y: 0 },
     ],
   },
 };

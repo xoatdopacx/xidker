@@ -796,26 +796,36 @@ html[data-script="arab"] *{letter-spacing:0!important}
 @keyframes fcSpS{0%{opacity:0}5%{opacity:1}12%{opacity:0}19%{opacity:1}26%,100%{opacity:0}}
 @keyframes fcSpB{0%{opacity:0}12%{opacity:1}19%,100%{opacity:0}}
 
-/* 404 page: the sleeping-cat meme at the roadside. The bed (54x39 art at 3x) stands on the road's far edge with
-   Z's drifting off the cat; every 6s a man riding a giant cat (6 frames of 54x61 art at 3x, stepped at 10fps)
-   gallops left to right along the near lane. The rider box rides a full-width track, so translateX(100%) is the
-   scene width on any screen. Physical left/translate keep right-to-left pages from mirroring the scene; with
-   reduced motion the rider stands still mid-stride (frame 5, paws down) beside the bed and the Z's hang in a trail. */
+/* 404 page, in the card: a signpost by the road while every 6s a man riding a giant cat (6 frames of 54x61 art at
+   3x, stepped at 10fps) gallops left to right along the near lane. The rider box rides a full-width track, so
+   translateX(100%) is the scene width on any screen. Physical left/translate keep right-to-left pages from mirroring
+   the scene; with reduced motion the rider stands still mid-stride (frame 5, paws down) on the road. */
 .nf{position:relative;width:100%;max-width:28rem;height:224px;margin:0 auto;overflow:hidden}
-.nf-bed{position:absolute;left:7%;bottom:56px;width:162px;height:117px}
-.nf-bed img{display:block;width:162px;height:117px}
-.nf-z{position:absolute;left:126px;top:-4px;animation:nfZ 3.6s steps(6) infinite}
-.nf-z svg{display:block}
-.nf-z2{animation-delay:-1.2s}
-.nf-z3{animation-delay:-2.4s}
-@keyframes nfZ{0%{opacity:0;transform:none}12%,78%{opacity:1}100%{opacity:0;transform:translate(18px,-42px)}}
-.nf-track{position:absolute;left:0;right:0;bottom:18px;height:183px;transform:translateX(calc(60% - 81px));animation:nfRide 6s linear infinite;pointer-events:none}
+.nf-track{position:absolute;left:0;right:0;bottom:18px;height:183px;transform:translateX(calc(55% - 81px));animation:nfRide 6s linear infinite;pointer-events:none}
 @keyframes nfRide{0%{transform:translateX(-162px)}48%,100%{transform:translateX(100%)}}
 .nf-rider{position:relative;width:162px;height:183px;overflow:hidden}
 .nf-rider img{position:absolute;left:0;top:0;width:972px;max-width:none;height:183px;transform:translateX(-648px);animation:nfGallop .6s steps(6) infinite}
 @keyframes nfGallop{from{transform:none}to{transform:translateX(-972px)}}
 .nf-shadow{position:absolute;left:36px;bottom:0;width:96px;height:6px;background:rgba(0,0,0,.3);clip-path:polygon(9px 0,87px 0,87px 3px,96px 3px,96px 6px,0 6px,0 3px,9px 3px)}
-@media (prefers-reduced-motion:reduce){.nf-z2{transform:translate(9px,-18px)}.nf-z3{transform:translate(18px,-36px)}}
+/* Around the card, the meadow (components/not-found-meadow.tsx). --sf is the strip of grass between the screen edge
+   and the card (max-w-xl = 36rem); --sp is one art pixel. The sleeping-cat meme (54x39 art) naps in the bottom-left
+   corner with Z's drifting off the cat and its shadow on the grass; with reduced motion the Z's hang in a trail. */
+.nf-meadow{position:absolute;inset:0;overflow:hidden;pointer-events:none;--sf:calc(50% - 18rem);--sp:3px}
+@media (min-width:1280px){.nf-meadow{--sp:4px}}
+@media (min-width:1440px){.nf-meadow{--sp:5px}}
+.nf-corner{position:absolute;bottom:14px}
+.nf-corner-l{left:max(12px,calc(var(--sf) * .06))}
+.nf-corner-r{right:max(12px,calc(var(--sf) * .06))}
+.nf-bed{position:absolute;left:0;top:var(--sp);width:calc(var(--sp) * 54);height:calc(var(--sp) * 39)}
+.nf-bed img{display:block;width:100%;height:100%;filter:drop-shadow(var(--sp) var(--sp) 0 rgba(16,64,20,.35))}
+.nf-z{position:absolute;left:calc(var(--sp) * 42);top:calc(var(--sp) * -1);animation:nfZ 3.6s steps(6) infinite}
+.nf-z svg{display:block}
+@media (min-width:1280px){.nf-z1 svg,.nf-z3 svg{width:12px;height:12px}.nf-z2 svg{width:16px;height:16px}}
+@media (min-width:1440px){.nf-z1 svg,.nf-z3 svg{width:16px;height:16px}.nf-z2 svg{width:20px;height:20px}}
+.nf-z2{animation-delay:-1.2s}
+.nf-z3{animation-delay:-2.4s}
+@keyframes nfZ{0%{opacity:0;transform:none}12%,78%{opacity:1}100%{opacity:0;transform:translate(calc(var(--sp) * 6),calc(var(--sp) * -14))}}
+@media (prefers-reduced-motion:reduce){.nf-z2{transform:translate(calc(var(--sp) * 3),calc(var(--sp) * -6))}.nf-z3{transform:translate(calc(var(--sp) * 6),calc(var(--sp) * -12))}}
 
 /* ---- Source inventory: opened on demand, never part of the initial page. ----
    Keep layout overrides unlayered: .tile and .pbtn outrank Tailwind utilities.

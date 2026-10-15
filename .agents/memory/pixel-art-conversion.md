@@ -1,6 +1,6 @@
 ---
 name: Turning the user's photos and videos into pixel art
-description: Recipe and pitfalls for converting the user's meme photos/videos into the site's outlined pixel sprites with ImageMagick (the cats on /cam-on and the 404 page).
+description: Recipe and pitfalls for converting the user's meme photos/videos into the site's outlined pixel sprites with ImageMagick (the cats on /cam-on and the 404 page; the sleeping cat lives in the bottom-left corner of the 404 page, apart from the rider in the card, by user request).
 ---
 
 The user's cat memes are shown as pixel art, never as the original photos. Recipe that worked (magick only):

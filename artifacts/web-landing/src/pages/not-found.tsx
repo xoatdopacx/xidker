@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { useI18n, LangSwitch } from "@/lib/i18n";
 import { Logo, Wordmark } from "@/components/sprites";
 import { NotFoundScene } from "@/components/not-found-scene";
+import { NotFoundMeadow } from "@/components/not-found-meadow";
 
 export default function NotFound() {
   const { t } = useI18n();
@@ -19,8 +20,10 @@ export default function NotFound() {
           <LangSwitch />
         </div>
       </header>
-      <div className="flex-1 flex items-center justify-center px-4 py-10">
-        <div className="tile w-full max-w-xl p-6 md:p-10 text-center">
+      {/* below lg the sleeping cat naps under the card, so the bottom padding leaves room for it */}
+      <div className="relative flex-1 flex items-center justify-center px-4 pt-10 pb-[156px] lg:pb-10">
+        <NotFoundMeadow />
+        <div className="tile z-10 w-full max-w-xl p-6 md:p-10 text-center">
           <p className="font-num text-7xl md:text-8xl leading-none text-[hsl(var(--pin))]" style={{ textShadow: "5px 5px 0 #1b2a1c" }}>404</p>
           <NotFoundScene />
           <h1 className="font-display text-3xl md:text-4xl mt-2">{t.nf.title}</h1>

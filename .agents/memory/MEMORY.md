@@ -10,6 +10,6 @@
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
 - [SEO rendering policy](seo-rendering.md) — same React content for bots and visitors; `/` must answer 200 within 5s without the catalog; check which code a failed publish built.
 - [Security headers and CSP](security-headers.md) — CSP only on the live site; verify with Whop pixel running but never let its events out; GAESA/Server header unfixable.
-- [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; flex-basis in a column footer sets height.
+- [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; one pixel size (--sp) per picture; column flex-basis = height.
 - [Source samples](source-samples.md) — user's pick-before-paying request; picker hidden with no visible sample; live admin must re-upload; test recipe.
 - [Pixel art from user photos/videos](pixel-art-conversion.md) — magick recipe for the cat memes; outline/LAB/eye pitfalls; dedupe video poses; PNG8.
