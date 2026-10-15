@@ -8,6 +8,7 @@ import { useI18n, LangSwitch, CONTACT_EMAIL } from "@/lib/i18n";
 import { Logo, Wordmark } from "@/components/sprites";
 import { MiniRoad } from "@/components/mini-road";
 import { BrokeCat } from "@/components/broke-cat";
+import { FatCat } from "@/components/fat-cat";
 import { supportChat } from "@/lib/support-chat";
 import { useStartCheckout } from "@/lib/checkout";
 import { statusOf } from "@/lib/http";
@@ -163,7 +164,7 @@ export default function ThankYou() {
     return (
       <Shell>
         <Card testId="status-paid">
-          <MiniRoad mode="goal" />
+          <FatCat />
           <p className="mt-2 inline-flex items-center gap-1.5 bg-[hsl(var(--gold))] border-[3px] border-[#1b2a1c] px-3 py-1 text-xs font-bold uppercase"><Check className="h-3.5 w-3.5" strokeWidth={3} /> {t.thanks.paidEyebrow}</p>
           <h1 className="font-display text-3xl md:text-5xl leading-tight mt-4">{t.thanks.paidTitle}</h1>
           <p className="mt-4 text-[#2c3a2c]">{t.thanks.paidBody}</p>

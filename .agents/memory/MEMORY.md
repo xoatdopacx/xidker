@@ -2,7 +2,7 @@
 - [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; fake API answers via Fetch; POSTs need the dev-domain Origin.
 - [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.
 - [Font delivery policy](font-delivery.md) — prioritize readable fallback text over waiting for base fonts; preserve on-demand script fonts and covered language switches.
-- [Pricing rules](pricing-rules.md) — user-defined contents of the $12/$50/$250 packages; only A–Z has hosting+domain; no invented client-use policy.
+- [Pricing rules](pricing-rules.md) — user-defined $12/$50/$250 package contents and the refund policy (4 places to keep in sync); no invented terms.
 - [Support chat and admin sign-in](admin-chat.md) — buyers-only since 2026-10-14; Whop buyer email confirmed; Gmail via connector proxy; test recipes.
 - [Chat translation](chat-translation.md) — VI⇄customer-language rules; gpt-6-luna needs effort "none"; test with a 2nd API + CDP request forwarding.
 - [Backend gotchas](backend-gotchas.md) — drizzle unqualified columns in subqueries; typecheck:libs after schema changes; slow storage library helpers.
@@ -12,3 +12,4 @@
 - [Security headers and CSP](security-headers.md) — CSP only on the live site; verify with Whop pixel running but never let its events out; GAESA/Server header unfixable.
 - [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; flex-basis in a column footer sets height.
 - [Source samples](source-samples.md) — user's pick-before-paying request; picker hidden with no visible sample; live admin must re-upload; test recipe.
+- [Pixel art from user photos/videos](pixel-art-conversion.md) — magick recipe for the cat memes; outline/LAB/eye pitfalls; dedupe video poses; PNG8.

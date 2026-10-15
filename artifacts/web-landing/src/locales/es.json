@@ -96,6 +96,7 @@
     "empty": "Los paquetes se están actualizando. Vuelve en unos minutos.",
     "note": "Cada paquete sirve para 1 portafolio. El hosting y el dominio solo están incluidos en Todo incluido A–Z. Los precios se ajustan al IVA de tu país al pagar.",
     "footnote": "Pago a través de Whop · Enlace al código enviado por correo",
+    "refund": "Ten en cuenta: solo hacemos reembolsos mientras el pedido no esté confirmado. Una vez enviado el código y cerrado el chat de soporte, se anula cualquier forma de reembolso.",
     "toastTitle": "No se pudo abrir el pago",
     "toastBody": "La conexión se interrumpió. Espera unos segundos e intenta de nuevo.",
     "currency": "Elegir moneda"
@@ -166,6 +167,10 @@
       {
         "q": "¿Qué pasa si algo está roto o falta?",
         "a": "Envíanos un correo con el problema y el email con el que hiciste la compra. Lo investigaremos y te responderemos."
+      },
+      {
+        "q": "¿Puedo pedir un reembolso?",
+        "a": "Solo hacemos reembolsos mientras el pedido no esté confirmado. Una vez enviado el código y cerrado el chat de soporte, se anula cualquier forma de reembolso. Tenlo en cuenta antes de comprar."
       }
     ]
   },

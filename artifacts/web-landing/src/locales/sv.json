@@ -96,6 +96,7 @@
     "empty": "Paketen uppdateras just nu. Kom tillbaka om en liten stund.",
     "note": "Varje paket gäller 1 portfölj. Webbhotell och domän ingår bara i Allt-i-ett A–Z. Priset anpassas efter momsen i ditt land i kassan.",
     "footnote": "Betalning via Whop · Källkod skickas via e-post",
+    "refund": "Observera: återbetalning är bara möjlig så länge beställningen inte har bekräftats. När källkoden har skickats och supportchatten har stängts upphör alla möjligheter till återbetalning.",
     "toastTitle": "Kunde inte öppna betalning",
     "toastBody": "Anslutningen bröts. Vänta några sekunder och försök igen.",
     "currency": "Välj valuta"
@@ -166,6 +167,10 @@
       {
         "q": "Vad gör jag om något är trasigt eller saknas?",
         "a": "Maila oss vad som blev fel och den e-postadress du köpte med. Vi undersöker det och återkommer till dig."
+      },
+      {
+        "q": "Kan jag få pengarna tillbaka?",
+        "a": "Återbetalning är bara möjlig så länge beställningen inte har bekräftats. När källkoden har skickats och supportchatten har stängts upphör alla möjligheter till återbetalning. Tänk på det innan du köper."
       }
     ]
   },

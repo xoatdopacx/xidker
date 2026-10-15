@@ -96,6 +96,7 @@
     "empty": "Packages are being updated. Check back in a few minutes.",
     "note": "Each package builds 1 portfolio. Hosting and a domain come only with All-in-One A–Z. Prices are adjusted for your country's VAT at checkout.",
     "footnote": "Checkout by Whop · Source link sent by email",
+    "refund": "Please note: refunds are only possible before your order is confirmed. Once the source has been sent and the support chat is closed, all refund options are void.",
     "toastTitle": "Couldn't open checkout",
     "toastBody": "The connection dropped. Give it a few seconds and try again.",
     "currency": "Choose currency"
@@ -166,6 +167,10 @@
       {
         "q": "What if something's broken or missing?",
         "a": "Email us with what went wrong and the email you bought with. We'll look into it and get back to you."
+      },
+      {
+        "q": "Can I get a refund?",
+        "a": "Refunds are only possible before your order is confirmed. Once the source has been sent and the support chat is closed, all refund options are void. Please keep this in mind before you buy."
       }
     ]
   },

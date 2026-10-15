@@ -96,6 +96,7 @@
     "empty": "Paket sedang diperbarui. Periksa kembali dalam beberapa menit.",
     "note": "Setiap paket untuk 1 portofolio. Hosting dan domain hanya termasuk di Paket Lengkap A–Z. Harga disesuaikan dengan PPN negara Anda saat checkout.",
     "footnote": "Checkout oleh Whop · Tautan kode sumber dikirim lewat email",
+    "refund": "Mohon diperhatikan: pengembalian dana hanya bisa dilakukan selama pesanan belum dikonfirmasi. Setelah kode sumber dikirim dan chat dukungan ditutup, semua bentuk pengembalian dana tidak berlaku lagi.",
     "toastTitle": "Tidak dapat membuka checkout",
     "toastBody": "Koneksi terputus. Tunggu beberapa detik dan coba lagi.",
     "currency": "Pilih mata uang"
@@ -166,6 +167,10 @@
       {
         "q": "Bagaimana jika ada yang rusak atau hilang?",
         "a": "Kirimi kami email tentang apa yang salah dan email yang Anda gunakan untuk membeli. Kami akan memeriksanya dan menghubungi Anda kembali."
+      },
+      {
+        "q": "Apakah saya bisa mendapatkan pengembalian dana?",
+        "a": "Pengembalian dana hanya bisa dilakukan selama pesanan belum dikonfirmasi. Setelah kode sumber dikirim dan chat dukungan ditutup, semua bentuk pengembalian dana tidak berlaku lagi. Mohon perhatikan hal ini sebelum membeli."
       }
     ]
   },

@@ -96,6 +96,7 @@
     "empty": "Các gói đang được cập nhật. Bạn quay lại sau ít phút nhé.",
     "note": "Mỗi gói làm 1 portfolio. Chỉ Trọn Gói A–Z có kèm hosting và tên miền. Giá được điều chỉnh theo thuế VAT của từng nước khi thanh toán.",
     "footnote": "Thanh toán qua Whop · Nhận link source qua email",
+    "refund": "Xin lưu ý: chỉ hoàn tiền khi đơn hàng chưa được xác nhận. Một khi source đã được gửi và chat hỗ trợ đã đóng, mọi phương thức hoàn tiền sẽ bị vô hiệu.",
     "toastTitle": "Chưa mở được trang thanh toán",
     "toastBody": "Kết nối bị gián đoạn. Bạn thử lại sau vài giây nhé.",
     "currency": "Chọn loại tiền"
@@ -166,6 +167,10 @@
       {
         "q": "Gặp lỗi hoặc thiếu file thì sao?",
         "a": "Gửi email kèm mô tả lỗi và email bạn dùng để mua. Chúng tôi sẽ kiểm tra và trả lời bạn."
+      },
+      {
+        "q": "Tôi có được hoàn tiền không?",
+        "a": "Chỉ hoàn tiền khi đơn hàng chưa được xác nhận. Một khi source đã được gửi và chat hỗ trợ đã đóng, mọi phương thức hoàn tiền sẽ bị vô hiệu. Xin lưu ý trước khi mua."
       }
     ]
   },

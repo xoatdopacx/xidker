@@ -96,6 +96,7 @@
     "empty": "Les forfaits sont en cours de mise à jour. Revenez dans quelques minutes.",
     "note": "Chaque forfait permet de réaliser 1 portfolio. L'hébergement et le nom de domaine sont inclus uniquement dans Tout-en-un A–Z. Les prix sont ajustés selon la TVA de votre pays au paiement.",
     "footnote": "Paiement par Whop · Lien source envoyé par e-mail",
+    "refund": "À noter : le remboursement n'est possible que tant que la commande n'est pas confirmée. Dès que le code source a été envoyé et que le chat d'assistance est fermé, toute forme de remboursement est annulée.",
     "toastTitle": "Impossible d'ouvrir le paiement",
     "toastBody": "La connexion a été interrompue. Attendez quelques secondes et réessayez.",
     "currency": "Choisir la devise"
@@ -166,6 +167,10 @@
       {
         "q": "Que faire si quelque chose est cassé ou manquant ?",
         "a": "Envoyez-nous un e-mail avec le problème rencontré et l'adresse e-mail utilisée pour l'achat. Nous examinerons cela et reviendrons vers vous."
+      },
+      {
+        "q": "Puis-je être remboursé ?",
+        "a": "Le remboursement n'est possible que tant que la commande n'est pas confirmée. Dès que le code source a été envoyé et que le chat d'assistance est fermé, toute forme de remboursement est annulée. Merci d'en tenir compte avant d'acheter."
       }
     ]
   },

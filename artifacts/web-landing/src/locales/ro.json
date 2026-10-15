@@ -96,6 +96,7 @@
     "empty": "Pachetele sunt actualizate. Revino în câteva minute.",
     "note": "Fiecare pachet este pentru 1 portofoliu. Găzduirea și domeniul sunt incluse doar în Totul inclus A–Z. Prețurile se ajustează la plată în funcție de TVA-ul țării tale.",
     "footnote": "Finalizare comandă prin Whop · Linkul pentru cod trimis prin email",
+    "refund": "Atenție: rambursarea este posibilă doar cât timp comanda nu a fost confirmată. Odată ce codul a fost trimis și chatul de asistență a fost închis, orice formă de rambursare se anulează.",
     "toastTitle": "Nu s-a putut deschide pagina de plată",
     "toastBody": "Conexiunea a fost întreruptă. Mai așteaptă câteva secunde și încearcă din nou.",
     "currency": "Alege moneda"
@@ -166,6 +167,10 @@
       {
         "q": "Ce fac dacă ceva este stricat sau lipsește?",
         "a": "Trimite-ne un email cu ce nu a mers și adresa de email folosită la cumpărare. Vom verifica și îți vom răspunde."
+      },
+      {
+        "q": "Pot primi banii înapoi?",
+        "a": "Rambursarea este posibilă doar cât timp comanda nu a fost confirmată. Odată ce codul a fost trimis și chatul de asistență a fost închis, orice formă de rambursare se anulează. Te rugăm să ții cont de asta înainte de cumpărare."
       }
     ]
   },

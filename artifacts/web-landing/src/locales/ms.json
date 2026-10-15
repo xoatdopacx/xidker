@@ -96,6 +96,7 @@
     "empty": "Pakej sedang dikemas kini. Semak semula dalam beberapa minit.",
     "note": "Setiap pakej untuk 1 portfolio. Hosting dan domain hanya termasuk dalam Pakej Lengkap A–Z. Harga diselaraskan mengikut cukai (VAT) negara anda semasa pembayaran.",
     "footnote": "Pembayaran oleh Whop · Pautan kod sumber dihantar melalui e-mel",
+    "refund": "Sila ambil perhatian: bayaran balik hanya boleh dibuat selagi pesanan belum disahkan. Sebaik sahaja kod sumber dihantar dan sembang sokongan ditutup, semua bentuk bayaran balik tidak lagi sah.",
     "toastTitle": "Gagal membuka pembayaran",
     "toastBody": "Sambungan terputus. Tunggu beberapa saat dan cuba lagi.",
     "currency": "Pilih mata wang"
@@ -166,6 +167,10 @@
       {
         "q": "Bagaimana jika ada yang rosak atau hilang?",
         "a": "E-mel kami tentang masalah tersebut berserta e-mel yang anda gunakan untuk membeli. Kami akan menyemak dan membalas anda."
+      },
+      {
+        "q": "Bolehkah saya mendapat bayaran balik?",
+        "a": "Bayaran balik hanya boleh dibuat selagi pesanan belum disahkan. Sebaik sahaja kod sumber dihantar dan sembang sokongan ditutup, semua bentuk bayaran balik tidak lagi sah. Sila ambil perhatian sebelum membeli."
       }
     ]
   },

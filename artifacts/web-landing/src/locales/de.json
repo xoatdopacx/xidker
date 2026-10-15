@@ -96,6 +96,7 @@
     "empty": "Die Pakete werden aktualisiert. Schau in ein paar Minuten nochmal rein.",
     "note": "Jedes Paket ist für 1 Portfolio. Hosting und Domain gibt es nur im Rundum-Paket A–Z. Der Preis wird beim Bezahlen an die Mehrwertsteuer deines Landes angepasst.",
     "footnote": "Checkout über Whop · Quellcode-Link per E-Mail",
+    "refund": "Bitte beachte: Eine Rückerstattung ist nur möglich, solange deine Bestellung noch nicht bestätigt ist. Sobald der Quellcode verschickt und der Support-Chat geschlossen wurde, entfallen alle Möglichkeiten einer Rückerstattung.",
     "toastTitle": "Checkout konnte nicht geöffnet werden",
     "toastBody": "Die Verbindung wurde unterbrochen. Warte kurz und versuche es erneut.",
     "currency": "Währung wählen"
@@ -166,6 +167,10 @@
       {
         "q": "Was ist, wenn etwas kaputt oder unvollständig ist?",
         "a": "Schreibe uns eine E-Mail mit dem Fehler und der E-Mail-Adresse, mit der du gekauft hast. Wir sehen uns das an und melden uns bei dir."
+      },
+      {
+        "q": "Kann ich mein Geld zurückbekommen?",
+        "a": "Eine Rückerstattung ist nur möglich, solange deine Bestellung noch nicht bestätigt ist. Sobald der Quellcode verschickt und der Support-Chat geschlossen wurde, entfallen alle Möglichkeiten einer Rückerstattung. Bitte beachte das vor dem Kauf."
       }
     ]
   },

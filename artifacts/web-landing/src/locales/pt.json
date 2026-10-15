@@ -96,6 +96,7 @@
     "empty": "Os pacotes estão sendo atualizados. Verifique novamente em alguns minutos.",
     "note": "Cada pacote serve para 1 portfólio. Hospedagem e domínio vêm apenas no Tudo Incluído A–Z. Os preços são ajustados ao imposto (IVA) do seu país no pagamento.",
     "footnote": "Checkout via Whop · Link do código enviado por e-mail",
+    "refund": "Atenção: o reembolso só é possível enquanto o pedido não for confirmado. Depois que o código for enviado e o chat de suporte for encerrado, qualquer forma de reembolso deixa de valer.",
     "toastTitle": "Não foi possível abrir o checkout",
     "toastBody": "A conexão caiu. Aguarde alguns segundos e tente novamente.",
     "currency": "Escolher moeda"
@@ -166,6 +167,10 @@
       {
         "q": "E se algo estiver quebrado ou faltando?",
         "a": "Envie-nos um e-mail com o erro e o endereço que você usou na compra. Vamos verificar e te responder."
+      },
+      {
+        "q": "Posso pedir reembolso?",
+        "a": "O reembolso só é possível enquanto o pedido não for confirmado. Depois que o código for enviado e o chat de suporte for encerrado, qualquer forma de reembolso deixa de valer. Fique atento a isso antes de comprar."
       }
     ]
   },

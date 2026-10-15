@@ -96,6 +96,7 @@
     "empty": "Pakiety są aktualizowane. Wróć za chwilę.",
     "note": "Każdy pakiet to 1 portfolio. Hosting i domena są tylko w pakiecie Wszystko w jednym A–Z. Przy płatności cena jest dostosowywana do stawki VAT w Twoim kraju.",
     "footnote": "Płatność przez Whop · Link do kodu w mailu",
+    "refund": "Uwaga: zwrot pieniędzy jest możliwy tylko do momentu potwierdzenia zamówienia. Gdy kod zostanie wysłany, a czat pomocy zamknięty, wszystkie formy zwrotu przestają obowiązywać.",
     "toastTitle": "Nie udało się otworzyć płatności",
     "toastBody": "Połączenie przerwane. Odczekaj chwilę i spróbuj ponownie.",
     "currency": "Wybierz walutę"
@@ -166,6 +167,10 @@
       {
         "q": "Co jeśli coś nie działa lub brakuje pliku?",
         "a": "Napisz do nas, co jest nie tak i podaj maila, z którego kupowałeś. Sprawdzimy to i odpowiemy."
+      },
+      {
+        "q": "Czy mogę dostać zwrot pieniędzy?",
+        "a": "Zwrot pieniędzy jest możliwy tylko do momentu potwierdzenia zamówienia. Gdy kod zostanie wysłany, a czat pomocy zamknięty, wszystkie formy zwrotu przestają obowiązywać. Pamiętaj o tym przed zakupem."
       }
     ]
   },

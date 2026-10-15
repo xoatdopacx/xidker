@@ -96,6 +96,7 @@
     "empty": "Balíčky se právě aktualizují. Zkuste to za chvíli.",
     "note": "Každý balíček je na 1 portfolio. Hosting a doménu obsahuje jen balíček Vše v jednom A–Z. Cena se při platbě upraví podle DPH vaší země.",
     "footnote": "Platba přes Whop · Odkaz ke stažení dorazí e-mailem",
+    "refund": "Upozornění: peníze vracíme jen do potvrzení objednávky. Jakmile je zdrojový kód odeslán a chat podpory uzavřen, všechny možnosti vrácení peněz zanikají.",
     "toastTitle": "Pokladnu nelze otevřít",
     "toastBody": "Spojení vypadlo. Počkejte pár sekund a zkuste to znovu.",
     "currency": "Zvolit měnu"
@@ -166,6 +167,10 @@
       {
         "q": "Co když je něco rozbité nebo chybí?",
         "a": "Napište nám e-mail s tím, co nefunguje, a přiložte e-mail, pod kterým jste nakupovali. Podíváme se na to a ozveme se."
+      },
+      {
+        "q": "Můžu dostat peníze zpět?",
+        "a": "Peníze vracíme jen do potvrzení objednávky. Jakmile je zdrojový kód odeslán a chat podpory uzavřen, všechny možnosti vrácení peněz zanikají. Mějte to prosím na paměti před nákupem."
       }
     ]
   },

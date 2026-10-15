@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type Mous
 import { useListPackages, getListPackagesQueryKey } from "@workspace/api-client-react";
 import type { Package } from "@workspace/api-client-react";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown, MessageSquare } from "lucide-react";
+import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown, MessageSquare, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Reveal, formatPrice } from "@/lib/motion";
 import { CloudArt, Scene, type SceneName } from "@/components/scenes";
@@ -543,6 +543,10 @@ function Pricing() {
           <div className="tile mt-10 max-w-2xl mx-auto px-5 py-4 text-center text-sm">
             <p className="text-[#2c3a2c]" data-testid="text-pricing-note">{t.pricing.note}</p>
             <p className="mt-2 font-semibold text-[#10230f]">{t.pricing.footnote}</p>
+            <p className="mt-3 pt-3 border-t-2 border-dashed border-[#1b2a1c]/30 font-medium text-[#10230f]" data-testid="text-refund-policy">
+              <Info aria-hidden strokeWidth={2.5} className="inline-block h-4 w-4 me-1.5 -mt-0.5 text-[hsl(var(--pin))]" />
+              {t.pricing.refund}
+            </p>
           </div>
         </div>
       </div>

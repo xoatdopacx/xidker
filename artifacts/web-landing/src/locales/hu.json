@@ -96,6 +96,7 @@
     "empty": "A csomagok frissítése folyamatban van. Nézz vissza pár perc múlva.",
     "note": "Minden csomag 1 portfólióhoz szól. Tárhely és domain csak a Minden egyben A–Z csomagban van. Az árat fizetéskor az országod áfájához igazítjuk.",
     "footnote": "Fizetés a Whop-on keresztül · A forráslinket emailben küldjük",
+    "refund": "Figyelem: visszatérítést csak addig adunk, amíg a rendelés nincs visszaigazolva. Amint a forráskódot elküldtük és a támogatási csevegés lezárult, minden visszatérítési lehetőség megszűnik.",
     "toastTitle": "Nem sikerült megnyitni a fizetést",
     "toastBody": "Megszakadt a kapcsolat. Várj pár másodpercet, és próbáld újra.",
     "currency": "Pénznem választása"
@@ -166,6 +167,10 @@
       {
         "q": "Mi van, ha valami elromlott vagy hiányzik?",
         "a": "Írj nekünk emailt arról, mi a probléma, és add meg az emailcímet, amivel vásároltál. Utánanézünk és válaszolunk."
+      },
+      {
+        "q": "Visszakaphatom a pénzem?",
+        "a": "Visszatérítést csak addig adunk, amíg a rendelés nincs visszaigazolva. Amint a forráskódot elküldtük és a támogatási csevegés lezárult, minden visszatérítési lehetőség megszűnik. Kérjük, vásárlás előtt vedd ezt figyelembe."
       }
     ]
   },

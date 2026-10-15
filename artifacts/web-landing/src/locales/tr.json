@@ -96,6 +96,7 @@
     "empty": "Paketler güncelleniyor. Birkaç dakika sonra tekrar kontrol edin.",
     "note": "Her paket 1 portfolyo içindir. Hosting ve alan adı yalnızca Hepsi Bir Arada A–Z paketinde var. Fiyatlar ödeme sırasında ülkenizin KDV'sine göre ayarlanır.",
     "footnote": "Whop ile ödeme · Kaynak kodu linki e-postayla gönderilir",
+    "refund": "Lütfen dikkat: para iadesi yalnızca sipariş onaylanmadan önce mümkündür. Kaynak kodu gönderilip destek sohbeti kapatıldıktan sonra tüm iade yolları geçersiz olur.",
     "toastTitle": "Ödeme açılamadı",
     "toastBody": "Bağlantı koptu. Birkaç saniye bekleyip tekrar deneyin.",
     "currency": "Para birimi seçin"
@@ -166,6 +167,10 @@
       {
         "q": "Bir şey kırılırsa veya eksikse ne yapmalıyım?",
         "a": "Sorunun ne olduğunu ve satın alırken kullandığınız e-posta adresini bize yazın. İnceleyip size dönüş yapalım."
+      },
+      {
+        "q": "Para iadesi alabilir miyim?",
+        "a": "Para iadesi yalnızca sipariş onaylanmadan önce mümkündür. Kaynak kodu gönderilip destek sohbeti kapatıldıktan sonra tüm iade yolları geçersiz olur. Lütfen satın almadan önce bunu dikkate alın."
       }
     ]
   },

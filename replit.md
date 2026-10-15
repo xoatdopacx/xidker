@@ -18,7 +18,7 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5; payments: `@whop/sdk` pinned to 0.0.42
 - DB: PostgreSQL + Drizzle ORM
-- Frontend: React + Vite, Tailwind; pixel art is inline SVG (no WebGL). The only bitmaps are the user's own pixel cats (small PNGs in `src/assets/`, drawn with `.pixel`) and the sample pictures the admin uploads
+- Frontend: React + Vite, Tailwind; pixel art is inline SVG (no WebGL). The only bitmaps are the user's own cat memes turned into pixel art (small PNGs in `src/assets/`, drawn with `.pixel`; the cat rider is a 6-frame strip) and the sample pictures the admin uploads
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 
@@ -58,7 +58,9 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 
 - Sales page in 33 languages (pixel globe picker in the header and footer; Arabic, Persian, Hebrew and Urdu read right to left): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop with a VND/USD switch, FAQ, contact email.
 - "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise). For a package with a sample choice it first opens the sample picker (browse samples, open full screenshots, pick one, then pay). The pricing grid adapts to 1–5+ packages.
-- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, picked sample, amount, date, order ID) and a card to switch on support chat with the order ID filled in. A failed payment shows the user's pixel cat holding an empty wallet.
+- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, picked sample, amount, date, order ID) and a card to switch on support chat with the order ID filled in. A paid order shows the user's fat pixel cat hopping among sparkles; a failed payment shows the user's pixel cat holding an empty wallet.
+- Unknown addresses get a 404 page with the user's other two cat memes by the road: a cat asleep in a Minecraft bed while a man riding a giant cat gallops past.
+- Refund policy (set by the user, 2026-10-15): refunds only while the order has not been confirmed; once the source has been sent and the support chat is closed, every refund method is void. It is shown in all 33 languages as the last FAQ item and as a "please note" line in the note under the pricing cards. The same text is in the Whop product description, and `marketing/policy/refund-policy.html` renders it to the PDF meant for Whop's Return Policy slot (Dashboard > Settings > Legal; an API key cannot set it on its own account). Change all four together.
 - Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; replies reach the customer in their language, marked "Translated automatically". `/admin` in Vietnamese only: inbox showing each customer's email, package and order ID, a Vietnamese line under every customer message and the translation each reply was sent with, and "Sản phẩm & giá" to change prices and text, hide/show, mark the recommended package, list a new source for sale, or delete an unsold one; "Mẫu source" to upload, reorder, hide/show and delete samples; "Đơn hàng" for recent paid orders with the sample each buyer picked. Files are still delivered by hand.
 
 ## User preferences

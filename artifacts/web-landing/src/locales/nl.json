@@ -96,6 +96,7 @@
     "empty": "Pakketten worden bijgewerkt. Probeer het over enkele minuten nog eens.",
     "note": "Elk pakket is voor 1 portfolio. Hosting en domein zitten alleen in Alles-in-één A–Z. Bij het afrekenen wordt de prijs aangepast aan de btw van je land.",
     "footnote": "Checkout via Whop · Link naar broncode per mail verzonden",
+    "refund": "Let op: terugbetaling kan alleen zolang je bestelling nog niet is bevestigd. Zodra de broncode is verstuurd en de supportchat is gesloten, vervallen alle mogelijkheden tot terugbetaling.",
     "toastTitle": "Kon checkout niet openen",
     "toastBody": "De verbinding is verbroken. Wacht even en probeer het opnieuw.",
     "currency": "Valuta kiezen"
@@ -166,6 +167,10 @@
       {
         "q": "Wat als er iets kapot is of ontbreekt?",
         "a": "Mail ons wat er mis is en vanaf welk e-mailadres je hebt gekocht. We kijken het na en komen bij je terug."
+      },
+      {
+        "q": "Kan ik mijn geld terugkrijgen?",
+        "a": "Terugbetaling kan alleen zolang je bestelling nog niet is bevestigd. Zodra de broncode is verstuurd en de supportchat is gesloten, vervallen alle mogelijkheden tot terugbetaling. Houd hier rekening mee voordat je koopt."
       }
     ]
   },

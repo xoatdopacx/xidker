@@ -23,6 +23,8 @@ Screens that need a real Whop payment or an admin sign-in (paid `/cam-on`, the `
 
 Scripts gated on the host name (the Whop pixel skips `localhost` and `*.replit.dev`) can be tested by starting chromium with `--host-resolver-rules=MAP shop.test 127.0.0.1` and loading `http://shop.test/...`. Intercept the tracker's origin with `Fetch`, answer `s.js` with a downloaded copy and every other request with 204, so no test traffic reaches the user's dashboard.
 
+To check looping CSS animations at exact moments, run `document.getAnimations().forEach(a => { a.pause(); a.currentTime = t; })` and capture; the same t on every animation keeps them in step (negative delays included). Pick times that are not all the same phase of a short loop, or every capture shows one frame.
+
 If WebGL is ever needed again in headless mode: drop `--disable-gpu` and add `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
 
 **Why:** pricing cards with live data, checkout navigation, the road character's per-leg vehicles and the FAQ height check could only be confirmed this way.

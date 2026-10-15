@@ -50,3 +50,17 @@ mtime_ms = 1791949687284
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/07c23ded-c840-42b7-8983-ee27e8f5ee75/ce46b721-99da-4f0c-9907-2abd5df92d5c"
 storage_version_token = "1791949746877500"
 content_type = "video/mp4"
+
+[[outputs]]
+id = "te8ETAdiAnY_cTwkFbwHB"
+uri = "file://generated-artifacts/policy/refund-policy.pdf"
+type = "pdf"
+title = "Chính sách hoàn tiền xidker (PDF để tải lên Whop)"
+description = "Bản tiếng Việt + tiếng Anh. Tải lên ở Whop: Dashboard > Settings > Legal > Return Policy > Upload file."
+logical_id = "d22770a4-85ae-48ab-9674-0c67306d65e9"
+content_hash = "sha256:1e685d1ed8c80e77f0b325ec6cdd02c491251bbbd908527282441b8e607e2b74"
+size = 57483
+mtime_ms = 1792051323600
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/d22770a4-85ae-48ab-9674-0c67306d65e9/b3c2cfd7-776b-48ae-8c93-e777d8ab03f2"
+storage_version_token = "1792051870124954"
+content_type = "application/pdf"

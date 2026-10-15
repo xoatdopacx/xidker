@@ -9,6 +9,7 @@ import { createCatalogCache } from "../seo/catalog-cache.mjs";
 
 const shell = readFileSync(new URL("../dist/public/index.html", import.meta.url), "utf8");
 const dict = (code) => JSON.parse(readFileSync(new URL(`../src/locales/${code}.json`, import.meta.url), "utf8"));
+const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 
 test("production SSR includes all localized sales sections, FAQ and live Whop packages without JavaScript", async () => {
   for (const { code } of LANGUAGES) {
@@ -30,6 +31,9 @@ test("production SSR includes all localized sales sections, FAQ and live Whop pa
       assert.ok(html.includes(`data-testid="button-buy-${p.id}"`));
     }
     for (let i = 0; i < dict(code).faq.items.length; i++) assert.ok(html.includes(`id="faq-a-${i}"`));
+    // The refund policy must reach visitors and crawlers in every language, in the pricing note and in the FAQ.
+    assert.ok(html.includes(escapeHtml(dict(code).pricing.refund)), `${code}: refund note missing`);
+    assert.ok(html.includes(escapeHtml(dict(code).faq.items.at(-1).a)), `${code}: refund FAQ answer missing`);
     assert.ok(html.includes(`lang="${code}"`));
     const canonical = `https://shopoatdopac.com/${code === "en" ? "" : `${code}/`}`;
     assert.ok(html.includes(`href="${canonical}"`));

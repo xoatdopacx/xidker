@@ -96,6 +96,7 @@
     "empty": "Ina-update pa ang mga package. Bumalik pagkalipas ng ilang minuto.",
     "note": "Bawat package ay para sa 1 portfolio. Ang All-in-One A–Z lang ang may kasamang hosting at domain. Ina-adjust ang presyo ayon sa VAT ng bansa mo sa checkout.",
     "footnote": "Checkout sa pamamagitan ng Whop · Source link na ipinadala sa email",
+    "refund": "Pakitandaan: may refund lang habang hindi pa nakukumpirma ang order. Kapag naipadala na ang source at naisara na ang support chat, wala nang bisa ang lahat ng paraan ng refund.",
     "toastTitle": "Hindi mabuksan ang checkout",
     "toastBody": "Naputol ang koneksyon. Maghintay ng ilang segundo at subukan muli.",
     "currency": "Pumili ng currency"
@@ -166,6 +167,10 @@
       {
         "q": "Paano kung may sira o kulang?",
         "a": "Mag-email sa amin kung ano ang mali at gamitin ang email na ginamit mo sa pagbili. Iimbestigahan namin ito at babalikan ka."
+      },
+      {
+        "q": "Puwede ba akong makapag-refund?",
+        "a": "May refund lang habang hindi pa nakukumpirma ang order. Kapag naipadala na ang source at naisara na ang support chat, wala nang bisa ang lahat ng paraan ng refund. Pakitandaan ito bago bumili."
       }
     ]
   },

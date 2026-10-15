@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { useI18n, LangSwitch } from "@/lib/i18n";
 import { Logo, Wordmark } from "@/components/sprites";
-import { MiniRoad } from "@/components/mini-road";
+import { NotFoundScene } from "@/components/not-found-scene";
 
 export default function NotFound() {
   const { t } = useI18n();
@@ -22,7 +22,7 @@ export default function NotFound() {
       <div className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="tile w-full max-w-xl p-6 md:p-10 text-center">
           <p className="font-num text-7xl md:text-8xl leading-none text-[hsl(var(--pin))]" style={{ textShadow: "5px 5px 0 #1b2a1c" }}>404</p>
-          <MiniRoad mode="lost" />
+          <NotFoundScene />
           <h1 className="font-display text-3xl md:text-4xl mt-2">{t.nf.title}</h1>
           <p className="mt-3 text-[#2c3a2c]">{t.nf.body}</p>
           <Link href="/" className="pbtn red mt-7 px-5 py-2.5 font-bold" data-testid="link-back-home">

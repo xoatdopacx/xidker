@@ -1,0 +1,87 @@
+<!doctype html>
+<!--
+  Refund policy document uploaded to Whop as the store's refund policy (the file Whop shows in disputes).
+  Render: node marketing/render/policy-pdf.mjs  ->  generated-artifacts/policy/refund-policy.pdf
+  Keep the wording identical to the site's FAQ / pricing note (src/locales/vi.json and en.json).
+-->
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>xidker — Chính sách hoàn tiền / Refund policy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&family=Pixelify+Sans:wght@700&display=swap">
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Be Vietnam Pro", "DejaVu Sans", sans-serif;
+    color: #10230f;
+    background: #fffbea;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page { width: 210mm; min-height: 297mm; padding: 22mm 20mm 18mm; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand b {
+    font-family: "Pixelify Sans", "Be Vietnam Pro", sans-serif; font-size: 22px; line-height: 1;
+    background: #c8402f; color: #fff; border: 3px solid #1b2a1c; padding: 4px 10px 6px;
+  }
+  .brand span { font-size: 13px; color: #2c3a2c; }
+  h1 { margin: 16mm 0 2px; font-size: 34px; font-weight: 800; letter-spacing: -0.01em; }
+  .sub { margin: 0; font-size: 18px; font-weight: 600; color: #2c3a2c; }
+  .meta { margin: 8mm 0 0; padding: 10px 14px; border: 3px solid #1b2a1c; background: #fff; font-size: 13px; line-height: 1.55; }
+  .meta p { margin: 0; }
+  .meta p + p { margin-top: 4px; color: #3b4a3b; }
+  section { margin-top: 10mm; }
+  h2 {
+    margin: 0 0 4mm; display: inline-block; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    background: #1b2a1c; color: #f2c14e; padding: 3px 9px;
+  }
+  ol { margin: 0; padding-left: 22px; font-size: 16px; line-height: 1.6; }
+  li + li { margin-top: 3mm; }
+  .note { margin: 4mm 0 0; font-size: 15px; font-weight: 600; }
+  footer { margin-top: auto; padding-top: 6mm; border-top: 2px dashed rgba(27, 42, 28, 0.35); font-size: 13px; color: #2c3a2c; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+  <main class="page">
+    <div class="brand"><b>xidker</b><span>shopoatdopac.com</span></div>
+
+    <h1>Chính sách hoàn tiền</h1>
+    <p class="sub">Refund policy</p>
+
+    <div class="meta">
+      <p>Áp dụng từ ngày 15/10/2026 cho mọi đơn hàng mua source tại shopoatdopac.com, thanh toán qua Whop.</p>
+      <p lang="en">Effective October 15, 2026 for every source order placed at shopoatdopac.com and paid through Whop.</p>
+    </div>
+
+    <section>
+      <h2>Tiếng Việt</h2>
+      <ol>
+        <li>Chỉ hoàn tiền khi đơn hàng chưa được xác nhận.</li>
+        <li>Một khi source đã được gửi và chat hỗ trợ đã đóng, mọi phương thức hoàn tiền sẽ bị vô hiệu.</li>
+      </ol>
+      <p class="note">Xin lưu ý trước khi mua.</p>
+    </section>
+
+    <section lang="en">
+      <h2>English</h2>
+      <ol>
+        <li>Refunds are only possible before your order is confirmed.</li>
+        <li>Once the source has been sent and the support chat is closed, all refund options are void.</li>
+      </ol>
+      <p class="note">Please keep this in mind before you buy.</p>
+    </section>
+
+    <footer>
+      <span>Liên hệ / Contact: hello@idkworkshop.com</span>
+      <span>xidker</span>
+    </footer>
+  </main>
+  <script>
+    document.fonts.ready.then(() => {
+      window.__ready = document.fonts.check('600 16px "Be Vietnam Pro"') && document.fonts.check('700 22px "Pixelify Sans"');
+    });
+  </script>
+</body>
+</html>

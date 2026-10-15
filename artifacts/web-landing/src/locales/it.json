@@ -96,6 +96,7 @@
     "empty": "I pacchetti sono in aggiornamento. Riprova tra qualche minuto.",
     "note": "Ogni pacchetto serve per 1 portfolio. Hosting e dominio sono inclusi solo in Tutto incluso A–Z. I prezzi vengono adeguati all'IVA del tuo paese al momento del pagamento.",
     "footnote": "Checkout tramite Whop · Link sorgente inviato via email",
+    "refund": "Nota bene: il rimborso è possibile solo finché l'ordine non è confermato. Una volta inviato il codice e chiusa la chat di assistenza, ogni forma di rimborso decade.",
     "toastTitle": "Impossibile aprire il checkout",
     "toastBody": "La connessione è caduta. Attendi qualche secondo e riprova.",
     "currency": "Scegli valuta"
@@ -166,6 +167,10 @@
       {
         "q": "Cosa succede se qualcosa è rotto o manca?",
         "a": "Inviaci un'email con il problema e l'indirizzo email usato per l'acquisto. Analizzeremo e ti risponderemo."
+      },
+      {
+        "q": "Posso avere un rimborso?",
+        "a": "Il rimborso è possibile solo finché l'ordine non è confermato. Una volta inviato il codice e chiusa la chat di assistenza, ogni forma di rimborso decade. Tienilo presente prima di acquistare."
       }
     ]
   },

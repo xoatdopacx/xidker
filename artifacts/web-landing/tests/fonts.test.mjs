@@ -47,7 +47,8 @@ test("application CSS has no remote font import and retains system fallbacks", (
 
 test("production HTML for every locale retains asynchronous font loading", () => {
   checkFontLinks(read("../dist/public/index.html"));
-  for (const { code } of LANGUAGES) checkFontLinks(read(`../dist/public/${code}/index.html`));
+  // English is served from the root page, so the build writes no en/ copy.
+  for (const { code } of LANGUAGES) if (code !== "en") checkFontLinks(read(`../dist/public/${code}/index.html`));
   const assets = new URL("../dist/public/assets/", import.meta.url);
   for (const file of readdirSync(assets).filter((name) => name.endsWith(".css"))) {
     assert.doesNotMatch(readFileSync(new URL(file, assets), "utf8"), /@import[^;]*https?:/);
