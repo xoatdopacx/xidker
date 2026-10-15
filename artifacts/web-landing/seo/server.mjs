@@ -62,8 +62,9 @@ const sha256 = (text) => `'sha256-${createHash("sha256").update(text).digest("ba
  * Scripts a page may run: our own files, the Whop pixel, inline scripts carrying this response's nonce, and the
  * inline event handlers written in the shell (the font stylesheet's onload). The nonce goes on the shell's scripts
  * before any rendered content is added, so nothing that comes from data can carry it.
+ * Only the admin page may send files to App Storage (sample pictures go there straight from the browser).
  */
-function pagePolicy(shell) {
+function pagePolicy(shell, admin) {
   const nonce = randomBytes(16).toString("base64");
   const handlers = [...new Set([...shell.matchAll(/\son[a-z]+="([^"]*)"/g)].map((m) => sha256(decodeAttribute(m[1]))))];
   const csp = [
@@ -72,7 +73,7 @@ function pagePolicy(shell) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob:",
-    `connect-src 'self' ${WHOP_PIXEL}`,
+    `connect-src 'self' ${WHOP_PIXEL}${admin ? " https://storage.googleapis.com" : ""}`,
     "worker-src 'self' blob:", // the Whop pixel runs one check in a worker made from a blob
     "object-src 'none'",
     "base-uri 'self'",
@@ -127,7 +128,7 @@ const server = createServer(async (req, res) => {
     }
     let shell = await readFile(resolve(root, development ? "index.html" : "dist/public/index.html"), "utf8");
     if (development) shell = await vite.transformIndexHtml(req.url, shell);
-    const policy = development ? null : pagePolicy(shell);
+    const policy = development ? null : pagePolicy(shell, pathname === `${base}admin`);
     if (policy) shell = policy.shell;
     const packages = home ? await catalogForPage(renderer.pathLanguage(pathname, base) ?? "en") : null;
     const page = await renderer.renderPage(shell, pathname, base, packages);

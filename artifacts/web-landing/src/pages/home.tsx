@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { useListPackages, useCreateCheckout, getListPackagesQueryKey } from "@workspace/api-client-react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode, type RefObject } from "react";
+import { useListPackages, getListPackagesQueryKey } from "@workspace/api-client-react";
 import type { Package } from "@workspace/api-client-react";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown, MessageSquare } from "lucide-react";
@@ -11,6 +11,7 @@ import { Hero as HeroSprite, Pine, Sunflower, Log, Pin, Trophy, MapIcon, Cat, Ra
 import { supportChat } from "@/lib/support-chat";
 import { billingLabel, packageCurrencies, productSchema, serializeJson } from "@/lib/product-schema";
 import { localePath } from "@/lib/locale-url";
+import { useStartCheckout } from "@/lib/checkout";
 
 /* ---------------- Road + walking character ---------------- */
 
@@ -382,9 +383,12 @@ function PagesMock({ items }: { items: string[] }) {
 
 /* ---------------- Pricing ---------------- */
 
+// Neither the picker code nor its sample/image requests load until a visitor chooses a package.
+const SamplePicker = lazy(() => import("@/components/sample-picker"));
+
 /** `prices`: this package in every currency. All of them sit in the same spot (only the active one visible),
  *  so switching currency never changes the card height. */
-function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; prices: Package[]; i: number; busy: boolean; disabled: boolean; onBuy: () => void }) {
+function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; prices: Package[]; i: number; busy: boolean; disabled: boolean; onBuy: (event: MouseEvent<HTMLButtonElement>) => void }) {
   const { t, numLocale } = useI18n();
   const rec = p.recommended;
   return (
@@ -433,26 +437,17 @@ const GRID_FOR_COUNT: Record<number, string> = {
   5: "md:grid-cols-2 lg:grid-cols-3",
 };
 
-/** Leaves for Whop checkout through a real link click, so the Whop pixel can add its visitor id to the address. */
-function openCheckout(url: string) {
-  const link = document.createElement("a");
-  link.href = url;
-  link.hidden = true;
-  // In the document, or the pixel's click listener never sees the click.
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-}
-
 function Pricing() {
   const { t, lang, currency, setCurrency } = useI18n();
   // Keep the previous language's cards while the new language loads: no skeleton flash and no
   // remount (a remount would replay the pixel build on the package cards).
   const { data, isLoading, isError, refetch, isFetching } = useListPackages({ lang }, { query: { queryKey: getListPackagesQueryKey({ lang }), placeholderData: keepPreviousData } });
   const qc = useQueryClient();
-  const checkout = useCreateCheckout();
+  const checkout = useStartCheckout();
   const { toast } = useToast();
-  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [pickerPackage, setPickerPackage] = useState<Package | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerTriggerRef = useRef<HTMLElement | null>(null);
 
   // Every currency comes back from the API; show the visitor's currency, or whichever one exists.
   const currencies = packageCurrencies(data ?? []);
@@ -470,25 +465,15 @@ function Pricing() {
   const seen = new Set<string>();
   const cardKey = (p: Package) => (seen.has(p.key) ? p.id : (seen.add(p.key), p.key));
 
-  const buy = (id: string) => {
-    if (checkout.isPending) return;
-    const inFrame = window.self !== window.top;
-    const tab = inFrame ? window.open("", "_blank") : null;
-    setPendingId(id);
-    checkout.mutate(
-      { data: { packageId: id } },
-      {
-        onSuccess: (s) => {
-          if (inFrame && tab) { tab.location.href = s.purchaseUrl; setPendingId(null); }
-          else openCheckout(s.purchaseUrl);
-        },
-        onError: () => {
-          tab?.close();
-          setPendingId(null);
-          toast({ variant: "destructive", title: t.pricing.toastTitle, description: t.pricing.toastBody });
-        },
-      },
-    );
+  const buy = (p: Package, trigger: HTMLButtonElement) => {
+    if (p.pickSample) {
+      // Keep the actual button (mouse clicks do not focus buttons in every browser).
+      pickerTriggerRef.current = trigger;
+      setPickerPackage(p);
+      setPickerOpen(true);
+      return;
+    }
+    checkout.start({ packageId: p.id }, () => toast({ variant: "destructive", title: t.pricing.toastTitle, description: t.pricing.toastBody }));
   };
 
   return (
@@ -549,7 +534,7 @@ function Pricing() {
           {shown.length > 0 && (
             <div className={`grid gap-8 md:gap-6 items-stretch ${GRID_FOR_COUNT[Math.min(shown.length, 5)]}`}>
               {shown.map((p, i) => (
-                <PackageCard key={cardKey(p)} p={p} i={i} busy={pendingId === p.id} disabled={checkout.isPending} onBuy={() => buy(p.id)}
+                <PackageCard key={cardKey(p)} p={p} i={i} busy={checkout.pendingId === p.id} disabled={checkout.busy} onBuy={(event) => buy(p, event.currentTarget)}
                   prices={(data ?? []).filter((v) => v.key === p.key && (v.currency !== p.currency || v.id === p.id))} />
               ))}
             </div>
@@ -561,6 +546,11 @@ function Pricing() {
           </div>
         </div>
       </div>
+      {pickerPackage && (
+        <Suspense fallback={null}>
+          <SamplePicker key={pickerPackage.id} open={pickerOpen} onOpenChange={setPickerOpen} pkg={pickerPackage} checkout={checkout} returnFocusRef={pickerTriggerRef} />
+        </Suspense>
+      )}
     </section>
   );
 }

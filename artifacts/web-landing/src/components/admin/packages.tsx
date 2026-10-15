@@ -4,6 +4,7 @@ import { ArrowLeft, Plus } from "lucide-react";
 import {
   useListAdminPackages, getListAdminPackagesQueryKey,
   useCreateAdminPackage, useUpdateAdminPackage, useDeleteAdminPackage,
+  useListAdminSamples, getListAdminSamplesQueryKey,
   type AdminPackage, type AdminPackageInput, type AdminPackageText,
 } from "@workspace/api-client-react";
 import { statusOf } from "@/lib/http";
@@ -25,7 +26,7 @@ const SAVED_LIVE = "Đã lưu lên Whop. Trang bán hàng cập nhật trong kho
 
 type Lang = "vi" | "en";
 type Copy = { name: string; tagline: string; features: string };
-type Form = { vi: Copy; en: Copy; priceVnd: string; priceUsd: string; onSale: boolean; recommended: boolean };
+type Form = { vi: Copy; en: Copy; priceVnd: string; priceUsd: string; onSale: boolean; recommended: boolean; pickSample: boolean };
 type FieldKey = `${Lang}.${keyof Copy}` | "priceVnd" | "priceUsd";
 type Errors = Partial<Record<FieldKey, string>>;
 type SignedOut = (notice: string | null) => void;
@@ -55,12 +56,12 @@ const toCopy = (t: AdminPackageText): Copy => ({ name: t.name, tagline: t.taglin
 const EMPTY_COPY: Copy = { name: "", tagline: "", features: "" };
 
 function toForm(p: AdminPackage | null): Form {
-  if (!p) return { vi: EMPTY_COPY, en: EMPTY_COPY, priceVnd: "", priceUsd: "", onSale: true, recommended: false };
+  if (!p) return { vi: EMPTY_COPY, en: EMPTY_COPY, priceVnd: "", priceUsd: "", onSale: true, recommended: false, pickSample: false };
   return {
     vi: toCopy(p.vi), en: toCopy(p.en),
     priceVnd: p.priceVnd == null ? "" : String(p.priceVnd),
     priceUsd: p.priceUsd == null ? "" : String(p.priceUsd),
-    onSale: p.onSale, recommended: p.recommended,
+    onSale: p.onSale, recommended: p.recommended, pickSample: p.pickSample,
   };
 }
 
@@ -109,7 +110,7 @@ function validate(f: Form): { errors: Errors; input: AdminPackageInput | null } 
   else if (priceUsd > USD_MAX) errors.priceUsd = "Giá này lớn quá.";
 
   if (Object.keys(errors).length > 0 || priceVnd === null || priceUsd === null) return { errors, input: null };
-  return { errors, input: { vi, en, priceVnd, priceUsd, onSale: f.onSale, recommended: f.recommended } };
+  return { errors, input: { vi, en, priceVnd, priceUsd, onSale: f.onSale, recommended: f.recommended, pickSample: f.pickSample } };
 }
 
 /* ---------------- screen ---------------- */
@@ -211,6 +212,7 @@ function PackageRow({ pkg, active, onOpen }: { pkg: AdminPackage; active: boolea
       <span className="flex items-center gap-2">
         <span className="font-bold truncate">{pkg.vi.name || pkg.en.name}</span>
         {pkg.recommended && <span className="adm-chip shrink-0">Đề xuất</span>}
+        {pkg.pickSample && <span className="adm-chip shrink-0">Chọn mẫu</span>}
       </span>
       <span className="mt-0.5 block text-sm">
         {pkg.priceVnd != null ? money(pkg.priceVnd, "VND") : "Chưa có giá VND"}
@@ -246,6 +248,9 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
   const remove = useDeleteAdminPackage();
   const busy = create.isPending || update.isPending || remove.isPending;
   const dirty = JSON.stringify(form) !== JSON.stringify(base);
+  // Only asked while the box is ticked: with no sample on show, buyers skip the choice.
+  const samples = useListAdminSamples({ query: { queryKey: getListAdminSamplesQueryKey(), enabled: form.pickSample, retry: false, staleTime: 30_000 } });
+  const noSampleOnShow = form.pickSample && samples.data !== undefined && !samples.data.some((s) => s.visible);
   const enChanged = !sameCopy(form.en, base.en);
 
   useEffect(() => { onDirty(dirty); }, [dirty, onDirty]);
@@ -399,6 +404,19 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
                   <span className="block text-sm text-[#3d4a3d]">Làm nổi bật trên trang. Chỉ một gói được đề xuất: chọn gói này sẽ bỏ đánh dấu ở gói khác.</span>
                 </span>
               </label>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" className="adm-check" checked={form.pickSample}
+                  onChange={(e) => setForm((f) => ({ ...f, pickSample: e.target.checked }))} data-testid="checkbox-package-pick-sample" />
+                <span>
+                  <span className="font-bold">Khách chọn mẫu source</span>
+                  <span className="block text-sm text-[#3d4a3d]">Trước khi thanh toán, khách xem ảnh và chọn một mẫu trong thẻ "Mẫu source". Mẫu đã chọn hiện trong thẻ "Đơn hàng".</span>
+                </span>
+              </label>
+              {noSampleOnShow && (
+                <p className="adm-notice info" data-testid="text-package-no-samples">
+                  Chưa có mẫu nào đang hiện, nên khách vẫn mua gói này như bình thường cho tới khi bạn thêm mẫu.
+                </p>
+              )}
             </fieldset>
           </div>
         </div>

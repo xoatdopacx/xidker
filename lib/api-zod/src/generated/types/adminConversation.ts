@@ -21,6 +21,11 @@ export interface AdminConversation {
   orderId: string | null;
   /** @nullable */
   packageName: string | null;
+  /**
+     * Source sample the customer picked when buying, if the package had a sample choice
+     * @nullable
+     */
+  sampleName: string | null;
   lang: string;
   status: AdminConversationStatus;
   createdAt: Date;

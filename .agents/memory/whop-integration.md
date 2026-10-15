@@ -21,3 +21,6 @@ description: Non-obvious Whop SDK/API behavior hit while wiring hosted checkout 
 - The Whop pixel (`https://t.whop.tw/s.js`) adds `_swuid=<visitor token>` only to whop.com links clicked as real `<a>` elements (capture-phase click listener), so `location.assign()` to checkout loses attribution. It also wraps `history.pushState/replaceState` and counts every change of the full URL (hash included) as a new page view.
   **Why:** read from the script source when installing it; confirmed in headless chromium.
   **How to apply:** leave for Whop through a link click; avoid needless URL rewrites on the visitor site.
+- Dev and the live site use the same Whop plans, so a save from the dev admin screen changes the live store. The 3 VND plans are hidden in Whop on purpose: never unhide them. Saving a package that is on sale keeps each plan's own visibility; only the on-sale switch shows or hides both currencies.
+  **Why:** an admin save used to show the hidden VND plan again (fixed 2026-10-15).
+  **How to apply:** any change to package saving or plan visibility; test with plans you create and delete yourself.

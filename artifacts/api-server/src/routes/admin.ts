@@ -304,6 +304,7 @@ const conversationColumns = {
   email: chatConversationsTable.email,
   orderId: sql<string | null>`(select a.order_id from ${supportAccountsTable} a where a.id = ${outerAccountId})`,
   packageName: sql<string | null>`(select a.package_name from ${supportAccountsTable} a where a.id = ${outerAccountId})`,
+  sampleName: sql<string | null>`(select a.sample_name from ${supportAccountsTable} a where a.id = ${outerAccountId})`,
   lang: chatConversationsTable.lang,
   status: chatConversationsTable.status,
   createdAt: chatConversationsTable.createdAt,

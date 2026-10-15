@@ -8,6 +8,7 @@ import { cleanLine } from "./security";
 import type { PackageText } from "./packageTranslations";
 import {
   clearCatalogCache,
+  isPickSample,
   isRecommended,
   mergeGroupTexts,
   metadataRecord,
@@ -54,6 +55,7 @@ type CleanInput = {
   priceUsd: number;
   onSale: boolean;
   recommended: boolean;
+  pickSample: boolean;
 };
 
 type PlanWrite = {
@@ -129,6 +131,7 @@ function toAdmin(group: GroupState): AdminPackage {
     priceUsd: planFor(group, "usd")?.price ?? null,
     onSale: group.plans.some((plan) => plan.visible),
     recommended: group.plans.some((plan) => isRecommended(plan.metadata)),
+    pickSample: group.plans.some((plan) => isPickSample(plan.metadata)),
     buyers: group.plans.reduce((sum, plan) => sum + plan.members, 0),
     translations: translationState(group.key, texts.en),
   };
@@ -175,6 +178,7 @@ function cleanInput(raw: AdminPackageInput): CleanInput {
     priceUsd: Math.round(cents) / 100,
     onSale: raw.onSale,
     recommended: raw.recommended,
+    pickSample: raw.pickSample,
   };
 }
 
@@ -190,6 +194,7 @@ function desiredPlan(currency: ShopCurrency, input: CleanInput, key: string, cur
   metadata.key = key;
   metadata.title_lang = lang;
   metadata.recommended = String(input.recommended);
+  metadata.pick_sample = String(input.pickSample);
   return {
     title: input[lang].name,
     description: formatDescription(input[lang]),
@@ -308,6 +313,9 @@ export async function updatePackage(key: string, raw: AdminPackageInput): Promis
   const group = groups.find((g) => g.key === key);
   if (!group) throw new PackageNotFoundError();
 
+  // A package already on sale keeps each plan's visibility as it is, so a currency hidden in
+  // Whop stays hidden when the package is saved here; only switching "on sale" shows or hides all.
+  const wasOnSale = group.plans.some((plan) => plan.visible);
   try {
     const handled = new Set<string>();
     for (const currency of SHOP_CURRENCIES) {
@@ -315,17 +323,22 @@ export async function updatePackage(key: string, raw: AdminPackageInput): Promis
       const want = desiredPlan(currency, input, key, plan);
       if (plan) {
         handled.add(plan.id);
-        await patchPlan(client, plan, changes(plan, want));
+        const patch = changes(plan, want);
+        if (input.onSale && wasOnSale) delete patch.visibility;
+        await patchPlan(client, plan, patch);
       } else {
         await createPlan(client, currency, want);
       }
     }
-    // Duplicates and other currencies follow the on-sale switch and the recommended mark.
+    // Duplicates and other currencies follow the on-sale switch, the recommended mark and the sample choice.
     for (const plan of group.plans) {
       if (handled.has(plan.id)) continue;
       const patch: Partial<PlanWrite> = {};
       if (!input.onSale && plan.visible) patch.visibility = "hidden";
       if (!input.recommended && isRecommended(plan.metadata)) patch.metadata = { ...plan.metadata, recommended: "false" };
+      if (!input.pickSample && isPickSample(plan.metadata)) {
+        patch.metadata = { ...(patch.metadata ?? plan.metadata), pick_sample: "false" };
+      }
       await patchPlan(client, plan, patch);
     }
     if (input.recommended) await clearOtherRecommended(client, groups, key);

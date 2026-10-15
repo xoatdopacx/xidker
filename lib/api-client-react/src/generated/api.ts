@@ -26,8 +26,12 @@ import type {
   AdminConversation,
   AdminConversationUpdate,
   AdminMessageInput,
+  AdminOrder,
   AdminPackage,
   AdminPackageInput,
+  AdminSample,
+  AdminSampleInput,
+  AdminSampleOrderInput,
   AdminSession,
   AdminTokenInput,
   AdminTranslateInput,
@@ -41,10 +45,13 @@ import type {
   HealthStatus,
   ListPackagesParams,
   Package,
+  Sample,
   SupportActivateInput,
   SupportAuthError,
   SupportSession,
-  SupportSignInInput
+  SupportSignInInput,
+  UploadUrlRequest,
+  UploadUrlResponse
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -335,7 +342,7 @@ export const getGetCheckoutStatusUrl = (ref: string,) => {
 }
 
 /**
- * Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment.
+ * Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment, or "failed" when every attempt failed or was canceled.
  * @summary Get the verified payment status of a checkout
  */
 export const getCheckoutStatus = async (ref: string, options?: Parameters<typeof customFetch>[1]): Promise<CheckoutStatus> => {
@@ -1981,4 +1988,824 @@ export const useDeleteAdminPackage = <TError = ErrorType<ErrorResponse>,
       > => {
       return useMutation(getDeleteAdminPackageMutationOptions(options));
     }
+
+export const getListSamplesUrl = () => {
+
+
+
+
+  return `/api/samples`
+}
+
+/**
+ * The samples buyers can pick from, in the order the studio set. Hidden samples are left out.
+ * @summary List the source samples on show
+ */
+export const listSamples = async ( options?: Parameters<typeof customFetch>[1]): Promise<Sample[]> => {
+
+  return customFetch<Sample[]>(getListSamplesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListSamplesQueryKey = () => {
+    return [
+    `/api/samples`
+    ] as const;
+    }
+
+
+export const getListSamplesQueryOptions = <TData = Awaited<ReturnType<typeof listSamples>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSamples>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListSamplesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listSamples>>> = ({ signal }) => listSamples({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listSamples>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListSamplesQueryResult = NonNullable<Awaited<ReturnType<typeof listSamples>>>
+export type ListSamplesQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary List the source samples on show
+ */
+
+export function useListSamples<TData = Awaited<ReturnType<typeof listSamples>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listSamples>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListSamplesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListAdminSamplesUrl = () => {
+
+
+
+
+  return `/api/admin/samples`
+}
+
+/**
+ * @summary List every source sample, hidden ones included
+ */
+export const listAdminSamples = async ( options?: Parameters<typeof customFetch>[1]): Promise<AdminSample[]> => {
+
+  return customFetch<AdminSample[]>(getListAdminSamplesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminSamplesQueryKey = () => {
+    return [
+    `/api/admin/samples`
+    ] as const;
+    }
+
+
+export const getListAdminSamplesQueryOptions = <TData = Awaited<ReturnType<typeof listAdminSamples>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminSamples>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminSamplesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminSamples>>> = ({ signal }) => listAdminSamples({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminSamples>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminSamplesQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminSamples>>>
+export type ListAdminSamplesQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary List every source sample, hidden ones included
+ */
+
+export function useListAdminSamples<TData = Awaited<ReturnType<typeof listAdminSamples>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminSamples>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminSamplesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateAdminSampleUrl = () => {
+
+
+
+
+  return `/api/admin/samples`
+}
+
+/**
+ * The images must already be uploaded (see /storage/uploads/request-url). Saving makes them public.
+ * @summary Add a source sample
+ */
+export const createAdminSample = async (adminSampleInput: AdminSampleInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminSample> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminSample>(getCreateAdminSampleUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminSampleInput)
+  }
+);}
+
+
+
+
+
+export const getCreateAdminSampleMutationKey = () => ['createAdminSample'] as const;
+
+export const getCreateAdminSampleMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSample>>, TError,CreateAdminSampleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createAdminSample>>, TError,CreateAdminSampleMutationVariables, TContext> => {
+
+const mutationKey = getCreateAdminSampleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAdminSample>>, CreateAdminSampleMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createAdminSample(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateAdminSampleMutationResult = NonNullable<Awaited<ReturnType<typeof createAdminSample>>>
+    export type CreateAdminSampleMutationBody = BodyType<AdminSampleInput>
+    export type CreateAdminSampleMutationError = ErrorType<ErrorResponse>
+    export type CreateAdminSampleMutationVariables = {data: BodyType<AdminSampleInput>}
+
+    /**
+ * @summary Add a source sample
+ */
+export const useCreateAdminSample = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAdminSample>>, TError,CreateAdminSampleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createAdminSample>>,
+        TError,
+        CreateAdminSampleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateAdminSampleMutationOptions(options));
+    }
+
+export const getUpdateAdminSampleUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/samples/${id}`
+}
+
+/**
+ * Images taken out of the sample are deleted from storage.
+ * @summary Change a sample's name, images or whether it is on show
+ */
+export const updateAdminSample = async (id: string,
+    adminSampleInput: AdminSampleInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminSample> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminSample>(getUpdateAdminSampleUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminSampleInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateAdminSampleMutationKey = () => ['updateAdminSample'] as const;
+
+export const getUpdateAdminSampleMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSample>>, TError,UpdateAdminSampleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateAdminSample>>, TError,UpdateAdminSampleMutationVariables, TContext> => {
+
+const mutationKey = getUpdateAdminSampleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateAdminSample>>, UpdateAdminSampleMutationVariables> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updateAdminSample(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateAdminSampleMutationResult = NonNullable<Awaited<ReturnType<typeof updateAdminSample>>>
+    export type UpdateAdminSampleMutationBody = BodyType<AdminSampleInput>
+    export type UpdateAdminSampleMutationError = ErrorType<ErrorResponse>
+    export type UpdateAdminSampleMutationVariables = {id: string;data: BodyType<AdminSampleInput>}
+
+    /**
+ * @summary Change a sample's name, images or whether it is on show
+ */
+export const useUpdateAdminSample = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateAdminSample>>, TError,UpdateAdminSampleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateAdminSample>>,
+        TError,
+        UpdateAdminSampleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateAdminSampleMutationOptions(options));
+    }
+
+export const getDeleteAdminSampleUrl = (id: string,) => {
+
+
+
+
+  return `/api/admin/samples/${id}`
+}
+
+/**
+ * Orders that picked it keep the sample name.
+ * @summary Delete a sample and its images
+ */
+export const deleteAdminSample = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteAdminSampleUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteAdminSampleMutationKey = () => ['deleteAdminSample'] as const;
+
+export const getDeleteAdminSampleMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSample>>, TError,DeleteAdminSampleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSample>>, TError,DeleteAdminSampleMutationVariables, TContext> => {
+
+const mutationKey = getDeleteAdminSampleMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteAdminSample>>, DeleteAdminSampleMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteAdminSample(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteAdminSampleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteAdminSample>>>
+
+    export type DeleteAdminSampleMutationError = ErrorType<ErrorResponse>
+    export type DeleteAdminSampleMutationVariables = {id: string}
+
+    /**
+ * @summary Delete a sample and its images
+ */
+export const useDeleteAdminSample = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteAdminSample>>, TError,DeleteAdminSampleMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteAdminSample>>,
+        TError,
+        DeleteAdminSampleMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteAdminSampleMutationOptions(options));
+    }
+
+export const getReorderAdminSamplesUrl = () => {
+
+
+
+
+  return `/api/admin/sample-order`
+}
+
+/**
+ * @summary Set the order buyers see the samples in
+ */
+export const reorderAdminSamples = async (adminSampleOrderInput: AdminSampleOrderInput, options?: Parameters<typeof customFetch>[1]): Promise<AdminSample[]> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AdminSample[]>(getReorderAdminSamplesUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(adminSampleOrderInput)
+  }
+);}
+
+
+
+
+
+export const getReorderAdminSamplesMutationKey = () => ['reorderAdminSamples'] as const;
+
+export const getReorderAdminSamplesMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminSamples>>, TError,ReorderAdminSamplesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof reorderAdminSamples>>, TError,ReorderAdminSamplesMutationVariables, TContext> => {
+
+const mutationKey = getReorderAdminSamplesMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof reorderAdminSamples>>, ReorderAdminSamplesMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  reorderAdminSamples(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ReorderAdminSamplesMutationResult = NonNullable<Awaited<ReturnType<typeof reorderAdminSamples>>>
+    export type ReorderAdminSamplesMutationBody = BodyType<AdminSampleOrderInput>
+    export type ReorderAdminSamplesMutationError = ErrorType<ErrorResponse>
+    export type ReorderAdminSamplesMutationVariables = {data: BodyType<AdminSampleOrderInput>}
+
+    /**
+ * @summary Set the order buyers see the samples in
+ */
+export const useReorderAdminSamples = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reorderAdminSamples>>, TError,ReorderAdminSamplesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof reorderAdminSamples>>,
+        TError,
+        ReorderAdminSamplesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getReorderAdminSamplesMutationOptions(options));
+    }
+
+export const getListAdminOrdersUrl = () => {
+
+
+
+
+  return `/api/admin/orders`
+}
+
+/**
+ * Read from Whop (newest first, at most 50), joined with the checkouts started on this site to add the picked sample. Orders made before samples existed, or outside this site, have no sample.
+ * @summary Recent paid orders and the sample each buyer picked
+ */
+export const listAdminOrders = async ( options?: Parameters<typeof customFetch>[1]): Promise<AdminOrder[]> => {
+
+  return customFetch<AdminOrder[]>(getListAdminOrdersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListAdminOrdersQueryKey = () => {
+    return [
+    `/api/admin/orders`
+    ] as const;
+    }
+
+
+export const getListAdminOrdersQueryOptions = <TData = Awaited<ReturnType<typeof listAdminOrders>>, TError = ErrorType<ErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminOrders>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListAdminOrdersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listAdminOrders>>> = ({ signal }) => listAdminOrders({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listAdminOrders>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListAdminOrdersQueryResult = NonNullable<Awaited<ReturnType<typeof listAdminOrders>>>
+export type ListAdminOrdersQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Recent paid orders and the sample each buyer picked
+ */
+
+export function useListAdminOrders<TData = Awaited<ReturnType<typeof listAdminOrders>>, TError = ErrorType<ErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listAdminOrders>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListAdminOrdersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getRequestUploadUrlUrl = () => {
+
+
+
+
+  return `/api/storage/uploads/request-url`
+}
+
+/**
+ * Admin only. The request carries the file details, never the file; the browser then uploads the file straight to App Storage with PUT to uploadURL.
+ * @summary Get a link to upload one sample image
+ */
+export const requestUploadUrl = async (uploadUrlRequest: UploadUrlRequest, options?: Parameters<typeof customFetch>[1]): Promise<UploadUrlResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<UploadUrlResponse>(getRequestUploadUrlUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(uploadUrlRequest)
+  }
+);}
+
+
+
+
+
+export const getRequestUploadUrlMutationKey = () => ['requestUploadUrl'] as const;
+
+export const getRequestUploadUrlMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestUploadUrl>>, TError,RequestUploadUrlMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestUploadUrl>>, TError,RequestUploadUrlMutationVariables, TContext> => {
+
+const mutationKey = getRequestUploadUrlMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestUploadUrl>>, RequestUploadUrlMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  requestUploadUrl(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestUploadUrlMutationResult = NonNullable<Awaited<ReturnType<typeof requestUploadUrl>>>
+    export type RequestUploadUrlMutationBody = BodyType<UploadUrlRequest>
+    export type RequestUploadUrlMutationError = ErrorType<ErrorResponse>
+    export type RequestUploadUrlMutationVariables = {data: BodyType<UploadUrlRequest>}
+
+    /**
+ * @summary Get a link to upload one sample image
+ */
+export const useRequestUploadUrl = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestUploadUrl>>, TError,RequestUploadUrlMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof requestUploadUrl>>,
+        TError,
+        RequestUploadUrlMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRequestUploadUrlMutationOptions(options));
+    }
+
+export const getGetPublicObjectUrl = (filePath: string,) => {
+
+
+
+
+  return `/api/storage/public-objects/${filePath}`
+}
+
+/**
+ * Unconditionally public. Searches PUBLIC_OBJECT_SEARCH_PATHS for the given file path.
+ * @summary Serve a public asset from PUBLIC_OBJECT_SEARCH_PATHS
+ */
+export const getPublicObject = async (filePath: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetPublicObjectUrl(filePath),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPublicObjectQueryKey = (filePath: string,) => {
+    return [
+    `/api/storage/public-objects/${filePath}`
+    ] as const;
+    }
+
+
+export const getGetPublicObjectQueryOptions = <TData = Awaited<ReturnType<typeof getPublicObject>>, TError = ErrorType<ErrorResponse>>(filePath: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicObject>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPublicObjectQueryKey(filePath);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPublicObject>>> = ({ signal }) => getPublicObject(filePath, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: filePath !== null && filePath !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPublicObject>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPublicObjectQueryResult = NonNullable<Awaited<ReturnType<typeof getPublicObject>>>
+export type GetPublicObjectQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Serve a public asset from PUBLIC_OBJECT_SEARCH_PATHS
+ */
+
+export function useGetPublicObject<TData = Awaited<ReturnType<typeof getPublicObject>>, TError = ErrorType<ErrorResponse>>(
+ filePath: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPublicObject>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPublicObjectQueryOptions(filePath,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetStorageObjectUrl = (objectPath: string,) => {
+
+
+
+
+  return `/api/storage/objects/${objectPath}`
+}
+
+/**
+ * Only images that belong to a saved sample are served (saving marks them public).
+ * @summary Serve an uploaded sample image
+ */
+export const getStorageObject = async (objectPath: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetStorageObjectUrl(objectPath),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetStorageObjectQueryKey = (objectPath: string,) => {
+    return [
+    `/api/storage/objects/${objectPath}`
+    ] as const;
+    }
+
+
+export const getGetStorageObjectQueryOptions = <TData = Awaited<ReturnType<typeof getStorageObject>>, TError = ErrorType<ErrorResponse>>(objectPath: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStorageObject>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetStorageObjectQueryKey(objectPath);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStorageObject>>> = ({ signal }) => getStorageObject(objectPath, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: objectPath !== null && objectPath !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getStorageObject>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetStorageObjectQueryResult = NonNullable<Awaited<ReturnType<typeof getStorageObject>>>
+export type GetStorageObjectQueryError = ErrorType<ErrorResponse>
+
+
+/**
+ * @summary Serve an uploaded sample image
+ */
+
+export function useGetStorageObject<TData = Awaited<ReturnType<typeof getStorageObject>>, TError = ErrorType<ErrorResponse>>(
+ objectPath: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getStorageObject>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetStorageObjectQueryOptions(objectPath,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 

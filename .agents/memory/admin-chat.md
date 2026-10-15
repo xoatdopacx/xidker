@@ -6,8 +6,8 @@ description: Non-obvious facts and test recipes for the buyers-only support chat
 The chat was an open visitor chat until 2026-10-14, when the user asked for a buyers-only support chat (purchase email + order ID + password to activate, one browser signed in at a time). The rules themselves are in `replit.md`.
 **Why:** the user's request; do not bring back anonymous visitor chat.
 
-Unverified: whether Whop returns the buyer email for real paid orders (the API key may need permission to read member emails). Activation answers 503 and logs "Whop returned no buyer email" when it is missing. Nobody has activated with a real purchase yet.
-**How to apply:** after the first real order, check the API log for that line before blaming the chat code.
+Confirmed on 2026-10-15: Whop returns the buyer email (payment `user.email`) for real paid orders with this API key. If it ever goes missing (for example a permission change on the key), activation answers 503 and logs "Whop returned no buyer email", and the admin orders tab shows no email.
+**How to apply:** check the API log for that line before blaming the chat code.
 
 Admin sign-in is two steps: ADMIN_TOKEN (trimmed, NFC, at least 8 characters, or sign-in is off with a log line), then a 6-digit code emailed through the Gmail connector to ADMIN_EMAIL. The code challenge is bound to the browser by a `__Host-` cookie; codes and tokens are stored only as hashes. A session is tied to the ADMIN_TOKEN in force when it was created.
 **Why:** the user asked for "token + 6-digit code via Gmail" plus security hardening.

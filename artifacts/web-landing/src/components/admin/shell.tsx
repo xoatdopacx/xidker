@@ -5,19 +5,25 @@ import {
 import { Wordmark } from "@/components/sprites";
 import { AdminInbox } from "./inbox";
 import { AdminPackages } from "./packages";
+import { AdminSamples } from "./samples";
+import { AdminOrders } from "./orders";
 import { clock, useDocTitle, useSignOutOn401 } from "./shared";
 
-type Tab = "inbox" | "packages";
-const TABS: { value: Tab; label: string; title: string }[] = [
-  { value: "inbox", label: "Tin nhắn", title: "Hộp thư" },
-  { value: "packages", label: "Sản phẩm & giá", title: "Sản phẩm & giá" },
+type Tab = "inbox" | "packages" | "samples" | "orders";
+// Short labels below 1024px keep the four tabs on one line, down to 360px phones (tabs size to their text).
+const TABS: { value: Tab; label: string; short: string; title: string }[] = [
+  { value: "inbox", label: "Tin nhắn", short: "Tin nhắn", title: "Hộp thư" },
+  { value: "packages", label: "Sản phẩm & giá", short: "Gói", title: "Sản phẩm & giá" },
+  { value: "samples", label: "Mẫu source", short: "Mẫu", title: "Mẫu source" },
+  { value: "orders", label: "Đơn hàng", short: "Đơn", title: "Đơn hàng" },
 ];
 const TAB_STORE = "xid-admin-tab";
 const LIST_KEY = getListAdminConversationsQueryKey();
 
 function savedTab(): Tab {
   try {
-    return sessionStorage.getItem(TAB_STORE) === "packages" ? "packages" : "inbox";
+    const stored = sessionStorage.getItem(TAB_STORE);
+    return TABS.find((t) => t.value === stored)?.value ?? "inbox";
   } catch {
     return "inbox";
   }
@@ -27,7 +33,8 @@ type SignedOut = (notice: string | null) => void;
 
 export function AdminShell({ session, onSignedOut }: { session: AdminSession; onSignedOut: SignedOut }) {
   const [tab, setTabState] = useState<Tab>(savedTab);
-  const [packagesOpened, setPackagesOpened] = useState(tab === "packages");
+  // Editors stay mounted once opened, so unsaved edits and running uploads survive a look at another tab.
+  const [opened, setOpened] = useState<ReadonlySet<Tab>>(() => new Set([tab]));
   // Unsent replies survive switching tabs (the inbox itself unmounts so it never marks messages read unseen).
   const drafts = useRef(new Map<string, string>());
   const signOut = useSignOutAdmin();
@@ -43,7 +50,7 @@ export function AdminShell({ session, onSignedOut }: { session: AdminSession; on
 
   const setTab = (next: Tab) => {
     setTabState(next);
-    if (next === "packages") setPackagesOpened(true);
+    setOpened((s) => (s.has(next) ? s : new Set([...s, next])));
     try { sessionStorage.setItem(TAB_STORE, next); } catch { /* private mode: the tab just isn't remembered */ }
   };
 
@@ -58,8 +65,10 @@ export function AdminShell({ session, onSignedOut }: { session: AdminSession; on
         <nav aria-label="Khu quản trị" className="order-last w-full sm:order-none sm:w-auto flex gap-1.5 pt-2 sm:pt-0">
           {TABS.map((t) => (
             <button key={t.value} type="button" onClick={() => setTab(t.value)} aria-current={tab === t.value ? "page" : undefined}
-              className="adm-nav flex-1 sm:flex-none justify-center" data-testid={`tab-admin-${t.value}`}>
-              {t.label}
+              aria-label={t.short !== t.label ? t.label : undefined}
+              className="adm-nav flex-auto sm:flex-none justify-center whitespace-nowrap" data-testid={`tab-admin-${t.value}`}>
+              <span className="lg:hidden">{t.short}</span>
+              <span className="hidden lg:inline">{t.label}</span>
               {t.value === "inbox" && unread > 0 && (
                 <span className="adm-badge font-num" aria-label={`${unread} tin chưa đọc`}>{unread > 99 ? "99+" : unread}</span>
               )}
@@ -73,12 +82,17 @@ export function AdminShell({ session, onSignedOut }: { session: AdminSession; on
       </header>
 
       {tab === "inbox" && <AdminInbox drafts={drafts.current} onSignedOut={onSignedOut} />}
-      {/* Stays mounted once opened, so an unsaved price edit survives a look at the inbox. */}
-      {packagesOpened && (
+      {opened.has("packages") && (
         <div className={tab === "packages" ? "flex-1 min-h-0 flex" : "hidden"}>
           <AdminPackages onSignedOut={onSignedOut} />
         </div>
       )}
+      {opened.has("samples") && (
+        <div className={tab === "samples" ? "flex-1 min-h-0 flex" : "hidden"}>
+          <AdminSamples onSignedOut={onSignedOut} />
+        </div>
+      )}
+      {tab === "orders" && <AdminOrders onSignedOut={onSignedOut} />}
     </div>
   );
 }

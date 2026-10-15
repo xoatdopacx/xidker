@@ -142,6 +142,17 @@ async function packageNameFor(payment: VerifiedPayment, fallback: string | null)
   }
 }
 
+/** The sample picked when the order was started on this site, for packages with a sample choice. */
+async function sampleNameFor(payment: VerifiedPayment): Promise<string | null> {
+  if (!payment.checkoutConfigurationId) return payment.sampleName;
+  const [checkout] = await db
+    .select({ sampleName: checkoutSessionsTable.sampleName })
+    .from(checkoutSessionsTable)
+    .where(eq(checkoutSessionsTable.checkoutConfigurationId, payment.checkoutConfigurationId))
+    .limit(1);
+  return checkout?.sampleName ?? payment.sampleName;
+}
+
 router.post(
   "/support/activate",
   requireSameOrigin,
@@ -217,13 +228,16 @@ router.post(
     }
 
     const passwordHash = await hashPassword(parsed.data.password);
-    const packageName = await packageNameFor(payment, order.packageName);
+    const [packageName, sampleName] = await Promise.all([
+      packageNameFor(payment, order.packageName),
+      sampleNameFor(payment),
+    ]);
     let created: { account: SupportAccountRow; token: string };
     try {
       created = await db.transaction(async (tx) => {
         const [account] = await tx
           .insert(supportAccountsTable)
-          .values({ id: randomUUID(), email, passwordHash, orderId: payment.id, packageName })
+          .values({ id: randomUUID(), email, passwordHash, orderId: payment.id, packageName, sampleName })
           .returning();
         const token = await startSupportSession(tx, account.id);
         return { account, token };

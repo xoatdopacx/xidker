@@ -18,6 +18,10 @@ tags:
     description: Support chat for customers who bought a package
   - name: admin
     description: Studio admin sign-in, chat inbox and the packages on sale
+  - name: samples
+    description: Source samples that buyers of some packages pick from before paying
+  - name: storage
+    description: Uploaded sample images in App Storage
 paths:
   /healthz:
     get:
@@ -86,13 +90,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/CheckoutSession"
         "400":
-          description: Invalid request
+          description: Invalid request, or the package needs a picked sample and none was sent
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
-          description: Package not found
+          description: Package not found, or the picked sample is no longer on show
           content:
             application/json:
               schema:
@@ -108,7 +112,7 @@ paths:
       operationId: getCheckoutStatus
       tags: [checkout]
       summary: Get the verified payment status of a checkout
-      description: Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment.
+      description: Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment, or "failed" when every attempt failed or was canceled.
       parameters:
         - name: ref
           in: path
@@ -874,6 +878,367 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /samples:
+    get:
+      operationId: listSamples
+      tags: [samples]
+      summary: List the source samples on show
+      description: The samples buyers can pick from, in the order the studio set. Hidden samples are left out.
+      responses:
+        "200":
+          description: Samples on show
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Sample"
+  /admin/samples:
+    get:
+      operationId: listAdminSamples
+      tags: [admin]
+      summary: List every source sample, hidden ones included
+      responses:
+        "200":
+          description: Samples in the order buyers see them
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminSample"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createAdminSample
+      tags: [admin]
+      summary: Add a source sample
+      description: The images must already be uploaded (see /storage/uploads/request-url). Saving makes them public.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSampleInput"
+      responses:
+        "201":
+          description: Added, at the end of the list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSample"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/samples/{id}:
+    put:
+      operationId: updateAdminSample
+      tags: [admin]
+      summary: Change a sample's name, images or whether it is on show
+      description: Images taken out of the sample are deleted from storage.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]{6,32}$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSampleInput"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSample"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sample not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteAdminSample
+      tags: [admin]
+      summary: Delete a sample and its images
+      description: Orders that picked it keep the sample name.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]{6,32}$"
+      responses:
+        "204":
+          description: Deleted
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Sample not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/sample-order:
+    put:
+      operationId: reorderAdminSamples
+      tags: [admin]
+      summary: Set the order buyers see the samples in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSampleOrderInput"
+      responses:
+        "200":
+          description: Samples in their new order
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminSample"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/orders:
+    get:
+      operationId: listAdminOrders
+      tags: [admin]
+      summary: Recent paid orders and the sample each buyer picked
+      description: >-
+        Read from Whop (newest first, at most 50), joined with the checkouts started on this site to add the
+        picked sample. Orders made before samples existed, or outside this site, have no sample.
+      responses:
+        "200":
+          description: Paid orders, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminOrder"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payment provider unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Get a link to upload one sample image
+      description: >-
+        Admin only. The request carries the file details, never the file; the browser then uploads the
+        file straight to App Storage with PUT to uploadURL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlRequest"
+      responses:
+        "200":
+          description: Upload link created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many uploads, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Failed to create the upload link
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /storage/public-objects/{filePath}:
+    get:
+      operationId: getPublicObject
+      tags: [storage]
+      summary: Serve a public asset from PUBLIC_OBJECT_SEARCH_PATHS
+      description: Unconditionally public. Searches PUBLIC_OBJECT_SEARCH_PATHS for the given file path.
+      parameters:
+        - name: filePath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object content streamed with its content type
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Failed to serve the file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /storage/objects/{objectPath}:
+    get:
+      operationId: getStorageObject
+      tags: [storage]
+      summary: Serve an uploaded sample image
+      description: Only images that belong to a saved sample are served (saving marks them public).
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Object path within the private object dir (e.g. uploads/some-uuid)
+      responses:
+        "200":
+          description: Image streamed with its content type
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Failed to serve the image
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -929,6 +1294,11 @@ components:
         recommended:
           type: boolean
           description: True for the package the studio recommends most
+        pickSample:
+          type: boolean
+          description: >-
+            True when the buyer picks one of the source samples before paying. Set on the package in the admin
+            screen; stays false while no sample is on show, so the package can always be bought.
       required:
         - id
         - key
@@ -940,12 +1310,17 @@ components:
         - billing
         - billingPeriodDays
         - recommended
+        - pickSample
     CheckoutInput:
       type: object
       properties:
         packageId:
           type: string
           minLength: 1
+        sampleId:
+          type: string
+          pattern: "^[A-Za-z0-9_-]{6,32}$"
+          description: The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
       required:
         - packageId
     CheckoutSession:
@@ -967,7 +1342,10 @@ components:
           type: string
         status:
           type: string
-          enum: [paid, pending]
+          enum: [paid, pending, failed]
+          description: >-
+            paid once Whop reports a successful payment; failed when every attempt on this checkout
+            failed or was canceled; pending otherwise (no attempt yet, or one still in progress).
         packageId:
           type: string
         packageName:
@@ -983,6 +1361,12 @@ components:
         orderId:
           type: ["string", "null"]
           description: Whop payment id, null until paid. The customer uses it to switch on support chat.
+        sampleId:
+          type: ["string", "null"]
+          description: The source sample picked for this checkout, null when the package has no sample choice
+        sampleName:
+          type: ["string", "null"]
+          description: Name of the picked sample as it was when the checkout started
       required:
         - ref
         - status
@@ -992,6 +1376,8 @@ components:
         - currency
         - paidAt
         - orderId
+        - sampleId
+        - sampleName
     ChatMessage:
       type: object
       properties:
@@ -1214,6 +1600,9 @@ components:
           description: Whop payment id the customer switched on support chat with
         packageName:
           type: ["string", "null"]
+        sampleName:
+          type: ["string", "null"]
+          description: Source sample the customer picked when buying, if the package had a sample choice
         lang:
           type: string
         status:
@@ -1240,6 +1629,7 @@ components:
         - email
         - orderId
         - packageName
+        - sampleName
         - lang
         - status
         - createdAt
@@ -1292,6 +1682,9 @@ components:
           description: Shown on the site (at least one of its plans is visible on Whop)
         recommended:
           type: boolean
+        pickSample:
+          type: boolean
+          description: Buyers pick a source sample before paying (Whop plan metadata "pick_sample")
         buyers:
           type: integer
           description: Current Whop members across the package's plans
@@ -1310,6 +1703,7 @@ components:
         - priceUsd
         - onSale
         - recommended
+        - pickSample
         - buyers
         - translations
     AdminPackageTextInput:
@@ -1354,6 +1748,9 @@ components:
           type: boolean
         recommended:
           type: boolean
+        pickSample:
+          type: boolean
+          description: Buyers pick a source sample before paying
       required:
         - vi
         - en
@@ -1361,3 +1758,210 @@ components:
         - priceUsd
         - onSale
         - recommended
+        - pickSample
+    SampleImage:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Full-size image
+        thumbUrl:
+          type: string
+          description: Small preview showing the top of the image
+        width:
+          type: integer
+        height:
+          type: integer
+      required:
+        - url
+        - thumbUrl
+        - width
+        - height
+    Sample:
+      type: object
+      description: A source sample a buyer can pick. The name is shown as written in every language.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/SampleImage"
+      required:
+        - id
+        - name
+        - images
+    AdminSampleImage:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Object path of the full-size image
+        thumb:
+          type: string
+          description: Object path of the preview
+        width:
+          type: integer
+        height:
+          type: integer
+        url:
+          type: string
+        thumbUrl:
+          type: string
+      required:
+        - path
+        - thumb
+        - width
+        - height
+        - url
+        - thumbUrl
+    AdminSample:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminSampleImage"
+        visible:
+          type: boolean
+          description: On show to buyers
+        position:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - images
+        - visible
+        - position
+        - createdAt
+        - updatedAt
+    AdminSampleImageInput:
+      type: object
+      properties:
+        path:
+          type: string
+          pattern: "^/objects/uploads/[0-9a-f-]{36}$"
+        thumb:
+          type: string
+          pattern: "^/objects/uploads/[0-9a-f-]{36}$"
+        width:
+          type: integer
+          minimum: 1
+          maximum: 20000
+        height:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      required:
+        - path
+        - thumb
+        - width
+        - height
+    AdminSampleInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 60
+        images:
+          type: array
+          minItems: 1
+          maxItems: 12
+          items:
+            $ref: "#/components/schemas/AdminSampleImageInput"
+        visible:
+          type: boolean
+      required:
+        - name
+        - images
+        - visible
+    AdminSampleOrderInput:
+      type: object
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items:
+            type: string
+            pattern: "^[A-Za-z0-9_-]{6,32}$"
+      required:
+        - ids
+    AdminOrder:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Whop payment id
+        paidAt:
+          type: ["string", "null"]
+          format: date-time
+        amount:
+          type: ["number", "null"]
+          description: Amount paid in major currency units
+        currency:
+          type: string
+        email:
+          type: ["string", "null"]
+          description: Buyer email, null when Whop does not share it
+        packageName:
+          type: ["string", "null"]
+        sampleName:
+          type: ["string", "null"]
+          description: Sample the buyer picked, null when the order had no sample choice
+      required:
+        - id
+        - paidAt
+        - amount
+        - currency
+        - email
+        - packageName
+        - sampleName
+    UploadUrlRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Original file name
+        size:
+          type: integer
+          minimum: 1
+          maximum: 15728640
+          description: File size in bytes (at most 15 MB)
+        contentType:
+          type: string
+          enum: [image/webp, image/jpeg, image/png]
+      required:
+        - name
+        - size
+        - contentType
+    UploadUrlResponse:
+      type: object
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+          description: Signed App Storage link for one PUT upload, valid for 15 minutes
+        objectPath:
+          type: string
+          description: Object path to send back when saving the sample (e.g. /objects/uploads/uuid)
+        metadata:
+          $ref: "#/components/schemas/UploadUrlRequest"
+      required:
+        - uploadURL
+        - objectPath

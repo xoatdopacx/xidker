@@ -9,11 +9,12 @@ import {
   GetCheckoutStatusResponse,
 } from "@workspace/api-zod";
 import {
+  checkoutPayments,
   createWhopCheckout,
-  findPaidPayment,
   listPackages,
 } from "../lib/whopStore";
 import { resolveSiteOrigin } from "../lib/siteOrigin";
+import { findVisibleSample, hasVisibleSamples } from "../lib/samples";
 
 // Frontend route that Whop sends the buyer back to after paying.
 const THANK_YOU_PATH = "/cam-on";
@@ -41,12 +42,28 @@ router.post("/checkout", async (req, res): Promise<void> => {
     return;
   }
 
+  // A package with a sample choice needs the picked sample, as long as there is anything to pick from.
+  let sample: { id: string; name: string } | null = null;
+  if (pkg.pickSample) {
+    if (parsed.data.sampleId) {
+      const row = await findVisibleSample(parsed.data.sampleId);
+      if (!row) {
+        res.status(404).json({ error: "Sample not found" });
+        return;
+      }
+      sample = { id: row.id, name: row.name };
+    } else if (await hasVisibleSamples()) {
+      res.status(400).json({ error: "Pick a sample first" });
+      return;
+    }
+  }
+
   const ref = randomBytes(16).toString("base64url");
   const redirectUrl = `${resolveSiteOrigin(req)}${THANK_YOU_PATH}?ref=${ref}`;
 
   let checkout;
   try {
-    checkout = await createWhopCheckout({ planId: pkg.id, redirectUrl, ref });
+    checkout = await createWhopCheckout({ planId: pkg.id, redirectUrl, ref, sample });
   } catch (err) {
     req.log.error({ err, planId: pkg.id }, "Failed to create Whop checkout");
     res.status(503).json({ error: "Checkout is temporarily unavailable" });
@@ -58,10 +75,12 @@ router.post("/checkout", async (req, res): Promise<void> => {
     checkoutConfigurationId: checkout.checkoutConfigurationId,
     planId: pkg.id,
     packageName: pkg.name,
+    sampleId: sample?.id ?? null,
+    sampleName: sample?.name ?? null,
   });
 
   req.log.info(
-    { planId: pkg.id, checkoutConfigurationId: checkout.checkoutConfigurationId },
+    { planId: pkg.id, checkoutConfigurationId: checkout.checkoutConfigurationId, sampleId: sample?.id },
     "Created Whop checkout",
   );
   res
@@ -86,8 +105,11 @@ router.get("/checkout/:ref", async (req, res): Promise<void> => {
   }
 
   let payment;
+  let failed = false;
   try {
-    payment = await findPaidPayment(session.checkoutConfigurationId);
+    const result = await checkoutPayments(session.checkoutConfigurationId);
+    payment = result.paid;
+    failed = result.failed;
   } catch (err) {
     req.log.error({ err }, "Failed to verify payment with Whop");
     res.status(503).json({ error: "Payment status is temporarily unavailable" });
@@ -97,13 +119,15 @@ router.get("/checkout/:ref", async (req, res): Promise<void> => {
   res.json(
     GetCheckoutStatusResponse.parse({
       ref: session.ref,
-      status: payment ? "paid" : "pending",
+      status: payment ? "paid" : failed ? "failed" : "pending",
       packageId: session.planId,
       packageName: session.packageName,
       amount: payment?.amount ?? null,
       currency: payment?.currency ?? null,
       paidAt: payment?.paidAt ?? null,
       orderId: payment?.id ?? null,
+      sampleId: session.sampleId,
+      sampleName: session.sampleName,
     }),
   );
 });

@@ -35,4 +35,6 @@ export interface Package {
   billingPeriodDays: number | null;
   /** True for the package the studio recommends most */
   recommended: boolean;
+  /** True when the buyer picks one of the source samples before paying. Set on the package in the admin screen; stays false while no sample is on show, so the package can always be bought. */
+  pickSample: boolean;
 }

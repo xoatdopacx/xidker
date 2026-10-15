@@ -26,6 +26,8 @@ export interface AdminPackage {
   /** Shown on the site (at least one of its plans is visible on Whop) */
   onSale: boolean;
   recommended: boolean;
+  /** Buyers pick a source sample before paying (Whop plan metadata "pick_sample") */
+  pickSample: boolean;
   /** Current Whop members across the package's plans */
   buyers: number;
   /** built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text. */

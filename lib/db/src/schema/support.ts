@@ -10,6 +10,8 @@ export const supportAccountsTable = pgTable("support_accounts", {
   // The Whop payment id used to activate; one account per order.
   orderId: text("order_id").notNull().unique(),
   packageName: text("package_name"),
+  // Source sample picked at checkout (snapshot), for packages with a sample choice.
+  sampleName: text("sample_name"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

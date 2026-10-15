@@ -27,6 +27,12 @@ const SERVER_TEXT: Record<string, string> = {
   "Payment provider unavailable": "Chưa kết nối được Whop. Thử lại sau ít phút.",
   "Name is empty": "Tên gói đang trống.",
   "USD price can have at most 2 decimals": "Giá USD chỉ được có tối đa 2 chữ số sau dấu chấm.",
+  "Sample not found": "Mẫu này không còn nữa. Tải lại danh sách nhé.",
+  "An image was not uploaded completely, add it again": "Có ảnh chưa tải lên xong. Xóa ảnh đó rồi thêm lại nhé.",
+  "Only WebP, JPEG and PNG images can be used": "Chỉ dùng được ảnh WebP, JPG hoặc PNG.",
+  "Images must be 15 MB or smaller": "Mỗi ảnh tối đa 15 MB.",
+  "Only WebP, JPEG or PNG images up to 15 MB": "Chỉ dùng được ảnh WebP, JPG hoặc PNG, mỗi ảnh tối đa 15 MB.",
+  "Failed to create the upload link": "Chưa tải ảnh lên được. Thử lại sau ít phút.",
 };
 
 /** Whop's own reason for refusing a change comes back as "Whop: …" (in English). */

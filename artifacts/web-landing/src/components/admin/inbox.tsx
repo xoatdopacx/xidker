@@ -290,6 +290,7 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
               ? <a href={`mailto:${conv.email}`} className="underline font-semibold break-all" dir="ltr" data-testid="link-visitor-email">{conv.email}</a>
               : <span>Không có email</span>)}
             {conv.packageName && <span data-testid="text-admin-package">Gói {conv.packageName}</span>}
+            {conv.sampleName && <span dir="auto" data-testid="text-admin-sample">Mẫu {conv.sampleName}</span>}
             {conv.orderId && <span className="font-mono break-all" dir="ltr" data-testid="text-admin-order">{conv.orderId}</span>}
             <span>{languageName(conv.lang)}</span>
             <span>Bắt đầu {fullWhen(conv.createdAt)}</span>

@@ -12,6 +12,7 @@ import { PACKAGE_TRANSLATIONS, type PackageText } from "./packageTranslations";
 //   key: "personal"      -> package group: plans sharing a key are one package in several currencies
 //   title_lang: "vi"     -> language of the plan title + description (default "vi")
 //   recommended: "true"  -> the recommended package (set on any plan of the group)
+//   pick_sample: "true"  -> buyers pick a source sample before paying (set on any plan of the group)
 //   name_<lang>, tagline_<lang>, features_<lang> (one per line) -> text in another language
 // The admin screen (whopAdmin.ts) writes each package as a VND plan with the Vietnamese text
 // and a USD plan with the English text, with no per-language metadata copies.
@@ -26,6 +27,7 @@ type PlanRow = Omit<Package, "name" | "tagline" | "features">;
 type Group = {
   key: string;
   recommended: boolean;
+  pickSample: boolean;
   texts: Partial<Record<string, PackageText>>;
   plans: PlanRow[];
 };
@@ -154,12 +156,17 @@ export function isRecommended(metadata: unknown): boolean {
   return value === true || value === "true";
 }
 
+export function isPickSample(metadata: unknown): boolean {
+  const value = metadataRecord(metadata).pick_sample;
+  return value === true || value === "true";
+}
+
 async function fetchCatalog(): Promise<Group[]> {
   const client = await getWhopClient();
   const companyId = requireEnv("WHOP_COMPANY_ID");
   const productId = requireEnv("WHOP_PRODUCT_ID");
 
-  type Collected = { row: PlanRow; recommended: boolean; texts: PlanTexts };
+  type Collected = { row: PlanRow; recommended: boolean; pickSample: boolean; texts: PlanTexts };
   const byKey = new Map<string, Collected[]>();
 
   for await (const plan of client.plans.list({
@@ -182,8 +189,10 @@ async function fetchCatalog(): Promise<Group[]> {
         billing: recurring ? "recurring" : "one_time",
         billingPeriodDays: recurring ? plan.billing_period : null,
         recommended: false,
+        pickSample: false,
       },
       recommended: isRecommended(plan.metadata),
+      pickSample: isPickSample(plan.metadata),
       texts: readPlanTexts(plan),
     };
     byKey.set(key, [...(byKey.get(key) ?? []), collected]);
@@ -192,6 +201,7 @@ async function fetchCatalog(): Promise<Group[]> {
   return [...byKey.entries()].map(([key, items]) => ({
     key,
     recommended: items.some((item) => item.recommended),
+    pickSample: items.some((item) => item.pickSample),
     texts: mergeGroupTexts(items.map((item) => item.texts)),
     plans: items.map((item) => item.row),
   }));
@@ -209,7 +219,10 @@ function textFor(group: Group, language: CatalogLanguage): PackageText {
   return en ?? group.texts.vi ?? Object.values(group.texts)[0] ?? { name: "xidker", tagline: null, features: [] };
 }
 
-/** Every visible package in every currency, sorted by currency then price. */
+/**
+ * Every visible package in every currency, sorted by currency then price. pickSample is the
+ * package's own setting; the routes also check that a sample is on show (see samples.ts).
+ */
 export async function listPackages(language: CatalogLanguage = "vi"): Promise<Package[]> {
   if (!catalogCache || Date.now() - catalogCache.fetchedAt >= PACKAGES_CACHE_TTL_MS) {
     catalogCache = { fetchedAt: Date.now(), groups: await fetchCatalog() };
@@ -223,7 +236,7 @@ export async function listPackages(language: CatalogLanguage = "vi"): Promise<Pa
   return catalogCache.groups
     .flatMap((group) => {
       const text = textFor(group, language);
-      return group.plans.map((row) => ({ ...row, recommended: group.recommended, ...text }));
+      return group.plans.map((row) => ({ ...row, recommended: group.recommended, pickSample: group.pickSample, ...text }));
     })
     .sort((a, b) => a.currency.localeCompare(b.currency) || a.price - b.price);
 }
@@ -232,12 +245,19 @@ export async function createWhopCheckout(input: {
   planId: string;
   redirectUrl: string;
   ref: string;
+  sample: { id: string; name: string } | null;
 }): Promise<{ checkoutConfigurationId: string; purchaseUrl: string }> {
   const client = await getWhopClient();
+  // Whop copies this metadata onto the payment, so the picked sample travels with the order.
+  const metadata: Record<string, string> = { ref: input.ref };
+  if (input.sample) {
+    metadata.sample_id = input.sample.id;
+    metadata.sample_name = input.sample.name;
+  }
   const config = await client.checkoutConfigurations.create({
     plan_id: input.planId,
     redirect_url: input.redirectUrl,
-    metadata: { ref: input.ref },
+    metadata,
   });
   if (!config.purchase_url) {
     throw new Error(`Whop returned no purchase_url for checkout ${config.id}`);
@@ -251,6 +271,9 @@ export type VerifiedPayment = {
   currency: string;
   paidAt: string | null;
   planId: string | null;
+  checkoutConfigurationId: string | null;
+  /** Sample picked at checkout, as copied by Whop from the checkout metadata onto the payment. */
+  sampleName: string | null;
   /** Buyer email as Whop holds it; null when Whop does not share it with this API key. */
   email: string | null;
 };
@@ -264,6 +287,8 @@ type PaymentLike = {
   currency: string;
   paid_at: string | null;
   plan: { id: string } | null;
+  checkout_configuration_id: string | null;
+  metadata?: unknown;
   user: { email: string | null } | null;
 };
 
@@ -276,17 +301,29 @@ function verified(payment: PaymentLike): VerifiedPayment | null {
     currency: payment.currency,
     paidAt: payment.paid_at,
     planId: payment.plan?.id ?? null,
+    checkoutConfigurationId: payment.checkout_configuration_id,
+    sampleName: metadataText(metadataRecord(payment.metadata), "sample_name"),
     email: payment.user?.email ?? null,
   };
 }
 
-// Asks Whop (never the redirect) whether this checkout has a successful payment.
-export async function findPaidPayment(
-  checkoutConfigurationId: string,
-): Promise<VerifiedPayment | null> {
+// Attempts that can no longer turn into money. "incomplete" (waiting on the bank, e.g. 3-D Secure) can still succeed.
+const FAILED_SUBSTATUSES = new Set(["failed", "canceled", "uncollectible", "price_too_low"]);
+
+export type CheckoutPayments = {
+  paid: VerifiedPayment | null;
+  /** True when every attempt on this checkout failed or was canceled; false when there is none yet or one is still open. */
+  failed: boolean;
+};
+
+// Asks Whop (never the redirect) how this checkout's payments went: a successful one wins,
+// then any attempt still in progress, and only then a failure.
+export async function checkoutPayments(checkoutConfigurationId: string): Promise<CheckoutPayments> {
   const client = await getWhopClient();
   const companyId = requireEnv("WHOP_COMPANY_ID");
 
+  let failed = false;
+  let open = false;
   for await (const payment of client.payments.list({
     company_id: companyId,
     checkout_configuration_ids: [checkoutConfigurationId],
@@ -294,9 +331,17 @@ export async function findPaidPayment(
   })) {
     if (payment.checkout_configuration_id !== checkoutConfigurationId) continue;
     const paid = verified(payment);
-    if (paid) return paid;
+    if (paid) return { paid, failed: false };
+    if (payment.status === "void" || FAILED_SUBSTATUSES.has(payment.substatus)) failed = true;
+    else if (payment.status !== "paid") open = true;
   }
-  return null;
+  return { paid: null, failed: failed && !open };
+}
+
+export async function findPaidPayment(
+  checkoutConfigurationId: string,
+): Promise<VerifiedPayment | null> {
+  return (await checkoutPayments(checkoutConfigurationId)).paid;
 }
 
 /** The payment with this Whop id if it belongs to this store, is paid and was not refunded; else null. */
@@ -314,4 +359,27 @@ export async function findPaidPaymentById(paymentId: string): Promise<VerifiedPa
   }
   if (payment.company && payment.company.id !== companyId) return null;
   return verified(payment);
+}
+
+/** The store's newest paid, not refunded payments (at most `limit`), newest first. */
+export async function recentPaidPayments(limit: number): Promise<VerifiedPayment[]> {
+  const client = await getWhopClient();
+  const companyId = requireEnv("WHOP_COMPANY_ID");
+  const productId = requireEnv("WHOP_PRODUCT_ID");
+  const found: VerifiedPayment[] = [];
+  let scanned = 0;
+  for await (const payment of client.payments.list({
+    company_id: companyId,
+    product_ids: [productId],
+    statuses: ["paid"],
+    order: "created_at",
+    direction: "desc",
+    first: Math.min(limit, 50),
+  })) {
+    const paid = verified(payment);
+    if (paid) found.push(paid);
+    // Refunded orders are skipped, but never page through the whole history for them.
+    if (found.length >= limit || ++scanned >= limit * 2) break;
+  }
+  return found;
 }

@@ -9,4 +9,9 @@
 export interface CheckoutInput {
   /** @minLength 1 */
   packageId: string;
+  /**
+     * The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
+     * @pattern ^[A-Za-z0-9_-]{6,32}$
+     */
+  sampleId?: string;
 }

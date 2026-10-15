@@ -2,12 +2,16 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 import { usePixelTransition, type CardSpec } from "@/components/pixel-transition";
 import { useSearch, Link } from "wouter";
 import { useGetCheckoutStatus, getGetCheckoutStatusQueryKey, useListPackages } from "@workspace/api-client-react";
-import { ArrowLeft, Check, Clock, Receipt, RefreshCw, Mail, MessageSquare } from "lucide-react";
+import { ArrowLeft, Check, Clock, Receipt, RefreshCw, Mail, MessageSquare, X, RotateCcw, Loader2 } from "lucide-react";
 import { formatPrice } from "@/lib/motion";
 import { useI18n, LangSwitch, CONTACT_EMAIL } from "@/lib/i18n";
 import { Logo, Wordmark } from "@/components/sprites";
 import { MiniRoad } from "@/components/mini-road";
+import { BrokeCat } from "@/components/broke-cat";
 import { supportChat } from "@/lib/support-chat";
+import { useStartCheckout } from "@/lib/checkout";
+import { statusOf } from "@/lib/http";
+import { useToast } from "@/hooks/use-toast";
 
 function Shell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
@@ -58,7 +62,13 @@ const CHECK_CARD: CardSpec = {
 export default function ThankYou() {
   const { t, lang, locale, numLocale } = useI18n();
   const search = useSearch();
-  const ref = new URLSearchParams(search).get("ref") ?? "";
+  const params = new URLSearchParams(search);
+  const ref = params.get("ref") ?? "";
+  // Whop's embedded and express checkouts come back with status=error; the hosted page usually keeps a
+  // failed buyer on Whop. Either way Whop's own answer wins when it says paid.
+  const backWithError = /^(error|failed|failure|canceled|cancelled)$/i.test(params.get("status") ?? "");
+  const checkout = useStartCheckout();
+  const { toast } = useToast();
   const { data, isLoading, isError, error, refetch, isFetching } = useGetCheckoutStatus(ref, {
     query: {
       enabled: !!ref,
@@ -161,6 +171,7 @@ export default function ThankYou() {
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#3d4a3d]"><Receipt className="h-4 w-4" /> {t.thanks.receipt}</div>
             <dl className="mt-3 space-y-2.5 text-sm">
               <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.pkg}</dt><dd className="font-bold text-end" data-testid="text-package-name">{pkgName(data.packageId, data.packageName)}</dd></div>
+              {data.sampleName && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.sample}</dt><dd className="font-bold text-end" data-testid="text-sample-name"><bdi>{data.sampleName}</bdi></dd></div>}
               {data.amount != null && data.currency && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.amount}</dt><dd className="font-display text-lg" data-testid="text-amount">{formatPrice(data.amount, data.currency, numLocale)}</dd></div>}
               {paidAt && <div className="flex justify-between gap-4"><dt className="text-[#3d4a3d]">{t.thanks.time}</dt><dd className="text-end" data-testid="text-paid-at">{paidAt}</dd></div>}
               <div className="flex justify-between gap-4 border-t-2 border-dashed border-[#8d8a80] pt-2.5"><dt className="text-[#3d4a3d]">{t.thanks.ref}</dt><dd className="font-mono text-xs break-all text-end" dir="ltr" data-testid="text-ref">{orderCode}</dd></div>
@@ -174,6 +185,36 @@ export default function ThankYou() {
             </button>
           </div>
           <div className="mt-7 flex flex-wrap gap-4 justify-center items-center"><BackHome /><SupportLink /></div>
+        </Card>
+      </Shell>
+    );
+  }
+
+  if (data.status === "failed" || backWithError) {
+    // Pays for the same package and sample again. If that sample is gone (404), or the package has gained
+    // samples since (400), the buyer has to choose on the home page first.
+    const retry = () =>
+      checkout.start(data.sampleId ? { packageId: data.packageId, sampleId: data.sampleId } : { packageId: data.packageId }, (err) => {
+        const status = statusOf(err);
+        if (status === 404 || status === 400) toast({ variant: "destructive", title: t.thanks.pickAgainTitle, description: t.thanks.pickAgainBody });
+        else toast({ variant: "destructive", title: t.pricing.toastTitle, description: t.pricing.toastBody });
+      });
+    return (
+      <Shell>
+        <Card testId="status-failed">
+          <BrokeCat label={t.thanks.failedArt} />
+          <p className="mt-4 inline-flex items-center gap-1.5 bg-[#f6d6d2] border-[3px] border-[#1b2a1c] px-3 py-1 text-xs font-bold uppercase"><X className="h-3.5 w-3.5" strokeWidth={3} /> {t.thanks.failedEyebrow}</p>
+          <h1 className="font-display text-3xl md:text-4xl leading-tight mt-4">{t.thanks.failedTitle}</h1>
+          <p className="mt-4 text-[#2c3a2c]">{t.thanks.failedBody}</p>
+          <div className="mt-7 flex flex-wrap gap-4 justify-center items-center">
+            <button type="button" onClick={retry} disabled={checkout.busy} className="pbtn red px-5 py-2.5 font-bold" data-testid="button-retry-checkout">
+              {checkout.pendingId ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCcw className="h-4 w-4" />} {t.thanks.failedRetry}
+            </button>
+            <BackHome />
+          </div>
+          <p className="mt-7 text-sm text-[#2c3a2c]">{t.thanks.failedCharged}</p>
+          <p className="mt-2 font-mono text-xs text-[#3d4a3d] break-all">{t.thanks.code}: {data.ref}</p>
+          <div className="mt-3 flex justify-center"><SupportLink subject={`${t.thanks.supportSubject} ${data.ref}`} /></div>
         </Card>
       </Shell>
     );

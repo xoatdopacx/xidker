@@ -6,10 +6,14 @@
  * OpenAPI spec version: 0.1.0
  */
 
+/**
+ * paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress).
+ */
 export type CheckoutStatusStatus = typeof CheckoutStatusStatus[keyof typeof CheckoutStatusStatus];
 
 
 export const CheckoutStatusStatus = {
   paid: 'paid',
   pending: 'pending',
+  failed: 'failed',
 } as const;

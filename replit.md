@@ -18,16 +18,17 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - API: Express 5; payments: `@whop/sdk` pinned to 0.0.42
 - DB: PostgreSQL + Drizzle ORM
-- Frontend: React + Vite, Tailwind; all pixel art is inline SVG (no WebGL, no bitmap images)
+- Frontend: React + Vite, Tailwind; pixel art is inline SVG (no WebGL). The only bitmaps are the user's own pixel cats (small PNGs in `src/assets/`, drawn with `.pixel`) and the sample pictures the admin uploads
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 
 ## Where things live
 
-- API contract: `lib/api-spec/openapi.yaml` (packages, checkout, checkout status, customer support chat `/support/*`, admin inbox and packages `/admin/*`)
+- API contract: `lib/api-spec/openapi.yaml` (packages, checkout, checkout status, source samples `/samples`, customer support chat `/support/*`, admin inbox, packages, samples and orders `/admin/*`, sample picture upload/serving `/storage/*`)
 - Whop access (server-only): `artifacts/api-server/src/lib/whopClient.ts`, `artifacts/api-server/src/lib/whopStore.ts` (site catalog, checkout), `whopAdmin.ts` (admin package editing)
-- DB schema: `lib/db/src/schema/checkoutSessions.ts` (ref → Whop checkout configuration), `support.ts` (customer chat accounts, sessions, sign-in attempt log), `chat.ts` (conversations, messages), `adminAuth.ts`
-- Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), `admin.tsx` (`/admin`: inbox + products & prices tabs, screens in `src/components/admin/`), theme in `src/index.css`
+- DB schema: `lib/db/src/schema/checkoutSessions.ts` (ref → Whop checkout configuration), `support.ts` (customer chat accounts, sessions, sign-in attempt log), `chat.ts` (conversations, messages), `adminAuth.ts`, `sourceSamples.ts` (samples buyers pick from)
+- Pages: `artifacts/web-landing/src/pages/home.tsx` (sales page), `thank-you.tsx` (`/cam-on`), `admin.tsx` (`/admin`: tabs Tin nhắn, Sản phẩm & giá, Mẫu source, Đơn hàng; screens in `src/components/admin/`), theme in `src/index.css`
+- Source samples: picker `src/components/sample-picker.tsx`; admin picture shrinking `src/components/admin/sample-upload.ts`; server `artifacts/api-server/src/routes/samples.ts`, `src/lib/samples.ts`, `src/routes/storage.ts`, `src/routes/adminOrders.ts`
 - Support chat: `src/components/chat-widget.tsx` (button + panel), `src/lib/support-chat.ts` (show/open from other pages); server in `artifacts/api-server/src/routes/support.ts` and `src/lib/supportAuth.ts`
 - UI text: `artifacts/web-landing/src/locales/<code>.json` (`vi.json` is the source, `en.json` the fallback); languages, detection, fonts and currency in `src/lib/i18n.tsx`; picker in `src/components/lang-picker.tsx`
 - Package text translations: `artifacts/api-server/src/lib/packageTranslations.ts`
@@ -47,6 +48,8 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - The redirect origin is taken from the request's Origin/Referer only if the host is in `REPLIT_DOMAINS`/`REPLIT_DEV_DOMAIN`, so a forged header cannot redirect buyers elsewhere.
 - Support chat is for buyers only. The chat button appears after a verified paid order on `/cam-on`, from the footer link "Chat hỗ trợ cho khách đã mua", or on a browser that has signed in before. Activation = purchase email + order ID (Whop `pay_…` id, or the `/cam-on` ref) + a new password; the server checks with Whop that the order is paid and that its buyer email matches. Later visits sign in with email + password. A new sign-in ends every other session for that account, so only one browser is signed in at a time. No password reset; customers write to the contact email.
 - "Already activated" (409) is answered only after the order and email match, so the endpoint cannot be used to find out which emails are customers. Failed activations and wrong passwords are counted in the database (works across server instances).
+- Source samples: a package whose Whop plan has metadata `pick_sample: "true"` (switch in the admin package editor) opens the sample picker before checkout. `GET /api/packages` reports `pickSample: false` while no sample is visible (or the database is down), so the picker only appears when there is something to pick. Checkout for such a package needs a visible `sampleId` (404 if it was hidden or deleted meanwhile, shown inside the picker; 400 if none was picked). The sample id and name go into the Whop checkout metadata (Whop copies it onto the payment) and into `checkout_sessions` (the name is a snapshot, kept after a rename or delete); the `/cam-on` receipt and the admin orders tab show it. Retrying a failed payment sends the same sample; if it is gone, the buyer is asked to pick again. Sample names are shown as written in every language.
+- Sample pictures are shrunk in the admin's browser (full picture at most 1600 px wide, plus a 640×800 preview of its top), sent straight to App Storage through a signed upload link (so the `/admin` CSP allows `https://storage.googleapis.com` in `connect-src`, and only there), and served same-origin from `/api/storage/objects/...` only once they belong to a saved sample (cached as immutable). Deleting a sample or removing a picture deletes the files.
 - Admin sign-in: `ADMIN_TOKEN`, then a 6-digit code emailed to `ADMIN_EMAIL`. Changing `ADMIN_TOKEN` signs every admin out. Admin replies use their own input schema (`AdminMessageInput`, no language field).
 - Chat updates by polling the database (customer panel every 3s while open, admin list 5s, admin thread 3s), because the app runs on autoscale and in-memory state would split across instances.
 - Chat translation (`artifacts/api-server/src/lib/chatTranslate.ts`, Replit AI Integrations → OpenAI; no API key, usage is billed to Replit credits): customer messages get a Vietnamese translation when the admin's inbox asks for it (on opening a thread, never during the customer's send). Admin replies are translated before saving into the language of the customer's newest message with a known language, else the conversation's site language. If translating fails, the reply is saved as written, the customer reads the Vietnamese and the admin sees "Dịch lại". The conversation list keeps the original text.
@@ -54,9 +57,9 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 ## Product
 
 - Sales page in 33 languages (pixel globe picker in the header and footer; Arabic, Persian, Hebrew and Urdu read right to left): pixel-art road-map world where scrolling walks a character from START to a trophy, packages from Whop with a VND/USD switch, FAQ, contact email.
-- "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise). The pricing grid adapts to 1–5+ packages.
-- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, amount, date, order ID) and a card to switch on support chat with the order ID filled in.
-- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; replies reach the customer in their language, marked "Translated automatically". `/admin` in Vietnamese only: inbox showing each customer's email, package and order ID, a Vietnamese line under every customer message and the translation each reply was sent with, and "Sản phẩm & giá" to change prices and text, hide/show, mark the recommended package, list a new source for sale, or delete an unsold one. Files are still delivered by hand.
+- "Chọn gói này" opens Whop hosted checkout (new tab when embedded in an iframe, same tab otherwise). For a package with a sample choice it first opens the sample picker (browse samples, open full screenshots, pick one, then pay). The pricing grid adapts to 1–5+ packages.
+- `/cam-on`: pixel "loading" cover while the payment is checked, then the verified receipt (package, picked sample, amount, date, order ID) and a card to switch on support chat with the order ID filled in. A failed payment shows the user's pixel cat holding an empty wallet.
+- Support chat panel (bottom-right, all 33 languages) with sign-in / activate tabs; replies reach the customer in their language, marked "Translated automatically". `/admin` in Vietnamese only: inbox showing each customer's email, package and order ID, a Vietnamese line under every customer message and the translation each reply was sent with, and "Sản phẩm & giá" to change prices and text, hide/show, mark the recommended package, list a new source for sale, or delete an unsold one; "Mẫu source" to upload, reorder, hide/show and delete samples; "Đơn hàng" for recent paid orders with the sample each buyer picked. Files are still delivered by hand.
 
 ## User preferences
 
@@ -81,6 +84,7 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - In-page `#` links are intercepted by the full-screen scene transition, which scrolls instantly with a 64px header offset. Keep section anchors on `id`s and give the transition a destination label for any new jump target.
 - A language switch blocks the page for several hundred ms (re-render, text layout, font swap; worst for Chinese/Japanese/Korean). The loading card's bar, walker and percentage are queued up front as browser (compositor) animations so they keep moving through that; do not drive them with JS timers. The new language's font stylesheet is added only after the screen is covered, because adding a stylesheet restyles the whole page and would stall the cover animation.
 - Transition and card-build canvases are reused from a pool; creating canvases costs more than drawing into them.
+- Inside Radix dialogs (the sample picker), show errors inline, not as toasts: toasts sit under the dialog backdrop.
 
 ## Pointers
 

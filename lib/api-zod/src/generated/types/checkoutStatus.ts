@@ -9,6 +9,7 @@ import type { CheckoutStatusStatus } from './checkoutStatusStatus';
 
 export interface CheckoutStatus {
   ref: string;
+  /** paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress). */
   status: CheckoutStatusStatus;
   packageId: string;
   packageName: string;
@@ -26,4 +27,14 @@ export interface CheckoutStatus {
      * @nullable
      */
   orderId: string | null;
+  /**
+     * The source sample picked for this checkout, null when the package has no sample choice
+     * @nullable
+     */
+  sampleId: string | null;
+  /**
+     * Name of the picked sample as it was when the checkout started
+     * @nullable
+     */
+  sampleName: string | null;
 }

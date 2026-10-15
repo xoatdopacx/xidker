@@ -91,11 +91,18 @@ export interface Package {
   billingPeriodDays: number | null;
   /** True for the package the studio recommends most */
   recommended: boolean;
+  /** True when the buyer picks one of the source samples before paying. Set on the package in the admin screen; stays false while no sample is on show, so the package can always be bought. */
+  pickSample: boolean;
 }
 
 export interface CheckoutInput {
   /** @minLength 1 */
   packageId: string;
+  /**
+     * The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
+     * @pattern ^[A-Za-z0-9_-]{6,32}$
+     */
+  sampleId?: string;
 }
 
 export interface CheckoutSession {
@@ -105,16 +112,21 @@ export interface CheckoutSession {
   purchaseUrl: string;
 }
 
+/**
+ * paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress).
+ */
 export type CheckoutStatusStatus = typeof CheckoutStatusStatus[keyof typeof CheckoutStatusStatus];
 
 
 export const CheckoutStatusStatus = {
   paid: 'paid',
   pending: 'pending',
+  failed: 'failed',
 } as const;
 
 export interface CheckoutStatus {
   ref: string;
+  /** paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress). */
   status: CheckoutStatusStatus;
   packageId: string;
   packageName: string;
@@ -132,6 +144,16 @@ export interface CheckoutStatus {
      * @nullable
      */
   orderId: string | null;
+  /**
+     * The source sample picked for this checkout, null when the package has no sample choice
+     * @nullable
+     */
+  sampleId: string | null;
+  /**
+     * Name of the picked sample as it was when the checkout started
+     * @nullable
+     */
+  sampleName: string | null;
 }
 
 export type ChatMessageSender = typeof ChatMessageSender[keyof typeof ChatMessageSender];
@@ -352,6 +374,11 @@ export interface AdminConversation {
   orderId: string | null;
   /** @nullable */
   packageName: string | null;
+  /**
+     * Source sample the customer picked when buying, if the package had a sample choice
+     * @nullable
+     */
+  sampleName: string | null;
   lang: string;
   status: AdminConversationStatus;
   createdAt: string;
@@ -419,6 +446,8 @@ export interface AdminPackage {
   /** Shown on the site (at least one of its plans is visible on Whop) */
   onSale: boolean;
   recommended: boolean;
+  /** Buyers pick a source sample before paying (Whop plan metadata "pick_sample") */
+  pickSample: boolean;
   /** Current Whop members across the package's plans */
   buyers: number;
   /** built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text. */
@@ -461,6 +490,146 @@ export interface AdminPackageInput {
   priceUsd: number;
   onSale: boolean;
   recommended: boolean;
+  /** Buyers pick a source sample before paying */
+  pickSample: boolean;
+}
+
+export interface SampleImage {
+  /** Full-size image */
+  url: string;
+  /** Small preview showing the top of the image */
+  thumbUrl: string;
+  width: number;
+  height: number;
+}
+
+/**
+ * A source sample a buyer can pick. The name is shown as written in every language.
+ */
+export interface Sample {
+  id: string;
+  name: string;
+  images: SampleImage[];
+}
+
+export interface AdminSampleImage {
+  /** Object path of the full-size image */
+  path: string;
+  /** Object path of the preview */
+  thumb: string;
+  width: number;
+  height: number;
+  url: string;
+  thumbUrl: string;
+}
+
+export interface AdminSample {
+  id: string;
+  name: string;
+  images: AdminSampleImage[];
+  /** On show to buyers */
+  visible: boolean;
+  position: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminSampleImageInput {
+  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
+  path: string;
+  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
+  thumb: string;
+  /**
+     * @minimum 1
+     * @maximum 20000
+     */
+  width: number;
+  /**
+     * @minimum 1
+     * @maximum 20000
+     */
+  height: number;
+}
+
+export interface AdminSampleInput {
+  /**
+     * @minLength 1
+     * @maxLength 60
+     */
+  name: string;
+  /**
+     * @minItems 1
+     * @maxItems 12
+     */
+  images: AdminSampleImageInput[];
+  visible: boolean;
+}
+
+export interface AdminSampleOrderInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     * @items.pattern ^[A-Za-z0-9_-]{6,32}$
+     */
+  ids: string[];
+}
+
+export interface AdminOrder {
+  /** Whop payment id */
+  id: string;
+  /** @nullable */
+  paidAt: string | null;
+  /**
+     * Amount paid in major currency units
+     * @nullable
+     */
+  amount: number | null;
+  currency: string;
+  /**
+     * Buyer email, null when Whop does not share it
+     * @nullable
+     */
+  email: string | null;
+  /** @nullable */
+  packageName: string | null;
+  /**
+     * Sample the buyer picked, null when the order had no sample choice
+     * @nullable
+     */
+  sampleName: string | null;
+}
+
+export type UploadUrlRequestContentType = typeof UploadUrlRequestContentType[keyof typeof UploadUrlRequestContentType];
+
+
+export const UploadUrlRequestContentType = {
+  'image/webp': 'image/webp',
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+} as const;
+
+export interface UploadUrlRequest {
+  /**
+     * Original file name
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /**
+     * File size in bytes (at most 15 MB)
+     * @minimum 1
+     * @maximum 15728640
+     */
+  size: number;
+  contentType: UploadUrlRequestContentType;
+}
+
+export interface UploadUrlResponse {
+  /** Signed App Storage link for one PUT upload, valid for 15 minutes */
+  uploadURL: string;
+  /** Object path to send back when saving the sample (e.g. /objects/uploads/uuid) */
+  objectPath: string;
+  metadata?: UploadUrlRequest;
 }
 
 export type ListPackagesParams = {

@@ -1,13 +1,14 @@
-- [Whop integration quirks](whop-integration.md) — SDK pinned to 0.0.42; id param names; plan text/metadata limits; pixel tags only real <a> clicks to whop.com.
+- [Whop integration quirks](whop-integration.md) — SDK 0.0.42; id param names; plan limits; plans shared dev/live, VND plans stay hidden; pixel needs real <a> clicks.
 - [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; fake API answers via Fetch; POSTs need the dev-domain Origin.
 - [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.
 - [Font delivery policy](font-delivery.md) — prioritize readable fallback text over waiting for base fonts; preserve on-demand script fonts and covered language switches.
 - [Pricing rules](pricing-rules.md) — user-defined contents of the $12/$50/$250 packages; only A–Z has hosting+domain; no invented client-use policy.
-- [Support chat and admin sign-in](admin-chat.md) — buyers-only since 2026-10-14; Whop buyer email unverified; Gmail via connector proxy; test recipes.
+- [Support chat and admin sign-in](admin-chat.md) — buyers-only since 2026-10-14; Whop buyer email confirmed; Gmail via connector proxy; test recipes.
 - [Chat translation](chat-translation.md) — VI⇄customer-language rules; gpt-6-luna needs effort "none"; test with a 2nd API + CDP request forwarding.
-- [Backend gotchas](backend-gotchas.md) — drizzle prints unqualified columns in subqueries; run typecheck:libs after schema changes.
-- [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script plus a key-path check against vi.json.
+- [Backend gotchas](backend-gotchas.md) — drizzle unqualified columns in subqueries; typecheck:libs after schema changes; slow storage library helpers.
+- [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script, placeholder/neighbour checks, and a key-path check against vi.json.
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
 - [SEO rendering policy](seo-rendering.md) — same React content for bots and visitors; `/` must answer 200 within 5s without the catalog; check which code a failed publish built.
 - [Security headers and CSP](security-headers.md) — CSP only on the live site; verify with Whop pixel running but never let its events out; GAESA/Server header unfixable.
-- [Frontend gotchas](frontend-gotchas.md) — custom classes in index.css are unlayered and beat Tailwind v4 utilities (md:hidden, pe-9) on the same property.
+- [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; flex-basis in a column footer sets height.
+- [Source samples](source-samples.md) — user's pick-before-paying request; picker hidden with no visible sample; live admin must re-upload; test recipe.

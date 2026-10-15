@@ -23,4 +23,6 @@ export interface AdminPackageInput {
   priceUsd: number;
   onSale: boolean;
   recommended: boolean;
+  /** Buyers pick a source sample before paying */
+  pickSample: boolean;
 }

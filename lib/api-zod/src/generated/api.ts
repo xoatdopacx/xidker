@@ -35,7 +35,8 @@ export const ListPackagesResponseItem = zod.object({
   "currency": zod.string().describe('ISO 4217 currency code, lowercase (e.g. "vnd", "usd")'),
   "billing": zod.enum(['one_time', 'recurring']),
   "billingPeriodDays": zod.number().int().nullable().describe('Days between charges for recurring packages, null for one-time'),
-  "recommended": zod.boolean().describe('True for the package the studio recommends most')
+  "recommended": zod.boolean().describe('True for the package the studio recommends most'),
+  "pickSample": zod.boolean().describe('True when the buyer picks one of the source samples before paying. Set on the package in the admin screen; stays false while no sample is on show, so the package can always be bought.')
 }).describe('A landing page build package, backed by a Whop plan.')
 export const ListPackagesResponse = zod.array(ListPackagesResponseItem)
 
@@ -45,10 +46,12 @@ export const ListPackagesResponse = zod.array(ListPackagesResponseItem)
  * @summary Start a Whop hosted checkout for a package
  */
 
+export const createCheckoutBodySampleIdRegExp = new RegExp('^[A-Za-z0-9_-]{6,32}$');
 
 
 export const CreateCheckoutBody = zod.object({
-  "packageId": zod.string().min(1)
+  "packageId": zod.string().min(1),
+  "sampleId": zod.string().regex(createCheckoutBodySampleIdRegExp).optional().describe('The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.')
 })
 
 export const CreateCheckoutResponse = zod.object({
@@ -58,7 +61,7 @@ export const CreateCheckoutResponse = zod.object({
 
 
 /**
- * Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment.
+ * Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment, or "failed" when every attempt failed or was canceled.
  * @summary Get the verified payment status of a checkout
  */
 export const GetCheckoutStatusParams = zod.object({
@@ -67,13 +70,15 @@ export const GetCheckoutStatusParams = zod.object({
 
 export const GetCheckoutStatusResponse = zod.object({
   "ref": zod.string(),
-  "status": zod.enum(['paid', 'pending']),
+  "status": zod.enum(['paid', 'pending', 'failed']).describe('paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress).'),
   "packageId": zod.string(),
   "packageName": zod.string(),
   "amount": zod.number().nullable().describe('Amount paid in major currency units, null until paid'),
   "currency": zod.string().nullable(),
   "paidAt": zod.coerce.date().nullable(),
-  "orderId": zod.string().nullable().describe('Whop payment id, null until paid. The customer uses it to switch on support chat.')
+  "orderId": zod.string().nullable().describe('Whop payment id, null until paid. The customer uses it to switch on support chat.'),
+  "sampleId": zod.string().nullable().describe('The source sample picked for this checkout, null when the package has no sample choice'),
+  "sampleName": zod.string().nullable().describe('Name of the picked sample as it was when the checkout started')
 })
 
 
@@ -236,6 +241,7 @@ export const ListAdminConversationsResponseItem = zod.object({
   "email": zod.string().nullable(),
   "orderId": zod.string().nullable().describe('Whop payment id the customer switched on support chat with'),
   "packageName": zod.string().nullable(),
+  "sampleName": zod.string().nullable().describe('Source sample the customer picked when buying, if the package had a sample choice'),
   "lang": zod.string(),
   "status": zod.enum(['open', 'closed']),
   "createdAt": zod.coerce.date(),
@@ -264,6 +270,7 @@ export const UpdateAdminConversationResponse = zod.object({
   "email": zod.string().nullable(),
   "orderId": zod.string().nullable().describe('Whop payment id the customer switched on support chat with'),
   "packageName": zod.string().nullable(),
+  "sampleName": zod.string().nullable().describe('Source sample the customer picked when buying, if the package had a sample choice'),
   "lang": zod.string(),
   "status": zod.enum(['open', 'closed']),
   "createdAt": zod.coerce.date(),
@@ -370,6 +377,7 @@ export const ListAdminPackagesResponseItem = zod.object({
   "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
   "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
   "recommended": zod.boolean(),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying (Whop plan metadata "pick_sample")'),
   "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
   "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
 })
@@ -417,7 +425,8 @@ export const CreateAdminPackageBody = zod.object({
   "priceVnd": zod.number().int().min(createAdminPackageBodyPriceVndMin).max(createAdminPackageBodyPriceVndMax),
   "priceUsd": zod.number().min(1).max(createAdminPackageBodyPriceUsdMax).describe('At most 2 decimals'),
   "onSale": zod.boolean(),
-  "recommended": zod.boolean()
+  "recommended": zod.boolean(),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying')
 })
 
 export const CreateAdminPackageResponse = zod.object({
@@ -436,6 +445,7 @@ export const CreateAdminPackageResponse = zod.object({
   "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
   "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
   "recommended": zod.boolean(),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying (Whop plan metadata "pick_sample")'),
   "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
   "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
 })
@@ -489,7 +499,8 @@ export const UpdateAdminPackageBody = zod.object({
   "priceVnd": zod.number().int().min(updateAdminPackageBodyPriceVndMin).max(updateAdminPackageBodyPriceVndMax),
   "priceUsd": zod.number().min(1).max(updateAdminPackageBodyPriceUsdMax).describe('At most 2 decimals'),
   "onSale": zod.boolean(),
-  "recommended": zod.boolean()
+  "recommended": zod.boolean(),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying')
 })
 
 export const UpdateAdminPackageResponse = zod.object({
@@ -508,6 +519,7 @@ export const UpdateAdminPackageResponse = zod.object({
   "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
   "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
   "recommended": zod.boolean(),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying (Whop plan metadata "pick_sample")'),
   "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
   "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
 })
@@ -525,5 +537,257 @@ export const DeleteAdminPackageParams = zod.object({
 })
 
 export const DeleteAdminPackageResponse = zod.void()
+
+
+/**
+ * The samples buyers can pick from, in the order the studio set. Hidden samples are left out.
+ * @summary List the source samples on show
+ */
+export const ListSamplesResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "images": zod.array(zod.object({
+  "url": zod.string().describe('Full-size image'),
+  "thumbUrl": zod.string().describe('Small preview showing the top of the image'),
+  "width": zod.number().int(),
+  "height": zod.number().int()
+}))
+}).describe('A source sample a buyer can pick. The name is shown as written in every language.')
+export const ListSamplesResponse = zod.array(ListSamplesResponseItem)
+
+
+/**
+ * @summary List every source sample, hidden ones included
+ */
+export const ListAdminSamplesResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "images": zod.array(zod.object({
+  "path": zod.string().describe('Object path of the full-size image'),
+  "thumb": zod.string().describe('Object path of the preview'),
+  "width": zod.number().int(),
+  "height": zod.number().int(),
+  "url": zod.string(),
+  "thumbUrl": zod.string()
+})),
+  "visible": zod.boolean().describe('On show to buyers'),
+  "position": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ListAdminSamplesResponse = zod.array(ListAdminSamplesResponseItem)
+
+
+/**
+ * The images must already be uploaded (see /storage/uploads/request-url). Saving makes them public.
+ * @summary Add a source sample
+ */
+export const createAdminSampleBodyNameMax = 60;
+
+export const createAdminSampleBodyImagesItemPathRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const createAdminSampleBodyImagesItemThumbRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const createAdminSampleBodyImagesItemWidthMax = 20000;
+
+export const createAdminSampleBodyImagesItemHeightMax = 20000;
+
+export const createAdminSampleBodyImagesMax = 12;
+
+
+
+export const CreateAdminSampleBody = zod.object({
+  "name": zod.string().min(1).max(createAdminSampleBodyNameMax),
+  "images": zod.array(zod.object({
+  "path": zod.string().regex(createAdminSampleBodyImagesItemPathRegExp),
+  "thumb": zod.string().regex(createAdminSampleBodyImagesItemThumbRegExp),
+  "width": zod.number().int().min(1).max(createAdminSampleBodyImagesItemWidthMax),
+  "height": zod.number().int().min(1).max(createAdminSampleBodyImagesItemHeightMax)
+})).min(1).max(createAdminSampleBodyImagesMax),
+  "visible": zod.boolean()
+})
+
+export const CreateAdminSampleResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "images": zod.array(zod.object({
+  "path": zod.string().describe('Object path of the full-size image'),
+  "thumb": zod.string().describe('Object path of the preview'),
+  "width": zod.number().int(),
+  "height": zod.number().int(),
+  "url": zod.string(),
+  "thumbUrl": zod.string()
+})),
+  "visible": zod.boolean().describe('On show to buyers'),
+  "position": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * Images taken out of the sample are deleted from storage.
+ * @summary Change a sample's name, images or whether it is on show
+ */
+export const updateAdminSamplePathIdRegExp = new RegExp('^[A-Za-z0-9_-]{6,32}$');
+
+
+export const UpdateAdminSampleParams = zod.object({
+  "id": zod.coerce.string().regex(updateAdminSamplePathIdRegExp)
+})
+
+export const updateAdminSampleBodyNameMax = 60;
+
+export const updateAdminSampleBodyImagesItemPathRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const updateAdminSampleBodyImagesItemThumbRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const updateAdminSampleBodyImagesItemWidthMax = 20000;
+
+export const updateAdminSampleBodyImagesItemHeightMax = 20000;
+
+export const updateAdminSampleBodyImagesMax = 12;
+
+
+
+export const UpdateAdminSampleBody = zod.object({
+  "name": zod.string().min(1).max(updateAdminSampleBodyNameMax),
+  "images": zod.array(zod.object({
+  "path": zod.string().regex(updateAdminSampleBodyImagesItemPathRegExp),
+  "thumb": zod.string().regex(updateAdminSampleBodyImagesItemThumbRegExp),
+  "width": zod.number().int().min(1).max(updateAdminSampleBodyImagesItemWidthMax),
+  "height": zod.number().int().min(1).max(updateAdminSampleBodyImagesItemHeightMax)
+})).min(1).max(updateAdminSampleBodyImagesMax),
+  "visible": zod.boolean()
+})
+
+export const UpdateAdminSampleResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "images": zod.array(zod.object({
+  "path": zod.string().describe('Object path of the full-size image'),
+  "thumb": zod.string().describe('Object path of the preview'),
+  "width": zod.number().int(),
+  "height": zod.number().int(),
+  "url": zod.string(),
+  "thumbUrl": zod.string()
+})),
+  "visible": zod.boolean().describe('On show to buyers'),
+  "position": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+
+
+/**
+ * Orders that picked it keep the sample name.
+ * @summary Delete a sample and its images
+ */
+export const deleteAdminSamplePathIdRegExp = new RegExp('^[A-Za-z0-9_-]{6,32}$');
+
+
+export const DeleteAdminSampleParams = zod.object({
+  "id": zod.coerce.string().regex(deleteAdminSamplePathIdRegExp)
+})
+
+export const DeleteAdminSampleResponse = zod.void()
+
+
+/**
+ * @summary Set the order buyers see the samples in
+ */
+export const reorderAdminSamplesBodyIdsItemRegExp = new RegExp('^[A-Za-z0-9_-]{6,32}$');
+export const reorderAdminSamplesBodyIdsMax = 500;
+
+
+
+export const ReorderAdminSamplesBody = zod.object({
+  "ids": zod.array(zod.string().regex(reorderAdminSamplesBodyIdsItemRegExp)).min(1).max(reorderAdminSamplesBodyIdsMax)
+})
+
+export const ReorderAdminSamplesResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "images": zod.array(zod.object({
+  "path": zod.string().describe('Object path of the full-size image'),
+  "thumb": zod.string().describe('Object path of the preview'),
+  "width": zod.number().int(),
+  "height": zod.number().int(),
+  "url": zod.string(),
+  "thumbUrl": zod.string()
+})),
+  "visible": zod.boolean().describe('On show to buyers'),
+  "position": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "updatedAt": zod.coerce.date()
+})
+export const ReorderAdminSamplesResponse = zod.array(ReorderAdminSamplesResponseItem)
+
+
+/**
+ * Read from Whop (newest first, at most 50), joined with the checkouts started on this site to add the picked sample. Orders made before samples existed, or outside this site, have no sample.
+ * @summary Recent paid orders and the sample each buyer picked
+ */
+export const ListAdminOrdersResponseItem = zod.object({
+  "id": zod.string().describe('Whop payment id'),
+  "paidAt": zod.coerce.date().nullable(),
+  "amount": zod.number().nullable().describe('Amount paid in major currency units'),
+  "currency": zod.string(),
+  "email": zod.string().nullable().describe('Buyer email, null when Whop does not share it'),
+  "packageName": zod.string().nullable(),
+  "sampleName": zod.string().nullable().describe('Sample the buyer picked, null when the order had no sample choice')
+})
+export const ListAdminOrdersResponse = zod.array(ListAdminOrdersResponseItem)
+
+
+/**
+ * Admin only. The request carries the file details, never the file; the browser then uploads the file straight to App Storage with PUT to uploadURL.
+ * @summary Get a link to upload one sample image
+ */
+export const requestUploadUrlBodyNameMax = 200;
+
+export const requestUploadUrlBodySizeMax = 15728640;
+
+
+
+export const RequestUploadUrlBody = zod.object({
+  "name": zod.string().min(1).max(requestUploadUrlBodyNameMax).describe('Original file name'),
+  "size": zod.number().int().min(1).max(requestUploadUrlBodySizeMax).describe('File size in bytes (at most 15 MB)'),
+  "contentType": zod.enum(['image/webp', 'image/jpeg', 'image/png'])
+})
+
+export const requestUploadUrlResponseMetadataNameMax = 200;
+
+export const requestUploadUrlResponseMetadataSizeMax = 15728640;
+
+
+
+export const RequestUploadUrlResponse = zod.object({
+  "uploadURL": zod.string().url().describe('Signed App Storage link for one PUT upload, valid for 15 minutes'),
+  "objectPath": zod.string().describe('Object path to send back when saving the sample (e.g. /objects/uploads/uuid)'),
+  "metadata": zod.object({
+  "name": zod.string().min(1).max(requestUploadUrlResponseMetadataNameMax).describe('Original file name'),
+  "size": zod.number().int().min(1).max(requestUploadUrlResponseMetadataSizeMax).describe('File size in bytes (at most 15 MB)'),
+  "contentType": zod.enum(['image/webp', 'image/jpeg', 'image/png'])
+}).optional()
+})
+
+
+/**
+ * Unconditionally public. Searches PUBLIC_OBJECT_SEARCH_PATHS for the given file path.
+ * @summary Serve a public asset from PUBLIC_OBJECT_SEARCH_PATHS
+ */
+export const GetPublicObjectParams = zod.object({
+  "filePath": zod.coerce.string()
+})
+
+export const GetPublicObjectResponse = zod.unknown()
+
+
+/**
+ * Only images that belong to a saved sample are served (saving marks them public).
+ * @summary Serve an uploaded sample image
+ */
+export const GetStorageObjectParams = zod.object({
+  "objectPath": zod.coerce.string().describe('Object path within the private object dir (e.g. uploads/some-uuid)')
+})
+
+export const GetStorageObjectResponse = zod.unknown()
 
 
