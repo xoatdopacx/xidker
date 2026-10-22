@@ -2,16 +2,18 @@ import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type Mous
 import { useListPackages, getListPackagesQueryKey } from "@workspace/api-client-react";
 import type { Package } from "@workspace/api-client-react";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown, MessageSquare, Info } from "lucide-react";
+import { ArrowRight, Check, Loader2, RefreshCw, Mail, CloudOff, ChevronDown, MessageSquare, Info, UserRound } from "lucide-react";
+import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Reveal, formatPrice } from "@/lib/motion";
 import { CloudArt, Scene, type SceneName } from "@/components/scenes";
-import { useI18n, LangSwitch, CONTACT_EMAIL, tpl, type Dict, type Currency } from "@/lib/i18n";
+import { useI18n, LangSwitch, CONTACT_EMAIL, tpl, type Dict } from "@/lib/i18n";
 import { Hero as HeroSprite, Pine, Sunflower, Log, Pin, Trophy, MapIcon, Cat, Raccoon, Chest, Logo, Wordmark, PixelTitle, Vehicle, VEHICLES } from "@/components/sprites";
 import { supportChat } from "@/lib/support-chat";
-import { billingLabel, packageCurrencies, productSchema, serializeJson } from "@/lib/product-schema";
+import { productSchema, serializeJson } from "@/lib/product-schema";
 import { localePath } from "@/lib/locale-url";
-import { useStartCheckout } from "@/lib/checkout";
+import { orderErrorText, useStartOrder } from "@/lib/order";
+import { ROUTES } from "@/lib/routes";
 
 /* ---------------- Road + walking character ---------------- */
 
@@ -256,6 +258,10 @@ function Nav() {
         </nav>
         <div className="flex items-center gap-3">
           <LangSwitch />
+          <Link href={ROUTES.account} className="flex items-center gap-1.5 text-sm font-semibold hover:text-primary" data-testid="link-nav-account">
+            <UserRound className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
+            <span className="max-lg:sr-only">{t.nav.account}</span>
+          </Link>
           <a href="#bang-gia" className="pbtn red max-sm:hidden! px-4 whitespace-nowrap py-1.5 text-sm font-bold" data-testid="button-nav-cta">{t.nav.cta}</a>
         </div>
       </div>
@@ -386,11 +392,11 @@ function PagesMock({ items }: { items: string[] }) {
 // Neither the picker code nor its sample/image requests load until a visitor chooses a package.
 const SamplePicker = lazy(() => import("@/components/sample-picker"));
 
-/** `prices`: this package in every currency. All of them sit in the same spot (only the active one visible),
- *  so switching currency never changes the card height. */
-function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; prices: Package[]; i: number; busy: boolean; disabled: boolean; onBuy: (event: MouseEvent<HTMLButtonElement>) => void }) {
-  const { t, numLocale } = useI18n();
+function PackageCard({ p, i, busy, disabled, onBuy }: { p: Package; i: number; busy: boolean; disabled: boolean; onBuy: (event: MouseEvent<HTMLButtonElement>) => void }) {
+  const { t, lang, numLocale } = useI18n();
   const rec = p.recommended;
+  // Buyers transfer VND; other languages also see a rough US dollar figure.
+  const approx = lang !== "vi" && p.priceUsd ? tpl(t.pricing.approx, { price: formatPrice(p.priceUsd, "USD", numLocale) }) : null;
   return (
     <Reveal delay={i * 110} className="h-full">
       <div className={`tile h-full flex flex-col p-6 transition-transform duration-200 hover:-translate-y-1.5 ${rec ? "md:-translate-y-3 md:hover:-translate-y-5 !border-[hsl(var(--gold))]" : ""}`} data-testid={`card-package-${p.id}`}>
@@ -401,16 +407,12 @@ function PackageCard({ p, prices, i, busy, disabled, onBuy }: { p: Package; pric
         </div>
         {p.tagline && <p className="mt-2 text-sm text-[#3d4a3d]">{p.tagline}</p>}
         {/* The price size follows the card width (capped at the normal size) so long VND prices fit narrow tablet cards. */}
-        <div className="mt-5 grid @container">
-          {prices.map((v) => {
-            const on = v.id === p.id;
-            return (
-              <div key={v.id} className={`[grid-area:1/1] flex items-baseline gap-2 flex-wrap ${on ? "" : "invisible"}`} aria-hidden={on ? undefined : true}>
-                <span className="font-display text-[length:min(1.875rem,15cqw)] md:text-[length:min(2.25rem,15cqw)] leading-[1.15] tracking-tight" data-testid={on ? `text-package-price-${p.id}` : undefined}>{formatPrice(v.price, v.currency, numLocale)}</span>
-                <span className="text-sm text-[#3d4a3d]">{billingLabel(v, t)}</span>
-              </div>
-            );
-          })}
+        <div className="mt-5 @container">
+          <div className="flex items-baseline gap-x-2 flex-wrap">
+            <span className="font-display text-[length:min(1.875rem,15cqw)] md:text-[length:min(2.25rem,15cqw)] leading-[1.15] tracking-tight" data-testid={`text-package-price-${p.id}`}>{formatPrice(p.price, "VND", numLocale)}</span>
+            <span className="text-sm text-[#3d4a3d]">{t.pricing.oneTime}</span>
+          </div>
+          {approx && <p className="mt-1 text-sm font-semibold text-[#3d4a3d]" data-testid={`text-package-usd-${p.id}`}>{approx}</p>}
         </div>
         <ul className="mt-5 space-y-2.5 flex-1">
           {p.features.map((f, k) => (
@@ -438,32 +440,26 @@ const GRID_FOR_COUNT: Record<number, string> = {
 };
 
 function Pricing() {
-  const { t, lang, currency, setCurrency } = useI18n();
+  const { t, lang } = useI18n();
   // Keep the previous language's cards while the new language loads: no skeleton flash and no
   // remount (a remount would replay the pixel build on the package cards).
   const { data, isLoading, isError, refetch, isFetching } = useListPackages({ lang }, { query: { queryKey: getListPackagesQueryKey({ lang }), placeholderData: keepPreviousData } });
   const qc = useQueryClient();
-  const checkout = useStartCheckout();
+  const checkout = useStartOrder();
   const { toast } = useToast();
   const [pickerPackage, setPickerPackage] = useState<Package | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerTriggerRef = useRef<HTMLElement | null>(null);
 
-  // Every currency comes back from the API; show the visitor's currency, or whichever one exists.
-  const currencies = packageCurrencies(data ?? []);
-  const active = currencies.includes(currency) ? currency : currencies[0];
-  const shown = (data ?? []).filter((p) => p.currency === active);
-  // Keep the SSR data block aligned with the cards after a language/currency change or catalog refresh.
+  const shown = data ?? [];
+  // Keep the SSR data block aligned with the cards after a language change or catalog refresh.
   useEffect(() => {
     const script = document.getElementById("product-schema");
     const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!script || !canonical) return;
     const url = new URL(localePath(lang, import.meta.env.BASE_URL), new URL(canonical.href).origin).href;
-    script.textContent = serializeJson(productSchema(t, data ?? null, currency, url));
-  }, [data, t, currency, lang]);
-  // Cards are keyed by package group, so switching currency only swaps the price (no remount, no rebuild).
-  const seen = new Set<string>();
-  const cardKey = (p: Package) => (seen.has(p.key) ? p.id : (seen.add(p.key), p.key));
+    script.textContent = serializeJson(productSchema(t, data ?? null, url));
+  }, [data, t, lang]);
 
   const buy = (p: Package, trigger: HTMLButtonElement) => {
     if (p.pickSample) {
@@ -473,7 +469,7 @@ function Pricing() {
       setPickerOpen(true);
       return;
     }
-    checkout.start({ packageId: p.id }, () => toast({ variant: "destructive", title: t.pricing.toastTitle, description: t.pricing.toastBody }));
+    checkout.start({ packageId: p.id, name: p.name }, (err) => toast({ variant: "destructive", title: t.pricing.toastTitle, description: orderErrorText(err, t) }));
   };
 
   return (
@@ -491,19 +487,6 @@ function Pricing() {
               <span className="text-xs font-bold uppercase tracking-wider text-[hsl(var(--pin-text))]">{t.stage} <span className="font-num text-base">06</span></span>
               <h2 className="font-display text-3xl md:text-4xl leading-tight mt-1">{t.pricing.title}</h2>
               <p className="mt-3 text-[#2c3a2c]">{t.pricing.sub}</p>
-              {/* fixed-height slot: the toggle appearing or switching never changes the section height */}
-              <div className="mt-5 h-[46px] flex md:justify-center">
-                {currencies.length > 1 && (
-                  <div role="radiogroup" aria-label={t.pricing.currency} className="cur-seg" dir="ltr" data-testid="group-currency">
-                    {currencies.map((c) => (
-                      <button key={c} type="button" role="radio" aria-checked={c === active} onClick={() => setCurrency(c as Currency)}
-                        className="font-num text-sm uppercase" data-testid={`button-currency-${c}`}>
-                        <i aria-hidden="true" />{c}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
           </Reveal>
 
@@ -534,8 +517,7 @@ function Pricing() {
           {shown.length > 0 && (
             <div className={`grid gap-8 md:gap-6 items-stretch ${GRID_FOR_COUNT[Math.min(shown.length, 5)]}`}>
               {shown.map((p, i) => (
-                <PackageCard key={cardKey(p)} p={p} i={i} busy={checkout.pendingId === p.id} disabled={checkout.busy} onBuy={(event) => buy(p, event.currentTarget)}
-                  prices={(data ?? []).filter((v) => v.key === p.key && (v.currency !== p.currency || v.id === p.id))} />
+                <PackageCard key={p.id} p={p} i={i} busy={checkout.pendingId === p.id} disabled={checkout.busy} onBuy={(event) => buy(p, event.currentTarget)} />
               ))}
             </div>
           )}
@@ -664,7 +646,10 @@ export function Footer() {
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-widest opacity-50 font-semibold">{t.footer.contact}</p>
             <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-2 text-base font-bold hover:text-[hsl(var(--gold))] break-all" data-testid="link-email"><Mail className="h-4 w-4 shrink-0" /> {CONTACT_EMAIL}</a>
-            <button type="button" onClick={() => supportChat.open("login")} className="flex items-center gap-2 text-start font-semibold opacity-85 hover:opacity-100 hover:text-[hsl(var(--gold))] underline underline-offset-4 decoration-2 decoration-[#eaf7d6]/40" data-testid="button-footer-support">
+            <Link href={ROUTES.account} className="flex items-center gap-2 font-semibold opacity-85 hover:opacity-100 hover:text-[hsl(var(--gold))] underline underline-offset-4 decoration-2 decoration-[#eaf7d6]/40" data-testid="link-footer-account">
+              <UserRound className="h-4 w-4 shrink-0" /> {t.footer.account}
+            </Link>
+            <button type="button" onClick={() => supportChat.open()} className="flex items-center gap-2 text-start font-semibold opacity-85 hover:opacity-100 hover:text-[hsl(var(--gold))] underline underline-offset-4 decoration-2 decoration-[#eaf7d6]/40" data-testid="button-footer-support">
               <MessageSquare className="h-4 w-4 shrink-0" /> {t.footer.support}
             </button>
             <LangSwitch tone="dark" />

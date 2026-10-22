@@ -9,3 +9,9 @@ export function serverError(err: unknown): string {
   const e = (err as { data?: { error?: unknown } | null } | null)?.data?.error;
   return typeof e === "string" ? e : "";
 }
+
+/** The machine-readable `reason` from an API error body, or "" when there is none. */
+export function reasonOf(err: unknown): string {
+  const r = (err as { data?: { reason?: unknown } | null } | null)?.data?.reason;
+  return typeof r === "string" ? r : "";
+}

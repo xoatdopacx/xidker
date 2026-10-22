@@ -15,14 +15,14 @@ export interface AdminConversation {
   /** @nullable */
   email: string | null;
   /**
-     * Whop payment id the customer switched on support chat with
+     * The customer's newest order (or the Whop payment id of an older account)
      * @nullable
      */
-  orderId: string | null;
+  orderCode: string | null;
   /** @nullable */
   packageName: string | null;
   /**
-     * Source sample the customer picked when buying, if the package had a sample choice
+     * Source sample of that order, if the package had a sample choice
      * @nullable
      */
   sampleName: string | null;

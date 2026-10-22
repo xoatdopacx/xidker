@@ -14,4 +14,9 @@ export interface Sample {
   id: string;
   name: string;
   images: SampleImage[];
+  /**
+     * Live preview of the sample
+     * @nullable
+     */
+  demoUrl: string | null;
 }

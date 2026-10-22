@@ -18,133 +18,340 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Returns every visible package in every currency. The same package sold in another currency is a separate Whop plan sharing the same key. Sorted by currency, then price ascending.
- * @summary List purchasable packages
+ * Every visible package, cheapest first. Prices are in VND, paid by bank transfer; priceUsd is an approximate figure for visitors from other countries.
+ * @summary List the packages on sale
  */
 export const ListPackagesQueryParams = zod.object({
-  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).optional().describe('Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.')
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).optional().describe('Language for the package name, tagline and features. Defaults to vi. Other languages use the built-in translations while the English text matches them, else the English text.')
 })
 
 export const ListPackagesResponseItem = zod.object({
-  "id": zod.string().describe('Whop plan id'),
-  "key": zod.string().describe('Package group. The same package sold in different currencies shares one key (Whop plan metadata "key").'),
+  "id": zod.string().describe('Package key'),
   "name": zod.string(),
   "tagline": zod.string().nullable().describe('One-line summary of who the package is for'),
   "features": zod.array(zod.string()).describe('What the buyer gets, in display order'),
-  "price": zod.number().describe('Price in major currency units (e.g. 5990000 = 5.990.000 VND, 249 = $249)'),
-  "currency": zod.string().describe('ISO 4217 currency code, lowercase (e.g. "vnd", "usd")'),
-  "billing": zod.enum(['one_time', 'recurring']),
-  "billingPeriodDays": zod.number().int().nullable().describe('Days between charges for recurring packages, null for one-time'),
+  "price": zod.number().int().describe('Price in VND, the amount to transfer'),
+  "priceUsd": zod.number().nullable().describe('Approximate price in US dollars, shown next to the VND price; null when not set'),
   "recommended": zod.boolean().describe('True for the package the studio recommends most'),
-  "pickSample": zod.boolean().describe('True when the buyer picks one of the source samples before paying. Set on the package in the admin screen; stays false while no sample is on show, so the package can always be bought.')
-}).describe('A landing page build package, backed by a Whop plan.')
+  "pickSample": zod.boolean().describe('True when the buyer picks one of the source samples before ordering. Stays false while no sample is on show, so the package can always be ordered.')
+}).describe('A package on the price list. Buyers pay the VND price by bank transfer.')
 export const ListPackagesResponse = zod.array(ListPackagesResponseItem)
 
 
 /**
- * Creates a Whop checkout session for the chosen package and returns the hosted checkout URL to send the buyer to. After paying, Whop sends the buyer back to /cam-on?ref={ref}.
- * @summary Start a Whop hosted checkout for a package
+ * The account is created only when the code is confirmed (POST /account/verify) from this browser. If the address already has an account, an email saying so is sent instead and the answer looks the same, so nobody can find out which addresses have accounts.
+ * @summary Start a new account and email a 6-digit code
  */
+export const registerAccountBodyEmailMax = 200;
 
-export const createCheckoutBodySampleIdRegExp = new RegExp('^[A-Za-z0-9_-]{6,32}$');
-
-
-export const CreateCheckoutBody = zod.object({
-  "packageId": zod.string().min(1),
-  "sampleId": zod.string().regex(createCheckoutBodySampleIdRegExp).optional().describe('The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.')
-})
-
-export const CreateCheckoutResponse = zod.object({
-  "ref": zod.string().describe('Reference for this checkout, used on the /cam-on page'),
-  "purchaseUrl": zod.string().describe('Whop hosted checkout URL to send the buyer to')
-})
-
-
-/**
- * Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment, or "failed" when every attempt failed or was canceled.
- * @summary Get the verified payment status of a checkout
- */
-export const GetCheckoutStatusParams = zod.object({
-  "ref": zod.coerce.string()
-})
-
-export const GetCheckoutStatusResponse = zod.object({
-  "ref": zod.string(),
-  "status": zod.enum(['paid', 'pending', 'failed']).describe('paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress).'),
-  "packageId": zod.string(),
-  "packageName": zod.string(),
-  "amount": zod.number().nullable().describe('Amount paid in major currency units, null until paid'),
-  "currency": zod.string().nullable(),
-  "paidAt": zod.coerce.date().nullable(),
-  "orderId": zod.string().nullable().describe('Whop payment id, null until paid. The customer uses it to switch on support chat.'),
-  "sampleId": zod.string().nullable().describe('The source sample picked for this checkout, null when the package has no sample choice'),
-  "sampleName": zod.string().nullable().describe('Name of the picked sample as it was when the checkout started')
-})
-
-
-/**
- * Checks with Whop that the order is paid, not refunded, and was bought with this email, then creates the customer's support account with the chosen password and signs this browser in. The order can be given as the Whop payment id (pay_…) or the reference from the thank-you link.
- * @summary Switch on support chat with a paid order
- */
-export const activateSupportBodyEmailMax = 200;
-
-export const activateSupportBodyOrderIdMax = 100;
-
-export const activateSupportBodyPasswordMin = 8;
-export const activateSupportBodyPasswordMax = 128;
+export const registerAccountBodyPasswordMax = 128;
 
 
 
-export const ActivateSupportBody = zod.object({
-  "email": zod.string().min(1).max(activateSupportBodyEmailMax).describe('The email used to pay on Whop'),
-  "orderId": zod.string().min(1).max(activateSupportBodyOrderIdMax).describe('Whop payment id (pay_…) or the reference from the thank-you link'),
-  "password": zod.string().min(activateSupportBodyPasswordMin).max(activateSupportBodyPasswordMax),
+export const RegisterAccountBody = zod.object({
+  "email": zod.string().min(1).max(registerAccountBodyEmailMax),
+  "password": zod.string().min(1).max(registerAccountBodyPasswordMax),
   "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)')
 })
 
-export const ActivateSupportResponse = zod.object({
+export const RegisterAccountResponse = zod.object({
+  "purpose": zod.enum(['register', 'verify', 'reset', 'admin']).describe('register: a new account. verify: confirming the email of an older account. reset: a new password. admin: the admin\'s second step.'),
+  "sentTo": zod.string().describe('The address with most of it hidden'),
+  "expiresAt": zod.coerce.date()
+}).describe('A 6-digit code was emailed; this browser confirms it with POST /account/verify.')
+
+
+/**
+ * Signs in straight away, or emails a code first: for the admin every time, and for an account whose email is not confirmed yet. Signing in signs every other browser of the account out.
+ * @summary Sign in with email and password
+ */
+export const signInAccountBodyEmailMax = 200;
+
+export const signInAccountBodyPasswordMax = 128;
+
+
+
+export const SignInAccountBody = zod.object({
+  "email": zod.string().min(1).max(signInAccountBodyEmailMax),
+  "password": zod.string().min(1).max(signInAccountBodyPasswordMax),
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)')
+})
+
+export const SignInAccountResponse = zod.object({
+  "session": zod.union([zod.object({
   "email": zod.string(),
-  "orderId": zod.string().describe('Whop payment id the support chat was switched on with'),
-  "packageName": zod.string().nullable()
+  "admin": zod.boolean().describe('This browser is also signed in to the admin dashboard'),
+  "canChat": zod.boolean().describe('The account has an order, so support chat is open to it'),
+  "lang": zod.string().nullable()
+}),zod.null()]),
+  "challenge": zod.union([zod.object({
+  "purpose": zod.enum(['register', 'verify', 'reset', 'admin']).describe('register: a new account. verify: confirming the email of an older account. reset: a new password. admin: the admin\'s second step.'),
+  "sentTo": zod.string().describe('The address with most of it hidden'),
+  "expiresAt": zod.coerce.date()
+}).describe('A 6-digit code was emailed; this browser confirms it with POST /account/verify.'),zod.null()])
+}).describe('Exactly one of the two is set.')
+
+
+/**
+ * Always answers the same way, so nobody can find out which addresses have accounts; the code only goes out when the account exists.
+ * @summary Email a code to set a new password
+ */
+export const requestPasswordResetBodyEmailMax = 200;
+
+
+
+export const RequestPasswordResetBody = zod.object({
+  "email": zod.string().min(1).max(requestPasswordResetBodyEmailMax),
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)')
+})
+
+export const RequestPasswordResetResponse = zod.object({
+  "purpose": zod.enum(['register', 'verify', 'reset', 'admin']).describe('register: a new account. verify: confirming the email of an older account. reset: a new password. admin: the admin\'s second step.'),
+  "sentTo": zod.string().describe('The address with most of it hidden'),
+  "expiresAt": zod.coerce.date()
+}).describe('A 6-digit code was emailed; this browser confirms it with POST /account/verify.')
+
+
+/**
+ * Uses the code asked for from this browser. For a password reset the new password comes with the code.
+ * @summary Confirm the emailed code and sign in
+ */
+export const verifyAccountCodeBodyCodeRegExp = new RegExp('^[0-9]{6}$');
+export const verifyAccountCodeBodyPasswordMax = 128;
+
+
+
+export const VerifyAccountCodeBody = zod.object({
+  "code": zod.string().regex(verifyAccountCodeBodyCodeRegExp),
+  "password": zod.string().min(1).max(verifyAccountCodeBodyPasswordMax).optional().describe('The new password, only for a password reset')
+})
+
+export const VerifyAccountCodeResponse = zod.object({
+  "email": zod.string(),
+  "admin": zod.boolean().describe('This browser is also signed in to the admin dashboard'),
+  "canChat": zod.boolean().describe('The account has an order, so support chat is open to it'),
+  "lang": zod.string().nullable()
 })
 
 
 /**
- * Only one browser stays signed in per account. Signing in here signs every other browser out.
- * @summary Sign in to support chat with email and password
+ * @summary Email a new code for the step this browser is on
  */
-export const signInSupportBodyEmailMax = 200;
+export const ResendAccountCodeResponse = zod.object({
+  "purpose": zod.enum(['register', 'verify', 'reset', 'admin']).describe('register: a new account. verify: confirming the email of an older account. reset: a new password. admin: the admin\'s second step.'),
+  "sentTo": zod.string().describe('The address with most of it hidden'),
+  "expiresAt": zod.coerce.date()
+}).describe('A 6-digit code was emailed; this browser confirms it with POST /account/verify.')
 
-export const signInSupportBodyPasswordMax = 128;
 
-
-
-export const SignInSupportBody = zod.object({
-  "email": zod.string().min(1).max(signInSupportBodyEmailMax),
-  "password": zod.string().min(1).max(signInSupportBodyPasswordMax)
-})
-
-export const SignInSupportResponse = zod.object({
+/**
+ * @summary Get the account this browser is signed in to
+ */
+export const GetAccountSessionResponse = zod.object({
   "email": zod.string(),
-  "orderId": zod.string().describe('Whop payment id the support chat was switched on with'),
-  "packageName": zod.string().nullable()
+  "admin": zod.boolean().describe('This browser is also signed in to the admin dashboard'),
+  "canChat": zod.boolean().describe('The account has an order, so support chat is open to it'),
+  "lang": zod.string().nullable()
 })
 
 
 /**
- * @summary Sign this browser out of support chat
+ * Also ends the admin session of this browser.
+ * @summary Sign this browser out
  */
-export const SignOutSupportResponse = zod.void()
+export const SignOutAccountResponse = zod.void()
 
 
 /**
- * @summary Get the support account this browser is signed in to
+ * @summary List the signed-in customer's orders, newest first
  */
-export const GetSupportSessionResponse = zod.object({
-  "email": zod.string(),
-  "orderId": zod.string().describe('Whop payment id the support chat was switched on with'),
-  "packageName": zod.string().nullable()
+export const ListMyOrdersResponseItem = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int(),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "hasFile": zod.boolean().describe('Paid and the source code can be downloaded')
 })
+export const ListMyOrdersResponse = zod.array(ListMyOrdersResponseItem)
+
+
+/**
+ * The order waits until the studio sees the transfer and marks it paid. At most 3 orders can wait at a time.
+ * @summary Order a package and get the bank transfer details
+ */
+export const createOrderBodyPackageIdRegExp = new RegExp('^[a-z0-9][a-z0-9-]{0,39}$');
+export const createOrderBodySampleIdRegExp = new RegExp('^[A-Za-z0-9_-]{6,32}$');
+
+
+export const CreateOrderBody = zod.object({
+  "packageId": zod.string().regex(createOrderBodyPackageIdRegExp),
+  "sampleId": zod.string().regex(createOrderBodySampleIdRegExp).optional().describe('The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.'),
+  "lang": zod.enum(['vi', 'en', 'zh-CN', 'zh-TW', 'ja', 'ko', 'th', 'id', 'ms', 'fil', 'km', 'lo', 'hi', 'bn', 'ur', 'ar', 'fa', 'he', 'tr', 'ru', 'uk', 'pl', 'cs', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'sv', 'el', 'ro', 'hu']).describe('Site language (BCP 47 code)')
+})
+
+export const CreateOrderResponse = zod.object({
+  "code": zod.string().describe('Order code, also the bank transfer memo'),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "packageId": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int().describe('VND'),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "payment": zod.union([zod.object({
+  "bankName": zod.string(),
+  "bankFullName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string(),
+  "amount": zod.number().int().describe('VND'),
+  "memo": zod.string(),
+  "qr": zod.string().describe('VietQR code as an SVG data URL; banking apps fill in everything above when they scan it')
+}).describe('Where to send the money. The memo must be the order code so the studio can match the transfer.'),zod.null()]).describe('Transfer details while the order waits for payment; null otherwise'),
+  "file": zod.union([zod.object({
+  "name": zod.string(),
+  "size": zod.number().int().describe('Bytes')
+}),zod.null()]).describe('The source code to download, once paid and ready'),
+  "deliveryNote": zod.string().nullable().describe('Message from the studio, shown once paid'),
+  "canCancel": zod.boolean()
+})
+
+
+/**
+ * @summary Get one of the signed-in customer's orders
+ */
+export const getMyOrderPathCodeRegExp = new RegExp('^XID[0-9A-Z]{6}$');
+
+
+export const GetMyOrderParams = zod.object({
+  "code": zod.coerce.string().regex(getMyOrderPathCodeRegExp)
+})
+
+export const GetMyOrderResponse = zod.object({
+  "code": zod.string().describe('Order code, also the bank transfer memo'),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "packageId": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int().describe('VND'),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "payment": zod.union([zod.object({
+  "bankName": zod.string(),
+  "bankFullName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string(),
+  "amount": zod.number().int().describe('VND'),
+  "memo": zod.string(),
+  "qr": zod.string().describe('VietQR code as an SVG data URL; banking apps fill in everything above when they scan it')
+}).describe('Where to send the money. The memo must be the order code so the studio can match the transfer.'),zod.null()]).describe('Transfer details while the order waits for payment; null otherwise'),
+  "file": zod.union([zod.object({
+  "name": zod.string(),
+  "size": zod.number().int().describe('Bytes')
+}),zod.null()]).describe('The source code to download, once paid and ready'),
+  "deliveryNote": zod.string().nullable().describe('Message from the studio, shown once paid'),
+  "canCancel": zod.boolean()
+})
+
+
+/**
+ * Emails the studio once; the order stays unpaid until the studio confirms the money arrived.
+ * @summary Tell the studio the money was sent
+ */
+export const reportOrderTransferPathCodeRegExp = new RegExp('^XID[0-9A-Z]{6}$');
+
+
+export const ReportOrderTransferParams = zod.object({
+  "code": zod.coerce.string().regex(reportOrderTransferPathCodeRegExp)
+})
+
+export const ReportOrderTransferResponse = zod.object({
+  "code": zod.string().describe('Order code, also the bank transfer memo'),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "packageId": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int().describe('VND'),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "payment": zod.union([zod.object({
+  "bankName": zod.string(),
+  "bankFullName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string(),
+  "amount": zod.number().int().describe('VND'),
+  "memo": zod.string(),
+  "qr": zod.string().describe('VietQR code as an SVG data URL; banking apps fill in everything above when they scan it')
+}).describe('Where to send the money. The memo must be the order code so the studio can match the transfer.'),zod.null()]).describe('Transfer details while the order waits for payment; null otherwise'),
+  "file": zod.union([zod.object({
+  "name": zod.string(),
+  "size": zod.number().int().describe('Bytes')
+}),zod.null()]).describe('The source code to download, once paid and ready'),
+  "deliveryNote": zod.string().nullable().describe('Message from the studio, shown once paid'),
+  "canCancel": zod.boolean()
+})
+
+
+/**
+ * Only before the customer said the money was sent.
+ * @summary Cancel an order that was not paid
+ */
+export const cancelMyOrderPathCodeRegExp = new RegExp('^XID[0-9A-Z]{6}$');
+
+
+export const CancelMyOrderParams = zod.object({
+  "code": zod.coerce.string().regex(cancelMyOrderPathCodeRegExp)
+})
+
+export const CancelMyOrderResponse = zod.object({
+  "code": zod.string().describe('Order code, also the bank transfer memo'),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "packageId": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int().describe('VND'),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "payment": zod.union([zod.object({
+  "bankName": zod.string(),
+  "bankFullName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string(),
+  "amount": zod.number().int().describe('VND'),
+  "memo": zod.string(),
+  "qr": zod.string().describe('VietQR code as an SVG data URL; banking apps fill in everything above when they scan it')
+}).describe('Where to send the money. The memo must be the order code so the studio can match the transfer.'),zod.null()]).describe('Transfer details while the order waits for payment; null otherwise'),
+  "file": zod.union([zod.object({
+  "name": zod.string(),
+  "size": zod.number().int().describe('Bytes')
+}),zod.null()]).describe('The source code to download, once paid and ready'),
+  "deliveryNote": zod.string().nullable().describe('Message from the studio, shown once paid'),
+  "canCancel": zod.boolean()
+})
+
+
+/**
+ * @summary Download the source code of a paid order
+ */
+export const downloadOrderFilePathCodeRegExp = new RegExp('^XID[0-9A-Z]{6}$');
+
+
+export const DownloadOrderFileParams = zod.object({
+  "code": zod.coerce.string().regex(downloadOrderFilePathCodeRegExp)
+})
+
+export const DownloadOrderFileResponse = zod.unknown()
 
 
 /**
@@ -164,7 +371,7 @@ export const GetSupportThreadResponse = zod.object({
 
 
 /**
- * The first message starts the conversation.
+ * The first message starts the conversation. Only accounts with an order can chat.
  * @summary Send a message in the signed-in customer's conversation
  */
 export const sendSupportMessageBodyMessageMax = 2000;
@@ -186,42 +393,10 @@ export const SendSupportMessageResponse = zod.object({
 
 
 /**
- * When the token is right, a 6-digit code valid for 10 minutes is emailed to the admin address and an httpOnly cookie ties the code to this browser.
- * @summary Check the admin token and email a one-time code
- */
-export const requestAdminCodeBodyTokenMax = 512;
-
-
-
-export const RequestAdminCodeBody = zod.object({
-  "token": zod.string().min(1).max(requestAdminCodeBodyTokenMax)
-})
-
-export const RequestAdminCodeResponse = zod.object({
-  "sentTo": zod.string().describe('The admin address with most of it hidden'),
-  "expiresAt": zod.coerce.date()
-})
-
-
-/**
- * @summary Check the emailed code and sign in
- */
-export const verifyAdminCodeBodyCodeRegExp = new RegExp('^[0-9]{6}$');
-
-
-export const VerifyAdminCodeBody = zod.object({
-  "code": zod.string().regex(verifyAdminCodeBodyCodeRegExp)
-})
-
-export const VerifyAdminCodeResponse = zod.object({
-  "expiresAt": zod.coerce.date()
-})
-
-
-/**
  * @summary Get the current admin session
  */
 export const GetAdminSessionResponse = zod.object({
+  "email": zod.string(),
   "expiresAt": zod.coerce.date()
 })
 
@@ -233,15 +408,245 @@ export const SignOutAdminResponse = zod.void()
 
 
 /**
+ * @summary Figures for the dashboard home
+ */
+export const GetAdminOverviewResponse = zod.object({
+  "waitingOrders": zod.number().int().describe('Unpaid orders whose buyer has not said they sent money'),
+  "reportedOrders": zod.number().int().describe('Unpaid orders whose buyer says they sent money (check the bank)'),
+  "revenueToday": zod.number().int(),
+  "revenueMonth": zod.number().int(),
+  "revenueTotal": zod.number().int(),
+  "paidMonth": zod.number().int(),
+  "customers": zod.number().int(),
+  "newCustomersWeek": zod.number().int(),
+  "unreadMessages": zod.number().int(),
+  "bankReady": zod.boolean(),
+  "mailReady": zod.boolean().describe('False when the last email failed because Gmail is not connected'),
+  "days": zod.array(zod.object({
+  "date": zod.string().describe('YYYY-MM-DD, Vietnam time'),
+  "revenue": zod.number().int(),
+  "orders": zod.number().int().describe('Orders marked paid that day')
+})).describe('The last 14 days, oldest first'),
+  "recentOrders": zod.array(zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "email": zod.string(),
+  "accountId": zod.string().nullable(),
+  "packageKey": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int(),
+  "lang": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "file": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What the buyer downloads once paid (the attached file, else the sample\'s)'),
+  "deliveryFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('A file attached to this order'),
+  "deliveryNote": zod.string().nullable(),
+  "adminNote": zod.string().nullable(),
+  "downloads": zod.number().int()
+}))
+})
+
+
+/**
+ * @summary Search orders, newest first (at most 300)
+ */
+export const listAdminOrdersQueryQMax = 100;
+
+
+
+export const ListAdminOrdersQueryParams = zod.object({
+  "status": zod.enum(['all', 'waiting', 'reported', 'paid', 'cancelled']).optional().describe('waiting = not paid and the buyer did not say they sent money; reported = they did'),
+  "q": zod.coerce.string().max(listAdminOrdersQueryQMax).optional().describe('Part of the order code or the buyer email')
+})
+
+export const ListAdminOrdersResponseItem = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "email": zod.string(),
+  "accountId": zod.string().nullable(),
+  "packageKey": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int(),
+  "lang": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "file": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What the buyer downloads once paid (the attached file, else the sample\'s)'),
+  "deliveryFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('A file attached to this order'),
+  "deliveryNote": zod.string().nullable(),
+  "adminNote": zod.string().nullable(),
+  "downloads": zod.number().int()
+})
+export const ListAdminOrdersResponse = zod.array(ListAdminOrdersResponseItem)
+
+
+/**
+ * Marking an order paid emails the buyer that the download is ready.
+ * @summary Mark an order paid, cancel or reopen it, or attach a file and notes
+ */
+export const updateAdminOrderPathCodeRegExp = new RegExp('^XID[0-9A-Z]{6}$');
+
+
+export const UpdateAdminOrderParams = zod.object({
+  "code": zod.coerce.string().regex(updateAdminOrderPathCodeRegExp)
+})
+
+export const updateAdminOrderBodyDeliveryFileOneSlugRegExp = new RegExp('^[a-z0-9][a-z0-9-]{0,39}$');
+export const updateAdminOrderBodyDeliveryFileOnePathRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const updateAdminOrderBodyDeliveryFileOneNameMax = 200;
+
+
+export const updateAdminOrderBodyDeliveryNoteMax = 2000;
+
+export const updateAdminOrderBodyAdminNoteMax = 2000;
+
+
+
+export const UpdateAdminOrderBody = zod.object({
+  "status": zod.enum(['pending', 'paid', 'cancelled']).optional(),
+  "deliveryFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "slug": zod.string().regex(updateAdminOrderBodyDeliveryFileOneSlugRegExp).optional(),
+  "path": zod.string().regex(updateAdminOrderBodyDeliveryFileOnePathRegExp).optional(),
+  "name": zod.string().min(1).max(updateAdminOrderBodyDeliveryFileOneNameMax).optional(),
+  "size": zod.number().int().min(1).optional()
+}),zod.null()]).optional(),
+  "deliveryNote": zod.string().max(updateAdminOrderBodyDeliveryNoteMax).nullish(),
+  "adminNote": zod.string().max(updateAdminOrderBodyAdminNoteMax).nullish()
+})
+
+export const UpdateAdminOrderResponse = zod.object({
+  "code": zod.string(),
+  "status": zod.enum(['pending', 'paid', 'cancelled']),
+  "email": zod.string(),
+  "accountId": zod.string().nullable(),
+  "packageKey": zod.string(),
+  "packageName": zod.string(),
+  "sampleName": zod.string().nullable(),
+  "amount": zod.number().int(),
+  "lang": zod.string(),
+  "createdAt": zod.coerce.date(),
+  "transferReportedAt": zod.coerce.date().nullable(),
+  "paidAt": zod.coerce.date().nullable(),
+  "cancelledAt": zod.coerce.date().nullable(),
+  "file": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What the buyer downloads once paid (the attached file, else the sample\'s)'),
+  "deliveryFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('A file attached to this order'),
+  "deliveryNote": zod.string().nullable(),
+  "adminNote": zod.string().nullable(),
+  "downloads": zod.number().int()
+})
+
+
+/**
+ * @summary Search customer accounts, newest first (at most 300)
+ */
+export const listAdminCustomersQueryQMax = 100;
+
+
+
+export const ListAdminCustomersQueryParams = zod.object({
+  "q": zod.coerce.string().max(listAdminCustomersQueryQMax).optional().describe('Part of the email')
+})
+
+export const ListAdminCustomersResponseItem = zod.object({
+  "id": zod.string(),
+  "email": zod.string(),
+  "verified": zod.boolean(),
+  "locked": zod.boolean(),
+  "isAdmin": zod.boolean(),
+  "lang": zod.string().nullable(),
+  "createdAt": zod.coerce.date(),
+  "lastSignInAt": zod.coerce.date().nullable(),
+  "orders": zod.number().int(),
+  "paidOrders": zod.number().int(),
+  "spent": zod.number().int().describe('VND paid in total'),
+  "legacyOrderId": zod.string().nullable().describe('Whop payment id of an account made before the store left Whop')
+})
+export const ListAdminCustomersResponse = zod.array(ListAdminCustomersResponseItem)
+
+
+/**
+ * Locking signs the account out everywhere and stops sign-in, orders and chat.
+ * @summary Lock or unlock a customer account
+ */
+export const updateAdminCustomerPathIdRegExp = new RegExp('^[A-Za-z0-9_-]{6,64}$');
+
+
+export const UpdateAdminCustomerParams = zod.object({
+  "id": zod.coerce.string().regex(updateAdminCustomerPathIdRegExp)
+})
+
+export const UpdateAdminCustomerBody = zod.object({
+  "locked": zod.boolean()
+})
+
+export const UpdateAdminCustomerResponse = zod.object({
+  "id": zod.string(),
+  "email": zod.string(),
+  "verified": zod.boolean(),
+  "locked": zod.boolean(),
+  "isAdmin": zod.boolean(),
+  "lang": zod.string().nullable(),
+  "createdAt": zod.coerce.date(),
+  "lastSignInAt": zod.coerce.date().nullable(),
+  "orders": zod.number().int(),
+  "paidOrders": zod.number().int(),
+  "spent": zod.number().int().describe('VND paid in total'),
+  "legacyOrderId": zod.string().nullable().describe('Whop payment id of an account made before the store left Whop')
+})
+
+
+/**
  * @summary List chat conversations, most recent activity first
  */
 export const ListAdminConversationsResponseItem = zod.object({
   "id": zod.string(),
   "name": zod.string().nullable(),
   "email": zod.string().nullable(),
-  "orderId": zod.string().nullable().describe('Whop payment id the customer switched on support chat with'),
+  "orderCode": zod.string().nullable().describe('The customer\'s newest order (or the Whop payment id of an older account)'),
   "packageName": zod.string().nullable(),
-  "sampleName": zod.string().nullable().describe('Source sample the customer picked when buying, if the package had a sample choice'),
+  "sampleName": zod.string().nullable().describe('Source sample of that order, if the package had a sample choice'),
   "lang": zod.string(),
   "status": zod.enum(['open', 'closed']),
   "createdAt": zod.coerce.date(),
@@ -268,9 +673,9 @@ export const UpdateAdminConversationResponse = zod.object({
   "id": zod.string(),
   "name": zod.string().nullable(),
   "email": zod.string().nullable(),
-  "orderId": zod.string().nullable().describe('Whop payment id the customer switched on support chat with'),
+  "orderCode": zod.string().nullable().describe('The customer\'s newest order (or the Whop payment id of an older account)'),
   "packageName": zod.string().nullable(),
-  "sampleName": zod.string().nullable().describe('Source sample the customer picked when buying, if the package had a sample choice'),
+  "sampleName": zod.string().nullable().describe('Source sample of that order, if the package had a sample choice'),
   "lang": zod.string(),
   "status": zod.enum(['open', 'closed']),
   "createdAt": zod.coerce.date(),
@@ -358,178 +763,178 @@ export const TranslateAdminMessagesResponse = zod.array(TranslateAdminMessagesRe
 
 
 /**
- * Read straight from Whop, uncached. A package is the group of one-time plans under the shop's Whop product that share a metadata key: its VND plan carries the Vietnamese text and its USD plan the English text.
- * @summary List every package on Whop, hidden ones included
+ * @summary List every package, hidden ones included
  */
 export const ListAdminPackagesResponseItem = zod.object({
-  "key": zod.string().describe('Package group shared by its plans (Whop plan metadata "key")'),
+  "key": zod.string(),
   "vi": zod.object({
   "name": zod.string(),
   "tagline": zod.string().nullable(),
   "features": zod.array(zod.string())
-}).describe('A package\'s text in one language, as stored on Whop'),
+}).describe('A package\'s text in one language'),
   "en": zod.object({
   "name": zod.string(),
   "tagline": zod.string().nullable(),
   "features": zod.array(zod.string())
-}).describe('A package\'s text in one language, as stored on Whop'),
-  "priceVnd": zod.number().nullable().describe('Null when the package has no VND plan'),
-  "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
-  "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
+}).describe('A package\'s text in one language'),
+  "priceVnd": zod.number().int(),
+  "priceUsd": zod.number().nullable(),
+  "visible": zod.boolean().describe('Shown on the price list'),
   "recommended": zod.boolean(),
-  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying (Whop plan metadata "pick_sample")'),
-  "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before ordering'),
+  "orders": zod.number().int().describe('Orders made with this package, cancelled ones left out'),
   "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
 })
 export const ListAdminPackagesResponse = zod.array(ListAdminPackagesResponseItem)
 
 
 /**
- * Creates the package's VND and USD plans on Whop. The site shows the change within about a minute.
- * @summary Put a new package on sale
+ * @summary Add a package
  */
-export const createAdminPackageBodyViNameMax = 30;
+export const createAdminPackageBodyViNameMax = 40;
 
 export const createAdminPackageBodyViTaglineMax = 160;
 
-export const createAdminPackageBodyViFeaturesItemMax = 100;
+export const createAdminPackageBodyViFeaturesItemMax = 120;
 
-export const createAdminPackageBodyViFeaturesMax = 8;
+export const createAdminPackageBodyViFeaturesMax = 10;
 
-export const createAdminPackageBodyEnNameMax = 30;
+export const createAdminPackageBodyEnNameMax = 40;
 
 export const createAdminPackageBodyEnTaglineMax = 160;
 
-export const createAdminPackageBodyEnFeaturesItemMax = 100;
+export const createAdminPackageBodyEnFeaturesItemMax = 120;
 
-export const createAdminPackageBodyEnFeaturesMax = 8;
+export const createAdminPackageBodyEnFeaturesMax = 10;
 
 export const createAdminPackageBodyPriceVndMin = 10000;
 export const createAdminPackageBodyPriceVndMax = 1000000000;
 
+export const createAdminPackageBodyPriceUsdMin = 0.5;
 export const createAdminPackageBodyPriceUsdMax = 100000;
 
 
 
 export const CreateAdminPackageBody = zod.object({
   "vi": zod.object({
-  "name": zod.string().min(1).max(createAdminPackageBodyViNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "name": zod.string().min(1).max(createAdminPackageBodyViNameMax),
   "tagline": zod.string().max(createAdminPackageBodyViTaglineMax).nullable(),
   "features": zod.array(zod.string().min(1).max(createAdminPackageBodyViFeaturesItemMax)).max(createAdminPackageBodyViFeaturesMax)
 }),
   "en": zod.object({
-  "name": zod.string().min(1).max(createAdminPackageBodyEnNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "name": zod.string().min(1).max(createAdminPackageBodyEnNameMax),
   "tagline": zod.string().max(createAdminPackageBodyEnTaglineMax).nullable(),
   "features": zod.array(zod.string().min(1).max(createAdminPackageBodyEnFeaturesItemMax)).max(createAdminPackageBodyEnFeaturesMax)
 }),
   "priceVnd": zod.number().int().min(createAdminPackageBodyPriceVndMin).max(createAdminPackageBodyPriceVndMax),
-  "priceUsd": zod.number().min(1).max(createAdminPackageBodyPriceUsdMax).describe('At most 2 decimals'),
-  "onSale": zod.boolean(),
+  "priceUsd": zod.number().min(createAdminPackageBodyPriceUsdMin).max(createAdminPackageBodyPriceUsdMax).nullable().describe('At most 2 decimals; null to show no dollar figure'),
+  "visible": zod.boolean(),
   "recommended": zod.boolean(),
-  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying')
+  "pickSample": zod.boolean()
 })
 
 export const CreateAdminPackageResponse = zod.object({
-  "key": zod.string().describe('Package group shared by its plans (Whop plan metadata "key")'),
+  "key": zod.string(),
   "vi": zod.object({
   "name": zod.string(),
   "tagline": zod.string().nullable(),
   "features": zod.array(zod.string())
-}).describe('A package\'s text in one language, as stored on Whop'),
+}).describe('A package\'s text in one language'),
   "en": zod.object({
   "name": zod.string(),
   "tagline": zod.string().nullable(),
   "features": zod.array(zod.string())
-}).describe('A package\'s text in one language, as stored on Whop'),
-  "priceVnd": zod.number().nullable().describe('Null when the package has no VND plan'),
-  "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
-  "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
+}).describe('A package\'s text in one language'),
+  "priceVnd": zod.number().int(),
+  "priceUsd": zod.number().nullable(),
+  "visible": zod.boolean().describe('Shown on the price list'),
   "recommended": zod.boolean(),
-  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying (Whop plan metadata "pick_sample")'),
-  "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before ordering'),
+  "orders": zod.number().int().describe('Orders made with this package, cancelled ones left out'),
   "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
 })
 
 
 /**
- * Only the Whop fields that differ are sent. A missing VND or USD plan is created. Marking a package recommended clears the mark on every other package.
- * @summary Change a package's prices, text, recommended mark or whether it is on sale
+ * Orders already made keep the name and price they were made with.
+ * @summary Change a package
  */
-export const updateAdminPackagePathKeyRegExp = new RegExp('^[A-Za-z0-9_-]{1,64}$');
+export const updateAdminPackagePathKeyRegExp = new RegExp('^[a-z0-9][a-z0-9-]{0,39}$');
 
 
 export const UpdateAdminPackageParams = zod.object({
   "key": zod.coerce.string().regex(updateAdminPackagePathKeyRegExp)
 })
 
-export const updateAdminPackageBodyViNameMax = 30;
+export const updateAdminPackageBodyViNameMax = 40;
 
 export const updateAdminPackageBodyViTaglineMax = 160;
 
-export const updateAdminPackageBodyViFeaturesItemMax = 100;
+export const updateAdminPackageBodyViFeaturesItemMax = 120;
 
-export const updateAdminPackageBodyViFeaturesMax = 8;
+export const updateAdminPackageBodyViFeaturesMax = 10;
 
-export const updateAdminPackageBodyEnNameMax = 30;
+export const updateAdminPackageBodyEnNameMax = 40;
 
 export const updateAdminPackageBodyEnTaglineMax = 160;
 
-export const updateAdminPackageBodyEnFeaturesItemMax = 100;
+export const updateAdminPackageBodyEnFeaturesItemMax = 120;
 
-export const updateAdminPackageBodyEnFeaturesMax = 8;
+export const updateAdminPackageBodyEnFeaturesMax = 10;
 
 export const updateAdminPackageBodyPriceVndMin = 10000;
 export const updateAdminPackageBodyPriceVndMax = 1000000000;
 
+export const updateAdminPackageBodyPriceUsdMin = 0.5;
 export const updateAdminPackageBodyPriceUsdMax = 100000;
 
 
 
 export const UpdateAdminPackageBody = zod.object({
   "vi": zod.object({
-  "name": zod.string().min(1).max(updateAdminPackageBodyViNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "name": zod.string().min(1).max(updateAdminPackageBodyViNameMax),
   "tagline": zod.string().max(updateAdminPackageBodyViTaglineMax).nullable(),
   "features": zod.array(zod.string().min(1).max(updateAdminPackageBodyViFeaturesItemMax)).max(updateAdminPackageBodyViFeaturesMax)
 }),
   "en": zod.object({
-  "name": zod.string().min(1).max(updateAdminPackageBodyEnNameMax).describe('Whop allows at most 30 characters in a plan title'),
+  "name": zod.string().min(1).max(updateAdminPackageBodyEnNameMax),
   "tagline": zod.string().max(updateAdminPackageBodyEnTaglineMax).nullable(),
   "features": zod.array(zod.string().min(1).max(updateAdminPackageBodyEnFeaturesItemMax)).max(updateAdminPackageBodyEnFeaturesMax)
 }),
   "priceVnd": zod.number().int().min(updateAdminPackageBodyPriceVndMin).max(updateAdminPackageBodyPriceVndMax),
-  "priceUsd": zod.number().min(1).max(updateAdminPackageBodyPriceUsdMax).describe('At most 2 decimals'),
-  "onSale": zod.boolean(),
+  "priceUsd": zod.number().min(updateAdminPackageBodyPriceUsdMin).max(updateAdminPackageBodyPriceUsdMax).nullable().describe('At most 2 decimals; null to show no dollar figure'),
+  "visible": zod.boolean(),
   "recommended": zod.boolean(),
-  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying')
+  "pickSample": zod.boolean()
 })
 
 export const UpdateAdminPackageResponse = zod.object({
-  "key": zod.string().describe('Package group shared by its plans (Whop plan metadata "key")'),
+  "key": zod.string(),
   "vi": zod.object({
   "name": zod.string(),
   "tagline": zod.string().nullable(),
   "features": zod.array(zod.string())
-}).describe('A package\'s text in one language, as stored on Whop'),
+}).describe('A package\'s text in one language'),
   "en": zod.object({
   "name": zod.string(),
   "tagline": zod.string().nullable(),
   "features": zod.array(zod.string())
-}).describe('A package\'s text in one language, as stored on Whop'),
-  "priceVnd": zod.number().nullable().describe('Null when the package has no VND plan'),
-  "priceUsd": zod.number().nullable().describe('Null when the package has no USD plan'),
-  "onSale": zod.boolean().describe('Shown on the site (at least one of its plans is visible on Whop)'),
+}).describe('A package\'s text in one language'),
+  "priceVnd": zod.number().int(),
+  "priceUsd": zod.number().nullable(),
+  "visible": zod.boolean().describe('Shown on the price list'),
   "recommended": zod.boolean(),
-  "pickSample": zod.boolean().describe('Buyers pick a source sample before paying (Whop plan metadata "pick_sample")'),
-  "buyers": zod.number().int().describe('Current Whop members across the package\'s plans'),
+  "pickSample": zod.boolean().describe('Buyers pick a source sample before ordering'),
+  "orders": zod.number().int().describe('Orders made with this package, cancelled ones left out'),
   "translations": zod.enum(['built_in', 'outdated', 'none']).describe('built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text.')
 })
 
 
 /**
- * Deletes all of the package's plans on Whop. Packages with buyers can only be hidden.
- * @summary Delete a package nobody has bought
+ * Packages with orders can only be hidden.
+ * @summary Delete a package nobody has ordered
  */
-export const deleteAdminPackagePathKeyRegExp = new RegExp('^[A-Za-z0-9_-]{1,64}$');
+export const deleteAdminPackagePathKeyRegExp = new RegExp('^[a-z0-9][a-z0-9-]{0,39}$');
 
 
 export const DeleteAdminPackageParams = zod.object({
@@ -551,7 +956,8 @@ export const ListSamplesResponseItem = zod.object({
   "thumbUrl": zod.string().describe('Small preview showing the top of the image'),
   "width": zod.number().int(),
   "height": zod.number().int()
-}))
+})),
+  "demoUrl": zod.string().nullable().describe('Live preview of the sample')
 }).describe('A source sample a buyer can pick. The name is shown as written in every language.')
 export const ListSamplesResponse = zod.array(ListSamplesResponseItem)
 
@@ -570,6 +976,14 @@ export const ListAdminSamplesResponseItem = zod.object({
   "url": zod.string(),
   "thumbUrl": zod.string()
 })),
+  "sourceFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What buyers who picked this sample download once paid'),
+  "demoUrl": zod.string().nullable(),
   "visible": zod.boolean().describe('On show to buyers'),
   "position": zod.number().int(),
   "createdAt": zod.coerce.date(),
@@ -592,6 +1006,13 @@ export const createAdminSampleBodyImagesItemHeightMax = 20000;
 
 export const createAdminSampleBodyImagesMax = 12;
 
+export const createAdminSampleBodySourceFileOneSlugRegExp = new RegExp('^[a-z0-9][a-z0-9-]{0,39}$');
+export const createAdminSampleBodySourceFileOnePathRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const createAdminSampleBodySourceFileOneNameMax = 200;
+
+
+export const createAdminSampleBodyDemoUrlMax = 300;
+
 
 
 export const CreateAdminSampleBody = zod.object({
@@ -602,6 +1023,14 @@ export const CreateAdminSampleBody = zod.object({
   "width": zod.number().int().min(1).max(createAdminSampleBodyImagesItemWidthMax),
   "height": zod.number().int().min(1).max(createAdminSampleBodyImagesItemHeightMax)
 })).min(1).max(createAdminSampleBodyImagesMax),
+  "sourceFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "slug": zod.string().regex(createAdminSampleBodySourceFileOneSlugRegExp).optional(),
+  "path": zod.string().regex(createAdminSampleBodySourceFileOnePathRegExp).optional(),
+  "name": zod.string().min(1).max(createAdminSampleBodySourceFileOneNameMax).optional(),
+  "size": zod.number().int().min(1).optional()
+}),zod.null()]),
+  "demoUrl": zod.string().max(createAdminSampleBodyDemoUrlMax).nullable().describe('A page of this site (/demo/...) or an https:// address'),
   "visible": zod.boolean()
 })
 
@@ -616,6 +1045,14 @@ export const CreateAdminSampleResponse = zod.object({
   "url": zod.string(),
   "thumbUrl": zod.string()
 })),
+  "sourceFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What buyers who picked this sample download once paid'),
+  "demoUrl": zod.string().nullable(),
   "visible": zod.boolean().describe('On show to buyers'),
   "position": zod.number().int(),
   "createdAt": zod.coerce.date(),
@@ -644,6 +1081,13 @@ export const updateAdminSampleBodyImagesItemHeightMax = 20000;
 
 export const updateAdminSampleBodyImagesMax = 12;
 
+export const updateAdminSampleBodySourceFileOneSlugRegExp = new RegExp('^[a-z0-9][a-z0-9-]{0,39}$');
+export const updateAdminSampleBodySourceFileOnePathRegExp = new RegExp('^/objects/uploads/[0-9a-f-]{36}$');
+export const updateAdminSampleBodySourceFileOneNameMax = 200;
+
+
+export const updateAdminSampleBodyDemoUrlMax = 300;
+
 
 
 export const UpdateAdminSampleBody = zod.object({
@@ -654,6 +1098,14 @@ export const UpdateAdminSampleBody = zod.object({
   "width": zod.number().int().min(1).max(updateAdminSampleBodyImagesItemWidthMax),
   "height": zod.number().int().min(1).max(updateAdminSampleBodyImagesItemHeightMax)
 })).min(1).max(updateAdminSampleBodyImagesMax),
+  "sourceFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "slug": zod.string().regex(updateAdminSampleBodySourceFileOneSlugRegExp).optional(),
+  "path": zod.string().regex(updateAdminSampleBodySourceFileOnePathRegExp).optional(),
+  "name": zod.string().min(1).max(updateAdminSampleBodySourceFileOneNameMax).optional(),
+  "size": zod.number().int().min(1).optional()
+}),zod.null()]),
+  "demoUrl": zod.string().max(updateAdminSampleBodyDemoUrlMax).nullable().describe('A page of this site (/demo/...) or an https:// address'),
   "visible": zod.boolean()
 })
 
@@ -668,6 +1120,14 @@ export const UpdateAdminSampleResponse = zod.object({
   "url": zod.string(),
   "thumbUrl": zod.string()
 })),
+  "sourceFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What buyers who picked this sample download once paid'),
+  "demoUrl": zod.string().nullable(),
   "visible": zod.boolean().describe('On show to buyers'),
   "position": zod.number().int(),
   "createdAt": zod.coerce.date(),
@@ -712,6 +1172,14 @@ export const ReorderAdminSamplesResponseItem = zod.object({
   "url": zod.string(),
   "thumbUrl": zod.string()
 })),
+  "sourceFile": zod.union([zod.object({
+  "kind": zod.enum(['builtin', 'upload']),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "slug": zod.string().nullable(),
+  "path": zod.string().nullable()
+}).describe('A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).'),zod.null()]).describe('What buyers who picked this sample download once paid'),
+  "demoUrl": zod.string().nullable(),
   "visible": zod.boolean().describe('On show to buyers'),
   "position": zod.number().int(),
   "createdAt": zod.coerce.date(),
@@ -721,40 +1189,119 @@ export const ReorderAdminSamplesResponse = zod.array(ReorderAdminSamplesResponse
 
 
 /**
- * Read from Whop (newest first, at most 50), joined with the checkouts started on this site to add the picked sample. Orders made before samples existed, or outside this site, have no sample.
- * @summary Recent paid orders and the sample each buyer picked
+ * Can be attached to a sample or an order without uploading anything.
+ * @summary Source code zips that ship with the site
  */
-export const ListAdminOrdersResponseItem = zod.object({
-  "id": zod.string().describe('Whop payment id'),
-  "paidAt": zod.coerce.date().nullable(),
-  "amount": zod.number().nullable().describe('Amount paid in major currency units'),
-  "currency": zod.string(),
-  "email": zod.string().nullable().describe('Buyer email, null when Whop does not share it'),
-  "packageName": zod.string().nullable(),
-  "sampleName": zod.string().nullable().describe('Sample the buyer picked, null when the order had no sample choice')
+export const ListBuiltinFilesResponseItem = zod.object({
+  "slug": zod.string(),
+  "name": zod.string(),
+  "size": zod.number().int(),
+  "demoUrl": zod.string()
 })
-export const ListAdminOrdersResponse = zod.array(ListAdminOrdersResponseItem)
+export const ListBuiltinFilesResponse = zod.array(ListBuiltinFilesResponseItem)
 
 
 /**
- * Admin only. The request carries the file details, never the file; the browser then uploads the file straight to App Storage with PUT to uploadURL.
- * @summary Get a link to upload one sample image
+ * @summary Bank account for transfers and allowed email providers
+ */
+export const GetAdminSettingsResponse = zod.object({
+  "bank": zod.union([zod.object({
+  "bin": zod.string(),
+  "bankName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string()
+}),zod.null()]),
+  "emailDomains": zod.array(zod.string()),
+  "adminEmail": zod.string()
+})
+
+
+/**
+ * @summary Set the bank account buyers transfer to
+ */
+export const updateAdminBankBodyBinRegExp = new RegExp('^[0-9]{6}$');
+export const updateAdminBankBodyAccountNumberRegExp = new RegExp('^[0-9A-Za-z]{4,19}$');
+export const updateAdminBankBodyAccountNameMin = 2;
+export const updateAdminBankBodyAccountNameMax = 50;
+
+
+
+export const UpdateAdminBankBody = zod.object({
+  "bin": zod.string().regex(updateAdminBankBodyBinRegExp),
+  "accountNumber": zod.string().regex(updateAdminBankBodyAccountNumberRegExp),
+  "accountName": zod.string().min(updateAdminBankBodyAccountNameMin).max(updateAdminBankBodyAccountNameMax)
+})
+
+export const UpdateAdminBankResponse = zod.object({
+  "bank": zod.union([zod.object({
+  "bin": zod.string(),
+  "bankName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string()
+}),zod.null()]),
+  "emailDomains": zod.array(zod.string()),
+  "adminEmail": zod.string()
+})
+
+
+/**
+ * The admin address is always allowed. Existing accounts keep working whatever their provider.
+ * @summary Set the email providers new accounts may use
+ */
+export const updateAdminEmailDomainsBodyDomainsItemMin = 3;
+export const updateAdminEmailDomainsBodyDomainsItemMax = 100;
+
+export const updateAdminEmailDomainsBodyDomainsMax = 300;
+
+
+
+export const UpdateAdminEmailDomainsBody = zod.object({
+  "domains": zod.array(zod.string().min(updateAdminEmailDomainsBodyDomainsItemMin).max(updateAdminEmailDomainsBodyDomainsItemMax)).min(1).max(updateAdminEmailDomainsBodyDomainsMax)
+})
+
+export const UpdateAdminEmailDomainsResponse = zod.object({
+  "bank": zod.union([zod.object({
+  "bin": zod.string(),
+  "bankName": zod.string(),
+  "accountNumber": zod.string(),
+  "accountName": zod.string()
+}),zod.null()]),
+  "emailDomains": zod.array(zod.string()),
+  "adminEmail": zod.string()
+})
+
+
+/**
+ * @summary Vietnamese banks that take VietQR transfers
+ */
+export const ListBanksResponseItem = zod.object({
+  "bin": zod.string(),
+  "code": zod.string(),
+  "shortName": zod.string(),
+  "name": zod.string()
+})
+export const ListBanksResponse = zod.array(ListBanksResponseItem)
+
+
+/**
+ * Admin only. The request carries the file details, never the file; the browser then uploads the file straight to App Storage with PUT to uploadURL. Zips stay private: buyers get them only through the download of a paid order.
+ * @summary Get a link to upload one sample image or source code zip
  */
 export const requestUploadUrlBodyNameMax = 200;
 
-export const requestUploadUrlBodySizeMax = 15728640;
+export const requestUploadUrlBodySizeMax = 209715200;
 
 
 
 export const RequestUploadUrlBody = zod.object({
   "name": zod.string().min(1).max(requestUploadUrlBodyNameMax).describe('Original file name'),
-  "size": zod.number().int().min(1).max(requestUploadUrlBodySizeMax).describe('File size in bytes (at most 15 MB)'),
-  "contentType": zod.enum(['image/webp', 'image/jpeg', 'image/png'])
+  "size": zod.number().int().min(1).max(requestUploadUrlBodySizeMax).describe('File size in bytes (images at most 15 MB, zips at most 200 MB)'),
+  "contentType": zod.enum(['image/webp', 'image/jpeg', 'image/png', 'application/zip'])
 })
 
 export const requestUploadUrlResponseMetadataNameMax = 200;
 
-export const requestUploadUrlResponseMetadataSizeMax = 15728640;
+export const requestUploadUrlResponseMetadataSizeMax = 209715200;
 
 
 
@@ -763,8 +1310,8 @@ export const RequestUploadUrlResponse = zod.object({
   "objectPath": zod.string().describe('Object path to send back when saving the sample (e.g. /objects/uploads/uuid)'),
   "metadata": zod.object({
   "name": zod.string().min(1).max(requestUploadUrlResponseMetadataNameMax).describe('Original file name'),
-  "size": zod.number().int().min(1).max(requestUploadUrlResponseMetadataSizeMax).describe('File size in bytes (at most 15 MB)'),
-  "contentType": zod.enum(['image/webp', 'image/jpeg', 'image/png'])
+  "size": zod.number().int().min(1).max(requestUploadUrlResponseMetadataSizeMax).describe('File size in bytes (images at most 15 MB, zips at most 200 MB)'),
+  "contentType": zod.enum(['image/webp', 'image/jpeg', 'image/png', 'application/zip'])
 }).optional()
 })
 
@@ -781,7 +1328,7 @@ export const GetPublicObjectResponse = zod.unknown()
 
 
 /**
- * Only images that belong to a saved sample are served (saving marks them public).
+ * Only images that belong to a saved sample are served (saving marks them public). Source code zips are never served here.
  * @summary Serve an uploaded sample image
  */
 export const GetStorageObjectParams = zod.object({

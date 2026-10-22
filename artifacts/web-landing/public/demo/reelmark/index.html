@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#F5F8EF">
+    <meta name="description" content="Grow your brand with short, snappy product clips by our handpicked video makers. Our crew is ready to lift your next launch higher.">
+    <title>Reelmark — Captivate Crowds with Snackable Reels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&amp;family=Inter:wght@400;500&amp;family=Inter+Tight:wght@700&amp;display=swap" rel="stylesheet">
+    <style>
+      /* THEME: the original 1440 × 1080 mint studio frame. */
+      :root {
+        color-scheme: light;
+        --paper: #F5F8EF;
+        --forest: #08482D;
+        --mint: #DAE7C7;
+        --ink: #101410;
+        --muted: #5E5E61;
+        --white: #FFFFFF;
+        --font-ui: "Inter", sans-serif;
+        --font-display: "Inter Tight", sans-serif;
+        --font-note: "Caveat", cursive;
+        --u: min(calc(100vw / 1440), calc(100vh / 1080));
+      }
+
+      * { box-sizing: border-box; }
+      html { background: var(--paper); }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        overflow-x: hidden;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-ui);
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+      a[href] { cursor: pointer; }
+      a[aria-disabled="true"] { cursor: default; }
+      a:focus-visible, .carousel:focus-visible {
+        outline: 2px solid var(--forest);
+        outline-offset: 5px;
+      }
+      svg { display: block; }
+
+      .frame {
+        position: relative;
+        isolation: isolate;
+        width: calc(1440 * var(--u));
+        height: calc(1080 * var(--u));
+        overflow: hidden;
+      }
+      .topbar {
+        position: absolute;
+        z-index: 5;
+        inset: 0 0 auto;
+        height: calc(90 * var(--u));
+      }
+      .logo {
+        position: absolute;
+        left: calc(37 * var(--u));
+        top: calc(36 * var(--u));
+        display: inline-flex;
+        align-items: center;
+        gap: calc(7 * var(--u));
+        color: var(--forest);
+        font-family: var(--font-display);
+        font-size: calc(26 * var(--u));
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.045em;
+      }
+      .logo svg { width: calc(29 * var(--u)); height: calc(27 * var(--u)); }
+      .nav {
+        position: absolute;
+        left: calc(505 * var(--u));
+        top: calc(38 * var(--u));
+        display: flex;
+        align-items: center;
+        gap: calc(31 * var(--u));
+        white-space: nowrap;
+        font-size: calc(16.4 * var(--u));
+        font-weight: 400;
+        line-height: calc(22 * var(--u));
+      }
+      .nav a[href]:hover { text-decoration: underline; text-underline-offset: 5px; }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 999px;
+        font-size: calc(16 * var(--u));
+        font-weight: 500;
+        line-height: 1;
+        white-space: nowrap;
+        transition: transform 160ms ease, opacity 160ms ease;
+      }
+      .pill[href]:hover { opacity: 0.85; }
+      .pill[href]:active { transform: scale(0.97); }
+      .login {
+        position: absolute;
+        left: calc(1211 * var(--u));
+        top: calc(29 * var(--u));
+        width: calc(92 * var(--u));
+        height: calc(40 * var(--u));
+        background: var(--white);
+      }
+      .signup {
+        position: absolute;
+        left: calc(1304 * var(--u));
+        top: calc(29 * var(--u));
+        width: calc(97 * var(--u));
+        height: calc(40 * var(--u));
+        background: var(--forest);
+        color: var(--paper);
+      }
+      .badge {
+        position: absolute;
+        z-index: 2;
+        left: calc(575 * var(--u));
+        top: calc(115 * var(--u));
+        width: calc(292 * var(--u));
+        height: calc(37 * var(--u));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        border-radius: 999px;
+        background: var(--mint);
+        color: var(--forest);
+        font-size: calc(16.6 * var(--u));
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .headline {
+        position: absolute;
+        z-index: 2;
+        left: 0;
+        top: calc(176 * var(--u));
+        width: 100%;
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: calc(88 * var(--u));
+        font-weight: 700;
+        line-height: calc(92 * var(--u));
+        letter-spacing: -0.035em;
+        text-align: center;
+      }
+      .headline-line { position: relative; display: block; white-space: nowrap; }
+      .headline-line + .headline-line { letter-spacing: -0.022em; }
+      .line-sharp { display: block; }
+      .line-blur {
+        position: absolute;
+        inset: 0;
+        display: block;
+        opacity: 0;
+        filter: blur(calc(7 * var(--u)));
+        pointer-events: none;
+      }
+      .subline {
+        position: absolute;
+        z-index: 2;
+        left: 0;
+        top: calc(394 * var(--u));
+        width: 100%;
+        margin: 0;
+        color: var(--muted);
+        font-size: calc(20.8 * var(--u));
+        font-weight: 400;
+        line-height: calc(32 * var(--u));
+        text-align: center;
+      }
+      .subline span { display: block; }
+      .note {
+        position: absolute;
+        z-index: 4;
+        margin: 0;
+        color: var(--forest);
+        font-family: var(--font-note);
+        font-weight: 600;
+        pointer-events: none;
+      }
+      .seen-note {
+        left: calc(1212 * var(--u));
+        top: calc(310 * var(--u));
+        width: calc(166 * var(--u));
+        font-size: calc(37 * var(--u));
+        line-height: calc(36 * var(--u));
+        transform: rotate(16deg);
+      }
+      .doodle {
+        position: absolute;
+        z-index: 4;
+        overflow: visible;
+        color: var(--forest);
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+      }
+      .slashes {
+        left: calc(263 * var(--u));
+        top: calc(377 * var(--u));
+        width: calc(35 * var(--u));
+        height: calc(38 * var(--u));
+      }
+      .seen-arrow {
+        left: calc(1192 * var(--u));
+        top: calc(408 * var(--u));
+        width: calc(190 * var(--u));
+        height: calc(188 * var(--u));
+      }
+
+      /* The geometry and the rounded path are updated by renderCards(). */
+      .carousel {
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        top: calc(480 * var(--u));
+        width: 100%;
+        height: calc(405 * var(--u));
+        cursor: grab;
+        touch-action: pan-y;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .carousel.is-dragging { cursor: grabbing; }
+      .carousel:focus-visible { outline-offset: -5px; border-radius: 15px; }
+      .carousel-enter { position: absolute; inset: 0; pointer-events: none; }
+      .video-card {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        background: var(--mint);
+        border-radius: calc(15 * var(--u));
+        will-change: transform;
+        pointer-events: none;
+        contain: layout style;
+      }
+      .sheet {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: var(--sheet-width);
+        height: var(--sheet-height);
+        max-width: none;
+        object-fit: fill;
+        transform: translate3d(var(--sheet-x), var(--sheet-y), 0);
+        pointer-events: none;
+      }
+      video.sheet { opacity: 0; transition: opacity 340ms ease; }
+      video.sheet.is-ready { opacity: 1; }
+      .card-play {
+        position: absolute;
+        left: var(--play-left);
+        top: var(--play-top);
+        display: grid;
+        place-items: center;
+        width: var(--play-size);
+        height: var(--play-size);
+        border: 1px solid rgb(245 248 239 / 48%);
+        border-radius: 50%;
+        background: rgb(245 248 239 / 25%);
+        color: var(--paper);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+      }
+      .card-play svg { width: 34%; height: 38%; margin-left: 7%; }
+
+      .cta {
+        position: absolute;
+        z-index: 4;
+        left: calc(626 * var(--u));
+        top: calc(901 * var(--u));
+        width: calc(190 * var(--u));
+        height: calc(74 * var(--u));
+      }
+      .cta-ring {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        border: calc(1.5 * var(--u)) dashed var(--forest);
+        border-radius: 999px;
+      }
+      .make-reel {
+        width: calc(172 * var(--u));
+        height: calc(58 * var(--u));
+        background: var(--forest);
+        color: var(--paper);
+        font-size: calc(18 * var(--u));
+      }
+      .zero-note {
+        left: calc(-105 * var(--u));
+        top: calc(36 * var(--u));
+        width: calc(112 * var(--u));
+        font-size: calc(32 * var(--u));
+        line-height: calc(38 * var(--u));
+        white-space: nowrap;
+        transform: rotate(24deg);
+      }
+      .zero-arrow {
+        left: calc(-27 * var(--u));
+        top: calc(59 * var(--u));
+        width: calc(42 * var(--u));
+        height: calc(42 * var(--u));
+      }
+
+      @media (max-width: 820px) {
+        :root { --u: calc(100vw / 640); }
+        body { display: block; }
+        .frame {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+          height: auto;
+          min-height: 100dvh;
+          padding-bottom: max(64px, env(safe-area-inset-bottom));
+        }
+        .topbar {
+          position: relative;
+          flex: 0 0 84px;
+          width: 100%;
+          height: 84px;
+        }
+        .logo { left: 24px; top: 31px; gap: 6px; font-size: 25px; }
+        .logo svg { width: 27px; height: 26px; }
+        .nav, .login { display: none; }
+        .signup { top: 24px; right: 24px; left: auto; width: 94px; height: 40px; font-size: 15px; }
+        .badge {
+          position: relative;
+          top: auto;
+          left: auto;
+          flex-shrink: 0;
+          width: 272px;
+          height: 35px;
+          margin-top: clamp(14px, 3.2vh, 30px);
+          font-size: 15.5px;
+        }
+        .headline {
+          position: relative;
+          top: auto;
+          left: auto;
+          width: calc(100% - 24px);
+          margin-top: 24px;
+          font-size: clamp(38px, 6.8vw, 56px);
+          line-height: 1.075;
+        }
+        .line-blur { filter: blur(5px); }
+        .subline {
+          position: relative;
+          top: auto;
+          left: auto;
+          width: calc(100% - 34px);
+          margin-top: 21px;
+          font-size: clamp(13px, 3.58vw, 17px);
+          line-height: 1.57;
+        }
+        .slashes, .seen-note, .seen-arrow { display: none; }
+        .carousel {
+          position: relative;
+          top: auto;
+          left: auto;
+          flex: 0 0 250px;
+          width: 100%;
+          height: 250px;
+          margin-top: clamp(12px, 2.8vh, 25px);
+          overflow: hidden;
+        }
+        .cta {
+          position: relative;
+          top: auto;
+          left: auto;
+          flex-shrink: 0;
+          width: 190px;
+          height: 74px;
+          margin-top: clamp(10px, 2.5vh, 24px);
+        }
+        .cta-ring { border-width: 1.5px; }
+        .make-reel { width: 172px; height: 58px; font-size: 18px; }
+        .zero-note { left: -69px; top: 55px; width: 109px; font-size: 30px; line-height: 36px; }
+        .zero-arrow { left: 9px; top: 72px; width: 37px; height: 37px; }
+      }
+      @media (max-width: 359px) {
+        .logo { left: 18px; font-size: 23px; }
+        .signup { right: 18px; width: 84px; }
+        .headline { width: calc(100% - 12px); letter-spacing: -0.055em; }
+        .headline-line + .headline-line { letter-spacing: -0.055em; }
+        .subline { width: calc(100% - 24px); font-size: 12px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pill, video.sheet { transition: none; }
+        .line-blur { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="frame">
+      <!-- COPY: edit the visible text here. Link destinations live in LINKS below. -->
+      <header class="topbar">
+        <a class="logo" href="./index.html" aria-label="Reelmark home">
+          <svg viewBox="0 0 30 28" aria-hidden="true">
+            <path fill="currentColor" d="M27.6 1.8C17.4 1.5 5.9 4.6 3.9 13.6c-1.6 7 3.9 12.6 10.5 10.1C24.9 19.8 25.8 10.4 27.6 1.8Z"/>
+            <path fill="none" stroke="#F5F8EF" stroke-width="1.8" stroke-linecap="round" d="M6.2 23.8C9.1 16.8 13.7 11.2 21.7 6.4"/>
+            <path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M6.3 23.4 4.8 26"/>
+          </svg>
+          <span>Reelmark</span>
+        </a>
+        <nav class="nav" aria-label="Main navigation">
+          <a data-link="brands" aria-disabled="true">Brands</a>
+          <a data-link="creators" aria-disabled="true">Creators</a>
+          <a data-link="pricing" aria-disabled="true">Pricing</a>
+          <a data-link="useCases" aria-disabled="true">Use Cases</a>
+          <a data-link="contact" aria-disabled="true">Contact</a>
+        </nav>
+        <a class="pill login" data-link="login" aria-disabled="true">Log in</a>
+        <a class="pill signup" data-link="signup" aria-disabled="true">Sign up</a>
+      </header>
+
+      <p class="badge">Trusted by 120,000+ indie makers</p>
+      <h1 class="headline">
+        <span class="headline-line">Captivate Crowds</span>
+        <span class="headline-line">with Snackable Reels</span>
+      </h1>
+      <p class="subline">
+        <span>Grow your brand with short, snappy product clips by</span>
+        <span>our handpicked video makers. Our crew is ready to</span>
+        <span>lift your next launch higher.</span>
+      </p>
+
+      <svg class="doodle slashes" viewBox="0 0 35 38" aria-hidden="true">
+        <path data-draw d="M12 4C10 13 6 23 3 31"/>
+        <path data-draw d="M31 8C27 17 24 26 20 35"/>
+      </svg>
+      <p class="note seen-note">Be seen<br>with clips</p>
+      <!-- Starts below the note, including its rotated lower edge. -->
+      <svg class="doodle seen-arrow" viewBox="0 0 190 188" aria-hidden="true">
+        <path data-draw d="M101 8C152 36 170 87 140 108C118 124 95 97 108 80C126 55 159 98 135 132C118 156 84 170 48 166"/>
+        <path data-draw d="M59 155 47 166 60 176"/>
+      </svg>
+
+      <div class="carousel" role="region" aria-roledescription="carousel"
+        aria-label="Product clips. Drag or use the left and right arrow keys to browse. Press Space to pause or resume."
+        tabindex="0">
+        <div class="carousel-enter"></div>
+      </div>
+
+      <div class="cta">
+        <div class="cta-ring">
+          <a class="pill make-reel" data-link="makeReel" aria-disabled="true">Make a Reel</a>
+        </div>
+        <p class="note zero-note">Zero cost</p>
+        <svg class="doodle zero-arrow" viewBox="0 0 42 42" aria-hidden="true">
+          <path data-draw d="M3 31C20 38 35 25 31 5"/>
+          <path data-draw d="M23 13 31 4 38 13"/>
+        </svg>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        "use strict";
+
+        /*
+         * LINKS: put your real destinations here (relative URLs work too).
+         * The brief supplies no routes, forms, or account service. Empty links
+         * are deliberately disabled rather than opening invented screens.
+         */
+        const LINKS = {
+          brands: "",
+          creators: "",
+          pricing: "",
+          useCases: "",
+          contact: "",
+          login: "",
+          signup: "",
+          makeReel: ""
+        };
+
+        /* MEDIA: replace these two URLs together with another 5 × 2 grid. */
+        const MEDIA = {
+          poster: "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/b7ebb74a-8c8a-4f7e-8f80-55e2d74ecd05.webp",
+          video: "https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/04fd3d5f-99d7-476e-98a4-46c08518ffb3.mp4"
+        };
+        const TILES = [
+          "Sneaker", "Skincare splash", "Latte pour", "Headphones", "Plant shop",
+          "Florist bouquet", "Pottery wheel", "Serum splash", "Latte top-down",
+          "Headphones on a stand"
+        ];
+
+        /* CAROUSEL: all measurements below are original frame units. */
+        const PITCH = 196;
+        const TRACK_LENGTH = PITCH * TILES.length;
+        const AUTO_SPEED = 50;
+        const CURVE_RADIUS = 706;
+        const TILE_ASPECT = 0.7111;
+        const FRICTION = -Math.log(0.05); // Lose 95% of fling velocity per second.
+        const frame = document.querySelector(".frame");
+        const carousel = document.querySelector(".carousel");
+        const row = document.querySelector(".carousel-enter");
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const phone = window.matchMedia("(max-width: 820px)");
+        const entranceAnimations = [];
+        const strokeCleanups = [];
+        const cards = [];
+        const videos = [];
+        let layout = { unit: 1, width: 1440, height: 405, mobile: false };
+        let offset = 0;
+        let velocity = 0;
+        let drag = null;
+        let paused = false;
+        let disposed = false;
+        let animationFrame = 0;
+        let mediaURL = "";
+        let objectURL = "";
+        let sharedStream = null;
+        let sourceVideo = null;
+        let mediaController = null;
+        let mediaGeneration = 0;
+        let lastSync = 0;
+        const lastMediaSeek = new WeakMap();
+
+        document.querySelectorAll("[data-link]").forEach((link) => {
+          const destination = LINKS[link.dataset.link];
+          if (destination) {
+            link.href = destination;
+            link.removeAttribute("aria-disabled");
+          }
+        });
+
+        TILES.forEach((name, index) => {
+          const card = document.createElement("div");
+          card.className = "video-card";
+          card.dataset.tile = String(index);
+          card.setAttribute("aria-hidden", "true");
+          const poster = document.createElement("img");
+          poster.className = "sheet poster";
+          poster.src = MEDIA.poster;
+          poster.alt = "";
+          poster.decoding = "async";
+          poster.draggable = false;
+          poster.addEventListener("error", () => { poster.style.visibility = "hidden"; }, { once: true });
+          const video = document.createElement("video");
+          video.className = "sheet";
+          video.muted = true;
+          video.defaultMuted = true;
+          video.playsInline = true;
+          video.loop = true;
+          video.preload = "none";
+          video.disablePictureInPicture = true;
+          video.setAttribute("muted", "");
+          video.setAttribute("playsinline", "");
+          video.setAttribute("aria-label", name);
+          video.addEventListener("error", () => { video.classList.remove("is-ready"); });
+          const play = document.createElement("span");
+          play.className = "card-play";
+          play.innerHTML = '<svg viewBox="0 0 10 12" aria-hidden="true"><path fill="currentColor" d="M1 0.8C.6.5 0 .8 0 1.3v9.4c0 .5.6.8 1 .5L9 6.5a.6.6 0 0 0 0-1Z"/></svg>';
+          card.append(poster, video, play);
+          row.append(card);
+          cards.push(card);
+          videos.push(video);
+        });
+
+        const mod = (value, divisor) => ((value % divisor) + divisor) % divisor;
+        const px = (value) => `${value.toFixed(3)}px`;
+
+        function measure() {
+          const bounds = carousel.getBoundingClientRect();
+          layout = {
+            unit: bounds.width / (phone.matches ? 640 : 1440),
+            width: bounds.width,
+            height: carousel.clientHeight,
+            mobile: phone.matches
+          };
+          renderCards();
+        }
+
+        /* Round each corner of a sloping quad, not its rectangular bounding box. */
+        function roundedQuad(points, radius) {
+          const joins = points.map((point, index) => {
+            const previous = points[(index + 3) % 4];
+            const next = points[(index + 1) % 4];
+            const before = Math.hypot(previous[0] - point[0], previous[1] - point[1]);
+            const after = Math.hypot(next[0] - point[0], next[1] - point[1]);
+            const r = Math.min(radius, before / 2, after / 2);
+            return {
+              point,
+              start: [point[0] + (previous[0] - point[0]) * r / before, point[1] + (previous[1] - point[1]) * r / before],
+              end: [point[0] + (next[0] - point[0]) * r / after, point[1] + (next[1] - point[1]) * r / after]
+            };
+          });
+          const pair = (point) => `${point[0].toFixed(3)} ${point[1].toFixed(3)}`;
+          return `M${pair(joins[0].start)} ${joins.map((join, index) =>
+            `${index ? `L${pair(join.start)} ` : ""}Q${pair(join.point)} ${pair(join.end)}`
+          ).join(" ")} Z`;
+        }
+
+        function renderCards() {
+          const { unit, width, height: bandHeight, mobile } = layout;
+          cards.forEach((card, index) => {
+            const t = mod(index * PITCH - 588 - offset + TRACK_LENGTH / 2, TRACK_LENGTH) - TRACK_LENGTH / 2;
+            const pushed = t * (1 + 0.083 * (t / CURVE_RADIUS) ** 2);
+            const x = 720 + pushed;
+            const d = Math.abs(x - 720) / CURVE_RADIUS;
+            const cardWidth = 170 + 48 * d ** 2;
+            const leftHeight = 280 + 92 * (Math.abs(x - cardWidth / 2 - 720) / CURVE_RADIUS) ** 2.6;
+            const rightHeight = 280 + 92 * (Math.abs(x + cardWidth / 2 - 720) / CURVE_RADIUS) ** 2.6;
+            const cardHeight = Math.max(leftHeight, rightHeight);
+            const centerY = 687 - 12 * d ** 2;
+            const w = cardWidth * unit;
+            const h = cardHeight * unit;
+            const leftTop = (cardHeight - leftHeight) * unit / 2;
+            const rightTop = (cardHeight - rightHeight) * unit / 2;
+            const screenX = width / 2 + pushed * unit - w / 2;
+            const screenY = mobile
+              ? bandHeight / 2 + (centerY - 687) * unit - h / 2
+              : (centerY - 480) * unit - h / 2;
+            const path = roundedQuad([[0, leftTop], [w, rightTop], [w, h - rightTop], [0, h - leftTop]], 15 * unit);
+            card.style.width = px(w);
+            card.style.height = px(h);
+            card.style.transform = `translate3d(${px(screenX)}, ${px(screenY)}, 0)`;
+            card.style.clipPath = `path("${path}")`;
+
+            const tileHeight = Math.max(h, w / TILE_ASPECT);
+            const tileWidth = tileHeight * TILE_ASPECT;
+            const column = index % 5;
+            const gridRow = Math.floor(index / 5);
+            card.style.setProperty("--sheet-width", px(5 * tileWidth));
+            card.style.setProperty("--sheet-height", px(2 * tileHeight));
+            card.style.setProperty("--sheet-x", px((w - tileWidth) / 2 - column * tileWidth));
+            card.style.setProperty("--sheet-y", px((h - tileHeight) / 2 - gridRow * tileHeight));
+            card.style.setProperty("--play-left", px(12 * unit));
+            card.style.setProperty("--play-top", px((cardHeight + leftHeight) * unit / 2 - 44 * unit));
+            card.style.setProperty("--play-size", px(30 * unit));
+          });
+        }
+
+        /*
+         * One long-running Web Animations clock drives displacement. No frame
+         * counting: 60 Hz and 120 Hz displays cover the same distance per second.
+         * Empty keyframes keep the clock visually inert.
+         */
+        const clock = document.documentElement.animate([{}, {}], {
+          duration: 1e9,
+          iterations: Infinity
+        });
+        let lastTime = Number(clock.currentTime) || 0;
+
+        function tick() {
+          if (disposed) return;
+          const now = Number(clock.currentTime) || 0;
+          const dt = Math.max(0, (now - lastTime) / 1000);
+          lastTime = now;
+          if (!drag && !paused && !document.hidden) {
+            // Reduced-motion visitors get the still grid and direct dragging.
+            if (!reducedMotion.matches) offset += AUTO_SPEED * dt;
+            if (Math.abs(velocity) > 0.5 && !reducedMotion.matches) {
+              const decay = Math.exp(-FRICTION * dt);
+              offset += velocity * (1 - decay) / FRICTION;
+              velocity *= decay;
+            } else {
+              velocity = 0;
+            }
+            offset = mod(offset, TRACK_LENGTH);
+          }
+          renderCards();
+          if (now - lastSync > 250) {
+            synchronizeVideos();
+            lastSync = now;
+          }
+          animationFrame = requestAnimationFrame(tick);
+        }
+
+        function synchronizeVideos() {
+          // Captured cards already receive the very same decoded frames.
+          if (sharedStream || reducedMotion.matches || paused || document.hidden) return;
+          const leader = videos.find((video) => video.readyState >= 2 && !video.paused && !video.seeking);
+          if (!leader) return;
+          const time = leader.currentTime;
+          videos.forEach((video) => {
+            if (video === leader || video.readyState < 2 || video.seeking) return;
+            let difference = video.currentTime - time;
+            if (Number.isFinite(leader.duration)) {
+              if (difference > leader.duration / 2) difference -= leader.duration;
+              if (difference < -leader.duration / 2) difference += leader.duration;
+            }
+            // Native-video fallback: gently correct small timing differences.
+            // Constant seeking would repeatedly decode long GOPs and stutter.
+            if (Math.abs(difference) > 1 && performance.now() - (lastMediaSeek.get(video) || 0) > 3000) {
+              video.currentTime = time;
+              video.playbackRate = 1;
+              lastMediaSeek.set(video, performance.now());
+            } else {
+              video.playbackRate = Math.abs(difference) < 0.016
+                ? 1 : Math.max(0.85, Math.min(1.15, 1 - difference));
+            }
+          });
+        }
+
+        function revealVideo(video) {
+          if (reducedMotion.matches || video.paused) return;
+          if ("requestVideoFrameCallback" in video) {
+            video.requestVideoFrameCallback(() => {
+              if (!reducedMotion.matches && !video.paused) video.classList.add("is-ready");
+            });
+          } else {
+            video.classList.add("is-ready");
+          }
+        }
+
+        function playVideos() {
+          if (reducedMotion.matches || paused || document.hidden || !mediaURL) return;
+          const leader = videos.find((video) => video.readyState >= 2);
+          const time = leader ? leader.currentTime : 0;
+          const starts = [];
+          if (sourceVideo) starts.push(sourceVideo.play().catch(() => {}));
+          videos.forEach((video) => {
+            if (!video.src) return;
+            if (!sharedStream && video.readyState >= 2 && Math.abs(video.currentTime - time) > 1) video.currentTime = time;
+            const promise = video.play();
+            if (promise) starts.push(promise.then(() => revealVideo(video)).catch(() => {
+              // Autoplay restrictions or an unavailable clip leave the poster.
+            }));
+          });
+          Promise.all(starts).then(synchronizeVideos);
+        }
+
+        function pauseVideos() {
+          videos.forEach((video) => video.pause());
+          if (sourceVideo) sourceVideo.pause();
+        }
+
+        async function loadMedia() {
+          if (reducedMotion.matches || disposed) return;
+          const generation = ++mediaGeneration;
+          mediaController = new AbortController();
+          let source = MEDIA.video;
+          try {
+            /*
+             * Fetch the shared MP4 once, then give all ten videos the same blob.
+             * CORS-less replacement hosts fall back to normal video URL caching.
+             * No cookies or origin-dependent storage is used.
+             */
+            const response = await fetch(MEDIA.video, {
+              mode: "cors",
+              credentials: "omit",
+              cache: "force-cache",
+              signal: mediaController.signal
+            });
+            if (!response.ok) throw new Error("Video unavailable");
+            const blob = await response.blob();
+            if (generation !== mediaGeneration || reducedMotion.matches || disposed) return;
+            objectURL = URL.createObjectURL(blob);
+            source = objectURL;
+          } catch (error) {
+            if (error.name === "AbortError") return;
+          }
+          if (generation !== mediaGeneration || reducedMotion.matches || disposed) return;
+          mediaURL = source;
+          const loadVideo = (video) => new Promise((resolve) => {
+            const finish = () => {
+              video.removeEventListener("loadeddata", finish);
+              video.removeEventListener("error", finish);
+              resolve();
+            };
+            video.addEventListener("loadeddata", finish, { once: true });
+            video.addEventListener("error", finish, { once: true });
+            video.preload = "auto";
+            video.src = source;
+            video.load();
+          });
+          /*
+           * Frame-lock all ten cards where captureStream is available. Every
+           * card has the same src and its own <video>, but one private decoder
+           * feeds the exact same moving grid and timestamp to every crop.
+           * This also avoids ten simultaneous HD decoders on smaller devices.
+           * Browsers without captureStream use the native-video sync above.
+           */
+          const capture = videos[0].captureStream || videos[0].mozCaptureStream;
+          if (capture) {
+            sourceVideo = document.createElement("video");
+            sourceVideo.muted = true;
+            sourceVideo.defaultMuted = true;
+            sourceVideo.playsInline = true;
+            sourceVideo.loop = true;
+            await loadVideo(sourceVideo);
+            if (generation !== mediaGeneration || reducedMotion.matches || disposed) return;
+            try {
+              const stream = capture.call(sourceVideo);
+              if (stream.getVideoTracks().length) {
+                sharedStream = stream;
+                videos.forEach((video) => {
+                  video.srcObject = stream;
+                  video.src = source;
+                });
+              } else {
+                stream.getTracks().forEach((track) => track.stop());
+              }
+            } catch (_) {
+              // A replacement media host may not permit stream capture.
+            }
+          }
+          if (!sharedStream) {
+            if (sourceVideo) {
+              sourceVideo.pause();
+              sourceVideo.removeAttribute("src");
+              sourceVideo.load();
+              sourceVideo = null;
+            }
+            await Promise.all(videos.map(loadVideo));
+          }
+          if (generation === mediaGeneration) playVideos();
+        }
+
+        function stopMedia() {
+          ++mediaGeneration;
+          if (mediaController) mediaController.abort();
+          if (sharedStream) sharedStream.getTracks().forEach((track) => track.stop());
+          sharedStream = null;
+          if (sourceVideo) {
+            sourceVideo.pause();
+            sourceVideo.removeAttribute("src");
+            sourceVideo.load();
+            sourceVideo = null;
+          }
+          videos.forEach((video) => {
+            video.pause();
+            video.srcObject = null;
+            video.playbackRate = 1;
+            video.classList.remove("is-ready");
+            video.removeAttribute("src");
+            video.load();
+          });
+          if (objectURL) URL.revokeObjectURL(objectURL);
+          mediaURL = "";
+          objectURL = "";
+        }
+
+        /* Invert the cylinder's outward push to keep the grabbed point 1:1. */
+        function unpush(value) {
+          let t = value;
+          const k = 0.083 / (CURVE_RADIUS * CURVE_RADIUS);
+          for (let step = 0; step < 5; step++) t -= (t + k * t ** 3 - value) / (1 + 3 * k * t ** 2);
+          return t;
+        }
+
+        function pointerPosition(clientX) {
+          const bounds = carousel.getBoundingClientRect();
+          return unpush((clientX - bounds.left - bounds.width / 2) / layout.unit);
+        }
+
+        carousel.addEventListener("pointerdown", (event) => {
+          if (!event.isPrimary || (event.pointerType === "mouse" && event.button !== 0)) return;
+          velocity = 0;
+          drag = {
+            id: event.pointerId,
+            last: pointerPosition(event.clientX),
+            samples: [{ time: event.timeStamp, position: offset }]
+          };
+          carousel.classList.add("is-dragging");
+          carousel.setPointerCapture(event.pointerId);
+          playVideos(); // Also permits recovery from a browser's autoplay block.
+        });
+
+        carousel.addEventListener("pointermove", (event) => {
+          if (!drag || event.pointerId !== drag.id) return;
+          const position = pointerPosition(event.clientX);
+          offset -= position - drag.last;
+          drag.last = position;
+          drag.samples.push({ time: event.timeStamp, position: offset });
+          drag.samples = drag.samples.filter((sample) => event.timeStamp - sample.time <= 100);
+          renderCards();
+        });
+
+        function endDrag(event) {
+          if (!drag || event.pointerId !== drag.id) return;
+          const samples = drag.samples;
+          const first = samples[0];
+          const last = samples[samples.length - 1];
+          if (event.type !== "pointercancel" && last.time - first.time > 0 && event.timeStamp - last.time < 100) {
+            velocity = Math.max(-2200, Math.min(2200, (last.position - first.position) * 1000 / (last.time - first.time)));
+          } else {
+            velocity = 0;
+          }
+          drag = null;
+          carousel.classList.remove("is-dragging");
+          if (carousel.hasPointerCapture(event.pointerId)) carousel.releasePointerCapture(event.pointerId);
+        }
+        carousel.addEventListener("pointerup", endDrag);
+        carousel.addEventListener("pointercancel", endDrag);
+        carousel.addEventListener("lostpointercapture", () => {
+          drag = null;
+          carousel.classList.remove("is-dragging");
+        });
+        carousel.addEventListener("dragstart", (event) => event.preventDefault());
+        carousel.addEventListener("keydown", (event) => {
+          if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            event.preventDefault();
+            velocity = 0;
+            offset += event.key === "ArrowRight" ? PITCH : -PITCH;
+            renderCards();
+          } else if (event.code === "Space") {
+            event.preventDefault();
+            paused = !paused;
+            if (paused) pauseVideos();
+            else playVideos();
+          }
+        });
+
+        function animate(element, keyframes, options) {
+          const animation = element.animate(keyframes, { fill: "both", ...options });
+          entranceAnimations.push(animation);
+          return animation;
+        }
+
+        /*
+         * Draw a stroke by revealing tiny, overlapping path segments.
+         * Only their opacity animates; no continuously repainted dash-offset.
+         */
+        function drawStroke(path, delay, duration) {
+          const namespace = "http://www.w3.org/2000/svg";
+          const length = path.getTotalLength();
+          const count = Math.max(2, Math.ceil(length / 4));
+          const group = document.createElementNS(namespace, "g");
+          path.before(group);
+          path.style.opacity = "0";
+          const cleanup = () => { path.style.removeProperty("opacity"); group.remove(); };
+          strokeCleanups.push(cleanup);
+          let lastAnimation;
+          for (let index = 0; index < count; index++) {
+            const start = path.getPointAtLength(index * length / count);
+            const middle = path.getPointAtLength((index + 0.5) * length / count);
+            const end = path.getPointAtLength(Math.min(length, (index + 1.04) * length / count));
+            const segment = document.createElementNS(namespace, "path");
+            segment.setAttribute("d", `M${start.x} ${start.y}L${middle.x} ${middle.y}L${end.x} ${end.y}`);
+            group.append(segment);
+            lastAnimation = animate(segment, [{ opacity: 0 }, { opacity: 1 }], {
+              duration: 30,
+              delay: delay + index * duration / count,
+              easing: "linear"
+            });
+          }
+          lastAnimation.finished.then(cleanup).catch(cleanup);
+        }
+
+        function playEntrance() {
+          if (reducedMotion.matches) return;
+          const unit = layout.unit;
+          const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
+          animate(document.querySelector(".topbar"), [
+            { opacity: 0, transform: "translateY(-18px)" },
+            { opacity: 1, transform: "translateY(0)" }
+          ], { duration: 700, delay: 40, easing: ease });
+          animate(document.querySelector(".badge"), [
+            { opacity: 0, transform: "translateY(8px) scale(0.86)" },
+            { opacity: 1, transform: "translateY(0) scale(1)" }
+          ], { duration: 650, delay: 200, easing: ease });
+          document.querySelectorAll(".headline-line").forEach((line, index) => {
+            const sharp = document.createElement("span");
+            sharp.className = "line-sharp";
+            sharp.textContent = line.textContent;
+            const blur = sharp.cloneNode(true);
+            blur.className = "line-blur";
+            blur.setAttribute("aria-hidden", "true");
+            line.replaceChildren(sharp, blur);
+            const delay = 330 + index * 110;
+            animate(line, [
+              { transform: `translateY(${26 * Math.max(unit, 0.8)}px)` },
+              { transform: "translateY(0)" }
+            ], { duration: 850, delay, easing: ease });
+            animate(sharp, [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay, easing: ease });
+            animate(blur, [{ opacity: 0.65 }, { opacity: 0 }], { duration: 650, delay, easing: "ease-out" });
+          });
+          animate(document.querySelector(".subline"), [
+            { opacity: 0, transform: "translateY(13px)" },
+            { opacity: 1, transform: "translateY(0)" }
+          ], { duration: 750, delay: 640, easing: ease });
+          animate(row, [
+            { opacity: 0, transform: `translateY(${44 * unit}px)` },
+            { opacity: 1, transform: "translateY(0)" }
+          ], { duration: 1050, delay: 780, easing: ease });
+          animate(document.querySelector(".cta-ring"), [
+            { opacity: 0, transform: "scale(0.8)" },
+            { opacity: 1, transform: "scale(1)" }
+          ], { duration: 700, delay: 1050, easing: ease });
+          document.querySelectorAll("[data-draw]").forEach((path, index) => {
+            drawStroke(path, 1150 + index * 70, 650);
+          });
+          document.querySelectorAll(".note").forEach((note, index) => {
+            animate(note, [{ opacity: 0 }, { opacity: 1 }], {
+              duration: 650, delay: 1320 + index * 100, easing: "ease-out"
+            });
+          });
+        }
+
+        const observer = new ResizeObserver(measure);
+        observer.observe(frame);
+        phone.addEventListener("change", measure);
+        window.addEventListener("resize", measure, { passive: true });
+        reducedMotion.addEventListener("change", () => {
+          velocity = 0;
+          if (reducedMotion.matches) {
+            entranceAnimations.forEach((animation) => { try { animation.finish(); } catch (_) { /* Already removed. */ } });
+            strokeCleanups.forEach((cleanup) => cleanup());
+            stopMedia();
+          } else {
+            loadMedia();
+          }
+        });
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            clock.pause();
+            pauseVideos();
+          } else {
+            clock.play();
+            lastTime = Number(clock.currentTime) || 0;
+            playVideos();
+          }
+        });
+        window.addEventListener("pagehide", (event) => {
+          if (event.persisted) return;
+          disposed = true;
+          cancelAnimationFrame(animationFrame);
+          clock.cancel();
+          observer.disconnect();
+          stopMedia();
+        });
+
+        measure();
+        playEntrance();
+        loadMedia();
+        animationFrame = requestAnimationFrame(tick);
+      })();
+    </script>
+  </body>
+</html>

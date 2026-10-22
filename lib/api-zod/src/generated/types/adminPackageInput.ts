@@ -16,13 +16,13 @@ export interface AdminPackageInput {
      */
   priceVnd: number;
   /**
-     * At most 2 decimals
-     * @minimum 1
+     * At most 2 decimals; null to show no dollar figure
+     * @minimum 0.5
      * @maximum 100000
+     * @nullable
      */
-  priceUsd: number;
-  onSale: boolean;
+  priceUsd: number | null;
+  visible: boolean;
   recommended: boolean;
-  /** Buyers pick a source sample before paying */
   pickSample: boolean;
 }

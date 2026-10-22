@@ -18,7 +18,5 @@ Model findings (Replit AI Integrations OpenAI proxy, October 2026):
 - reasoning_effort "minimal" is rejected by gpt-6-luna, gpt-5.6-luna and gpt-5.4-mini; "none" is rejected by gpt-5-nano and gpt-5-mini.
 **How to apply:** before swapping models, check which effort values the new one accepts.
 
-Test recipe (no real admin email, never the real ADMIN_TOKEN):
-- Run a second API process on a spare port with a throwaway ADMIN_TOKEN. Insert a support account and session rows directly; the admin session's credential hash is HMAC(SESSION_SECRET, "admin-token:" + the throwaway token). Afterwards delete the account (its sessions, conversation and messages cascade) and the admin_sessions row.
+Test recipe (no real admin email): the second-API end-to-end recipe in admin-chat.md (test outbox, throwaway ADMIN_EMAIL, CDP request forwarding). A test buyer needs an order before the chat opens. Afterwards delete the test accounts (their sessions, conversation and messages cascade).
 - Failure path: start that process with AI_INTEGRATIONS_OPENAI_BASE_URL blanked. The server still boots; customer messages come back failed and replies are saved as failed.
-- Real UI end to end: drive headless chromium over CDP, enable Fetch for `*/api/*`, forward each paused request from Node to the test port with both test cookies added and the Origin header removed (same-origin check), then fulfill with the real answer. This shows real translations in /admin and in the customer panel without signing in through the UI.

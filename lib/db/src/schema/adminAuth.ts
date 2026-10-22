@@ -1,8 +1,8 @@
 import { index, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { supportAccountsTable } from "./support";
 
-// Admin sign-in is two steps: the admin token, then a one-time code emailed to
-// the admin address. A challenge row holds that code (keyed hash only) and is
-// bound to the browser through an httpOnly cookie carrying the challenge id.
+// No longer used: the admin now signs in with the ADMIN_EMAIL customer account and an
+// emailed code (account_codes). Kept so existing databases are not asked to drop it.
 export const adminLoginChallengesTable = pgTable("admin_login_challenges", {
   idHash: text("id_hash").primaryKey(),
   codeHash: text("code_hash").notNull(),
@@ -15,18 +15,20 @@ export const adminLoginChallengesTable = pgTable("admin_login_challenges", {
 });
 
 // Signed-in admin browsers. The cookie holds the raw token; only its hash is stored.
-// credentialHash is a keyed hash of the ADMIN_TOKEN in force at sign-in, so
-// changing that secret signs every admin browser out.
+// credentialHash is a keyed hash of the admin account, its password hash and ADMIN_EMAIL
+// at sign-in, so a new password or a new ADMIN_EMAIL signs every admin browser out.
+// Rows from the old token sign-in have no accountId and no longer work.
 export const adminSessionsTable = pgTable("admin_sessions", {
   tokenHash: text("token_hash").primaryKey(),
   credentialHash: text("credential_hash").notNull(),
+  accountId: text("account_id").references(() => supportAccountsTable.id, { onDelete: "cascade" }),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
 });
 
-// Sign-in audit trail, also used for the attempt limits.
+// Admin sign-in audit trail.
 export const adminLoginEventsTable = pgTable(
   "admin_login_events",
   {

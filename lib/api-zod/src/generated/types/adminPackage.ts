@@ -9,27 +9,19 @@ import type { AdminPackageText } from './adminPackageText';
 import type { AdminPackageTranslations } from './adminPackageTranslations';
 
 export interface AdminPackage {
-  /** Package group shared by its plans (Whop plan metadata "key") */
   key: string;
   vi: AdminPackageText;
   en: AdminPackageText;
-  /**
-     * Null when the package has no VND plan
-     * @nullable
-     */
-  priceVnd: number | null;
-  /**
-     * Null when the package has no USD plan
-     * @nullable
-     */
+  priceVnd: number;
+  /** @nullable */
   priceUsd: number | null;
-  /** Shown on the site (at least one of its plans is visible on Whop) */
-  onSale: boolean;
+  /** Shown on the price list */
+  visible: boolean;
   recommended: boolean;
-  /** Buyers pick a source sample before paying (Whop plan metadata "pick_sample") */
+  /** Buyers pick a source sample before ordering */
   pickSample: boolean;
-  /** Current Whop members across the package's plans */
-  buyers: number;
+  /** Orders made with this package, cancelled ones left out */
+  orders: number;
   /** built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text. */
   translations: AdminPackageTranslations;
 }

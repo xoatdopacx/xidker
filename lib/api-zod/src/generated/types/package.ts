@@ -5,16 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { PackageBilling } from './packageBilling';
 
 /**
- * A landing page build package, backed by a Whop plan.
+ * A package on the price list. Buyers pay the VND price by bank transfer.
  */
 export interface Package {
-  /** Whop plan id */
+  /** Package key */
   id: string;
-  /** Package group. The same package sold in different currencies shares one key (Whop plan metadata "key"). */
-  key: string;
   name: string;
   /**
      * One-line summary of who the package is for
@@ -23,18 +20,15 @@ export interface Package {
   tagline: string | null;
   /** What the buyer gets, in display order */
   features: string[];
-  /** Price in major currency units (e.g. 5990000 = 5.990.000 VND, 249 = $249) */
+  /** Price in VND, the amount to transfer */
   price: number;
-  /** ISO 4217 currency code, lowercase (e.g. "vnd", "usd") */
-  currency: string;
-  billing: PackageBilling;
   /**
-     * Days between charges for recurring packages, null for one-time
+     * Approximate price in US dollars, shown next to the VND price; null when not set
      * @nullable
      */
-  billingPeriodDays: number | null;
+  priceUsd: number | null;
   /** True for the package the studio recommends most */
   recommended: boolean;
-  /** True when the buyer picks one of the source samples before paying. Set on the package in the admin screen; stays false while no sample is on show, so the package can always be bought. */
+  /** True when the buyer picks one of the source samples before ordering. Stays false while no sample is on show, so the package can always be ordered. */
   pickSample: boolean;
 }

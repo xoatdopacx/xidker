@@ -1,18 +1,18 @@
 import { useEffect, useId, useRef, useState, type RefObject } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { getListSamplesQueryKey, useListSamples, type Package, type Sample, type SampleImage } from "@workspace/api-client-react";
-import { ArrowLeft, ArrowRight, Check, CloudOff, FolderOpen, ImageOff, Images, Maximize2, Minimize2, RefreshCw, TriangleAlert, X, ZoomIn } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CloudOff, ExternalLink, FolderOpen, ImageOff, Images, Maximize2, Minimize2, RefreshCw, TriangleAlert, X, ZoomIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { tpl, useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/motion";
-import { statusOf } from "@/lib/http";
-import type { useStartCheckout } from "@/lib/checkout";
+import { reasonOf } from "@/lib/http";
+import { orderErrorText, type useStartOrder } from "@/lib/order";
 
 type PickerProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   pkg: Package;
-  checkout: ReturnType<typeof useStartCheckout>;
+  checkout: ReturnType<typeof useStartOrder>;
   returnFocusRef: RefObject<HTMLElement | null>;
 };
 
@@ -29,6 +29,18 @@ function Thumbnail({ image, name, index }: { image: SampleImage; name: string; i
     );
   }
   return <img src={image.thumbUrl} alt={alt} width={640} height={800} loading="lazy" decoding="async" className="samples-thumbnail" onError={() => setFailed(true)} />;
+}
+
+/** The sample's live site, in a new tab so the picker stays as it was. */
+function DemoLink({ sample, className = "" }: { sample: Sample; className?: string }) {
+  const { t } = useI18n();
+  if (!sample.demoUrl) return null;
+  return (
+    <a href={sample.demoUrl} target="_blank" rel="noopener" className={`samples-demo ${className}`} aria-label={tpl(t.samples.demoLabel, { name: sample.name })}
+      data-testid={`link-demo-${sample.id}`}>
+      <ExternalLink aria-hidden="true" size={15} strokeWidth={2.5} />{t.samples.demo}
+    </a>
+  );
 }
 
 function BusyBlocks() {
@@ -171,6 +183,7 @@ function ScreenshotViewer({ sample, selected, onChoose, onClose, returnFocusRef 
           )}
           <footer className="samples-footer">
             <p className="samples-choice-summary">{t.samples.previewChoiceHint}</p>
+            <DemoLink sample={sample} />
             <button type="button" className="pbtn samples-confirm" onClick={onChoose} data-testid="button-choose-preview">
               <Check aria-hidden="true" />{selected ? t.samples.keepChoice : t.samples.choose}
             </button>
@@ -200,7 +213,7 @@ export default function SamplePicker({ open, onOpenChange, pkg, checkout, return
   const [viewingId, setViewingId] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   // Shown inside the dialog: a toast would sit under the dialog's backdrop.
-  const [checkoutFailed, setCheckoutFailed] = useState(false);
+  const [checkoutFailed, setCheckoutFailed] = useState<string | null>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const noticeRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -226,15 +239,15 @@ export default function SamplePicker({ open, onOpenChange, pkg, checkout, return
     if (locked) return;
     setSelectedId(id);
     setUnavailable(false);
-    setCheckoutFailed(false);
+    setCheckoutFailed(null);
   };
 
   const confirm = () => {
     if (!canContinue) return;
     const sampleId = selected?.id;
-    setCheckoutFailed(false);
-    checkout.start(sampleId ? { packageId: pkg.id, sampleId } : { packageId: pkg.id }, (err) => {
-      if (sampleId && statusOf(err) === 404) {
+    setCheckoutFailed(null);
+    checkout.start({ packageId: pkg.id, name: pkg.name, ...(sampleId ? { sampleId } : {}) }, (err) => {
+      if (sampleId && reasonOf(err) === "sample_gone") {
         setSelectedId(null);
         setViewingId(null);
         setUnavailable(true);
@@ -243,8 +256,8 @@ export default function SamplePicker({ open, onOpenChange, pkg, checkout, return
         else toast({ variant: "destructive", title: t.samples.unavailableTitle, description: t.samples.unavailableBody });
         return;
       }
-      if (openRef.current) setCheckoutFailed(true);
-      else toast({ variant: "destructive", title: t.pricing.toastTitle, description: t.pricing.toastBody });
+      if (openRef.current) setCheckoutFailed(orderErrorText(err, t));
+      else toast({ variant: "destructive", title: t.pricing.toastTitle, description: orderErrorText(err, t) });
     });
   };
 
@@ -264,7 +277,7 @@ export default function SamplePicker({ open, onOpenChange, pkg, checkout, return
             <Dialog.Description className="samples-description">{t.samples.description}</Dialog.Description>
             <div className="samples-package" data-testid="text-sample-package">
               <span>{tpl(t.samples.packageLabel, { name: pkg.name })}</span>
-              <b>{formatPrice(pkg.price, pkg.currency, numLocale)}</b>
+              <b>{formatPrice(pkg.price, "VND", numLocale)}</b>
             </div>
             <Dialog.Close asChild>
               <button type="button" className="pbtn paper samples-close" aria-label={t.samples.close} data-testid="button-close-sample-picker">
@@ -329,6 +342,7 @@ export default function SamplePicker({ open, onOpenChange, pkg, checkout, return
                       </button>
                       <div className="samples-option-info">
                         <h3 className="samples-name" id={`${inputId}-name`} data-testid={`text-sample-name-${sample.id}`}><bdi>{sample.name}</bdi></h3>
+                        <DemoLink sample={sample} className="samples-demo-card" />
                         <div className="samples-choice-control">
                           <input
                             type="radio"
@@ -358,7 +372,7 @@ export default function SamplePicker({ open, onOpenChange, pkg, checkout, return
             {checkoutFailed && (
               <p className="samples-checkout-error" role="alert" data-testid="status-checkout-error">
                 <TriangleAlert aria-hidden="true" />
-                <span><strong>{t.pricing.toastTitle}</strong> {t.pricing.toastBody}</span>
+                <span><strong>{t.pricing.toastTitle}</strong> {checkoutFailed}</span>
               </p>
             )}
             <div className="samples-choice-summary" role="status" aria-live="polite" aria-atomic="true" data-testid="text-selected-sample">

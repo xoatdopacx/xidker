@@ -10,23 +10,23 @@ import {
 import { statusOf } from "@/lib/http";
 import { adminErrorText, useSignOutOn401 } from "./shared";
 
-// Same limits as the API; they keep every package inside what Whop accepts.
-const NAME_MAX = 30;
+// Same limits as the API.
+const NAME_MAX = 40;
 const TAGLINE_MAX = 160;
-const FEATURES_MAX = 8;
-const FEATURE_MAX = 100;
+const FEATURES_MAX = 10;
+const FEATURE_MAX = 120;
 const VND_MIN = 10_000;
 const VND_MAX = 1_000_000_000;
-const USD_MIN = 1;
+const USD_MIN = 0.5;
 const USD_MAX = 100_000;
 
 const LIST_KEY = getListAdminPackagesQueryKey();
 const NEW = "new";
-const SAVED_LIVE = "Đã lưu lên Whop. Trang bán hàng cập nhật trong khoảng 1 phút.";
+const SAVED_LIVE = "Đã lưu. Trang bán hàng cập nhật trong khoảng 1 phút.";
 
 type Lang = "vi" | "en";
 type Copy = { name: string; tagline: string; features: string };
-type Form = { vi: Copy; en: Copy; priceVnd: string; priceUsd: string; onSale: boolean; recommended: boolean; pickSample: boolean };
+type Form = { vi: Copy; en: Copy; priceVnd: string; priceUsd: string; visible: boolean; recommended: boolean; pickSample: boolean };
 type FieldKey = `${Lang}.${keyof Copy}` | "priceVnd" | "priceUsd";
 type Errors = Partial<Record<FieldKey, string>>;
 type SignedOut = (notice: string | null) => void;
@@ -45,8 +45,7 @@ function money(amount: number, currency: "VND" | "USD") {
   }).format(amount);
 }
 
-const byPrice = (a: AdminPackage, b: AdminPackage) =>
-  (a.priceVnd ?? Infinity) - (b.priceVnd ?? Infinity) || a.key.localeCompare(b.key);
+const byPrice = (a: AdminPackage, b: AdminPackage) => a.priceVnd - b.priceVnd || a.key.localeCompare(b.key);
 
 const oneLine = (s: string) => s.normalize("NFC").replace(/\s+/g, " ").trim();
 const featureLines = (text: string) =>
@@ -56,12 +55,12 @@ const toCopy = (t: AdminPackageText): Copy => ({ name: t.name, tagline: t.taglin
 const EMPTY_COPY: Copy = { name: "", tagline: "", features: "" };
 
 function toForm(p: AdminPackage | null): Form {
-  if (!p) return { vi: EMPTY_COPY, en: EMPTY_COPY, priceVnd: "", priceUsd: "", onSale: true, recommended: false, pickSample: false };
+  if (!p) return { vi: EMPTY_COPY, en: EMPTY_COPY, priceVnd: "", priceUsd: "", visible: true, recommended: false, pickSample: false };
   return {
     vi: toCopy(p.vi), en: toCopy(p.en),
-    priceVnd: p.priceVnd == null ? "" : String(p.priceVnd),
+    priceVnd: String(p.priceVnd),
     priceUsd: p.priceUsd == null ? "" : String(p.priceUsd),
-    onSale: p.onSale, recommended: p.recommended, pickSample: p.pickSample,
+    visible: p.visible, recommended: p.recommended, pickSample: p.pickSample,
   };
 }
 
@@ -91,7 +90,7 @@ function validate(f: Form): { errors: Errors; input: AdminPackageInput | null } 
     const tagline = oneLine(f[lang].tagline);
     const features = featureLines(f[lang].features);
     if (!name) errors[`${lang}.name`] = `Nhập tên gói bằng ${label}.`;
-    else if (name.length > NAME_MAX) errors[`${lang}.name`] = `Tên gói tối đa ${NAME_MAX} ký tự (giới hạn của Whop).`;
+    else if (name.length > NAME_MAX) errors[`${lang}.name`] = `Tên gói tối đa ${NAME_MAX} ký tự.`;
     if (tagline.length > TAGLINE_MAX) errors[`${lang}.tagline`] = `Câu giới thiệu tối đa ${TAGLINE_MAX} ký tự.`;
     if (features.length > FEATURES_MAX) errors[`${lang}.features`] = `Tối đa ${FEATURES_MAX} tính năng.`;
     else if (features.some((x) => x.length > FEATURE_MAX)) errors[`${lang}.features`] = `Mỗi tính năng tối đa ${FEATURE_MAX} ký tự.`;
@@ -104,13 +103,15 @@ function validate(f: Form): { errors: Errors; input: AdminPackageInput | null } 
   if (priceVnd === null) errors.priceVnd = "Nhập giá bằng số, ví dụ 299000.";
   else if (priceVnd < VND_MIN) errors.priceVnd = `Giá thấp nhất là ${money(VND_MIN, "VND")}.`;
   else if (priceVnd > VND_MAX) errors.priceVnd = "Giá này lớn quá.";
-  const priceUsd = parseUsd(f.priceUsd);
-  if (priceUsd === null) errors.priceUsd = "Nhập giá bằng số, tối đa 2 chữ số sau dấu chấm, ví dụ 12 hoặc 12.50.";
-  else if (priceUsd < USD_MIN) errors.priceUsd = "Giá thấp nhất là $1.";
-  else if (priceUsd > USD_MAX) errors.priceUsd = "Giá này lớn quá.";
+  // USD is optional: it only shows as a rough guide next to the VND price.
+  const usdBlank = f.priceUsd.trim() === "";
+  const priceUsd = usdBlank ? null : parseUsd(f.priceUsd);
+  if (!usdBlank && priceUsd === null) errors.priceUsd = "Nhập giá bằng số, tối đa 2 chữ số sau dấu chấm, ví dụ 12 hoặc 12.50. Hoặc để trống.";
+  else if (priceUsd !== null && priceUsd < USD_MIN) errors.priceUsd = "Giá thấp nhất là $0.50.";
+  else if (priceUsd !== null && priceUsd > USD_MAX) errors.priceUsd = "Giá này lớn quá.";
 
-  if (Object.keys(errors).length > 0 || priceVnd === null || priceUsd === null) return { errors, input: null };
-  return { errors, input: { vi, en, priceVnd, priceUsd, onSale: f.onSale, recommended: f.recommended, pickSample: f.pickSample } };
+  if (Object.keys(errors).length > 0 || priceVnd === null) return { errors, input: null };
+  return { errors, input: { vi, en, priceVnd, priceUsd, visible: f.visible, recommended: f.recommended, pickSample: f.pickSample } };
 }
 
 /* ---------------- screen ---------------- */
@@ -155,7 +156,7 @@ export function AdminPackages({ onSignedOut }: { onSignedOut: SignedOut }) {
     void qc.invalidateQueries({ queryKey: LIST_KEY });
     dirty.current = false;
     setSelected(null);
-    setNotice("Đã xóa gói khỏi Whop.");
+    setNotice("Đã xóa gói.");
   };
 
   return (
@@ -170,7 +171,7 @@ export function AdminPackages({ onSignedOut }: { onSignedOut: SignedOut }) {
         {notice && !editing && <p role="status" className="adm-notice info m-3 mb-0" data-testid="text-packages-notice">{notice}</p>}
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
           {list.isPending ? (
-            <p className="p-6 text-sm text-[#3d4a3d]">Đang tải các gói từ Whop…</p>
+            <p className="p-6 text-sm text-[#3d4a3d]">Đang tải các gói…</p>
           ) : list.isError && !list.data ? (
             <div className="p-6 text-sm">
               <p>{adminErrorText(list.error)}</p>
@@ -187,7 +188,7 @@ export function AdminPackages({ onSignedOut }: { onSignedOut: SignedOut }) {
           )}
         </div>
         <p className="p-3 border-t-[3px] border-[#1b2a1c] text-xs text-[#3d4a3d]">
-          Giá và chữ được lưu thẳng lên Whop. Trang bán hàng cập nhật trong khoảng 1 phút.
+          Giá và chữ lưu thẳng vào cửa hàng. Trang bán hàng cập nhật trong khoảng 1 phút.
         </p>
       </section>
 
@@ -208,20 +209,19 @@ export function AdminPackages({ onSignedOut }: { onSignedOut: SignedOut }) {
 function PackageRow({ pkg, active, onOpen }: { pkg: AdminPackage; active: boolean; onOpen: () => void }) {
   return (
     <button type="button" onClick={onOpen} aria-current={active ? "true" : undefined}
-      className={`adm-item ${pkg.onSale ? "" : "is-hidden"}`} data-testid={`row-package-${pkg.key}`}>
+      className={`adm-item ${pkg.visible ? "" : "is-hidden"}`} data-testid={`row-package-${pkg.key}`}>
       <span className="flex items-center gap-2">
         <span className="font-bold truncate">{pkg.vi.name || pkg.en.name}</span>
         {pkg.recommended && <span className="adm-chip shrink-0">Đề xuất</span>}
         {pkg.pickSample && <span className="adm-chip shrink-0">Chọn mẫu</span>}
       </span>
       <span className="mt-0.5 block text-sm">
-        {pkg.priceVnd != null ? money(pkg.priceVnd, "VND") : "Chưa có giá VND"}
-        <span className="text-[#5b6a5b]"> · </span>
-        {pkg.priceUsd != null ? money(pkg.priceUsd, "USD") : "Chưa có giá USD"}
+        {money(pkg.priceVnd, "VND")}
+        {pkg.priceUsd != null && <span className="text-[#5b6a5b]"> · khoảng {money(pkg.priceUsd, "USD")}</span>}
       </span>
       <span className="mt-0.5 block text-xs text-[#5b6a5b]">
-        <span className={pkg.onSale ? "font-bold text-[hsl(var(--grass-d))]" : "font-bold"}>{pkg.onSale ? "Đang bán" : "Đang ẩn"}</span>
-        {" · "}{pkg.buyers} người mua
+        <span className={pkg.visible ? "font-bold text-[hsl(var(--grass-d))]" : "font-bold"}>{pkg.visible ? "Đang bán" : "Đang ẩn"}</span>
+        {" · "}{pkg.orders} đơn
       </span>
     </button>
   );
@@ -292,13 +292,13 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
           const fresh = toForm(saved);
           setBase(fresh);
           setForm(fresh);
-          onSaved(saved, saved.onSale ? SAVED_LIVE : "Đã lưu. Gói đang ẩn nên khách không thấy trên trang.");
+          onSaved(saved, saved.visible ? SAVED_LIVE : "Đã lưu. Gói đang ẩn nên khách không thấy trên trang.");
         },
         onError: fail,
       });
     } else {
       create.mutate({ data: result.input }, {
-        onSuccess: (saved) => onSaved(saved, saved.onSale
+        onSuccess: (saved) => onSaved(saved, saved.visible
           ? "Đã đăng bán. Gói mới hiện trong mục Bảng giá trên trang trong khoảng 1 phút."
           : "Đã lưu gói mới ở trạng thái ẩn. Đánh dấu \"Đang bán\" rồi lưu khi muốn mở bán."),
         onError: fail,
@@ -325,7 +325,7 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
           <ArrowLeft className="h-4 w-4" strokeWidth={3} />
         </button>
         <h2 className="font-extrabold truncate min-w-0">{pkg ? `Sửa gói: ${pkg.vi.name || pkg.en.name}` : "Đăng bán source mới"}</h2>
-        {pkg && <span className="ms-auto shrink-0 text-xs font-bold">{pkg.onSale ? "Đang bán" : "Đang ẩn"} · {pkg.buyers} người mua</span>}
+        {pkg && <span className="ms-auto shrink-0 text-xs font-bold">{pkg.visible ? "Đang bán" : "Đang ẩn"} · {pkg.orders} đơn</span>}
       </div>
 
       <form onSubmit={submit} noValidate className="flex-1 min-h-0 flex flex-col" data-testid="form-package">
@@ -335,7 +335,7 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
             {failure && <p role="alert" className="adm-notice error" data-testid="text-package-error">{failure}</p>}
             {!pkg && (
               <p className="text-sm text-[#3d4a3d]">
-                Gói mới hiện thành một thẻ trong mục Bảng giá, bên cạnh các gói đang bán. Khách trả tiền qua Whop như các gói khác.
+                Gói mới hiện thành một thẻ trong mục Bảng giá, bên cạnh các gói đang bán. Khách chuyển khoản bằng mã QR như các gói khác.
               </p>
             )}
 
@@ -352,8 +352,8 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
                     </div>
                   )}
                 </Field>
-                <Field id={FIELD_ID.priceUsd} label="Giá USD" error={errors.priceUsd}
-                  hint={usdValue ? `Trên trang: ${money(usdValue, "USD")}` : "Ví dụ 12 hoặc 12.50"}>
+                <Field id={FIELD_ID.priceUsd} label="Giá USD tham khảo (không bắt buộc)" error={errors.priceUsd}
+                  hint={usdValue ? `Trên trang: khoảng ${money(usdValue, "USD")}` : "Ví dụ 12 hoặc 12.50. Để trống thì không hiện."}>
                   {(aria) => (
                     <div className="relative">
                       <input {...aria} type="text" inputMode="decimal" autoComplete="off" maxLength={12} value={form.priceUsd}
@@ -363,7 +363,7 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
                   )}
                 </Field>
               </div>
-              <p className="text-xs text-[#3d4a3d]">Khách đổi qua lại hai loại tiền ngay trên trang. Thuế (nếu có) do Whop cộng thêm lúc thanh toán.</p>
+              <p className="text-xs text-[#3d4a3d]">Khách luôn chuyển khoản bằng VND. Giá USD chỉ hiện thêm bên cạnh cho khách xem trang bằng ngôn ngữ khác, để họ dễ hình dung.</p>
             </fieldset>
 
             <div className="grid xl:grid-cols-2 gap-6">
@@ -389,8 +389,8 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
             <fieldset disabled={busy} className="adm-group space-y-3">
               <legend className="sr-only">Hiển thị</legend>
               <label className="flex items-start gap-3 cursor-pointer">
-                <input type="checkbox" className="adm-check" checked={form.onSale}
-                  onChange={(e) => setForm((f) => ({ ...f, onSale: e.target.checked }))} data-testid="checkbox-package-on-sale" />
+                <input type="checkbox" className="adm-check" checked={form.visible}
+                  onChange={(e) => setForm((f) => ({ ...f, visible: e.target.checked }))} data-testid="checkbox-package-visible" />
                 <span>
                   <span className="font-bold">Đang bán</span>
                   <span className="block text-sm text-[#3d4a3d]">Hiện trên trang và cho khách mua. Bỏ đánh dấu để ẩn gói.</span>
@@ -428,17 +428,17 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
             </p>
           )}
           <button type="submit" disabled={busy || (pkg !== null && !dirty)} className="adm-btn red h-11 px-5" data-testid="button-save-package">
-            {create.isPending || update.isPending ? "Đang lưu…" : pkg ? "Lưu thay đổi" : form.onSale ? "Đăng bán" : "Lưu (chưa bán)"}
+            {create.isPending || update.isPending ? "Đang lưu…" : pkg ? "Lưu thay đổi" : form.visible ? "Đăng bán" : "Lưu (chưa bán)"}
           </button>
           {dirty && (
             <button type="button" onClick={reset} disabled={busy} className="adm-btn h-11 px-4" data-testid="button-reset-package">
               {pkg ? "Hoàn tác" : "Xóa nội dung"}
             </button>
           )}
-          {pkg && pkg.buyers === 0 && (
+          {pkg && pkg.orders === 0 && (
             confirmDelete ? (
               <span className="ms-auto flex flex-wrap items-center gap-2">
-                <span className="text-sm font-semibold">Xóa hẳn gói này khỏi Whop?</span>
+                <span className="text-sm font-semibold">Xóa hẳn gói này?</span>
                 <button type="button" onClick={doDelete} disabled={busy} className="adm-btn red h-11 px-4" data-testid="button-confirm-delete-package">
                   {remove.isPending ? "Đang xóa…" : "Xóa"}
                 </button>
@@ -450,8 +450,8 @@ function Editor({ pkg, notice, onBack, onDirty, onSaved, onDeleted, onSignedOut 
               </button>
             )
           )}
-          {pkg && pkg.buyers > 0 && (
-            <span className="ms-auto text-xs text-[#3d4a3d] max-w-[22rem]">Gói đã có người mua nên không xóa được; muốn ngừng bán thì bỏ đánh dấu "Đang bán".</span>
+          {pkg && pkg.orders > 0 && (
+            <span className="ms-auto text-xs text-[#3d4a3d] max-w-[22rem]">Gói đã có đơn hàng nên không xóa được; muốn ngừng bán thì bỏ đánh dấu "Đang bán".</span>
           )}
         </div>
       </form>

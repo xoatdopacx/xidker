@@ -18,10 +18,10 @@ KWWWBWWWK
 KwWWBWWwK
 .KKK.KKK.`;
 
-/** The failed-payment meme: a pixel cat showing its empty wallet while a moth flutters out of it. */
-export function BrokeCat({ label }: { label: string }) {
+/** The cancelled-order meme: a pixel cat showing its empty wallet while a moth flutters out of it. Decorative without a label. */
+export function BrokeCat({ label }: { label?: string }) {
   return (
-    <div className="bc select-none" role="img" aria-label={label}>
+    <div className="bc select-none" role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true}>
       <div className="bc-cat">
         <img src={brokeCat} alt="" width={240} height={222} draggable={false} className="pixel" />
       </div>

@@ -1,4 +1,4 @@
-/** Run with the landing/API workflows running. No real checkout is created. */
+/** Run with the landing/API workflows running. Nothing is ordered: the order request is answered inside the browser. */
 import { spawn } from "node:child_process";
 import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -27,7 +27,7 @@ try {
     pending.set(id, { resolve, reject });
     ws.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }));
   });
-  let checkoutBody;
+  let orderBody;
   ws.addEventListener("message", async ({ data }) => {
     const msg = JSON.parse(data);
     if (msg.id) {
@@ -37,8 +37,9 @@ try {
     if (msg.method === "Runtime.exceptionThrown") errors.push(msg.params.exceptionDetails.text + " " + JSON.stringify(msg.params.exceptionDetails.exception));
     if (msg.method === "Runtime.consoleAPICalled" && msg.params.type === "error") errors.push(JSON.stringify(msg.params.args));
     if (msg.method === "Fetch.requestPaused") {
-      checkoutBody = JSON.parse(msg.params.request.postData);
-      await call("Fetch.fulfillRequest", { requestId: msg.params.requestId, responseCode: 200, responseHeaders: [{ name: "Content-Type", value: "application/json" }], body: Buffer.from(JSON.stringify({ ref: "smoke-only", purchaseUrl: "about:blank#checkout-smoke" })).toString("base64") });
+      orderBody = JSON.parse(msg.params.request.postData);
+      // What the API tells a signed-out visitor; the page should then ask them to create an account.
+      await call("Fetch.fulfillRequest", { requestId: msg.params.requestId, responseCode: 401, responseHeaders: [{ name: "Content-Type", value: "application/json" }], body: Buffer.from(JSON.stringify({ error: "Sign in first" })).toString("base64") });
     }
   });
   const { targetId } = await call("Target.createTarget", { url: "about:blank" });
@@ -66,15 +67,27 @@ try {
     await evaluate(`document.querySelector('[data-testid="faq-item-1"]').click()`);
     await until(`document.querySelector('[data-testid="faq-item-1"]').getAttribute('aria-expanded') === 'true'`);
     assert.equal(await evaluate(`document.querySelector('#faq-a-1').getAttribute('aria-hidden')`), "false");
-    await evaluate(`document.querySelector('[data-testid="button-currency-usd"]')?.click()`);
-    await until(`document.querySelector('[data-testid="button-currency-usd"]')?.getAttribute('aria-checked') === 'true' || !document.querySelector('[data-testid="button-currency-usd"]')`);
-    console.info(`Hydration + FAQ + currency: ${code}`);
+    console.info(`Hydration + FAQ: ${code}`);
   }
-  await call("Fetch.enable", { patterns: [{ urlPattern: "*/api/checkout", requestStage: "Request" }] });
-  await evaluate(`document.querySelector('[data-testid^="button-buy-"]').click()`);
-  await until(`location.href === 'about:blank#checkout-smoke'`);
-  assert.ok(checkoutBody?.packageId?.startsWith("plan_"));
-  console.info("Checkout button submits real plan ID and follows hosted checkout URL (intercepted; no payment session created)");
+  // Still on the Arabic page. A package that needs a design choice opens the sample picker first.
+  const packages = await evaluate(`fetch("/api/packages?lang=ar").then((r) => r.json())`);
+  const picked = packages.find((p) => p.pickSample);
+  if (picked) {
+    await evaluate(`document.querySelector('[data-testid="button-buy-${picked.id}"]').click()`);
+    await until(`!!document.querySelector('[data-testid="dialog-sample-picker"]')`);
+    await evaluate(`document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }))`);
+    await until(`!document.querySelector('[data-testid="dialog-sample-picker"]')`);
+    console.info("A package with a design choice opens the sample picker");
+  }
+  // Buying while signed out keeps the package and asks for an account.
+  const direct = packages.find((p) => !p.pickSample);
+  assert.ok(direct, "Test needs a package without a design choice");
+  await call("Fetch.enable", { patterns: [{ urlPattern: "*/api/orders", requestStage: "Request" }] });
+  await evaluate(`document.querySelector('[data-testid="button-buy-${direct.id}"]').click()`);
+  await until(`location.pathname === "/dang-ky" && !!document.querySelector('[data-testid="text-auth-order-note"]')`);
+  assert.equal(orderBody?.packageId, direct.id);
+  assert.ok((await evaluate(`document.querySelector('[data-testid="text-auth-order-note"]').textContent`)).includes(direct.name));
+  console.info("Buying signed out opens account creation with the package kept (order request answered in the browser)");
   await call("Fetch.disable");
   await call("Emulation.setScriptExecutionDisabled", { value: true });
   await call("Page.navigate", { url: "http://localhost:80/vi/" });

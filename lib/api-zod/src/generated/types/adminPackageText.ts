@@ -7,7 +7,7 @@
  */
 
 /**
- * A package's text in one language, as stored on Whop
+ * A package's text in one language
  */
 export interface AdminPackageText {
   name: string;

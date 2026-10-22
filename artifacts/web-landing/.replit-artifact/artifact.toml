@@ -1,7 +1,7 @@
 kind = "web"
 previewPath = "/"
 title = "Web Landing"
-description = "Multilingual portfolio source-code storefront with server-rendered sales content and Whop checkout."
+description = "Multilingual portfolio source-code storefront with server-rendered sales content, verified customer accounts, VietQR bank-transfer orders confirmed by the admin, source downloads, and a Vietnamese admin dashboard."
 version = "1.0.0"
 id = "artifacts/web-landing"
 router = "path"

@@ -291,7 +291,7 @@ function Thread({ conv, drafts, onBack, onSignedOut }: {
               : <span>Không có email</span>)}
             {conv.packageName && <span data-testid="text-admin-package">Gói {conv.packageName}</span>}
             {conv.sampleName && <span dir="auto" data-testid="text-admin-sample">Mẫu {conv.sampleName}</span>}
-            {conv.orderId && <span className="font-mono break-all" dir="ltr" data-testid="text-admin-order">{conv.orderId}</span>}
+            {conv.orderCode && <span data-testid="text-admin-order">Đơn <span className="font-mono break-all" dir="ltr">{conv.orderCode}</span></span>}
             <span>{languageName(conv.lang)}</span>
             <span>Bắt đầu {fullWhen(conv.createdAt)}</span>
           </p>

@@ -18,9 +18,9 @@ export function isOwnOrigin(value: string): boolean {
   }
 }
 
-// Public origin of the site, used to build the Whop redirect URL.
+// Public origin of the site, used for the links in emails.
 // Only hosts this app is actually served on are accepted, so a forged
-// Origin header cannot point the post-payment redirect at another site.
+// Origin header cannot point those links at another site.
 export function resolveSiteOrigin(req: Request): string {
   for (const candidate of [req.get("origin"), req.get("referer")]) {
     if (candidate && isOwnOrigin(candidate)) {

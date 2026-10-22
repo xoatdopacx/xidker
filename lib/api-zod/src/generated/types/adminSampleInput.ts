@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { AdminSampleImageInput } from './adminSampleImageInput';
+import type { StoredFileInput } from './storedFileInput';
 
 export interface AdminSampleInput {
   /**
@@ -18,5 +19,12 @@ export interface AdminSampleInput {
      * @maxItems 12
      */
   images: AdminSampleImageInput[];
+  sourceFile: StoredFileInput | null;
+  /**
+     * A page of this site (/demo/...) or an https:// address
+     * @maxLength 300
+     * @nullable
+     */
+  demoUrl: string | null;
   visible: boolean;
 }

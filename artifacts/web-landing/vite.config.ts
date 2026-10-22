@@ -63,9 +63,13 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   root: path.resolve(import.meta.dirname),
+  // Only the app's own page: the template demos in public/demo load their libraries from CDNs.
+  optimizeDeps: { entries: ['index.html'] },
   build: {
     outDir: path.resolve(import.meta.dirname, process.env.SSR_BUILD ? 'dist/server' : 'dist/public'),
     emptyOutDir: true,
+    // The server bundle only needs render.js; public files (demos included) are served from dist/public.
+    copyPublicDir: !process.env.SSR_BUILD,
   },
   ssr: { noExternal: process.env.SSR_BUILD ? true : ['@workspace/api-client-react'] },
   server: {

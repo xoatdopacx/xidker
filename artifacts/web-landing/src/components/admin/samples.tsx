@@ -8,10 +8,28 @@ import {
 import { statusOf } from "@/lib/http";
 import { adminErrorText, useSignOutOn401 } from "./shared";
 import { ImageProblem, prepareSampleImage } from "./sample-upload";
+import { FileField } from "./file-field";
+import { fileKey, pickedFrom, type PickedFile } from "./zip-upload";
 
 // Same limits as the API.
 const NAME_MAX = 60;
 const IMAGES_MAX = 12;
+const DEMO_MAX = 300;
+const DEMO_PATH_RE = /^\/demo\/[A-Za-z0-9._~\/-]*$/;
+
+/** The demo link as the API accepts it: empty, a /demo/... page of this site, or an https:// address. */
+function demoProblem(value: string): string | null {
+  const url = value.trim();
+  if (!url) return null;
+  if (url.length > DEMO_MAX) return `Link tối đa ${DEMO_MAX} ký tự.`;
+  if (DEMO_PATH_RE.test(url) && !url.includes("..")) return null;
+  try {
+    if (new URL(url).protocol === "https:") return null;
+  } catch {
+    // Not an address at all.
+  }
+  return "Link xem thử phải là một trang /demo/... của web này, hoặc một địa chỉ bắt đầu bằng https://";
+}
 
 const LIST_KEY = getListAdminSamplesQueryKey();
 const NEW = "new";
@@ -46,10 +64,13 @@ const savedPics = (s: AdminSample | null): Pic[] =>
 
 const oneLine = (s: string) => s.normalize("NFC").replace(/\s+/g, " ").trim();
 
-type Form = { name: string; visible: boolean; pics: Pic[] };
-const toForm = (s: AdminSample | null): Form => ({ name: s?.name ?? "", visible: s?.visible ?? true, pics: savedPics(s) });
-const signature = (f: Form) =>
-  JSON.stringify([oneLine(f.name), f.visible, f.pics.map((p) => (p.state === "ready" ? p.image?.path : p.key))]);
+type Form = { name: string; visible: boolean; pics: Pic[]; file: PickedFile | null; demoUrl: string };
+const toForm = (s: AdminSample | null): Form => ({
+  name: s?.name ?? "", visible: s?.visible ?? true, pics: savedPics(s), file: pickedFrom(s?.sourceFile ?? null), demoUrl: s?.demoUrl ?? "",
+});
+const signature = (f: Form) => JSON.stringify([
+  oneLine(f.name), f.visible, f.pics.map((p) => (p.state === "ready" ? p.image?.path : p.key)), fileKey(f.file), f.demoUrl.trim(),
+]);
 
 /* ---------------- screen ---------------- */
 
@@ -170,7 +191,7 @@ export function AdminSamples({ onSignedOut }: { onSignedOut: SignedOut }) {
             onDirty={(d) => { dirty.current = d; }} onSaved={onSaved} onDeleted={onDeleted} onSignedOut={onSignedOut} />
         ) : (
           <div className="m-auto max-w-md p-6 text-center text-sm text-[#3d4a3d]">
-            Chọn một mẫu bên trái để sửa tên và ảnh, hoặc bấm "Thêm mẫu mới". Khách mua gói có chọn mẫu sẽ xem ảnh các mẫu rồi chọn một mẫu trước khi thanh toán.
+            Chọn một mẫu bên trái để sửa tên, ảnh và file source, hoặc bấm "Thêm mẫu mới". Khách mua gói có chọn mẫu sẽ xem ảnh các mẫu rồi chọn một mẫu trước khi thanh toán, và tải file source của mẫu đó sau khi bạn xác nhận đã nhận tiền.
           </div>
         )}
       </section>
@@ -191,7 +212,8 @@ function SampleRow({ sample, active, onOpen }: { sample: AdminSample; active: bo
           <span className="block font-bold truncate" dir="auto">{sample.name}</span>
           <span className="mt-0.5 block text-xs text-[#5b6a5b]">
             <span className={sample.visible ? "font-bold text-[hsl(var(--grass-d))]" : "font-bold"}>{sample.visible ? "Đang hiện" : "Đang ẩn"}</span>
-            {" · "}{sample.images.length} ảnh
+            {" · "}{sample.images.length} ảnh{" · "}
+            {sample.sourceFile ? "có file source" : <span className="font-bold text-[hsl(var(--pin-text))]">chưa có file source</span>}
           </span>
         </span>
       </span>
@@ -228,6 +250,8 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
   const [nameError, setNameError] = useState<string | null>(null);
   const [failure, setFailure] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [demoError, setDemoError] = useState<string | null>(null);
   const create = useCreateAdminSample();
   const update = useUpdateAdminSample();
   const remove = useDeleteAdminSample();
@@ -252,11 +276,11 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
 
   useEffect(() => { onDirty(dirty); }, [dirty, onDirty]);
   useEffect(() => {
-    if (!dirty && !working) return;
+    if (!dirty && !working && !uploading) return;
     const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ""; };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty, working]);
+  }, [dirty, working, uploading]);
 
   const patchPic = (key: string, patch: Partial<Pic>) =>
     setForm((f) => ({ ...f, pics: f.pics.map((p) => (p.key === key ? { ...p, ...patch } : p)) }));
@@ -327,16 +351,23 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
     if (busy) return;
     const name = oneLine(form.name);
     const badName = !name ? "Nhập tên mẫu." : name.length > NAME_MAX ? `Tên mẫu tối đa ${NAME_MAX} ký tự.` : null;
+    const badDemo = demoProblem(form.demoUrl);
     setNameError(badName);
+    setDemoError(badDemo);
     let problem: string | null = null;
     if (form.pics.length === 0) problem = "Thêm ít nhất 1 ảnh của mẫu.";
     else if (working) problem = "Đợi ảnh tải lên xong rồi lưu nhé.";
     else if (form.pics.some((p) => p.state === "failed")) problem = "Có ảnh bị lỗi. Bấm \"Thử lại\" hoặc xóa ảnh đó rồi lưu.";
+    else if (uploading) problem = "Đợi file source tải lên xong rồi lưu nhé.";
     setFailure(problem);
     if (badName) { requestAnimationFrame(() => document.getElementById("sample-name")?.focus()); return; }
+    if (badDemo) { requestAnimationFrame(() => document.getElementById("sample-demo")?.focus()); return; }
     if (problem) return;
 
-    const data = { name, visible: form.visible, images: form.pics.map((p) => p.image as AdminSampleImageInput) };
+    const data = {
+      name, visible: form.visible, images: form.pics.map((p) => p.image as AdminSampleImageInput),
+      sourceFile: form.file?.input ?? null, demoUrl: form.demoUrl.trim() || null,
+    };
     const done = (saved: AdminSample, message: string) => {
       // Saved pictures are now served by the site; the local copies stay alive until the editor closes.
       const fresh = toForm(saved);
@@ -344,9 +375,10 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
       setForm(fresh);
       onSaved(saved, message);
     };
-    const savedText = (saved: AdminSample) => saved.visible
-      ? "Đã lưu. Khách thấy mẫu này khi mua gói có chọn mẫu."
-      : "Đã lưu. Mẫu đang ẩn nên khách chưa thấy.";
+    const savedText = (saved: AdminSample) => {
+      const shown = saved.visible ? "Đã lưu. Khách thấy mẫu này khi mua gói có chọn mẫu." : "Đã lưu. Mẫu đang ẩn nên khách chưa thấy.";
+      return saved.sourceFile ? shown : `${shown} Mẫu chưa có file source: khách chọn mẫu này chưa tải được gì cho tới khi bạn gắn file.`;
+    };
     if (sample) {
       update.mutate({ id: sample.id, data }, { onSuccess: (saved) => done(saved, savedText(saved)), onError: fail });
     } else {
@@ -354,7 +386,7 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
     }
   };
 
-  const reset = () => { setForm(base); setNameError(null); setFailure(null); };
+  const reset = () => { setForm(base); setNameError(null); setDemoError(null); setFailure(null); };
 
   const doDelete = () => {
     if (!sample || busy) return;
@@ -422,6 +454,32 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
               </ul>
             </fieldset>
 
+            <div className="adm-group space-y-5">
+              <FileField id="sample-file" label="File source khách tải về" disabled={busy}
+                help="Khách chọn mẫu này và đã thanh toán sẽ tải file này. Muốn gửi file khác cho riêng một đơn thì gắn trong thẻ Đơn hàng."
+                empty="Chưa có file. Khách chọn mẫu này sẽ chưa tải được gì cho tới khi bạn gắn file."
+                value={form.file} onChange={(file) => setForm((f) => ({ ...f, file }))} onBusy={setUploading}
+                onBuiltin={(b) => { setForm((f) => (f.demoUrl.trim() ? f : { ...f, demoUrl: b.demoUrl })); setDemoError(null); }}
+                onSignedOut={onSignedOut} />
+
+              <div className="max-w-xl">
+                <label htmlFor="sample-demo" className="mb-1 block text-sm font-bold">Link xem thử (không bắt buộc)</label>
+                <input id="sample-demo" type="url" inputMode="url" autoComplete="off" spellCheck={false} maxLength={DEMO_MAX + 50} dir="ltr"
+                  value={form.demoUrl} disabled={busy} placeholder="/demo/ten-mau/ hoặc https://…"
+                  aria-invalid={demoError ? true : undefined} aria-describedby="sample-demo-help"
+                  onChange={(e) => { const demoUrl = e.target.value; setForm((f) => ({ ...f, demoUrl })); setDemoError(null); }}
+                  className="adm-field" data-testid="input-sample-demo" />
+                {demoError
+                  ? <p id="sample-demo-help" className="mt-1 text-sm font-semibold text-[hsl(var(--pin))]">{demoError}</p>
+                  : <p id="sample-demo-help" className="mt-1 text-xs text-[#5b6a5b]">
+                      Khách bấm để mở bản chạy thử của mẫu trước khi mua. Chọn source có sẵn ở trên thì link tự điền.
+                      {form.demoUrl.trim() && !demoProblem(form.demoUrl) && (
+                        <> <a href={form.demoUrl.trim()} target="_blank" rel="noopener" className="font-bold underline" data-testid="link-sample-demo">Mở thử</a></>
+                      )}
+                    </p>}
+              </div>
+            </div>
+
             <fieldset disabled={busy} className="adm-group">
               <legend className="sr-only">Hiển thị</legend>
               <label className="flex items-start gap-3 cursor-pointer">
@@ -445,7 +503,7 @@ function Editor({ sample, notice, onBack, onDirty, onSaved, onDeleted, onSignedO
               {sample ? "Hoàn tác" : "Xóa nội dung"}
             </button>
           )}
-          {working && <span role="status" className="text-sm font-semibold">Đang tải ảnh lên…</span>}
+          {(working || uploading) && <span role="status" className="text-sm font-semibold">{working ? "Đang tải ảnh lên…" : "Đang tải file source lên…"}</span>}
           {sample && (
             confirmDelete ? (
               <span className="ms-auto flex flex-wrap items-center gap-2">

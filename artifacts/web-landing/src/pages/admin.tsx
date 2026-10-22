@@ -1,12 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useGetAdminSession, getGetAdminSessionQueryKey, type AdminSession } from "@workspace/api-client-react";
+import { useLocation } from "wouter";
+import { useGetAdminSession, getGetAdminSessionQueryKey, useSignOutAccount } from "@workspace/api-client-react";
 import { statusOf } from "@/lib/http";
-import { AdminSignIn } from "@/components/admin/sign-in";
+import { setSignedOut } from "@/lib/account";
+import { ROUTES } from "@/lib/routes";
+import { localePath } from "@/lib/locale-url";
 import { AdminShell } from "@/components/admin/shell";
 import { adminErrorText } from "@/components/admin/shared";
 
 const SESSION_KEY = getGetAdminSessionQueryKey();
+/** The admin signs in like every customer (password, then a code by email) and comes back here. */
+const SIGN_IN = `${ROUTES.signIn}?next=${encodeURIComponent(ROUTES.admin)}`;
 
 /**
  * Keeps the admin screens out of search results, and makes the whole page Vietnamese and
@@ -38,36 +43,47 @@ function useAdminDocument() {
   }, []);
 }
 
+/** Drops everything the admin screens loaded. */
+function forgetAdminData(qc: ReturnType<typeof useQueryClient>) {
+  qc.removeQueries({ predicate: (q) => typeof q.queryKey[0] === "string" && q.queryKey[0].startsWith("/api/admin/") });
+}
+
 export default function AdminPage() {
   const qc = useQueryClient();
-  const [notice, setNotice] = useState<string | null>(null);
+  const [, navigate] = useLocation();
+  const signOut = useSignOutAccount();
   useAdminDocument();
 
   const session = useGetAdminSession({
     query: { queryKey: SESSION_KEY, retry: false, staleTime: Infinity, refetchOnWindowFocus: false },
   });
+  const signedOut = statusOf(session.error) === 401;
 
-  const signedIn = useCallback((s: AdminSession) => {
-    setNotice(null);
-    qc.setQueryData(SESSION_KEY, s);
-  }, [qc]);
+  // No admin session in this browser (never signed in, expired after 12 hours, or not the admin): sign in first.
+  useEffect(() => {
+    if (signedOut) navigate(SIGN_IN, { replace: true });
+  }, [signedOut, navigate]);
 
-  const signedOut = useCallback((message: string | null) => {
-    // Everything the admin screens loaded, except the session entry that is set to signed-out below.
-    qc.removeQueries({ predicate: (q) => {
-      const key = String(q.queryKey[0]);
-      return key.startsWith("/api/admin/") && key !== SESSION_KEY[0];
-    } });
-    setNotice(message);
-    qc.setQueryData<AdminSession | null>(SESSION_KEY, null);
-  }, [qc]);
+  // A request answered 401 midway: the session ended (expired, or the admin signed in on another browser).
+  const onExpired = useCallback(() => {
+    forgetAdminData(qc);
+    navigate(SIGN_IN, { replace: true });
+  }, [qc, navigate]);
+
+  const leave = useCallback(() => {
+    signOut.mutate(undefined, {
+      onSettled: () => {
+        navigate(localePath("vi"), { replace: true });
+        forgetAdminData(qc);
+        setSignedOut(qc, null);
+      },
+    });
+  }, [signOut, navigate, qc]);
 
   let body;
   if (session.data) {
-    body = <AdminShell session={session.data} onSignedOut={signedOut} />;
-  } else if (session.isPending) {
-    body = <p className="min-h-[100dvh] grid place-items-center text-sm text-[#3d4a3d]">Đang tải…</p>;
-  } else if (session.isError && statusOf(session.error) !== 401) {
+    body = <AdminShell session={session.data} onSignedOut={onExpired} onSignOut={leave} signingOut={signOut.isPending} />;
+  } else if (session.isError && !signedOut) {
     body = (
       <div className="min-h-[100dvh] grid place-items-center p-4">
         <div className="adm-card max-w-sm p-6 text-center text-sm">
@@ -77,7 +93,7 @@ export default function AdminPage() {
       </div>
     );
   } else {
-    body = <AdminSignIn notice={notice} onSignedIn={signedIn} />;
+    body = <p className="min-h-[100dvh] grid place-items-center text-sm text-[#3d4a3d]">Đang tải…</p>;
   }
 
   return (

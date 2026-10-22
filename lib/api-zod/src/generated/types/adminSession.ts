@@ -7,5 +7,6 @@
  */
 
 export interface AdminSession {
+  email: string;
   expiresAt: Date;
 }

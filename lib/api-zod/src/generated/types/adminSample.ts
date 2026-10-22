@@ -6,11 +6,16 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { AdminSampleImage } from './adminSampleImage';
+import type { StoredFile } from './storedFile';
 
 export interface AdminSample {
   id: string;
   name: string;
   images: AdminSampleImage[];
+  /** What buyers who picked this sample download once paid */
+  sourceFile: StoredFile | null;
+  /** @nullable */
+  demoUrl: string | null;
   /** On show to buyers */
   visible: boolean;
   position: number;

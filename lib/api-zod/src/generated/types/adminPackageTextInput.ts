@@ -8,9 +8,8 @@
 
 export interface AdminPackageTextInput {
   /**
-     * Whop allows at most 30 characters in a plan title
      * @minLength 1
-     * @maxLength 30
+     * @maxLength 40
      */
   name: string;
   /**
@@ -19,9 +18,9 @@ export interface AdminPackageTextInput {
      */
   tagline: string | null;
   /**
-     * @maxItems 8
+     * @maxItems 10
      * @items.minLength 1
-     * @items.maxLength 100
+     * @items.maxLength 120
      */
   features: string[];
 }

@@ -10,3 +10,6 @@ For more than a handful of strings, do not edit 33 JSON files by hand. Write the
 Second use, 45 sample-picker strings (2026-10-15): one array per language in vi.json key order, spread over three source files, merged by a script that refused to write unless every language was present, every array had the right length, no string was empty, each string's `{placeholder}` set matched en, and no two neighbouring strings were identical (a duplicated line shifts every later string into the wrong key). Match each file's existing wording: the package word follows its `thanks.pkg`, and the formality follows its existing text (zh-CN 您, id "Anda", ms lowercase "anda", pl capitalized Ciebie/Twój, pt "o Whop").
 **Why:** these checks caught shifted and placeholder errors before anything was written; the result passed the key-path check on the first merge.
 **How to apply:** reuse the same checks for the next batch.
+
+Machine-translated batches (the 33-language email text, 2026-10-22): Khmer and Filipino came back in Vietnamese at least once. Check that every language's strings are actually in that language (script, a few common words) before merging.
+**Why:** the merge checks above only compare shape, so a whole language in the wrong tongue passes them.

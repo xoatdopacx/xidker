@@ -1,11 +1,11 @@
 import { renderToString } from "react-dom/server";
 import { QueryClient } from "@tanstack/react-query";
-import App from "../src/App";
+import App, { pageMeta } from "../src/App";
 import { ErrorBoundary } from "../src/components/error-boundary";
 import { loadDict } from "../src/lib/i18n";
 import type { Language, Package } from "@workspace/api-client-react";
 import { LANGUAGES } from "../src/lib/languages";
-import { isHomePath, pathLanguage } from "../src/lib/locale-url";
+import { isHomePath, normalizedBase, pathLanguage } from "../src/lib/locale-url";
 import { renderLocaleHtml, escapeHtml } from "./html";
 import { siteOrigin } from "./site";
 import { sitemapXml, robotsTxt } from "./discovery";
@@ -31,15 +31,16 @@ export async function renderPage(shell: string, pathname: string, base: string, 
     }
     // JSON script data cannot terminate the element or introduce HTML, even with catalog input.
     const data = JSON.stringify(initial).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
-    const product = productSchema(dict, packages, lang === "vi" ? "vnd" : "usd", new URL(localePath(lang, base), siteOrigin).href);
+    const product = productSchema(dict, packages, new URL(localePath(lang, base), siteOrigin).href);
     html = html.replace("</head>", () => `<script id="product-schema" type="application/ld+json">${serializeJson(product)}</script>\n</head>`);
     html = html.replace('<div id="root"></div>', () => `<div id="root">${markup}</div><script id="initial-page" type="application/json">${data}</script>`);
     return { html, status: 200, indexable: true };
   }
-  const thanks = pathname === `${base.replace(/\/$/, "")}/cam-on`;
-  const admin = pathname === `${base.replace(/\/$/, "")}/admin`;
-  const title = thanks ? dict.thanks.loading : admin ? "Admin — xidker" : dict.nf.metaTitle;
-  const body = thanks ? dict.thanks.loading : admin ? "Admin" : dict.nf.body;
+  // Account, order and admin pages render in the browser (they need the visitor's sign-in); the server only
+  // answers 200 with their title so they are never mistaken for missing pages. All of them stay out of search.
+  const page = pageMeta(`/${pathname.slice(normalizedBase(base).length).replace(/\/$/, "")}`, dict);
+  const title = page ? page.title : dict.nf.metaTitle;
+  const body = page ? page.description : dict.nf.body;
   html = html
     .replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(title)}</title>`)
     .replace(/(<meta (?:name|property)="(?:description|og:description|twitter:description)" content=")[^"]*(")/g, (_, a, b) => `${a}${escapeHtml(body)}${b}`)
@@ -47,7 +48,7 @@ export async function renderPage(shell: string, pathname: string, base: string, 
     .replace('content="index, follow"', 'content="noindex, follow"')
     .replace(/<!-- locale-seo:start -->[\s\S]*?<!-- locale-seo:end -->/, "")
     .replace('<div id="root"></div>', `<div id="root"><main><h1>${escapeHtml(title)}</h1><p>${escapeHtml(body)}</p><a href="${base}">${escapeHtml(dict.nf.back)}</a></main></div>`);
-  return { html, status: thanks || admin ? 200 : 404, indexable: false };
+  return { html, status: page ? 200 : 404, indexable: false };
 }
 
 export { isHomePath, pathLanguage, LANGUAGES };

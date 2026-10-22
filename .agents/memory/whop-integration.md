@@ -1,7 +1,9 @@
 ---
-name: Whop integration quirks
-description: Non-obvious Whop SDK/API behavior hit while wiring hosted checkout (SDK version, id param names, VND, helper script failures).
+name: Whop integration quirks (legacy)
+description: Whop SDK/API behavior from when the site sold through Whop checkout; the site stopped using Whop on 2026-10-22, so this only matters for the root whop-*.mjs scripts or a return to Whop.
 ---
+
+Legacy: the store moved to VietQR bank transfers on 2026-10-22 and the code no longer uses Whop or `@whop/sdk`. The Whop product and plans still exist on Whop's side.
 
 - `@whop/sdk` must stay on 0.0.42 unless the server code is rewritten: 2.x exposes a different client (`WhopClient({ token })`) and the skill's whopClient.ts template targets `new Whop({ apiKey })`.
   **Why:** installing latest broke the template; pinning was the smallest working fix.

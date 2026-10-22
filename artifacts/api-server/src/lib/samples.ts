@@ -1,19 +1,28 @@
-import { and, eq } from "drizzle-orm";
+import { randomUUID } from "node:crypto";
+import { and, eq, isNotNull, or } from "drizzle-orm";
 import type { File, FileMetadata } from "@google-cloud/storage";
-import { db, sourceSamplesTable, type SampleImageRow, type SourceSampleRow } from "@workspace/db";
+import {
+  db,
+  ordersTable,
+  sourceSamplesTable,
+  type SampleImageRow,
+  type SourceSampleRow,
+  type StoredFileRow,
+} from "@workspace/db";
 import { ObjectStorageService, objectStorageClient } from "./objectStorage";
 import { logger } from "./logger";
 
 // Source samples: the admin uploads pictures of each sample, buyers of a package with a
 // sample choice pick one before paying. The admin's browser uploads the pictures straight to
-// App Storage; saving a sample marks its pictures public so the site can show them.
+// App Storage; saving a sample marks its pictures public so the site can show them. A sample's
+// source zip is never made public: buyers download it through their paid order.
 
 export const objectStorage = new ObjectStorageService();
 
 /** Where this API serves uploaded pictures (the routes are mounted under /api). */
 const STORAGE_URL = "/api/storage";
 export const SAMPLE_IMAGE_TYPES = new Set(["image/webp", "image/jpeg", "image/png"]);
-const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
+export const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 /** The metadata key objectAcl.ts keeps an object's access policy under. */
 const ACL_POLICY_METADATA_KEY = "custom:aclPolicy";
 
@@ -27,7 +36,15 @@ export function publicSample(row: SourceSampleRow) {
     id: row.id,
     name: row.name,
     images: row.images.map((image) => ({ ...urls(image), width: image.width, height: image.height })),
+    demoUrl: row.demoUrl,
   };
+}
+
+export function storedFileView(file: StoredFileRow | null) {
+  if (!file) return null;
+  return file.kind === "builtin"
+    ? { kind: file.kind, name: file.name, size: file.size, slug: file.slug, path: null }
+    : { kind: file.kind, name: file.name, size: file.size, slug: null, path: file.path };
 }
 
 export function adminSample(row: SourceSampleRow) {
@@ -35,6 +52,8 @@ export function adminSample(row: SourceSampleRow) {
     id: row.id,
     name: row.name,
     images: row.images.map((image) => ({ ...image, ...urls(image) })),
+    sourceFile: storedFileView(row.sourceFile),
+    demoUrl: row.demoUrl,
     visible: row.visible,
     position: row.position,
     createdAt: row.createdAt,
@@ -68,13 +87,13 @@ export async function findVisibleSample(id: string): Promise<SourceSampleRow | n
 // Each call to App Storage takes about 0.1 s, so every step below makes as few as it can.
 
 /** The stored object behind "/objects/uploads/<uuid>", without asking App Storage whether it exists. */
-function uploadFile(objectPath: string): File {
+export function uploadFile(objectPath: string): File {
   const dir = objectStorage.getPrivateObjectDir().replace(/^\/+|\/+$/g, "");
   const [bucketName, ...prefix] = dir.split("/");
   return objectStorageClient.bucket(bucketName).file([...prefix, objectPath.replace(/^\/objects\//, "")].join("/"));
 }
 
-const isNotFound = (err: unknown) => (err as { code?: unknown } | null)?.code === 404;
+export const isNotFound = (err: unknown) => (err as { code?: unknown } | null)?.code === 404;
 
 function isPublic(metadata: FileMetadata): boolean {
   const raw = metadata.metadata?.[ACL_POLICY_METADATA_KEY];
@@ -86,12 +105,23 @@ function isPublic(metadata: FileMetadata): boolean {
   }
 }
 
-async function eachLimited<T>(items: T[], limit: number, run: (item: T) => Promise<void>): Promise<void> {
+export async function eachLimited<T>(items: T[], limit: number, run: (item: T) => Promise<void>): Promise<void> {
   let next = 0;
   const worker = async () => {
     while (next < items.length) await run(items[next++]);
   };
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+}
+
+/** Stores a picture the server itself provides (the bundled template previews) as a public upload. */
+export async function savePublicImage(body: Buffer, contentType: string): Promise<string> {
+  const objectPath = `/objects/uploads/${randomUUID()}`;
+  await uploadFile(objectPath).save(body, {
+    resumable: false,
+    contentType,
+    metadata: { metadata: { [ACL_POLICY_METADATA_KEY]: JSON.stringify({ owner: "admin", visibility: "public" }) } },
+  });
+  return objectPath;
 }
 
 export class SampleImageError extends Error {}
@@ -180,14 +210,31 @@ export async function readSampleImage(objectPath: string): Promise<SampleImageFi
   return image;
 }
 
+const uploadPath = (file: StoredFileRow | null) => (file?.kind === "upload" ? [file.path] : []);
+
+/** Every uploaded object a sample or an order still points at. */
+async function objectsInUse(): Promise<Set<string>> {
+  const [samples, orders] = await Promise.all([
+    db.select({ images: sourceSamplesTable.images, sourceFile: sourceSamplesTable.sourceFile }).from(sourceSamplesTable),
+    db
+      .select({ sampleFile: ordersTable.sampleFile, deliveryFile: ordersTable.deliveryFile })
+      .from(ordersTable)
+      .where(or(isNotNull(ordersTable.sampleFile), isNotNull(ordersTable.deliveryFile))),
+  ]);
+  return new Set([
+    ...samples.flatMap((row) => [...imagePaths(row.images), ...uploadPath(row.sourceFile)]),
+    ...orders.flatMap((row) => [...uploadPath(row.sampleFile), ...uploadPath(row.deliveryFile)]),
+  ]);
+}
+
 /**
- * Deletes pictures no saved sample uses any more; call it after the database change.
- * Best effort: a picture left behind only costs storage, so failures are logged, not raised.
+ * Deletes uploads (pictures or zips) that no sample and no order uses any more; call it after
+ * the database change. Best effort: a file left behind only costs storage, so failures are
+ * logged, not raised.
  */
 export async function deleteUnusedObjects(objectPaths: string[]): Promise<void> {
   if (objectPaths.length === 0) return;
-  const rows = await db.select({ images: sourceSamplesTable.images }).from(sourceSamplesTable);
-  const inUse = new Set(rows.flatMap((row) => imagePaths(row.images)));
+  const inUse = await objectsInUse();
   await eachLimited(
     objectPaths.filter((objectPath) => !inUse.has(objectPath)),
     6,
@@ -196,7 +243,7 @@ export async function deleteUnusedObjects(objectPaths: string[]): Promise<void> 
       try {
         await uploadFile(objectPath).delete({ ignoreNotFound: true });
       } catch (err) {
-        logger.warn({ err, objectPath }, "Could not delete a sample image from storage");
+        logger.warn({ err, objectPath }, "Could not delete an unused upload from storage");
       }
     },
   );

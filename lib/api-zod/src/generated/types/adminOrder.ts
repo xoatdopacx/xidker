@@ -5,28 +5,35 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { OrderStatus } from './orderStatus';
+import type { StoredFile } from './storedFile';
 
 export interface AdminOrder {
-  /** Whop payment id */
-  id: string;
+  code: string;
+  status: OrderStatus;
+  email: string;
+  /** @nullable */
+  accountId: string | null;
+  packageKey: string;
+  packageName: string;
+  /** @nullable */
+  sampleName: string | null;
+  amount: number;
+  lang: string;
+  createdAt: Date;
+  /** @nullable */
+  transferReportedAt: Date | null;
   /** @nullable */
   paidAt: Date | null;
-  /**
-     * Amount paid in major currency units
-     * @nullable
-     */
-  amount: number | null;
-  currency: string;
-  /**
-     * Buyer email, null when Whop does not share it
-     * @nullable
-     */
-  email: string | null;
   /** @nullable */
-  packageName: string | null;
-  /**
-     * Sample the buyer picked, null when the order had no sample choice
-     * @nullable
-     */
-  sampleName: string | null;
+  cancelledAt: Date | null;
+  /** What the buyer downloads once paid (the attached file, else the sample's) */
+  file: StoredFile | null;
+  /** A file attached to this order */
+  deliveryFile: StoredFile | null;
+  /** @nullable */
+  deliveryNote: string | null;
+  /** @nullable */
+  adminNote: string | null;
+  downloads: number;
 }

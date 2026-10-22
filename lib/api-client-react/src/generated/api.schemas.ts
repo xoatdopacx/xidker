@@ -9,10 +9,6 @@ export interface HealthStatus {
   status: string;
 }
 
-export interface ErrorResponse {
-  error: string;
-}
-
 /**
  * Site language (BCP 47 code)
  */
@@ -54,107 +50,6 @@ export const Language = {
   ro: 'ro',
   hu: 'hu',
 } as const;
-
-export type PackageBilling = typeof PackageBilling[keyof typeof PackageBilling];
-
-
-export const PackageBilling = {
-  one_time: 'one_time',
-  recurring: 'recurring',
-} as const;
-
-/**
- * A landing page build package, backed by a Whop plan.
- */
-export interface Package {
-  /** Whop plan id */
-  id: string;
-  /** Package group. The same package sold in different currencies shares one key (Whop plan metadata "key"). */
-  key: string;
-  name: string;
-  /**
-     * One-line summary of who the package is for
-     * @nullable
-     */
-  tagline: string | null;
-  /** What the buyer gets, in display order */
-  features: string[];
-  /** Price in major currency units (e.g. 5990000 = 5.990.000 VND, 249 = $249) */
-  price: number;
-  /** ISO 4217 currency code, lowercase (e.g. "vnd", "usd") */
-  currency: string;
-  billing: PackageBilling;
-  /**
-     * Days between charges for recurring packages, null for one-time
-     * @nullable
-     */
-  billingPeriodDays: number | null;
-  /** True for the package the studio recommends most */
-  recommended: boolean;
-  /** True when the buyer picks one of the source samples before paying. Set on the package in the admin screen; stays false while no sample is on show, so the package can always be bought. */
-  pickSample: boolean;
-}
-
-export interface CheckoutInput {
-  /** @minLength 1 */
-  packageId: string;
-  /**
-     * The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
-     * @pattern ^[A-Za-z0-9_-]{6,32}$
-     */
-  sampleId?: string;
-}
-
-export interface CheckoutSession {
-  /** Reference for this checkout, used on the /cam-on page */
-  ref: string;
-  /** Whop hosted checkout URL to send the buyer to */
-  purchaseUrl: string;
-}
-
-/**
- * paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress).
- */
-export type CheckoutStatusStatus = typeof CheckoutStatusStatus[keyof typeof CheckoutStatusStatus];
-
-
-export const CheckoutStatusStatus = {
-  paid: 'paid',
-  pending: 'pending',
-  failed: 'failed',
-} as const;
-
-export interface CheckoutStatus {
-  ref: string;
-  /** paid once Whop reports a successful payment; failed when every attempt on this checkout failed or was canceled; pending otherwise (no attempt yet, or one still in progress). */
-  status: CheckoutStatusStatus;
-  packageId: string;
-  packageName: string;
-  /**
-     * Amount paid in major currency units, null until paid
-     * @nullable
-     */
-  amount: number | null;
-  /** @nullable */
-  currency: string | null;
-  /** @nullable */
-  paidAt: string | null;
-  /**
-     * Whop payment id, null until paid. The customer uses it to switch on support chat.
-     * @nullable
-     */
-  orderId: string | null;
-  /**
-     * The source sample picked for this checkout, null when the package has no sample choice
-     * @nullable
-     */
-  sampleId: string | null;
-  /**
-     * Name of the picked sample as it was when the checkout started
-     * @nullable
-     */
-  sampleName: string | null;
-}
 
 export type ChatMessageSender = typeof ChatMessageSender[keyof typeof ChatMessageSender];
 
@@ -260,46 +155,230 @@ export interface AdminTranslateInput {
   messageIds: number[];
 }
 
-export interface SupportActivateInput {
+export type AdminConversationUpdateStatus = typeof AdminConversationUpdateStatus[keyof typeof AdminConversationUpdateStatus];
+
+
+export const AdminConversationUpdateStatus = {
+  open: 'open',
+  closed: 'closed',
+} as const;
+
+export interface AdminConversationUpdate {
+  status: AdminConversationUpdateStatus;
+}
+
+export interface SampleImage {
+  /** Full-size image */
+  url: string;
+  /** Small preview showing the top of the image */
+  thumbUrl: string;
+  width: number;
+  height: number;
+}
+
+export interface AdminSampleImage {
+  /** Object path of the full-size image */
+  path: string;
+  /** Object path of the preview */
+  thumb: string;
+  width: number;
+  height: number;
+  url: string;
+  thumbUrl: string;
+}
+
+export interface AdminSampleImageInput {
+  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
+  path: string;
+  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
+  thumb: string;
   /**
-     * The email used to pay on Whop
+     * @minimum 1
+     * @maximum 20000
+     */
+  width: number;
+  /**
+     * @minimum 1
+     * @maximum 20000
+     */
+  height: number;
+}
+
+export interface AdminSampleOrderInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     * @items.pattern ^[A-Za-z0-9_-]{6,32}$
+     */
+  ids: string[];
+}
+
+export type UploadUrlRequestContentType = typeof UploadUrlRequestContentType[keyof typeof UploadUrlRequestContentType];
+
+
+export const UploadUrlRequestContentType = {
+  'image/webp': 'image/webp',
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'application/zip': 'application/zip',
+} as const;
+
+export interface UploadUrlRequest {
+  /**
+     * Original file name
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  /**
+     * File size in bytes (images at most 15 MB, zips at most 200 MB)
+     * @minimum 1
+     * @maximum 209715200
+     */
+  size: number;
+  contentType: UploadUrlRequestContentType;
+}
+
+export interface UploadUrlResponse {
+  /** Signed App Storage link for one PUT upload, valid for 15 minutes */
+  uploadURL: string;
+  /** Object path to send back when saving the sample (e.g. /objects/uploads/uuid) */
+  objectPath: string;
+  metadata?: UploadUrlRequest;
+}
+
+/**
+ * Why a customer request failed, so the site can say it in the visitor's language. invalid_email: not an email address. email_not_allowed: the provider is not one of the common ones. weak_password: under 8 characters. wrong_credentials: wrong email or password. locked: the account was locked. too_many: too many attempts. wrong_code: the code does not match. code_expired: no code waiting, expired or tried too often. mail_failed: the email could not be sent. payments_off: bank details not set up yet. pending_limit: too many unpaid orders. package_gone / sample_gone: no longer on sale. sample_required: the package needs a sample. not_cancellable: the order can no longer be cancelled. no_order: chat needs an order.
+ */
+export type ErrorReason = typeof ErrorReason[keyof typeof ErrorReason];
+
+
+export const ErrorReason = {
+  invalid_input: 'invalid_input',
+  invalid_email: 'invalid_email',
+  email_not_allowed: 'email_not_allowed',
+  weak_password: 'weak_password',
+  wrong_credentials: 'wrong_credentials',
+  locked: 'locked',
+  too_many: 'too_many',
+  wrong_code: 'wrong_code',
+  code_expired: 'code_expired',
+  mail_failed: 'mail_failed',
+  payments_off: 'payments_off',
+  pending_limit: 'pending_limit',
+  package_gone: 'package_gone',
+  sample_gone: 'sample_gone',
+  sample_required: 'sample_required',
+  not_cancellable: 'not_cancellable',
+  no_order: 'no_order',
+} as const;
+
+export interface ErrorResponse {
+  error: string;
+  reason?: ErrorReason;
+}
+
+/**
+ * A package on the price list. Buyers pay the VND price by bank transfer.
+ */
+export interface Package {
+  /** Package key */
+  id: string;
+  name: string;
+  /**
+     * One-line summary of who the package is for
+     * @nullable
+     */
+  tagline: string | null;
+  /** What the buyer gets, in display order */
+  features: string[];
+  /** Price in VND, the amount to transfer */
+  price: number;
+  /**
+     * Approximate price in US dollars, shown next to the VND price; null when not set
+     * @nullable
+     */
+  priceUsd: number | null;
+  /** True for the package the studio recommends most */
+  recommended: boolean;
+  /** True when the buyer picks one of the source samples before ordering. Stays false while no sample is on show, so the package can always be ordered. */
+  pickSample: boolean;
+}
+
+export interface AccountCredentials {
+  /**
      * @minLength 1
      * @maxLength 200
      */
   email: string;
   /**
-     * Whop payment id (pay_…) or the reference from the thank-you link
      * @minLength 1
-     * @maxLength 100
-     */
-  orderId: string;
-  /**
-     * @minLength 8
      * @maxLength 128
      */
   password: string;
   lang: Language;
 }
 
-export interface SupportSignInInput {
+export interface PasswordResetInput {
   /**
      * @minLength 1
      * @maxLength 200
      */
   email: string;
+  lang: Language;
+}
+
+export interface AccountCodeInput {
+  /** @pattern ^[0-9]{6}$ */
+  code: string;
   /**
+     * The new password, only for a password reset
      * @minLength 1
      * @maxLength 128
      */
-  password: string;
+  password?: string;
 }
 
-export interface SupportSession {
+/**
+ * register: a new account. verify: confirming the email of an older account. reset: a new password. admin: the admin's second step.
+ */
+export type AccountChallengePurpose = typeof AccountChallengePurpose[keyof typeof AccountChallengePurpose];
+
+
+export const AccountChallengePurpose = {
+  register: 'register',
+  verify: 'verify',
+  reset: 'reset',
+  admin: 'admin',
+} as const;
+
+/**
+ * A 6-digit code was emailed; this browser confirms it with POST /account/verify.
+ */
+export interface AccountChallenge {
+  /** register: a new account. verify: confirming the email of an older account. reset: a new password. admin: the admin's second step. */
+  purpose: AccountChallengePurpose;
+  /** The address with most of it hidden */
+  sentTo: string;
+  expiresAt: string;
+}
+
+export interface AccountSession {
   email: string;
-  /** Whop payment id the support chat was switched on with */
-  orderId: string;
+  /** This browser is also signed in to the admin dashboard */
+  admin: boolean;
+  /** The account has an order, so support chat is open to it */
+  canChat: boolean;
   /** @nullable */
-  packageName: string | null;
+  lang: string | null;
+}
+
+/**
+ * Exactly one of the two is set.
+ */
+export interface SignInResult {
+  session: AccountSession | null;
+  challenge: AccountChallenge | null;
 }
 
 /**
@@ -319,27 +398,245 @@ export interface SupportAuthError {
   reason: SupportAuthErrorReason;
 }
 
-export interface AdminTokenInput {
+export interface OrderInput {
+  /** @pattern ^[a-z0-9][a-z0-9-]{0,39}$ */
+  packageId: string;
   /**
-     * @minLength 1
-     * @maxLength 512
+     * The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
+     * @pattern ^[A-Za-z0-9_-]{6,32}$
      */
-  token: string;
+  sampleId?: string;
+  lang: Language;
 }
 
-export interface AdminCodeChallenge {
-  /** The admin address with most of it hidden */
-  sentTo: string;
-  expiresAt: string;
+/**
+ * Where to send the money. The memo must be the order code so the studio can match the transfer.
+ */
+export interface PaymentDetails {
+  bankName: string;
+  bankFullName: string;
+  accountNumber: string;
+  accountName: string;
+  /** VND */
+  amount: number;
+  memo: string;
+  /** VietQR code as an SVG data URL; banking apps fill in everything above when they scan it */
+  qr: string;
 }
 
-export interface AdminCodeInput {
-  /** @pattern ^[0-9]{6}$ */
+export interface OrderFile {
+  name: string;
+  /** Bytes */
+  size: number;
+}
+
+export type OrderStatus = typeof OrderStatus[keyof typeof OrderStatus];
+
+
+export const OrderStatus = {
+  pending: 'pending',
+  paid: 'paid',
+  cancelled: 'cancelled',
+} as const;
+
+export interface OrderSummary {
   code: string;
+  status: OrderStatus;
+  packageName: string;
+  /** @nullable */
+  sampleName: string | null;
+  amount: number;
+  createdAt: string;
+  /** @nullable */
+  transferReportedAt: string | null;
+  /** @nullable */
+  paidAt: string | null;
+  /** Paid and the source code can be downloaded */
+  hasFile: boolean;
+}
+
+export interface Order {
+  /** Order code, also the bank transfer memo */
+  code: string;
+  status: OrderStatus;
+  packageId: string;
+  packageName: string;
+  /** @nullable */
+  sampleName: string | null;
+  /** VND */
+  amount: number;
+  createdAt: string;
+  /** @nullable */
+  transferReportedAt: string | null;
+  /** @nullable */
+  paidAt: string | null;
+  /** @nullable */
+  cancelledAt: string | null;
+  /** Transfer details while the order waits for payment; null otherwise */
+  payment: PaymentDetails | null;
+  /** The source code to download, once paid and ready */
+  file: OrderFile | null;
+  /**
+     * Message from the studio, shown once paid
+     * @nullable
+     */
+  deliveryNote: string | null;
+  canCancel: boolean;
 }
 
 export interface AdminSession {
+  email: string;
   expiresAt: string;
+}
+
+export interface AdminDay {
+  /** YYYY-MM-DD, Vietnam time */
+  date: string;
+  revenue: number;
+  /** Orders marked paid that day */
+  orders: number;
+}
+
+export type StoredFileKind = typeof StoredFileKind[keyof typeof StoredFileKind];
+
+
+export const StoredFileKind = {
+  builtin: 'builtin',
+  upload: 'upload',
+} as const;
+
+/**
+ * A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).
+ */
+export interface StoredFile {
+  kind: StoredFileKind;
+  name: string;
+  size: number;
+  /** @nullable */
+  slug: string | null;
+  /** @nullable */
+  path: string | null;
+}
+
+export interface AdminOrder {
+  code: string;
+  status: OrderStatus;
+  email: string;
+  /** @nullable */
+  accountId: string | null;
+  packageKey: string;
+  packageName: string;
+  /** @nullable */
+  sampleName: string | null;
+  amount: number;
+  lang: string;
+  createdAt: string;
+  /** @nullable */
+  transferReportedAt: string | null;
+  /** @nullable */
+  paidAt: string | null;
+  /** @nullable */
+  cancelledAt: string | null;
+  /** What the buyer downloads once paid (the attached file, else the sample's) */
+  file: StoredFile | null;
+  /** A file attached to this order */
+  deliveryFile: StoredFile | null;
+  /** @nullable */
+  deliveryNote: string | null;
+  /** @nullable */
+  adminNote: string | null;
+  downloads: number;
+}
+
+export interface AdminOverview {
+  /** Unpaid orders whose buyer has not said they sent money */
+  waitingOrders: number;
+  /** Unpaid orders whose buyer says they sent money (check the bank) */
+  reportedOrders: number;
+  revenueToday: number;
+  revenueMonth: number;
+  revenueTotal: number;
+  paidMonth: number;
+  customers: number;
+  newCustomersWeek: number;
+  unreadMessages: number;
+  bankReady: boolean;
+  /** False when the last email failed because Gmail is not connected */
+  mailReady: boolean;
+  /** The last 14 days, oldest first */
+  days: AdminDay[];
+  recentOrders: AdminOrder[];
+}
+
+export type StoredFileInputKind = typeof StoredFileInputKind[keyof typeof StoredFileInputKind];
+
+
+export const StoredFileInputKind = {
+  builtin: 'builtin',
+  upload: 'upload',
+} as const;
+
+export interface StoredFileInput {
+  kind: StoredFileInputKind;
+  /** @pattern ^[a-z0-9][a-z0-9-]{0,39}$ */
+  slug?: string;
+  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
+  path?: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name?: string;
+  /** @minimum 1 */
+  size?: number;
+}
+
+export interface BuiltinFile {
+  slug: string;
+  name: string;
+  size: number;
+  demoUrl: string;
+}
+
+export interface AdminOrderUpdate {
+  status?: OrderStatus;
+  deliveryFile?: StoredFileInput | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  deliveryNote?: string | null;
+  /**
+     * @maxLength 2000
+     * @nullable
+     */
+  adminNote?: string | null;
+}
+
+export interface AdminCustomer {
+  id: string;
+  email: string;
+  verified: boolean;
+  locked: boolean;
+  isAdmin: boolean;
+  /** @nullable */
+  lang: string | null;
+  createdAt: string;
+  /** @nullable */
+  lastSignInAt: string | null;
+  orders: number;
+  paidOrders: number;
+  /** VND paid in total */
+  spent: number;
+  /**
+     * Whop payment id of an account made before the store left Whop
+     * @nullable
+     */
+  legacyOrderId: string | null;
+}
+
+export interface AdminCustomerUpdate {
+  locked: boolean;
 }
 
 export type AdminConversationStatus = typeof AdminConversationStatus[keyof typeof AdminConversationStatus];
@@ -368,14 +665,14 @@ export interface AdminConversation {
   /** @nullable */
   email: string | null;
   /**
-     * Whop payment id the customer switched on support chat with
+     * The customer's newest order (or the Whop payment id of an older account)
      * @nullable
      */
-  orderId: string | null;
+  orderCode: string | null;
   /** @nullable */
   packageName: string | null;
   /**
-     * Source sample the customer picked when buying, if the package had a sample choice
+     * Source sample of that order, if the package had a sample choice
      * @nullable
      */
   sampleName: string | null;
@@ -394,20 +691,8 @@ export interface AdminConversation {
   unread: number;
 }
 
-export type AdminConversationUpdateStatus = typeof AdminConversationUpdateStatus[keyof typeof AdminConversationUpdateStatus];
-
-
-export const AdminConversationUpdateStatus = {
-  open: 'open',
-  closed: 'closed',
-} as const;
-
-export interface AdminConversationUpdate {
-  status: AdminConversationUpdateStatus;
-}
-
 /**
- * A package's text in one language, as stored on Whop
+ * A package's text in one language
  */
 export interface AdminPackageText {
   name: string;
@@ -429,36 +714,27 @@ export const AdminPackageTranslations = {
 } as const;
 
 export interface AdminPackage {
-  /** Package group shared by its plans (Whop plan metadata "key") */
   key: string;
   vi: AdminPackageText;
   en: AdminPackageText;
-  /**
-     * Null when the package has no VND plan
-     * @nullable
-     */
-  priceVnd: number | null;
-  /**
-     * Null when the package has no USD plan
-     * @nullable
-     */
+  priceVnd: number;
+  /** @nullable */
   priceUsd: number | null;
-  /** Shown on the site (at least one of its plans is visible on Whop) */
-  onSale: boolean;
+  /** Shown on the price list */
+  visible: boolean;
   recommended: boolean;
-  /** Buyers pick a source sample before paying (Whop plan metadata "pick_sample") */
+  /** Buyers pick a source sample before ordering */
   pickSample: boolean;
-  /** Current Whop members across the package's plans */
-  buyers: number;
+  /** Orders made with this package, cancelled ones left out */
+  orders: number;
   /** built_in: the site has ready translations for the other languages and they match the English text. outdated: the English text changed since they were made. none: no ready translations. Languages without a translation show the English text. */
   translations: AdminPackageTranslations;
 }
 
 export interface AdminPackageTextInput {
   /**
-     * Whop allows at most 30 characters in a plan title
      * @minLength 1
-     * @maxLength 30
+     * @maxLength 40
      */
   name: string;
   /**
@@ -467,9 +743,9 @@ export interface AdminPackageTextInput {
      */
   tagline: string | null;
   /**
-     * @maxItems 8
+     * @maxItems 10
      * @items.minLength 1
-     * @items.maxLength 100
+     * @items.maxLength 120
      */
   features: string[];
 }
@@ -483,24 +759,15 @@ export interface AdminPackageInput {
      */
   priceVnd: number;
   /**
-     * At most 2 decimals
-     * @minimum 1
+     * At most 2 decimals; null to show no dollar figure
+     * @minimum 0.5
      * @maximum 100000
+     * @nullable
      */
-  priceUsd: number;
-  onSale: boolean;
+  priceUsd: number | null;
+  visible: boolean;
   recommended: boolean;
-  /** Buyers pick a source sample before paying */
   pickSample: boolean;
-}
-
-export interface SampleImage {
-  /** Full-size image */
-  url: string;
-  /** Small preview showing the top of the image */
-  thumbUrl: string;
-  width: number;
-  height: number;
 }
 
 /**
@@ -510,45 +777,26 @@ export interface Sample {
   id: string;
   name: string;
   images: SampleImage[];
-}
-
-export interface AdminSampleImage {
-  /** Object path of the full-size image */
-  path: string;
-  /** Object path of the preview */
-  thumb: string;
-  width: number;
-  height: number;
-  url: string;
-  thumbUrl: string;
+  /**
+     * Live preview of the sample
+     * @nullable
+     */
+  demoUrl: string | null;
 }
 
 export interface AdminSample {
   id: string;
   name: string;
   images: AdminSampleImage[];
+  /** What buyers who picked this sample download once paid */
+  sourceFile: StoredFile | null;
+  /** @nullable */
+  demoUrl: string | null;
   /** On show to buyers */
   visible: boolean;
   position: number;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface AdminSampleImageInput {
-  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
-  path: string;
-  /** @pattern ^/objects/uploads/[0-9a-f-]{36}$ */
-  thumb: string;
-  /**
-     * @minimum 1
-     * @maximum 20000
-     */
-  width: number;
-  /**
-     * @minimum 1
-     * @maximum 20000
-     */
-  height: number;
 }
 
 export interface AdminSampleInput {
@@ -562,80 +810,93 @@ export interface AdminSampleInput {
      * @maxItems 12
      */
   images: AdminSampleImageInput[];
+  sourceFile: StoredFileInput | null;
+  /**
+     * A page of this site (/demo/...) or an https:// address
+     * @maxLength 300
+     * @nullable
+     */
+  demoUrl: string | null;
   visible: boolean;
 }
 
-export interface AdminSampleOrderInput {
+export interface BankOption {
+  bin: string;
+  code: string;
+  shortName: string;
+  name: string;
+}
+
+export interface BankSettings {
+  bin: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+}
+
+export interface BankSettingsInput {
+  /** @pattern ^[0-9]{6}$ */
+  bin: string;
+  /** @pattern ^[0-9A-Za-z]{4,19}$ */
+  accountNumber: string;
+  /**
+     * @minLength 2
+     * @maxLength 50
+     */
+  accountName: string;
+}
+
+export interface AdminSettings {
+  bank: BankSettings | null;
+  emailDomains: string[];
+  adminEmail: string;
+}
+
+export interface EmailDomainsInput {
   /**
      * @minItems 1
-     * @maxItems 500
-     * @items.pattern ^[A-Za-z0-9_-]{6,32}$
+     * @maxItems 300
+     * @items.minLength 3
+     * @items.maxLength 100
      */
-  ids: string[];
-}
-
-export interface AdminOrder {
-  /** Whop payment id */
-  id: string;
-  /** @nullable */
-  paidAt: string | null;
-  /**
-     * Amount paid in major currency units
-     * @nullable
-     */
-  amount: number | null;
-  currency: string;
-  /**
-     * Buyer email, null when Whop does not share it
-     * @nullable
-     */
-  email: string | null;
-  /** @nullable */
-  packageName: string | null;
-  /**
-     * Sample the buyer picked, null when the order had no sample choice
-     * @nullable
-     */
-  sampleName: string | null;
-}
-
-export type UploadUrlRequestContentType = typeof UploadUrlRequestContentType[keyof typeof UploadUrlRequestContentType];
-
-
-export const UploadUrlRequestContentType = {
-  'image/webp': 'image/webp',
-  'image/jpeg': 'image/jpeg',
-  'image/png': 'image/png',
-} as const;
-
-export interface UploadUrlRequest {
-  /**
-     * Original file name
-     * @minLength 1
-     * @maxLength 200
-     */
-  name: string;
-  /**
-     * File size in bytes (at most 15 MB)
-     * @minimum 1
-     * @maximum 15728640
-     */
-  size: number;
-  contentType: UploadUrlRequestContentType;
-}
-
-export interface UploadUrlResponse {
-  /** Signed App Storage link for one PUT upload, valid for 15 minutes */
-  uploadURL: string;
-  /** Object path to send back when saving the sample (e.g. /objects/uploads/uuid) */
-  objectPath: string;
-  metadata?: UploadUrlRequest;
+  domains: string[];
 }
 
 export type ListPackagesParams = {
 /**
- * Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.
+ * Language for the package name, tagline and features. Defaults to vi. Other languages use the built-in translations while the English text matches them, else the English text.
  */
 lang?: Language;
+};
+
+export type ListAdminOrdersParams = {
+/**
+ * waiting = not paid and the buyer did not say they sent money; reported = they did
+ */
+status?: ListAdminOrdersStatus;
+/**
+ * Part of the order code or the buyer email
+ * @maxLength 100
+ */
+q?: string;
+};
+
+export type ListAdminOrdersStatus = typeof ListAdminOrdersStatus[keyof typeof ListAdminOrdersStatus];
+
+
+export const ListAdminOrdersStatus = {
+  all: 'all',
+  waiting: 'waiting',
+  reported: 'reported',
+  paid: 'paid',
+  cancelled: 'cancelled',
+} as const;
+
+export type ListAdminCustomersParams = {
+/**
+ * Part of the email
+ * @maxLength 100
+ */
+q?: string;
 };
 

@@ -3,7 +3,7 @@ name: SEO rendering policy
 description: Why the storefront uses shared server rendering and the development/build SSR pitfalls.
 ---
 
-Render the same sales components for bots and visitors; do not maintain a separate bot-only sales copy or replace real Whop prices with samples.
+Render the same sales components for bots and visitors; do not maintain a separate bot-only sales copy or replace real prices with samples.
 
 **Why:** the SEO requirement is to make the existing pixel storefront readable without JavaScript, while preserving its design, multilingual content and interactive checkout.
 

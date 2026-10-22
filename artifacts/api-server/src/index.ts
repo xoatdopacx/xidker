@@ -1,5 +1,7 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { seedPackages } from "./lib/catalog";
+import { seedTemplateSamples } from "./lib/templateSamples";
 
 const rawPort = process.env["PORT"];
 
@@ -22,4 +24,14 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
+
+  // First start on a database: the starting price list, then the bundled templates as samples.
+  void (async () => {
+    try {
+      await seedPackages();
+      await seedTemplateSamples();
+    } catch (err) {
+      logger.error({ err }, "Could not add the starting packages or templates");
+    }
+  })();
 });

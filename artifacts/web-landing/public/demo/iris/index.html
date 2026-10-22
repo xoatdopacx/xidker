@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <title>Iris — Smart AI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      /* THEME — change the page's colours here. */
+      :root {
+        --bg: #0b0b11;
+        --nav: #12131a;
+        --line: rgba(255, 255, 255, 0.06);
+        --text: #fff;
+        --muted: #a3a3b2;
+        --link: #c8c8d4;
+        --violet: #7c4dff;
+        --violet-2: #8f66ff;
+        --nav-h: 62px;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { background: var(--bg); color: var(--text); }
+      body {
+        font-family: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      a { color: inherit; text-decoration: none; }
+      button { font: inherit; cursor: pointer; }
+      a:focus-visible, button:focus-visible {
+        outline: 2px solid var(--violet-2);
+        outline-offset: 5px;
+      }
+
+      /* NAVIGATION */
+      .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        height: var(--nav-h);
+        background: rgba(18, 19, 26, 0.86);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-inner {
+        max-width: 1344px;
+        height: 100%;
+        margin: 0 auto;
+        padding: 0 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-weight: 600;
+        font-size: 21px;
+        letter-spacing: -0.01em;
+      }
+      .brand-orb {
+        width: 26px;
+        height: 26px;
+        flex: 0 0 26px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 32% 28%, #c9b8ff 0%, #8b6cff 38%, #5b3df0 72%, #3a24b8 100%);
+        box-shadow: 0 0 14px rgba(124, 77, 255, 0.55), inset -2px -3px 6px rgba(20, 8, 70, 0.55);
+      }
+      .nav-right { display: flex; align-items: center; gap: 30px; }
+      .nav-links {
+        display: flex;
+        gap: 38px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--link);
+      }
+      .nav-links a { transition: color 0.2s; }
+      .nav-links a:hover { color: #fff; }
+      .btn-open {
+        background: #fff;
+        color: #0b0b11;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px 19px;
+        border-radius: 999px;
+        transition: transform 0.2s;
+      }
+      .btn-open:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15);
+      }
+      .menu-btn {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--line);
+        color: #fff;
+      }
+      .menu-btn span,
+      .menu-btn span::before,
+      .menu-btn span::after {
+        display: block;
+        width: 16px;
+        height: 1.6px;
+        background: #fff;
+      }
+      .menu-btn span { position: relative; }
+      .menu-btn span::before,
+      .menu-btn span::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        transition: transform 0.2s;
+      }
+      .menu-btn span::before { top: -5px; }
+      .menu-btn span::after { top: 5px; }
+      .nav.open .menu-btn span { background: transparent; }
+      .nav.open .menu-btn span::before { top: 0; transform: rotate(45deg); }
+      .nav.open .menu-btn span::after { top: 0; transform: rotate(-45deg); }
+      .mobile-panel {
+        display: none;
+        position: absolute;
+        top: calc(var(--nav-h) + 8px);
+        left: 16px;
+        right: 16px;
+        background: rgba(20, 21, 30, 0.96);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 8px;
+        flex-direction: column;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .mobile-panel a {
+        padding: 14px 16px;
+        border-radius: 12px;
+        font-weight: 500;
+        color: var(--link);
+      }
+      .mobile-panel a:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+      .nav.open .mobile-panel { display: flex; }
+
+      /* HERO */
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        min-height: 100svh;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      #stage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: 0;
+        touch-action: pan-y;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        pointer-events: none;
+        inset: 0;
+        background:
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 7px),
+          radial-gradient(120% 80% at 50% 0%, transparent 55%, rgba(0, 0, 0, 0.45) 100%);
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 2;
+        pointer-events: none;
+        max-width: 1344px;
+        margin: 0 auto;
+        min-height: inherit;
+        padding: calc(var(--nav-h) + 40px) 68px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .copy { max-width: 600px; pointer-events: auto; }
+      h1 {
+        font-size: clamp(40px, 5.1vw, 70px);
+        line-height: 1.04;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+      .sub {
+        margin-top: 26px;
+        color: var(--muted);
+        font-size: clamp(17px, 1.65vw, 22px);
+        line-height: 1.55;
+        font-weight: 400;
+      }
+      .btn-try {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 36px;
+        height: 59px;
+        padding: 0 38px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #8f66ff, #7c4dff);
+        color: #fff;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.005em;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        transition: transform 0.25s;
+      }
+      /* Override the reveal animation's retained transform while hovering. */
+      .btn-try:hover { transform: translateY(-2px) !important; filter: brightness(1.08); }
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+      }
+      .d1 { animation-delay: 0.08s; }
+      .d2 { animation-delay: 0.2s; }
+      .d3 { animation-delay: 0.32s; }
+      @keyframes rise { to { opacity: 1; transform: none; } }
+      .loader {
+        position: absolute;
+        z-index: 2;
+        width: 46px;
+        height: 46px;
+        border: 2px solid rgba(143, 102, 255, 0.18);
+        border-top-color: #8f66ff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        transform: translate(-50%, -50%);
+        transition: opacity 0.5s;
+        pointer-events: none;
+      }
+      .loader.hide { opacity: 0; }
+      @keyframes spin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1100px) {
+        .nav-inner, .hero-inner { padding-left: 40px; padding-right: 40px; }
+        .nav-links { gap: 26px; }
+      }
+      @media (max-width: 860px) {
+        .nav-links { display: none; }
+        .menu-btn { display: inline-flex; }
+        .nav-right { gap: 10px; }
+        .hero-inner {
+          justify-content: flex-end;
+          text-align: center;
+          align-items: center;
+          padding: calc(var(--nav-h) + 20px) 24px 56px;
+        }
+        .copy { max-width: 560px; }
+        h1 { font-size: clamp(36px, 9.2vw, 56px); }
+        .sub { margin-top: 16px; }
+        .btn-try { margin-top: 26px; }
+      }
+      @media (max-width: 480px) {
+        .nav-inner { padding: 0 16px; }
+        .hero-inner { padding: calc(var(--nav-h) + 16px) 16px 40px; }
+        .brand { font-size: 19px; }
+        .btn-open { padding: 9px 15px; font-size: 13px; }
+        .btn-try { height: 54px; padding: 0 32px; font-size: 18px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reveal { animation: none; opacity: 1; transform: none; }
+      }
+    </style>
+    <script type="importmap">
+      { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      } }
+    </script>
+  </head>
+  <body>
+    <!-- COPY & LINKS — edit the visible text and href="#" destinations here. -->
+    <header class="nav" id="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#"><span class="brand-orb"></span>Iris</a>
+        <div class="nav-right">
+          <nav class="nav-links" aria-label="Main navigation">
+            <a href="#">Overview</a>
+            <a href="#">Ecosystem</a>
+            <a href="#">Socials</a>
+            <a href="#">Help</a>
+          </nav>
+          <a class="btn-open" href="#">Get Iris</a>
+          <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobilePanel"><span></span></button>
+        </div>
+        <div class="mobile-panel" id="mobilePanel">
+          <a href="#">Overview</a>
+          <a href="#">Ecosystem</a>
+          <a href="#">Socials</a>
+          <a href="#">Help</a>
+        </div>
+      </div>
+    </header>
+    <main class="hero" id="hero">
+      <canvas id="stage" aria-hidden="true"></canvas>
+      <div class="loader" id="loader" role="status" aria-label="Loading Iris"></div>
+      <div class="hero-inner">
+        <div class="copy">
+          <h1 class="reveal d1">Introducing a<br />Smart AI Assistant</h1>
+          <p class="sub reveal d2">Easy to start. Effortless to explore.<br />Capable in every conversation.</p>
+          <a class="btn-try reveal d3" href="#">Start free</a>
+        </div>
+      </div>
+    </main>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+      import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+      import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+      import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+      import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
+
+      // MODEL URLS — the original remote assets; no image or video files are used.
+      const HEAD_GLB = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261018_172206_0181329a-86e2-41c9-8ab8-c496f29aaa53.glb";
+      const ARM_GLB = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261018_172137_cd6086ec-07ef-44dc-bd15-95a450ddaa8c.glb";
+
+      const hero = document.getElementById("hero");
+      const canvas = document.getElementById("stage");
+      const loader = document.getElementById("loader");
+      const copy = document.querySelector(".copy");
+      const nav = document.getElementById("nav");
+      const menuBtn = document.getElementById("menuBtn");
+      const mobilePanel = document.getElementById("mobilePanel");
+      const clamp = THREE.MathUtils.clamp;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      // The navigation has placeholder destinations, as supplied in the design.
+      function setMenu(open) {
+        nav.classList.toggle("open", open);
+        menuBtn.setAttribute("aria-expanded", String(open));
+      }
+      menuBtn.addEventListener("click", () => setMenu(!nav.classList.contains("open")));
+      mobilePanel.addEventListener("click", (event) => {
+        if (event.target.closest("a")) setMenu(false);
+      });
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && nav.classList.contains("open")) {
+          setMenu(false);
+          menuBtn.focus();
+        }
+      });
+      document.addEventListener("click", (event) => {
+        if (!nav.contains(event.target)) setMenu(false);
+      });
+
+      // SCENE & RENDERING
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color("#0b0b11");
+      const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+
+      function radialTexture(stops, size = 256) {
+        const surface = document.createElement("canvas");
+        surface.width = surface.height = size;
+        const context = surface.getContext("2d");
+        const gradient = context.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+        for (const [offset, color] of stops) gradient.addColorStop(offset, color);
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, size, size);
+        const texture = new THREE.CanvasTexture(surface);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        return texture;
+      }
+
+      const glowTex = radialTexture([
+        [0, "rgba(160,120,255,1)"],
+        [0.25, "rgba(124,77,255,.55)"],
+        [0.6, "rgba(90,50,230,.12)"],
+        [1, "rgba(60,30,200,0)"],
+      ]);
+
+      // A dark studio lit by round softboxes, not planes or point lights.
+      const envScene = new THREE.Scene();
+      envScene.background = new THREE.Color("#030305");
+      const softboxGeometry = new THREE.SphereGeometry(0.5, 32, 16);
+      function softbox(color, intensity, width, height, x, y, z) {
+        const material = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(color).multiplyScalar(intensity),
+        });
+        const mesh = new THREE.Mesh(softboxGeometry, material);
+        mesh.scale.set(width, height, 0.3);
+        mesh.position.set(x, y, z);
+        mesh.lookAt(0, 0, 0);
+        envScene.add(mesh);
+      }
+      softbox("#ffffff", 3.2, 5, 3.2, -3, 4.5, 4);
+      softbox("#ffffff", 1.1, 1.2, 6, 6, 0.5, 2);
+      softbox("#ffffff", 0.8, 3, 1, 1.5, 5, -1);
+      softbox("#7c4dff", 1.0, 4, 5, -5, 0, -4);
+      softbox("#7c4dff", 1.0, 4, 5, 5, 0, -4);
+      softbox("#5b30ff", 0.35, 6, 3, 0, -5, 1);
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      const environment = pmrem.fromScene(envScene, 0.02);
+      scene.environment = environment.texture;
+      scene.environmentIntensity = 1.0;
+      pmrem.dispose();
+      envScene.traverse((object) => {
+        if (object.isMesh) object.material.dispose();
+      });
+      softboxGeometry.dispose();
+
+      scene.add(new THREE.HemisphereLight(0xdcd8f0, 0x1a0f3a, 2.3));
+      const keyLight = new THREE.DirectionalLight(0xffffff, 0.55);
+      keyLight.position.set(-3, 4, 5);
+      scene.add(keyLight);
+
+      const composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.4, 0.92);
+      composer.addPass(bloom);
+      composer.addPass(new OutputPass());
+
+      function rimMaterial(color, power, strength) {
+        return new THREE.ShaderMaterial({
+          uniforms: {
+            rimColor: { value: new THREE.Color(color) },
+            rimPower: { value: power },
+            rimStrength: { value: strength },
+          },
+          vertexShader: `
+            varying vec3 vNormal;
+            varying vec3 vView;
+            void main() {
+              vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
+              vNormal = normalize(normalMatrix * normal);
+              vView = -viewPosition.xyz;
+              gl_Position = projectionMatrix * viewPosition;
+            }
+          `,
+          fragmentShader: `
+            uniform vec3 rimColor;
+            uniform float rimPower;
+            uniform float rimStrength;
+            varying vec3 vNormal;
+            varying vec3 vView;
+            void main() {
+              vec3 N = normalize(vNormal);
+              vec3 V = normalize(vView);
+              float f = pow(1.0 - max(dot(N, V), 0.0), rimPower);
+              gl_FragColor = vec4(rimColor * f * rimStrength, f);
+            }
+          `,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          depthWrite: false,
+        });
+      }
+
+      function addRim(mesh, rim) {
+        const shell = new THREE.Mesh(mesh.geometry, rimMaterial(rim.color, rim.power, rim.strength));
+        shell.name = "rim-shell";
+        shell.renderOrder = 2;
+        shell.userData.isRim = true;
+        mesh.add(shell);
+      }
+
+      const robot = new THREE.Group();
+      const body = new THREE.Group();
+      const head = new THREE.Group();
+      robot.add(body);
+      body.add(head);
+      scene.add(robot);
+      robot.visible = false;
+      const arms = [];
+      const eyes = [];
+      const pupils = [];
+      const antennaGlows = [];
+
+      const haze = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: glowTex,
+        color: 0x7a55ff,
+        opacity: 0.06,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        toneMapped: false,
+        depthWrite: false,
+      }));
+      haze.scale.setScalar(7.5);
+      haze.position.set(0, 0.1, -3);
+      scene.add(haze);
+
+      const floorGlow = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({
+          map: glowTex,
+          color: 0x8f6bff,
+          opacity: 0.95,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          depthWrite: false,
+        }),
+      );
+      floorGlow.position.set(0, -2.05, -0.6);
+      floorGlow.scale.set(3.4, 0.42, 1);
+      scene.add(floorGlow);
+
+      // MODEL PREPARATION
+      function modelMeshes(root) {
+        const meshes = [];
+        root.traverse((object) => {
+          if (object.isMesh && !object.userData.isRim) meshes.push(object);
+        });
+        return meshes;
+      }
+
+      function prepareModel(root, { glossy, rim, tint, useMap = false, smooth = false }) {
+        // Collect first: attaching shells during traverse would recurse forever.
+        const meshes = modelMeshes(root);
+        for (const mesh of meshes) {
+          const original = Array.isArray(mesh.material) ? mesh.material[0] : mesh.material;
+          const map = useMap ? original.map : null;
+          if (smooth) {
+            const geometry = mesh.geometry.clone();
+            for (const name of ["normal", "uv", "uv1", "tangent", "color"]) geometry.deleteAttribute(name);
+            mesh.geometry = mergeVertices(geometry, 1e-3);
+            mesh.geometry.computeVertexNormals();
+            geometry.dispose();
+          } else {
+            mesh.geometry = mesh.geometry.clone();
+          }
+          mesh.material = new THREE.MeshPhysicalMaterial({
+            map,
+            color: tint,
+            metalness: glossy ? 0.1 : 0,
+            roughness: glossy ? 0.3 : 0.48,
+            clearcoat: glossy ? 1.0 : 0.3,
+            clearcoatRoughness: glossy ? 0.16 : 0.4,
+            envMapIntensity: glossy ? 0.9 : 0.55,
+          });
+          if (rim) addRim(mesh, rim);
+        }
+        return root;
+      }
+
+      function normaliseHead(root) {
+        root.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(root);
+        const size = box.getSize(new THREE.Vector3());
+        const holder = new THREE.Group();
+        holder.add(root);
+        root.scale.multiplyScalar(2 / size.z);
+        holder.updateMatrixWorld(true);
+        box.setFromObject(root);
+        const centre = box.getCenter(new THREE.Vector3());
+        root.position.add(new THREE.Vector3(-centre.x, -(box.min.y + 1), -centre.z));
+        holder.updateMatrixWorld(true);
+        return holder;
+      }
+
+      function normaliseArm(root) {
+        root.updateMatrixWorld(true);
+        const box = new THREE.Box3().setFromObject(root);
+        const size = box.getSize(new THREE.Vector3());
+        const holder = new THREE.Group();
+        holder.add(root);
+        root.scale.multiplyScalar(0.78 / size.y);
+        holder.updateMatrixWorld(true);
+        box.setFromObject(root);
+        root.position.sub(box.getCenter(new THREE.Vector3()));
+        holder.updateMatrixWorld(true);
+        return holder;
+      }
+
+      function sphereNormals(root, radius) {
+        root.updateMatrixWorld(true);
+        const rootInverse = root.matrixWorld.clone().invert();
+        const point = new THREE.Vector3();
+        const localNormal = new THREE.Vector3();
+        for (const mesh of modelMeshes(root)) {
+          const toHead = new THREE.Matrix4().multiplyMatrices(rootInverse, mesh.matrixWorld);
+          // The inverse of the local-to-head inverse-transpose maps head normals back.
+          const toLocalNormal = new THREE.Matrix3().getNormalMatrix(toHead).invert();
+          const geometry = mesh.geometry;
+          const positions = geometry.getAttribute("position");
+          if (!geometry.getAttribute("normal")) geometry.computeVertexNormals();
+          const normals = geometry.getAttribute("normal");
+          for (let i = 0; i < positions.count; i++) {
+            point.fromBufferAttribute(positions, i).applyMatrix4(toHead);
+            if (Math.abs(point.length() - radius) <= radius * 0.07) {
+              localNormal.copy(point).normalize().applyMatrix3(toLocalNormal).normalize();
+              normals.setXYZ(i, localNormal.x, localNormal.y, localNormal.z);
+            }
+          }
+          normals.needsUpdate = true;
+        }
+      }
+
+      function roundedShape(width, height, corner, centreY) {
+        const left = -width / 2;
+        const right = width / 2;
+        const bottom = centreY - height / 2;
+        const top = centreY + height / 2;
+        const shape = new THREE.Shape();
+        shape.moveTo(left + corner, bottom);
+        shape.lineTo(right - corner, bottom);
+        shape.quadraticCurveTo(right, bottom, right, bottom + corner);
+        shape.lineTo(right, top - corner);
+        shape.quadraticCurveTo(right, top, right - corner, top);
+        shape.lineTo(left + corner, top);
+        shape.quadraticCurveTo(left, top, left, top - corner);
+        shape.lineTo(left, bottom + corner);
+        shape.quadraticCurveTo(left, bottom, left + corner, bottom);
+        shape.closePath();
+        return shape;
+      }
+
+      function spherePatch(width, height, corner, centreY, radius) {
+        const shapeGeometry = new THREE.ShapeGeometry(roundedShape(width, height, corner, centreY), 48);
+        const flat = shapeGeometry.toNonIndexed();
+        shapeGeometry.dispose();
+        let positions = flat.getAttribute("position").array.slice();
+        flat.dispose();
+        // Three rounds of four-way triangle subdivision before spherical wrapping.
+        for (let pass = 0; pass < 3; pass++) {
+          const next = new Float32Array(positions.length * 4);
+          let cursor = 0;
+          for (let i = 0; i < positions.length; i += 9) {
+            const a = positions.subarray(i, i + 3);
+            const b = positions.subarray(i + 3, i + 6);
+            const c = positions.subarray(i + 6, i + 9);
+            const ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, 0];
+            const bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2, 0];
+            const ca = [(c[0] + a[0]) / 2, (c[1] + a[1]) / 2, 0];
+            for (const vertex of [a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca]) {
+              next.set(vertex, cursor);
+              cursor += 3;
+            }
+          }
+          positions = next;
+        }
+        const normals = new Float32Array(positions.length);
+        for (let i = 0; i < positions.length; i += 3) {
+          const x = positions[i];
+          const y = positions[i + 1];
+          const z = Math.sqrt(Math.max(0, radius * radius - x * x - y * y));
+          positions[i + 2] = z;
+          const length = Math.hypot(x, y, z);
+          normals[i] = x / length;
+          normals[i + 1] = y / length;
+          normals[i + 2] = z / length;
+        }
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
+        geometry.computeBoundingSphere();
+        return geometry;
+      }
+
+      function addVisor(radius) {
+        const bezel = new THREE.Mesh(
+          spherePatch(1.86, 1.12, 0.46, -0.07, radius * 1.03),
+          new THREE.MeshPhysicalMaterial({
+            color: "#0c0c10",
+            roughness: 0.3,
+            metalness: 0.3,
+            clearcoat: 0.8,
+            polygonOffset: true,
+            polygonOffsetFactor: -6,
+            polygonOffsetUnits: -6,
+          }),
+        );
+        bezel.renderOrder = 3;
+        head.add(bezel);
+        const glass = new THREE.Mesh(
+          spherePatch(1.74, 1.0, 0.4, -0.07, radius * 1.036),
+          new THREE.MeshPhysicalMaterial({
+            color: "#000000",
+            roughness: 0.12,
+            clearcoat: 1,
+            clearcoatRoughness: 0.1,
+            envMapIntensity: 0.9,
+            polygonOffset: true,
+            polygonOffsetFactor: -8,
+            polygonOffsetUnits: -8,
+          }),
+        );
+        glass.renderOrder = 4;
+        head.add(glass);
+      }
+
+      function eyeMaterial(parameters) {
+        return new THREE.MeshBasicMaterial({
+          ...parameters,
+          toneMapped: false,
+          depthWrite: false,
+          depthTest: false,
+        });
+      }
+
+      function addEyes(radius) {
+        const irisTexture = radialTexture([
+          [0, "#d7c9ff"],
+          [0.45, "#a07bff"],
+          [0.8, "#7646f2"],
+          [1, "#5c2fe0"],
+        ]);
+        for (const x of [-0.43, 0.43]) {
+          const eye = new THREE.Group();
+          const y = -0.08;
+          const z = Math.sqrt((radius * 1.055) ** 2 - x * x - y * y);
+          eye.position.set(x, y, z);
+          eye.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), eye.position.clone().normalize());
+          const halo = new THREE.Mesh(
+            new THREE.CircleGeometry(0.42, 64),
+            eyeMaterial({
+              map: glowTex,
+              color: 0x8a5cff,
+              opacity: 0.24,
+              transparent: true,
+              blending: THREE.AdditiveBlending,
+            }),
+          );
+          halo.position.z = -0.004;
+          halo.renderOrder = 9;
+          const ring = new THREE.Mesh(
+            new THREE.RingGeometry(0.168, 0.212, 64),
+            eyeMaterial({ color: new THREE.Color(1.1, 0.88, 2.0) }),
+          );
+          ring.renderOrder = 10;
+          const iris = new THREE.Mesh(
+            new THREE.CircleGeometry(0.17, 64),
+            eyeMaterial({ map: irisTexture, color: new THREE.Color(1.0, 0.95, 1.15) }),
+          );
+          iris.position.z = 0.001;
+          iris.renderOrder = 10;
+          const pupilWrap = new THREE.Group();
+          const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.083, 48), eyeMaterial({ color: "#07040f" }));
+          pupil.position.z = 0.003;
+          pupil.renderOrder = 10;
+          const glint = new THREE.Mesh(new THREE.CircleGeometry(0.022, 32), eyeMaterial({ color: "#ffffff" }));
+          glint.position.set(0.032, 0.034, 0.005);
+          glint.renderOrder = 10;
+          pupilWrap.add(pupil, glint);
+          eye.add(halo, ring, iris, pupilWrap);
+          head.add(eye);
+          eyes.push(eye);
+          pupils.push(pupilWrap);
+        }
+      }
+
+      function addAntennaBall(position) {
+        const ball = new THREE.Mesh(
+          new THREE.SphereGeometry(0.118, 32, 24),
+          new THREE.MeshPhysicalMaterial({
+            color: "#8b62ff",
+            emissive: "#6a3dff",
+            emissiveIntensity: 1.5,
+            roughness: 0.22,
+            clearcoat: 1,
+            clearcoatRoughness: 0.14,
+          }),
+        );
+        ball.position.copy(position);
+        head.add(ball);
+        const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: glowTex,
+          color: 0x9a6bff,
+          opacity: 0.85,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          depthWrite: false,
+          toneMapped: false,
+        }));
+        glow.scale.setScalar(0.5);
+        ball.add(glow);
+        antennaGlows.push(glow);
+      }
+
+      function addAntennaBalls(root) {
+        root.updateMatrixWorld(true);
+        const rootInverse = root.matrixWorld.clone().invert();
+        const sides = [[], []];
+        const point = new THREE.Vector3();
+        for (const mesh of modelMeshes(root)) {
+          const toHead = new THREE.Matrix4().multiplyMatrices(rootInverse, mesh.matrixWorld);
+          const positions = mesh.geometry.getAttribute("position");
+          for (let i = 0; i < positions.count; i++) {
+            point.fromBufferAttribute(positions, i).applyMatrix4(toHead);
+            if (point.y > 0.75 && Math.abs(point.x) > 0.15) {
+              sides[point.x < 0 ? 0 : 1].push(point.clone());
+            }
+          }
+        }
+        for (const vertices of sides) {
+          if (!vertices.length) continue;
+          const top = vertices.reduce((highest, vertex) => vertex.y > highest.y ? vertex : highest);
+          const centre = new THREE.Vector3();
+          let count = 0;
+          for (const vertex of vertices) {
+            if (vertex.distanceTo(top) <= 0.2) {
+              centre.add(vertex);
+              count++;
+            }
+          }
+          centre.divideScalar(count || 1);
+          centre.y = Math.max(centre.y, top.y - 0.1);
+          addAntennaBall(centre);
+        }
+      }
+
+      function mountHead(root) {
+        // Do this at unit scale, before the intro animation starts.
+        root.updateMatrixWorld(true);
+        const ray = new THREE.Raycaster(new THREE.Vector3(0, 0, 5), new THREE.Vector3(0, 0, -1));
+        const hit = ray.intersectObjects(modelMeshes(root), false)[0];
+        const radius = clamp(hit ? root.worldToLocal(hit.point.clone()).length() : 1, 0.85, 1.1);
+        sphereNormals(root, radius);
+        head.add(root);
+        addVisor(radius);
+        addEyes(radius);
+        addAntennaBalls(root);
+      }
+
+      // Procedural replacements keep the robot interactive if either remote GLB fails.
+      function fallbackHead() {
+        const root = new THREE.Group();
+        const material = new THREE.MeshPhysicalMaterial({
+          color: "#2c2c35",
+          roughness: 0.26,
+          clearcoat: 1,
+        });
+        const rim = { color: 0x8a5cff, power: 4.5, strength: 0.32 };
+        const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), material);
+        root.add(sphere);
+        addRim(sphere, rim);
+        for (const side of [-1, 1]) {
+          const ear = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.2, 48), material);
+          ear.rotation.z = Math.PI / 2;
+          ear.position.set(side * 1.01, 0.02, 0);
+          addRim(ear, rim);
+          root.add(ear);
+          const start = new THREE.Vector3(side * 0.48, 0.83, 0);
+          const end = new THREE.Vector3(side * 0.68, 1.43, 0);
+          const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.033, 0.043, start.distanceTo(end), 24), material);
+          rod.position.copy(start).add(end).multiplyScalar(0.5);
+          rod.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
+          addRim(rod, rim);
+          root.add(rod);
+        }
+        return root;
+      }
+
+      function fallbackArm() {
+        const mesh = new THREE.Mesh(
+          new THREE.CapsuleGeometry(0.22, 0.42, 12, 32),
+          new THREE.MeshPhysicalMaterial({
+            color: "#1b1b21",
+            roughness: 0.48,
+            clearcoat: 0.3,
+            clearcoatRoughness: 0.4,
+            envMapIntensity: 0.55,
+          }),
+        );
+        addRim(mesh, { color: 0x8a5cff, power: 2.6, strength: 1.05 });
+        return mesh;
+      }
+
+      function mountArms(template) {
+        // Clone before normalising: each arm gets its own centred transform.
+        const copies = [template, template.clone(true)];
+        copies.forEach((root, index) => {
+          const arm = normaliseArm(root);
+          const side = index === 0 ? -1 : 1;
+          arm.userData.restX = side * 1.32;
+          arm.userData.restY = -0.72;
+          arm.userData.restRz = side * 0.62;
+          arm.userData.phase = index === 0 ? 0 : Math.PI * 0.85;
+          arm.position.set(arm.userData.restX, arm.userData.restY, 0.15);
+          arm.rotation.z = arm.userData.restRz;
+          body.add(arm);
+          arms.push(arm);
+        });
+      }
+
+      // LAYOUT — pixel anchors are converted into a camera view offset.
+      let W = 1;
+      let H = 1;
+      let isMobile = false;
+      const anchor = new THREE.Vector2();
+      function layout() {
+        W = hero.clientWidth;
+        H = hero.clientHeight;
+        isMobile = W <= 860;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(W, H, false);
+        composer.setPixelRatio(renderer.getPixelRatio());
+        composer.setSize(W, H);
+        bloom.setSize(W * renderer.getPixelRatio(), H * renderer.getPixelRatio());
+        let robotPx;
+        if (isMobile) {
+          const copyTop = copy.getBoundingClientRect().top - hero.getBoundingClientRect().top;
+          const room = Math.max(copyTop - 62, 220);
+          robotPx = Math.min(room * 0.92, W * 0.82);
+          anchor.set(W / 2, 62 + room * 0.5);
+        } else {
+          robotPx = Math.min(H * 0.62, W * 0.4, 640);
+          anchor.set(W * 0.695, H * 0.5 + 8);
+          if (nav.classList.contains("open")) setMenu(false);
+        }
+        camera.aspect = W / H;
+        camera.position.z = (3.4 * H) / (robotPx * 2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+        camera.setViewOffset(W, H, W / 2 - anchor.x, H / 2 - anchor.y, W, H);
+        camera.updateProjectionMatrix();
+        loader.style.left = `${anchor.x}px`;
+        loader.style.top = `${anchor.y}px`;
+      }
+      const resizeObserver = new ResizeObserver(layout);
+      resizeObserver.observe(hero);
+      resizeObserver.observe(copy);
+      window.addEventListener("resize", layout, { passive: true });
+      document.fonts.ready.then(layout);
+      layout();
+
+      // POINTER, IDLE LOOK, AND ANIMATION
+      const target = new THREE.Vector2();
+      const look = new THREE.Vector2();
+      let lastMove = performance.now();
+      function trackPointer(clientX, clientY) {
+        const bounds = hero.getBoundingClientRect();
+        const rx = isMobile ? W * 0.5 : Math.max(W * 0.55, 500);
+        const ry = isMobile ? H * 0.5 : Math.max(H * 0.55, 400);
+        target.x = clamp((clientX - bounds.left - anchor.x) / rx, -1.2, 1.2);
+        target.y = clamp((clientY - bounds.top - anchor.y) / ry, -1.2, 1.2);
+        lastMove = performance.now();
+      }
+      window.addEventListener("pointermove", (event) => trackPointer(event.clientX, event.clientY), { passive: true });
+      window.addEventListener("pointerdown", (event) => trackPointer(event.clientX, event.clientY), { passive: true });
+      window.addEventListener("touchmove", (event) => {
+        if (event.touches.length) trackPointer(event.touches[0].clientX, event.touches[0].clientY);
+      }, { passive: true });
+
+      let ready = false;
+      let intro = 0;
+      let elapsed = 0;
+      let lastFrame = 0;
+      let frameId = 0;
+      let inView = true;
+      let contextAvailable = true;
+      let nextBlink = 2.5 + Math.random() * 3.5;
+      let blinkStarted = -1;
+
+      function animate(now) {
+        frameId = 0;
+        if (!inView || document.hidden || !contextAvailable) return;
+        const dt = Math.min(lastFrame ? (now - lastFrame) / 1000 : 0, 0.05);
+        lastFrame = now;
+        elapsed += dt;
+        const t = elapsed;
+        const m = reducedMotion.matches ? 0.25 : 1;
+        if (now - lastMove > 3500) {
+          target.x = Math.sin(t * 0.45) * 0.45;
+          target.y = Math.sin(t * 0.31 + 1.2) * 0.2;
+        }
+        look.lerp(target, 1 - Math.pow(0.0025, dt));
+        if (ready) {
+          intro = Math.min(1, intro + dt * 1.4);
+          const k = intro - 1;
+          robot.scale.setScalar(Math.max(0.001, 1 + 2.4 * k ** 3 + 1.4 * k ** 2));
+        }
+        const bob = Math.sin(t * 1.6) * 0.09 * m;
+        robot.position.y = bob;
+        head.rotation.y = look.x * 0.5;
+        head.rotation.x = look.y * 0.42;
+        head.rotation.z = -look.x * 0.06 + Math.sin(t * 1.1) * 0.015 * m;
+        body.rotation.y = look.x * 0.28;
+        body.rotation.x = look.y * 0.12;
+        for (const arm of arms) {
+          const { restX, restY, restRz, phase } = arm.userData;
+          const w = Math.sin(t * 2.0 + phase);
+          arm.position.y = restY + w * 0.13 * m - bob * 0.35;
+          arm.position.x = restX + Math.sign(restX) * look.x * -0.04;
+          arm.rotation.z = restRz + w * 0.12 * Math.sign(restX) * m;
+          arm.rotation.x = Math.sin(t * 1.3 + phase) * 0.08 * m;
+        }
+        for (const pupil of pupils) {
+          pupil.position.set(clamp(look.x * 0.075, -0.07, 0.07), clamp(-look.y * 0.06, -0.06, 0.06), 0);
+        }
+        if (t >= nextBlink && blinkStarted < 0) blinkStarted = t;
+        let eyeScale = 1;
+        if (blinkStarted >= 0) {
+          const progress = (t - blinkStarted) / 0.32;
+          if (progress >= 1) {
+            blinkStarted = -1;
+            nextBlink = t + 2.5 + Math.random() * 3.5;
+          } else {
+            eyeScale = 1 - Math.sin(progress * Math.PI) * 0.92;
+          }
+        }
+        for (const eye of eyes) eye.scale.y = eyeScale;
+        floorGlow.scale.set(3.4 - bob * 3, 0.42 - bob * 0.4, 1);
+        floorGlow.material.opacity = 0.7 + (0.09 - bob) * 1.5;
+        for (const glow of antennaGlows) {
+          glow.material.opacity = 0.7 * (0.85 + Math.sin(t * 1.6) * 0.15) + 0.15;
+        }
+        composer.render();
+        frameId = requestAnimationFrame(animate);
+      }
+
+      function syncAnimation() {
+        if (inView && !document.hidden && contextAvailable) {
+          if (!frameId) {
+            lastFrame = 0;
+            frameId = requestAnimationFrame(animate);
+          }
+        } else {
+          cancelAnimationFrame(frameId);
+          frameId = 0;
+          lastFrame = 0;
+        }
+      }
+      const intersectionObserver = new IntersectionObserver(([entry]) => {
+        inView = entry.isIntersecting;
+        syncAnimation();
+      });
+      intersectionObserver.observe(hero);
+      document.addEventListener("visibilitychange", syncAnimation);
+      canvas.addEventListener("webglcontextlost", (event) => {
+        event.preventDefault();
+        contextAvailable = false;
+        syncAnimation();
+      });
+      canvas.addEventListener("webglcontextrestored", () => {
+        contextAvailable = true;
+        layout();
+        syncAnimation();
+      });
+      syncAnimation();
+
+      // Both requests run together. Either model can fall back independently.
+      const gltfLoader = new GLTFLoader();
+      const results = await Promise.allSettled([
+        gltfLoader.loadAsync(HEAD_GLB),
+        gltfLoader.loadAsync(ARM_GLB),
+      ]);
+      let headModel;
+      if (results[0].status === "fulfilled") {
+        headModel = normaliseHead(prepareModel(results[0].value.scene, {
+          glossy: true,
+          useMap: false,
+          tint: "#4a4a56",
+          rim: { color: 0x8a5cff, power: 4.5, strength: 0.32 },
+        }));
+      } else {
+        console.warn("Iris: the head GLB could not load; using the procedural head.", results[0].reason);
+        headModel = fallbackHead();
+      }
+      mountHead(headModel);
+      let armModel;
+      if (results[1].status === "fulfilled") {
+        armModel = prepareModel(results[1].value.scene, {
+          glossy: false,
+          useMap: false,
+          smooth: true,
+          tint: "#1d1d23",
+          rim: { color: 0x8a5cff, power: 2.6, strength: 1.05 },
+        });
+      } else {
+        console.warn("Iris: the arm GLB could not load; using procedural arms.", results[1].reason);
+        armModel = fallbackArm();
+      }
+      mountArms(armModel);
+      robot.scale.setScalar(0.001);
+      robot.visible = true;
+      intro = 0;
+      ready = true;
+      loader.classList.add("hide");
+      loader.setAttribute("aria-hidden", "true");
+    </script>
+  </body>
+</html>

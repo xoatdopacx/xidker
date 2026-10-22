@@ -588,14 +588,6 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .lp-dot{width:8px;height:8px;background:#cfcbbf}
 .lp-opt.on .lp-dot{background:hsl(var(--pin));box-shadow:0 0 0 2px #1b2a1c}
 
-/* currency segmented toggle */
-.cur-seg{display:inline-flex;border:4px solid #1b2a1c;background:#1b2a1c;gap:4px;box-shadow:0 4px 0 rgba(16,64,20,.35)}
-.cur-seg button{min-width:4.25rem;padding:.35rem .9rem;background:#ebe8de;color:#3d4a3d;box-shadow:inset -3px -3px 0 #cfcbbf;display:inline-flex;align-items:center;justify-content:center;gap:.45rem}
-.cur-seg button:hover{background:#fff}
-.cur-seg button[aria-checked="true"]{background:hsl(var(--gold));color:#1b2a1c;box-shadow:inset -3px -3px 0 #c99a1e,inset 3px 3px 0 #ffe590}
-.cur-seg button i{width:6px;height:6px;background:#8d8a80}
-.cur-seg button[aria-checked="true"] i{background:hsl(var(--pin))}
-.cur-seg button:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:-6px}
 
 @media (prefers-reduced-motion:reduce){.lp-panel{animation:none}}
 
@@ -863,6 +855,10 @@ html[data-script="arab"] *{letter-spacing:0!important}
 .samples-option-info{padding:14px 14px 16px}
 .samples-name{font-size:1.05rem;font-weight:800;line-height:1.45;overflow-wrap:anywhere;hyphens:none}
 .samples-choice-control{position:relative;margin-block-start:12px}
+.samples-demo{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:800;color:#1b2a1c;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px;text-decoration-color:hsl(var(--pin));white-space:nowrap}
+.samples-demo:hover{color:hsl(var(--pin-text))}
+.samples-demo:focus-visible{outline:3px solid hsl(var(--pin));outline-offset:2px}
+.samples-demo-card{margin-block-start:4px}
 .samples-radio{position:absolute;inline-size:1px;block-size:1px;opacity:0}
 .samples-choice-label{display:flex;align-items:center;gap:10px;min-block-size:44px;padding:8px 10px;border:2px solid #8d8a80;background:#e5e1d5;cursor:pointer;font-size:.8rem;font-weight:700}
 .samples-choice-label:hover{border-color:#327530}

@@ -20,14 +20,14 @@ test("33 stable locale URLs, including regional Chinese, respect artifact prefix
     assert.equal(pathLanguage(`/shop/${code}`, "/shop/"), code);
     assert.equal(isHomePath(localePath(code)), true);
   }
-  assert.equal(pathLanguage("/cam-on"), null);
+  assert.equal(pathLanguage("/tai-khoan"), null);
   assert.equal(pathLanguage("/xx/"), null);
   assert.equal(pathLanguage("/ar/admin"), null);
 });
 
-test("switching languages preserves unrelated parameters and hashes, including payment references", () => {
+test("switching languages preserves unrelated parameters and hashes, including on order pages", () => {
   assert.equal(languageHref("ja", new URL(`${origin}/vi/?lang=vi&utm_source=test#bang-gia`)), "/ja/?utm_source=test#bang-gia");
-  assert.equal(languageHref("ar", new URL(`${origin}/cam-on?ref=payment-reference#receipt`)), "/cam-on?ref=payment-reference&lang=ar#receipt");
+  assert.equal(languageHref("ar", new URL(`${origin}/don-hang/XIDAB12CD?utm_source=mail#receipt`)), "/don-hang/XIDAB12CD?utm_source=mail&lang=ar#receipt");
   assert.equal(languageHref("zh-TW", new URL(`${origin}/shop/vi/?test=1`), "/shop/"), "/shop/zh-TW/?test=1");
   assert.equal(languageHref("en", new URL(`${origin}/vi/?utm_source=test#bang-gia`)), "/?utm_source=test#bang-gia");
   assert.equal(languageHref("en", new URL(`${origin}/shop/vi/`), "/shop/"), "/shop/");
@@ -86,7 +86,7 @@ test("sitemap and robots list only the 33 canonical sales URLs and honor origin/
     assert.equal(urls.length, 33);
     assert.equal(new Set(urls).size, 33);
     for (const { code } of LANGUAGES) assert.ok(urls.includes(`${origin}${localePath(code, base)}`));
-    assert.ok(!/\/en\/|\/admin|\/cam-on|<lastmod>/.test(xml));
+    assert.ok(!/\/en\/|\/admin|\/cam-on|\/quan-tri|\/tai-khoan|\/dang-|\/quen-mat-khau|\/don-hang|\/demo|<lastmod>/.test(xml));
     assert.ok(robotsTxt(origin, base).includes(`Sitemap: ${origin}${base}sitemap.xml`));
   }
   assert.equal(read("../dist/public/sitemap.xml"), sitemapXml(origin, "/"));

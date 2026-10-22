@@ -15,9 +15,9 @@ export interface UploadUrlRequest {
      */
   name: string;
   /**
-     * File size in bytes (at most 15 MB)
+     * File size in bytes (images at most 15 MB, zips at most 200 MB)
      * @minimum 1
-     * @maximum 15728640
+     * @maximum 209715200
      */
   size: number;
   contentType: UploadUrlRequestContentType;

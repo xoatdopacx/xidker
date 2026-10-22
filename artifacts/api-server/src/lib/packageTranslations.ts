@@ -1,6 +1,6 @@
-// Built-in translations of the package text, keyed by the Whop plan metadata "key".
-// `source` is the English text (from Whop) each entry was translated from: when that
-// English text changes in Whop, these translations are skipped until they are refreshed.
+// Built-in translations of the package text, keyed by package key. `source` is the English
+// text each entry was translated from: when the admin changes a package's English text, these
+// translations are skipped until they are refreshed, and those languages show the English text.
 export type PackageText = { name: string; tagline: string | null; features: string[] };
 
 export const PACKAGE_TRANSLATIONS: Record<

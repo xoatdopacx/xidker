@@ -1,0 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --background: 0 0% 4.7059%;
+  --foreground: 205.2632 31.1475% 88.0392%;
+  --primary: 304.6154 100% 35.6863%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 220 6.9767% 42.1569%;
+  --border: 205.2632 31.1475% 88.0392%;
+  --font-sans: "Kanit", sans-serif;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: 0 0% 4.7059%;
+  --foreground: 205.2632 31.1475% 88.0392%;
+  --primary: 304.6154 100% 35.6863%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 220 6.9767% 42.1569%;
+  --border: 205.2632 31.1475% 88.0392%;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    background: #0c0c0c;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: #d7e2ea;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a:focus-visible {
+    outline: 2px solid #d7e2ea;
+    outline-offset: 6px;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  ::selection {
+    color: #0c0c0c;
+    background: #bbccd7;
+  }
+}
+
+@layer components {
+  .hero-heading {
+    background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .contact-button {
+    background: linear-gradient(
+      123deg,
+      #18011f 7%,
+      #b600a8 37%,
+      #7621b0 72%,
+      #be4c00 100%
+    );
+    box-shadow:
+      0 4px 4px rgba(181, 1, 167, 0.25),
+      4px 4px 12px #7721b1 inset;
+    outline: 2px solid #ffffff;
+    outline-offset: -3px;
+  }
+
+  .contact-button:focus-visible {
+    outline-offset: 5px;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    gap: 12px;
+    will-change: transform;
+  }
+
+  .project-image-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 12px;
+  }
+
+  .project-image-top {
+    height: clamp(130px, 16vw, 230px);
+  }
+
+  .project-image-bottom {
+    height: clamp(160px, 22vw, 340px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee-track {
+    will-change: auto;
+  }
+}

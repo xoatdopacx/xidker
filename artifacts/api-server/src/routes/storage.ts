@@ -3,7 +3,8 @@ import { Router, type IRouter, type Response } from "express";
 import { RequestUploadUrlBody, RequestUploadUrlResponse } from "@workspace/api-zod";
 import { limitByIp, requireSameOrigin } from "../lib/security";
 import { requireAdmin } from "../lib/adminAuth";
-import { objectStorage, readSampleImage } from "../lib/samples";
+import { MAX_IMAGE_BYTES, objectStorage, readSampleImage } from "../lib/samples";
+import { MAX_ZIP_BYTES, ZIP_TYPE } from "../lib/storedFiles";
 
 const router: IRouter = Router();
 const UPLOAD_PATH = /^uploads\/[0-9a-f-]{36}$/;
@@ -20,8 +21,9 @@ async function stream(res: Response, response: globalThis.Response): Promise<voi
 }
 
 /**
- * Upload link for one sample picture. Only the signed-in admin gets one; the browser then
- * sends the file straight to App Storage, never through this server.
+ * Upload link for one sample picture or source zip. Only the signed-in admin gets one; the
+ * browser then sends the file straight to App Storage, never through this server. Zips are
+ * never served from here: buyers download them through their paid order.
  */
 router.post(
   "/storage/uploads/request-url",
@@ -30,8 +32,9 @@ router.post(
   limitByIp("upload-url", 60_000, 120),
   async (req, res): Promise<void> => {
     const parsed = RequestUploadUrlBody.safeParse(req.body);
-    if (!parsed.success) {
-      res.status(400).json({ error: "Only WebP, JPEG or PNG images up to 15 MB" });
+    const max = parsed.success && parsed.data.contentType === ZIP_TYPE ? MAX_ZIP_BYTES : MAX_IMAGE_BYTES;
+    if (!parsed.success || parsed.data.size > max) {
+      res.status(400).json({ error: "Only WebP, JPEG or PNG images up to 15 MB, or .zip files up to 200 MB" });
       return;
     }
     try {

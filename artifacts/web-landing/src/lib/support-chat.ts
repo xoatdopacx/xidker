@@ -1,20 +1,15 @@
 import { useSyncExternalStore } from "react";
 
-/**
- * Shared state for the customer support chat, so the thank-you page and the
- * footer can show or open the chat widget without passing props around.
- */
-export type SupportMode = "login" | "activate";
-
+/** Shared state for the support chat, so the footer and the account pages can open it without passing props around. */
 type State = {
-  /** The chat button shows on this page even before this browser has signed in (right after a paid order). */
+  /** The chat button shows on this page even before this browser has signed in. */
   revealed: boolean;
   open: boolean;
-  /** Last open request; the widget applies mode and order id when the nonce changes. */
-  request: { mode: SupportMode; orderId: string; nonce: number };
+  /** Counts open requests; the widget remembers what opened it each time this changes. */
+  nonce: number;
 };
 
-let state: State = { revealed: false, open: false, request: { mode: "login", orderId: "", nonce: 0 } };
+let state: State = { revealed: false, open: false, nonce: 0 };
 const listeners = new Set<() => void>();
 
 function set(next: Partial<State>) {
@@ -23,12 +18,8 @@ function set(next: Partial<State>) {
 }
 
 export const supportChat = {
-  reveal() {
-    if (!state.revealed) set({ revealed: true });
-  },
-  /** Opens the panel on the given tab; the activation tab can arrive with the order id filled in. */
-  open(mode: SupportMode = "login", orderId = "") {
-    set({ revealed: true, open: true, request: { mode, orderId, nonce: state.request.nonce + 1 } });
+  open() {
+    set({ revealed: true, open: true, nonce: state.nonce + 1 });
   },
   setOpen(open: boolean) {
     if (state.open !== open) set({ open });

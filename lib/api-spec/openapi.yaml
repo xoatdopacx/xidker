@@ -11,17 +11,19 @@ tags:
   - name: health
     description: Health operations
   - name: packages
-    description: Landing page build packages sold through Whop
-  - name: checkout
-    description: Whop hosted checkout sessions and verified payment status
+    description: Packages on sale, paid by bank transfer (VietQR)
+  - name: account
+    description: Customer accounts with a confirmed email; the admin signs in here too
+  - name: orders
+    description: Orders, bank transfer details and the source code download
   - name: support
-    description: Support chat for customers who bought a package
+    description: Support chat for customers with an order
   - name: admin
-    description: Studio admin sign-in, chat inbox and the packages on sale
+    description: Studio dashboard with orders, customers, packages, samples, chat inbox and settings
   - name: samples
-    description: Source samples that buyers of some packages pick from before paying
+    description: Source samples that buyers of some packages pick from before ordering
   - name: storage
-    description: Uploaded sample images in App Storage
+    description: Uploaded sample images and source code zips in App Storage
 paths:
   /healthz:
     get:
@@ -40,18 +42,19 @@ paths:
     get:
       operationId: listPackages
       tags: [packages]
-      summary: List purchasable packages
-      description: Returns every visible package in every currency. The same package sold in another currency is a separate Whop plan sharing the same key. Sorted by currency, then price ascending.
+      summary: List the packages on sale
+      description: >-
+        Every visible package, cheapest first. Prices are in VND, paid by bank transfer; priceUsd is an approximate figure for visitors from other countries.
       parameters:
         - name: lang
           in: query
           required: false
-          description: Language for the package name, tagline and features. Defaults to vi. Text comes from Whop (plan title/description and name_<lang> metadata), then from the built-in translations, and falls back to English when a translation is missing or out of date.
+          description: Language for the package name, tagline and features. Defaults to vi. Other languages use the built-in translations while the English text matches them, else the English text.
           schema:
             $ref: "#/components/schemas/Language"
       responses:
         "200":
-          description: Packages available for purchase
+          description: Packages on sale
           content:
             application/json:
               schema:
@@ -64,122 +67,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /checkout:
+  /account/register:
     post:
-      operationId: createCheckout
-      tags: [checkout]
-      summary: Start a Whop hosted checkout for a package
-      description: Creates a Whop checkout session for the chosen package and returns the hosted checkout URL to send the buyer to. After paying, Whop sends the buyer back to /cam-on?ref={ref}.
+      operationId: registerAccount
+      tags: [account]
+      summary: Start a new account and email a 6-digit code
+      description: >-
+        The account is created only when the code is confirmed (POST /account/verify) from this browser. If the address already has an account, an email saying so is sent instead and the answer looks the same, so nobody can find out which addresses have accounts.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CheckoutInput"
-      responses:
-        "201":
-          description: Checkout session created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CheckoutSession"
-        "400":
-          description: Invalid request, or the package needs a picked sample and none was sent
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Package not found, or the picked sample is no longer on show
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /checkout/{ref}:
-    get:
-      operationId: getCheckoutStatus
-      tags: [checkout]
-      summary: Get the verified payment status of a checkout
-      description: Asks Whop whether the checkout identified by ref has been paid. Status is "pending" until Whop reports a successful payment, or "failed" when every attempt failed or was canceled.
-      parameters:
-        - name: ref
-          in: path
-          required: true
-          schema:
-            type: string
+              $ref: "#/components/schemas/AccountCredentials"
       responses:
         "200":
-          description: Checkout status
+          description: Code sent (or the already-registered note)
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CheckoutStatus"
-        "404":
-          description: Checkout not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /support/activate:
-    post:
-      operationId: activateSupport
-      tags: [support]
-      summary: Switch on support chat with a paid order
-      description: >-
-        Checks with Whop that the order is paid, not refunded, and was bought with this email,
-        then creates the customer's support account with the chosen password and signs this browser in.
-        The order can be given as the Whop payment id (pay_…) or the reference from the thank-you link.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SupportActivateInput"
-      responses:
-        "201":
-          description: Activated and signed in
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SupportSession"
+                $ref: "#/components/schemas/AccountChallenge"
         "400":
-          description: Invalid input
+          description: Invalid input; reason says which field
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "403":
           description: Request did not come from this site
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: No paid order matches this email and order id
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
-          description: Support chat is already switched on for this email or order; sign in instead
           content:
             application/json:
               schema:
@@ -191,32 +106,33 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "503":
-          description: The order cannot be checked right now
+          description: Email could not be sent
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /support/login:
+  /account/login:
     post:
-      operationId: signInSupport
-      tags: [support]
-      summary: Sign in to support chat with email and password
-      description: Only one browser stays signed in per account. Signing in here signs every other browser out.
+      operationId: signInAccount
+      tags: [account]
+      summary: Sign in with email and password
+      description: >-
+        Signs in straight away, or emails a code first: for the admin every time, and for an account whose email is not confirmed yet. Signing in signs every other browser of the account out.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SupportSignInInput"
+              $ref: "#/components/schemas/AccountCredentials"
       responses:
         "200":
-          description: Signed in
+          description: Signed in, or a code was sent
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SupportSession"
+                $ref: "#/components/schemas/SignInResult"
         "400":
-          description: Invalid input
+          description: Invalid input; reason says which field
           content:
             application/json:
               schema:
@@ -239,11 +155,167 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /support/logout:
+        "503":
+          description: Email could not be sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /account/password-reset:
     post:
-      operationId: signOutSupport
-      tags: [support]
-      summary: Sign this browser out of support chat
+      operationId: requestPasswordReset
+      tags: [account]
+      summary: Email a code to set a new password
+      description: >-
+        Always answers the same way, so nobody can find out which addresses have accounts; the code only goes out when the account exists.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordResetInput"
+      responses:
+        "200":
+          description: Code sent if the account exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountChallenge"
+        "400":
+          description: Invalid input; reason says which field
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Email could not be sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /account/verify:
+    post:
+      operationId: verifyAccountCode
+      tags: [account]
+      summary: Confirm the emailed code and sign in
+      description: >-
+        Uses the code asked for from this browser. For a password reset the new password comes with the code.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountCodeInput"
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSession"
+        "400":
+          description: Invalid input; reason says which field
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Wrong code
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "410":
+          description: No code is waiting, or it expired or was tried too often
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /account/resend:
+    post:
+      operationId: resendAccountCode
+      tags: [account]
+      summary: Email a new code for the step this browser is on
+      responses:
+        "200":
+          description: New code sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountChallenge"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "410":
+          description: No code is waiting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Email could not be sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /account/session:
+    get:
+      operationId: getAccountSession
+      tags: [account]
+      summary: Get the account this browser is signed in to
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountSession"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SupportAuthError"
+  /account/logout:
+    post:
+      operationId: signOutAccount
+      tags: [account]
+      summary: Sign this browser out
+      description: >-
+        Also ends the admin session of this browser.
       responses:
         "204":
           description: Signed out
@@ -253,24 +325,240 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /support/session:
+  /orders:
     get:
-      operationId: getSupportSession
-      tags: [support]
-      summary: Get the support account this browser is signed in to
+      operationId: listMyOrders
+      tags: [orders]
+      summary: List the signed-in customer's orders, newest first
       responses:
         "200":
-          description: Signed in
+          description: Orders
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SupportSession"
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderSummary"
         "401":
-          description: Not signed in; reason "replaced" means the account signed in on another browser
+          description: Not signed in, or signed out by a sign-in on another browser
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SupportAuthError"
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Order a package and get the bank transfer details
+      description: >-
+        The order waits until the studio sees the transfer and marks it paid. At most 3 orders can wait at a time.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderInput"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "400":
+          description: Invalid input; reason says which field
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in, or signed out by a sign-in on another browser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Package or sample not on sale any more
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Too many unpaid orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many attempts, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Payments are not set up yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /orders/{code}:
+    get:
+      operationId: getMyOrder
+      tags: [orders]
+      summary: Get one of the signed-in customer's orders
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^XID[0-9A-Z]{6}$"
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "401":
+          description: Not signed in, or signed out by a sign-in on another browser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No such order on this account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /orders/{code}/transferred:
+    post:
+      operationId: reportOrderTransfer
+      tags: [orders]
+      summary: Tell the studio the money was sent
+      description: >-
+        Emails the studio once; the order stays unpaid until the studio confirms the money arrived.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^XID[0-9A-Z]{6}$"
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "401":
+          description: Not signed in, or signed out by a sign-in on another browser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No such order on this account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The order is not waiting for payment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /orders/{code}/cancel:
+    post:
+      operationId: cancelMyOrder
+      tags: [orders]
+      summary: Cancel an order that was not paid
+      description: >-
+        Only before the customer said the money was sent.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^XID[0-9A-Z]{6}$"
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "401":
+          description: Not signed in, or signed out by a sign-in on another browser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No such order on this account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The order can no longer be cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /orders/{code}/download:
+    get:
+      operationId: downloadOrderFile
+      tags: [orders]
+      summary: Download the source code of a paid order
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^XID[0-9A-Z]{6}$"
+      responses:
+        "200":
+          description: The zip file
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        "401":
+          description: Not signed in, or signed out by a sign-in on another browser
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No such order, not paid, or no file yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /support/thread:
     get:
       operationId: getSupportThread
@@ -295,7 +583,7 @@ paths:
       operationId: sendSupportMessage
       tags: [support]
       summary: Send a message in the signed-in customer's conversation
-      description: The first message starts the conversation.
+      description: The first message starts the conversation. Only accounts with an order can chat.
       requestBody:
         required: true
         content:
@@ -333,97 +621,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /admin/login:
-    post:
-      operationId: requestAdminCode
-      tags: [admin]
-      summary: Check the admin token and email a one-time code
-      description: When the token is right, a 6-digit code valid for 10 minutes is emailed to the admin address and an httpOnly cookie ties the code to this browser.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AdminTokenInput"
-      responses:
-        "202":
-          description: Code sent
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AdminCodeChallenge"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: Wrong token
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "403":
-          description: Request did not come from this site
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "429":
-          description: Too many attempts, try again later
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Admin sign-in or email sending is not configured
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /admin/login/verify:
-    post:
-      operationId: verifyAdminCode
-      tags: [admin]
-      summary: Check the emailed code and sign in
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AdminCodeInput"
-      responses:
-        "200":
-          description: Signed in; the httpOnly admin session cookie is set
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AdminSession"
-        "400":
-          description: Invalid input
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: Wrong, expired or already used code
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "403":
-          description: Request did not come from this site
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "429":
-          description: Too many attempts, request a new code
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /admin/session:
     get:
       operationId: getAdminSession
@@ -451,6 +648,213 @@ paths:
           description: Signed out
         "403":
           description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/overview:
+    get:
+      operationId: getAdminOverview
+      tags: [admin]
+      summary: Figures for the dashboard home
+      responses:
+        "200":
+          description: Overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOverview"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/orders:
+    get:
+      operationId: listAdminOrders
+      tags: [admin]
+      summary: Search orders, newest first (at most 300)
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, waiting, reported, paid, cancelled]
+          description: waiting = not paid and the buyer did not say they sent money; reported = they did
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 100
+          description: Part of the order code or the buyer email
+      responses:
+        "200":
+          description: Orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminOrder"
+        "400":
+          description: Invalid filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/orders/{code}:
+    patch:
+      operationId: updateAdminOrder
+      tags: [admin]
+      summary: Mark an order paid, cancel or reopen it, or attach a file and notes
+      description: >-
+        Marking an order paid emails the buyer that the download is ready.
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^XID[0-9A-Z]{6}$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminOrderUpdate"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOrder"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Order not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: That status change is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Too many changes, try again later
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/customers:
+    get:
+      operationId: listAdminCustomers
+      tags: [admin]
+      summary: Search customer accounts, newest first (at most 300)
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 100
+          description: Part of the email
+      responses:
+        "200":
+          description: Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminCustomer"
+        "400":
+          description: Invalid filter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/customers/{id}:
+    patch:
+      operationId: updateAdminCustomer
+      tags: [admin]
+      summary: Lock or unlock a customer account
+      description: >-
+        Locking signs the account out everywhere and stops sign-in, orders and chat.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[A-Za-z0-9_-]{6,64}$"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCustomerUpdate"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminCustomer"
+        "400":
+          description: Invalid input, or the admin account itself
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Account not found
           content:
             application/json:
               schema:
@@ -672,13 +1076,10 @@ paths:
     get:
       operationId: listAdminPackages
       tags: [admin]
-      summary: List every package on Whop, hidden ones included
-      description: >-
-        Read straight from Whop, uncached. A package is the group of one-time plans under the shop's
-        Whop product that share a metadata key: its VND plan carries the Vietnamese text and its USD plan the English text.
+      summary: List every package, hidden ones included
       responses:
         "200":
-          description: Packages, cheapest VND price first
+          description: Packages, cheapest first
           content:
             application/json:
               schema:
@@ -691,17 +1092,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
     post:
       operationId: createAdminPackage
       tags: [admin]
-      summary: Put a new package on sale
-      description: Creates the package's VND and USD plans on Whop. The site shows the change within about a minute.
+      summary: Add a package
       requestBody:
         required: true
         content:
@@ -710,7 +1104,7 @@ paths:
               $ref: "#/components/schemas/AdminPackageInput"
       responses:
         "201":
-          description: Created on Whop
+          description: Added
           content:
             application/json:
               schema:
@@ -733,20 +1127,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "422":
-          description: Whop refused the change; the error says why
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "429":
           description: Too many changes, try again later
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
           content:
             application/json:
               schema:
@@ -755,17 +1137,16 @@ paths:
     put:
       operationId: updateAdminPackage
       tags: [admin]
-      summary: Change a package's prices, text, recommended mark or whether it is on sale
+      summary: Change a package
       description: >-
-        Only the Whop fields that differ are sent. A missing VND or USD plan is created.
-        Marking a package recommended clears the mark on every other package.
+        Orders already made keep the name and price they were made with.
       parameters:
         - name: key
           in: path
           required: true
           schema:
             type: string
-            pattern: "^[A-Za-z0-9_-]{1,64}$"
+            pattern: "^[a-z0-9][a-z0-9-]{0,39}$"
       requestBody:
         required: true
         content:
@@ -774,7 +1155,7 @@ paths:
               $ref: "#/components/schemas/AdminPackageInput"
       responses:
         "200":
-          description: Saved on Whop
+          description: Saved
           content:
             application/json:
               schema:
@@ -803,20 +1184,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "422":
-          description: Whop refused the change; the error says why
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "429":
           description: Too many changes, try again later
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
           content:
             application/json:
               schema:
@@ -824,18 +1193,19 @@ paths:
     delete:
       operationId: deleteAdminPackage
       tags: [admin]
-      summary: Delete a package nobody has bought
-      description: Deletes all of the package's plans on Whop. Packages with buyers can only be hidden.
+      summary: Delete a package nobody has ordered
+      description: >-
+        Packages with orders can only be hidden.
       parameters:
         - name: key
           in: path
           required: true
           schema:
             type: string
-            pattern: "^[A-Za-z0-9_-]{1,64}$"
+            pattern: "^[a-z0-9][a-z0-9-]{0,39}$"
       responses:
         "204":
-          description: Deleted on Whop
+          description: Deleted
         "401":
           description: Not signed in
           content:
@@ -855,25 +1225,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "409":
-          description: The package has buyers, so it can only be hidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "422":
-          description: Whop refused the change; the error says why
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "429":
-          description: Too many changes, try again later
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
+          description: The package has orders, so it can only be hidden
           content:
             application/json:
               schema:
@@ -1094,31 +1446,136 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /admin/orders:
+  /admin/builtin-files:
     get:
-      operationId: listAdminOrders
+      operationId: listBuiltinFiles
       tags: [admin]
-      summary: Recent paid orders and the sample each buyer picked
+      summary: Source code zips that ship with the site
       description: >-
-        Read from Whop (newest first, at most 50), joined with the checkouts started on this site to add the
-        picked sample. Orders made before samples existed, or outside this site, have no sample.
+        Can be attached to a sample or an order without uploading anything.
       responses:
         "200":
-          description: Paid orders, newest first
+          description: Files
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AdminOrder"
+                  $ref: "#/components/schemas/BuiltinFile"
         "401":
           description: Not signed in
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "503":
-          description: Payment provider unavailable
+  /admin/settings:
+    get:
+      operationId: getAdminSettings
+      tags: [admin]
+      summary: Bank account for transfers and allowed email providers
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSettings"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/settings/bank:
+    put:
+      operationId: updateAdminBank
+      tags: [admin]
+      summary: Set the bank account buyers transfer to
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BankSettingsInput"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSettings"
+        "400":
+          description: Invalid input or unknown bank
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/settings/email-domains:
+    put:
+      operationId: updateAdminEmailDomains
+      tags: [admin]
+      summary: Set the email providers new accounts may use
+      description: >-
+        The admin address is always allowed. Existing accounts keep working whatever their provider.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailDomainsInput"
+      responses:
+        "200":
+          description: Saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSettings"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not signed in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Request did not come from this site
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/banks:
+    get:
+      operationId: listBanks
+      tags: [admin]
+      summary: Vietnamese banks that take VietQR transfers
+      responses:
+        "200":
+          description: Banks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BankOption"
+        "401":
+          description: Not signed in
           content:
             application/json:
               schema:
@@ -1127,10 +1584,11 @@ paths:
     post:
       operationId: requestUploadUrl
       tags: [storage]
-      summary: Get a link to upload one sample image
+      summary: Get a link to upload one sample image or source code zip
       description: >-
         Admin only. The request carries the file details, never the file; the browser then uploads the
-        file straight to App Storage with PUT to uploadURL.
+        file straight to App Storage with PUT to uploadURL. Zips stay private: buyers get them only
+        through the download of a paid order.
       requestBody:
         required: true
         content:
@@ -1211,7 +1669,7 @@ paths:
       operationId: getStorageObject
       tags: [storage]
       summary: Serve an uploaded sample image
-      description: Only images that belong to a saved sample are served (saving marks them public).
+      description: Only images that belong to a saved sample are served (saving marks them public). Source code zips are never served here.
       parameters:
         - name: objectPath
           in: path
@@ -1248,136 +1706,10 @@ components:
           type: string
       required:
         - status
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: string
-      required:
-        - error
     Language:
       type: string
       enum: [vi, en, zh-CN, zh-TW, ja, ko, th, id, ms, fil, km, lo, hi, bn, ur, ar, fa, he, tr, ru, uk, pl, cs, de, fr, es, pt, it, nl, sv, el, ro, hu]
       description: Site language (BCP 47 code)
-    Package:
-      type: object
-      description: A landing page build package, backed by a Whop plan.
-      properties:
-        id:
-          type: string
-          description: Whop plan id
-        key:
-          type: string
-          description: Package group. The same package sold in different currencies shares one key (Whop plan metadata "key").
-        name:
-          type: string
-        tagline:
-          type: ["string", "null"]
-          description: One-line summary of who the package is for
-        features:
-          type: array
-          items:
-            type: string
-          description: What the buyer gets, in display order
-        price:
-          type: number
-          description: Price in major currency units (e.g. 5990000 = 5.990.000 VND, 249 = $249)
-        currency:
-          type: string
-          description: ISO 4217 currency code, lowercase (e.g. "vnd", "usd")
-        billing:
-          type: string
-          enum: [one_time, recurring]
-        billingPeriodDays:
-          type: ["integer", "null"]
-          description: Days between charges for recurring packages, null for one-time
-        recommended:
-          type: boolean
-          description: True for the package the studio recommends most
-        pickSample:
-          type: boolean
-          description: >-
-            True when the buyer picks one of the source samples before paying. Set on the package in the admin
-            screen; stays false while no sample is on show, so the package can always be bought.
-      required:
-        - id
-        - key
-        - name
-        - tagline
-        - features
-        - price
-        - currency
-        - billing
-        - billingPeriodDays
-        - recommended
-        - pickSample
-    CheckoutInput:
-      type: object
-      properties:
-        packageId:
-          type: string
-          minLength: 1
-        sampleId:
-          type: string
-          pattern: "^[A-Za-z0-9_-]{6,32}$"
-          description: The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
-      required:
-        - packageId
-    CheckoutSession:
-      type: object
-      properties:
-        ref:
-          type: string
-          description: Reference for this checkout, used on the /cam-on page
-        purchaseUrl:
-          type: string
-          description: Whop hosted checkout URL to send the buyer to
-      required:
-        - ref
-        - purchaseUrl
-    CheckoutStatus:
-      type: object
-      properties:
-        ref:
-          type: string
-        status:
-          type: string
-          enum: [paid, pending, failed]
-          description: >-
-            paid once Whop reports a successful payment; failed when every attempt on this checkout
-            failed or was canceled; pending otherwise (no attempt yet, or one still in progress).
-        packageId:
-          type: string
-        packageName:
-          type: string
-        amount:
-          type: ["number", "null"]
-          description: Amount paid in major currency units, null until paid
-        currency:
-          type: ["string", "null"]
-        paidAt:
-          type: ["string", "null"]
-          format: date-time
-        orderId:
-          type: ["string", "null"]
-          description: Whop payment id, null until paid. The customer uses it to switch on support chat.
-        sampleId:
-          type: ["string", "null"]
-          description: The source sample picked for this checkout, null when the package has no sample choice
-        sampleName:
-          type: ["string", "null"]
-          description: Name of the picked sample as it was when the checkout started
-      required:
-        - ref
-        - status
-        - packageId
-        - packageName
-        - amount
-        - currency
-        - paidAt
-        - orderId
-        - sampleId
-        - sampleName
     ChatMessage:
       type: object
       properties:
@@ -1485,158 +1817,6 @@ components:
             type: integer
       required:
         - messageIds
-    SupportActivateInput:
-      type: object
-      properties:
-        email:
-          type: string
-          minLength: 1
-          maxLength: 200
-          description: The email used to pay on Whop
-        orderId:
-          type: string
-          minLength: 1
-          maxLength: 100
-          description: Whop payment id (pay_…) or the reference from the thank-you link
-        password:
-          type: string
-          minLength: 8
-          maxLength: 128
-        lang:
-          $ref: "#/components/schemas/Language"
-      required:
-        - email
-        - orderId
-        - password
-        - lang
-    SupportSignInInput:
-      type: object
-      properties:
-        email:
-          type: string
-          minLength: 1
-          maxLength: 200
-        password:
-          type: string
-          minLength: 1
-          maxLength: 128
-      required:
-        - email
-        - password
-    SupportSession:
-      type: object
-      properties:
-        email:
-          type: string
-        orderId:
-          type: string
-          description: Whop payment id the support chat was switched on with
-        packageName:
-          type: ["string", "null"]
-      required:
-        - email
-        - orderId
-        - packageName
-    SupportAuthError:
-      type: object
-      properties:
-        error:
-          type: string
-        reason:
-          type: string
-          enum: [signed_out, replaced]
-          description: replaced means the account signed in on another browser, which signed this one out
-      required:
-        - error
-        - reason
-    AdminTokenInput:
-      type: object
-      properties:
-        token:
-          type: string
-          minLength: 1
-          maxLength: 512
-      required:
-        - token
-    AdminCodeChallenge:
-      type: object
-      properties:
-        sentTo:
-          type: string
-          description: The admin address with most of it hidden
-        expiresAt:
-          type: string
-          format: date-time
-      required:
-        - sentTo
-        - expiresAt
-    AdminCodeInput:
-      type: object
-      properties:
-        code:
-          type: string
-          pattern: "^[0-9]{6}$"
-      required:
-        - code
-    AdminSession:
-      type: object
-      properties:
-        expiresAt:
-          type: string
-          format: date-time
-      required:
-        - expiresAt
-    AdminConversation:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: ["string", "null"]
-        email:
-          type: ["string", "null"]
-        orderId:
-          type: ["string", "null"]
-          description: Whop payment id the customer switched on support chat with
-        packageName:
-          type: ["string", "null"]
-        sampleName:
-          type: ["string", "null"]
-          description: Source sample the customer picked when buying, if the package had a sample choice
-        lang:
-          type: string
-        status:
-          type: string
-          enum: [open, closed]
-        createdAt:
-          type: string
-          format: date-time
-        lastMessageAt:
-          type: string
-          format: date-time
-        lastMessage:
-          type: ["string", "null"]
-          description: Start of the newest message
-        lastSender:
-          type: ["string", "null"]
-          enum: [visitor, admin, null]
-        unread:
-          type: integer
-          description: Visitor messages the admin has not opened yet
-      required:
-        - id
-        - name
-        - email
-        - orderId
-        - packageName
-        - sampleName
-        - lang
-        - status
-        - createdAt
-        - lastMessageAt
-        - lastMessage
-        - lastSender
-        - unread
     AdminConversationUpdate:
       type: object
       properties:
@@ -1645,120 +1825,6 @@ components:
           enum: [open, closed]
       required:
         - status
-    AdminPackageText:
-      type: object
-      description: A package's text in one language, as stored on Whop
-      properties:
-        name:
-          type: string
-        tagline:
-          type: ["string", "null"]
-        features:
-          type: array
-          items:
-            type: string
-      required:
-        - name
-        - tagline
-        - features
-    AdminPackage:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Package group shared by its plans (Whop plan metadata "key")
-        vi:
-          $ref: "#/components/schemas/AdminPackageText"
-        en:
-          $ref: "#/components/schemas/AdminPackageText"
-        priceVnd:
-          type: ["number", "null"]
-          description: Null when the package has no VND plan
-        priceUsd:
-          type: ["number", "null"]
-          description: Null when the package has no USD plan
-        onSale:
-          type: boolean
-          description: Shown on the site (at least one of its plans is visible on Whop)
-        recommended:
-          type: boolean
-        pickSample:
-          type: boolean
-          description: Buyers pick a source sample before paying (Whop plan metadata "pick_sample")
-        buyers:
-          type: integer
-          description: Current Whop members across the package's plans
-        translations:
-          type: string
-          enum: [built_in, outdated, none]
-          description: >-
-            built_in: the site has ready translations for the other languages and they match the English text.
-            outdated: the English text changed since they were made. none: no ready translations.
-            Languages without a translation show the English text.
-      required:
-        - key
-        - vi
-        - en
-        - priceVnd
-        - priceUsd
-        - onSale
-        - recommended
-        - pickSample
-        - buyers
-        - translations
-    AdminPackageTextInput:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 30
-          description: Whop allows at most 30 characters in a plan title
-        tagline:
-          type: ["string", "null"]
-          maxLength: 160
-        features:
-          type: array
-          maxItems: 8
-          items:
-            type: string
-            minLength: 1
-            maxLength: 100
-      required:
-        - name
-        - tagline
-        - features
-    AdminPackageInput:
-      type: object
-      properties:
-        vi:
-          $ref: "#/components/schemas/AdminPackageTextInput"
-        en:
-          $ref: "#/components/schemas/AdminPackageTextInput"
-        priceVnd:
-          type: integer
-          minimum: 10000
-          maximum: 1000000000
-        priceUsd:
-          type: number
-          minimum: 1
-          maximum: 100000
-          description: At most 2 decimals
-        onSale:
-          type: boolean
-        recommended:
-          type: boolean
-        pickSample:
-          type: boolean
-          description: Buyers pick a source sample before paying
-      required:
-        - vi
-        - en
-        - priceVnd
-        - priceUsd
-        - onSale
-        - recommended
-        - pickSample
     SampleImage:
       type: object
       properties:
@@ -1777,22 +1843,6 @@ components:
         - thumbUrl
         - width
         - height
-    Sample:
-      type: object
-      description: A source sample a buyer can pick. The name is shown as written in every language.
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        images:
-          type: array
-          items:
-            $ref: "#/components/schemas/SampleImage"
-      required:
-        - id
-        - name
-        - images
     AdminSampleImage:
       type: object
       properties:
@@ -1817,36 +1867,6 @@ components:
         - height
         - url
         - thumbUrl
-    AdminSample:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        images:
-          type: array
-          items:
-            $ref: "#/components/schemas/AdminSampleImage"
-        visible:
-          type: boolean
-          description: On show to buyers
-        position:
-          type: integer
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - name
-        - images
-        - visible
-        - position
-        - createdAt
-        - updatedAt
     AdminSampleImageInput:
       type: object
       properties:
@@ -1869,25 +1889,6 @@ components:
         - thumb
         - width
         - height
-    AdminSampleInput:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 60
-        images:
-          type: array
-          minItems: 1
-          maxItems: 12
-          items:
-            $ref: "#/components/schemas/AdminSampleImageInput"
-        visible:
-          type: boolean
-      required:
-        - name
-        - images
-        - visible
     AdminSampleOrderInput:
       type: object
       properties:
@@ -1900,56 +1901,6 @@ components:
             pattern: "^[A-Za-z0-9_-]{6,32}$"
       required:
         - ids
-    AdminOrder:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Whop payment id
-        paidAt:
-          type: ["string", "null"]
-          format: date-time
-        amount:
-          type: ["number", "null"]
-          description: Amount paid in major currency units
-        currency:
-          type: string
-        email:
-          type: ["string", "null"]
-          description: Buyer email, null when Whop does not share it
-        packageName:
-          type: ["string", "null"]
-        sampleName:
-          type: ["string", "null"]
-          description: Sample the buyer picked, null when the order had no sample choice
-      required:
-        - id
-        - paidAt
-        - amount
-        - currency
-        - email
-        - packageName
-        - sampleName
-    UploadUrlRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 200
-          description: Original file name
-        size:
-          type: integer
-          minimum: 1
-          maximum: 15728640
-          description: File size in bytes (at most 15 MB)
-        contentType:
-          type: string
-          enum: [image/webp, image/jpeg, image/png]
-      required:
-        - name
-        - size
-        - contentType
     UploadUrlResponse:
       type: object
       properties:
@@ -1965,3 +1916,937 @@ components:
       required:
         - uploadURL
         - objectPath
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        reason:
+          $ref: "#/components/schemas/ErrorReason"
+      required:
+        - error
+    ErrorReason:
+      type: string
+      description: >-
+        Why a customer request failed, so the site can say it in the visitor's language.
+        invalid_email: not an email address. email_not_allowed: the provider is not one of the common ones.
+        weak_password: under 8 characters. wrong_credentials: wrong email or password. locked: the account was locked.
+        too_many: too many attempts. wrong_code: the code does not match. code_expired: no code waiting, expired or tried
+        too often. mail_failed: the email could not be sent. payments_off: bank details not set up yet. pending_limit: too
+        many unpaid orders. package_gone / sample_gone: no longer on sale. sample_required: the package needs a sample.
+        not_cancellable: the order can no longer be cancelled. no_order: chat needs an order.
+      enum: [invalid_input, invalid_email, email_not_allowed, weak_password, wrong_credentials, locked, too_many, wrong_code, code_expired, mail_failed, payments_off, pending_limit, package_gone, sample_gone, sample_required, not_cancellable, no_order]
+    Package:
+      type: object
+      description: A package on the price list. Buyers pay the VND price by bank transfer.
+      properties:
+        id:
+          type: string
+          description: Package key
+        name:
+          type: string
+        tagline:
+          type: ["string", "null"]
+          description: One-line summary of who the package is for
+        features:
+          type: array
+          items:
+            type: string
+          description: What the buyer gets, in display order
+        price:
+          type: integer
+          description: Price in VND, the amount to transfer
+        priceUsd:
+          type: ["number", "null"]
+          description: Approximate price in US dollars, shown next to the VND price; null when not set
+        recommended:
+          type: boolean
+          description: True for the package the studio recommends most
+        pickSample:
+          type: boolean
+          description: >-
+            True when the buyer picks one of the source samples before ordering. Stays false while no sample is
+            on show, so the package can always be ordered.
+      required:
+        - id
+        - name
+        - tagline
+        - features
+        - price
+        - priceUsd
+        - recommended
+        - pickSample
+    AccountCredentials:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 200
+        password:
+          type: string
+          minLength: 1
+          maxLength: 128
+        lang:
+          $ref: "#/components/schemas/Language"
+      required:
+        - email
+        - password
+        - lang
+    PasswordResetInput:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+          maxLength: 200
+        lang:
+          $ref: "#/components/schemas/Language"
+      required:
+        - email
+        - lang
+    AccountCodeInput:
+      type: object
+      properties:
+        code:
+          type: string
+          pattern: "^[0-9]{6}$"
+        password:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: The new password, only for a password reset
+      required:
+        - code
+    AccountChallenge:
+      type: object
+      description: A 6-digit code was emailed; this browser confirms it with POST /account/verify.
+      properties:
+        purpose:
+          type: string
+          enum: [register, verify, reset, admin]
+          description: >-
+            register: a new account. verify: confirming the email of an older account. reset: a new password.
+            admin: the admin's second step.
+        sentTo:
+          type: string
+          description: The address with most of it hidden
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - purpose
+        - sentTo
+        - expiresAt
+    AccountSession:
+      type: object
+      properties:
+        email:
+          type: string
+        admin:
+          type: boolean
+          description: This browser is also signed in to the admin dashboard
+        canChat:
+          type: boolean
+          description: The account has an order, so support chat is open to it
+        lang:
+          type: ["string", "null"]
+      required:
+        - email
+        - admin
+        - canChat
+        - lang
+    SignInResult:
+      type: object
+      description: Exactly one of the two is set.
+      properties:
+        session:
+          oneOf:
+            - $ref: "#/components/schemas/AccountSession"
+            - type: "null"
+        challenge:
+          oneOf:
+            - $ref: "#/components/schemas/AccountChallenge"
+            - type: "null"
+      required:
+        - session
+        - challenge
+    SupportAuthError:
+      type: object
+      properties:
+        error:
+          type: string
+        reason:
+          type: string
+          enum: [signed_out, replaced]
+          description: replaced means the account signed in on another browser, which signed this one out
+      required:
+        - error
+        - reason
+    OrderInput:
+      type: object
+      properties:
+        packageId:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9-]{0,39}$"
+        sampleId:
+          type: string
+          pattern: "^[A-Za-z0-9_-]{6,32}$"
+          description: The source sample the buyer picked. Required when the package has pickSample; ignored otherwise.
+        lang:
+          $ref: "#/components/schemas/Language"
+      required:
+        - packageId
+        - lang
+    PaymentDetails:
+      type: object
+      description: Where to send the money. The memo must be the order code so the studio can match the transfer.
+      properties:
+        bankName:
+          type: string
+        bankFullName:
+          type: string
+        accountNumber:
+          type: string
+        accountName:
+          type: string
+        amount:
+          type: integer
+          description: VND
+        memo:
+          type: string
+        qr:
+          type: string
+          description: VietQR code as an SVG data URL; banking apps fill in everything above when they scan it
+      required:
+        - bankName
+        - bankFullName
+        - accountNumber
+        - accountName
+        - amount
+        - memo
+        - qr
+    OrderFile:
+      type: object
+      properties:
+        name:
+          type: string
+        size:
+          type: integer
+          description: Bytes
+      required:
+        - name
+        - size
+    OrderStatus:
+      type: string
+      enum: [pending, paid, cancelled]
+    OrderSummary:
+      type: object
+      properties:
+        code:
+          type: string
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        packageName:
+          type: string
+        sampleName:
+          type: ["string", "null"]
+        amount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        transferReportedAt:
+          type: ["string", "null"]
+          format: date-time
+        paidAt:
+          type: ["string", "null"]
+          format: date-time
+        hasFile:
+          type: boolean
+          description: Paid and the source code can be downloaded
+      required:
+        - code
+        - status
+        - packageName
+        - sampleName
+        - amount
+        - createdAt
+        - transferReportedAt
+        - paidAt
+        - hasFile
+    Order:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Order code, also the bank transfer memo
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        packageId:
+          type: string
+        packageName:
+          type: string
+        sampleName:
+          type: ["string", "null"]
+        amount:
+          type: integer
+          description: VND
+        createdAt:
+          type: string
+          format: date-time
+        transferReportedAt:
+          type: ["string", "null"]
+          format: date-time
+        paidAt:
+          type: ["string", "null"]
+          format: date-time
+        cancelledAt:
+          type: ["string", "null"]
+          format: date-time
+        payment:
+          description: Transfer details while the order waits for payment; null otherwise
+          oneOf:
+            - $ref: "#/components/schemas/PaymentDetails"
+            - type: "null"
+        file:
+          description: The source code to download, once paid and ready
+          oneOf:
+            - $ref: "#/components/schemas/OrderFile"
+            - type: "null"
+        deliveryNote:
+          type: ["string", "null"]
+          description: Message from the studio, shown once paid
+        canCancel:
+          type: boolean
+      required:
+        - code
+        - status
+        - packageId
+        - packageName
+        - sampleName
+        - amount
+        - createdAt
+        - transferReportedAt
+        - paidAt
+        - cancelledAt
+        - payment
+        - file
+        - deliveryNote
+        - canCancel
+    AdminSession:
+      type: object
+      properties:
+        email:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+      required:
+        - email
+        - expiresAt
+    AdminDay:
+      type: object
+      properties:
+        date:
+          type: string
+          description: YYYY-MM-DD, Vietnam time
+        revenue:
+          type: integer
+        orders:
+          type: integer
+          description: Orders marked paid that day
+      required:
+        - date
+        - revenue
+        - orders
+    AdminOverview:
+      type: object
+      properties:
+        waitingOrders:
+          type: integer
+          description: Unpaid orders whose buyer has not said they sent money
+        reportedOrders:
+          type: integer
+          description: Unpaid orders whose buyer says they sent money (check the bank)
+        revenueToday:
+          type: integer
+        revenueMonth:
+          type: integer
+        revenueTotal:
+          type: integer
+        paidMonth:
+          type: integer
+        customers:
+          type: integer
+        newCustomersWeek:
+          type: integer
+        unreadMessages:
+          type: integer
+        bankReady:
+          type: boolean
+        mailReady:
+          type: boolean
+          description: False when the last email failed because Gmail is not connected
+        days:
+          type: array
+          description: The last 14 days, oldest first
+          items:
+            $ref: "#/components/schemas/AdminDay"
+        recentOrders:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminOrder"
+      required:
+        - waitingOrders
+        - reportedOrders
+        - revenueToday
+        - revenueMonth
+        - revenueTotal
+        - paidMonth
+        - customers
+        - newCustomersWeek
+        - unreadMessages
+        - bankReady
+        - mailReady
+        - days
+        - recentOrders
+    StoredFile:
+      type: object
+      description: A zip buyers download. builtin ships with the site (by slug); upload is in App Storage (by path).
+      properties:
+        kind:
+          type: string
+          enum: [builtin, upload]
+        name:
+          type: string
+        size:
+          type: integer
+        slug:
+          type: ["string", "null"]
+        path:
+          type: ["string", "null"]
+      required:
+        - kind
+        - name
+        - size
+        - slug
+        - path
+    StoredFileInput:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum: [builtin, upload]
+        slug:
+          type: string
+          pattern: "^[a-z0-9][a-z0-9-]{0,39}$"
+        path:
+          type: string
+          pattern: "^/objects/uploads/[0-9a-f-]{36}$"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        size:
+          type: integer
+          minimum: 1
+      required:
+        - kind
+    BuiltinFile:
+      type: object
+      properties:
+        slug:
+          type: string
+        name:
+          type: string
+        size:
+          type: integer
+        demoUrl:
+          type: string
+      required:
+        - slug
+        - name
+        - size
+        - demoUrl
+    AdminOrder:
+      type: object
+      properties:
+        code:
+          type: string
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        email:
+          type: string
+        accountId:
+          type: ["string", "null"]
+        packageKey:
+          type: string
+        packageName:
+          type: string
+        sampleName:
+          type: ["string", "null"]
+        amount:
+          type: integer
+        lang:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        transferReportedAt:
+          type: ["string", "null"]
+          format: date-time
+        paidAt:
+          type: ["string", "null"]
+          format: date-time
+        cancelledAt:
+          type: ["string", "null"]
+          format: date-time
+        file:
+          description: What the buyer downloads once paid (the attached file, else the sample's)
+          oneOf:
+            - $ref: "#/components/schemas/StoredFile"
+            - type: "null"
+        deliveryFile:
+          description: A file attached to this order
+          oneOf:
+            - $ref: "#/components/schemas/StoredFile"
+            - type: "null"
+        deliveryNote:
+          type: ["string", "null"]
+        adminNote:
+          type: ["string", "null"]
+        downloads:
+          type: integer
+      required:
+        - code
+        - status
+        - email
+        - accountId
+        - packageKey
+        - packageName
+        - sampleName
+        - amount
+        - lang
+        - createdAt
+        - transferReportedAt
+        - paidAt
+        - cancelledAt
+        - file
+        - deliveryFile
+        - deliveryNote
+        - adminNote
+        - downloads
+    AdminOrderUpdate:
+      type: object
+      properties:
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        deliveryFile:
+          oneOf:
+            - $ref: "#/components/schemas/StoredFileInput"
+            - type: "null"
+        deliveryNote:
+          type: ["string", "null"]
+          maxLength: 2000
+        adminNote:
+          type: ["string", "null"]
+          maxLength: 2000
+    AdminCustomer:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        verified:
+          type: boolean
+        locked:
+          type: boolean
+        isAdmin:
+          type: boolean
+        lang:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        lastSignInAt:
+          type: ["string", "null"]
+          format: date-time
+        orders:
+          type: integer
+        paidOrders:
+          type: integer
+        spent:
+          type: integer
+          description: VND paid in total
+        legacyOrderId:
+          type: ["string", "null"]
+          description: Whop payment id of an account made before the store left Whop
+      required:
+        - id
+        - email
+        - verified
+        - locked
+        - isAdmin
+        - lang
+        - createdAt
+        - lastSignInAt
+        - orders
+        - paidOrders
+        - spent
+        - legacyOrderId
+    AdminCustomerUpdate:
+      type: object
+      properties:
+        locked:
+          type: boolean
+      required:
+        - locked
+    AdminConversation:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        orderCode:
+          type: ["string", "null"]
+          description: The customer's newest order (or the Whop payment id of an older account)
+        packageName:
+          type: ["string", "null"]
+        sampleName:
+          type: ["string", "null"]
+          description: Source sample of that order, if the package had a sample choice
+        lang:
+          type: string
+        status:
+          type: string
+          enum: [open, closed]
+        createdAt:
+          type: string
+          format: date-time
+        lastMessageAt:
+          type: string
+          format: date-time
+        lastMessage:
+          type: ["string", "null"]
+          description: Start of the newest message
+        lastSender:
+          type: ["string", "null"]
+          enum: [visitor, admin, null]
+        unread:
+          type: integer
+          description: Visitor messages the admin has not opened yet
+      required:
+        - id
+        - name
+        - email
+        - orderCode
+        - packageName
+        - sampleName
+        - lang
+        - status
+        - createdAt
+        - lastMessageAt
+        - lastMessage
+        - lastSender
+        - unread
+    AdminPackageText:
+      type: object
+      description: A package's text in one language
+      properties:
+        name:
+          type: string
+        tagline:
+          type: ["string", "null"]
+        features:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - tagline
+        - features
+    AdminPackage:
+      type: object
+      properties:
+        key:
+          type: string
+        vi:
+          $ref: "#/components/schemas/AdminPackageText"
+        en:
+          $ref: "#/components/schemas/AdminPackageText"
+        priceVnd:
+          type: integer
+        priceUsd:
+          type: ["number", "null"]
+        visible:
+          type: boolean
+          description: Shown on the price list
+        recommended:
+          type: boolean
+        pickSample:
+          type: boolean
+          description: Buyers pick a source sample before ordering
+        orders:
+          type: integer
+          description: Orders made with this package, cancelled ones left out
+        translations:
+          type: string
+          enum: [built_in, outdated, none]
+          description: >-
+            built_in: the site has ready translations for the other languages and they match the English text.
+            outdated: the English text changed since they were made. none: no ready translations.
+            Languages without a translation show the English text.
+      required:
+        - key
+        - vi
+        - en
+        - priceVnd
+        - priceUsd
+        - visible
+        - recommended
+        - pickSample
+        - orders
+        - translations
+    AdminPackageTextInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 40
+        tagline:
+          type: ["string", "null"]
+          maxLength: 160
+        features:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+      required:
+        - name
+        - tagline
+        - features
+    AdminPackageInput:
+      type: object
+      properties:
+        vi:
+          $ref: "#/components/schemas/AdminPackageTextInput"
+        en:
+          $ref: "#/components/schemas/AdminPackageTextInput"
+        priceVnd:
+          type: integer
+          minimum: 10000
+          maximum: 1000000000
+        priceUsd:
+          type: ["number", "null"]
+          minimum: 0.5
+          maximum: 100000
+          description: At most 2 decimals; null to show no dollar figure
+        visible:
+          type: boolean
+        recommended:
+          type: boolean
+        pickSample:
+          type: boolean
+      required:
+        - vi
+        - en
+        - priceVnd
+        - priceUsd
+        - visible
+        - recommended
+        - pickSample
+    Sample:
+      type: object
+      description: A source sample a buyer can pick. The name is shown as written in every language.
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/SampleImage"
+        demoUrl:
+          type: ["string", "null"]
+          description: Live preview of the sample
+      required:
+        - id
+        - name
+        - images
+        - demoUrl
+    AdminSample:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminSampleImage"
+        sourceFile:
+          description: What buyers who picked this sample download once paid
+          oneOf:
+            - $ref: "#/components/schemas/StoredFile"
+            - type: "null"
+        demoUrl:
+          type: ["string", "null"]
+        visible:
+          type: boolean
+          description: On show to buyers
+        position:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - images
+        - sourceFile
+        - demoUrl
+        - visible
+        - position
+        - createdAt
+        - updatedAt
+    AdminSampleInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 60
+        images:
+          type: array
+          minItems: 1
+          maxItems: 12
+          items:
+            $ref: "#/components/schemas/AdminSampleImageInput"
+        sourceFile:
+          oneOf:
+            - $ref: "#/components/schemas/StoredFileInput"
+            - type: "null"
+        demoUrl:
+          type: ["string", "null"]
+          maxLength: 300
+          description: A page of this site (/demo/...) or an https:// address
+        visible:
+          type: boolean
+      required:
+        - name
+        - images
+        - sourceFile
+        - demoUrl
+        - visible
+    BankOption:
+      type: object
+      properties:
+        bin:
+          type: string
+        code:
+          type: string
+        shortName:
+          type: string
+        name:
+          type: string
+      required:
+        - bin
+        - code
+        - shortName
+        - name
+    BankSettings:
+      type: object
+      properties:
+        bin:
+          type: string
+        bankName:
+          type: string
+        accountNumber:
+          type: string
+        accountName:
+          type: string
+      required:
+        - bin
+        - bankName
+        - accountNumber
+        - accountName
+    BankSettingsInput:
+      type: object
+      properties:
+        bin:
+          type: string
+          pattern: "^[0-9]{6}$"
+        accountNumber:
+          type: string
+          pattern: "^[0-9A-Za-z]{4,19}$"
+        accountName:
+          type: string
+          minLength: 2
+          maxLength: 50
+      required:
+        - bin
+        - accountNumber
+        - accountName
+    AdminSettings:
+      type: object
+      properties:
+        bank:
+          oneOf:
+            - $ref: "#/components/schemas/BankSettings"
+            - type: "null"
+        emailDomains:
+          type: array
+          items:
+            type: string
+        adminEmail:
+          type: string
+      required:
+        - bank
+        - emailDomains
+        - adminEmail
+    EmailDomainsInput:
+      type: object
+      properties:
+        domains:
+          type: array
+          minItems: 1
+          maxItems: 300
+          items:
+            type: string
+            minLength: 3
+            maxLength: 100
+      required:
+        - domains
+    UploadUrlRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Original file name
+        size:
+          type: integer
+          minimum: 1
+          maximum: 209715200
+          description: File size in bytes (images at most 15 MB, zips at most 200 MB)
+        contentType:
+          type: string
+          enum: [image/webp, image/jpeg, image/png, application/zip]
+      required:
+        - name
+        - size
+        - contentType

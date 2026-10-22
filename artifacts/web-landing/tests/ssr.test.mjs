@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -11,12 +11,12 @@ const shell = readFileSync(new URL("../dist/public/index.html", import.meta.url)
 const dict = (code) => JSON.parse(readFileSync(new URL(`../src/locales/${code}.json`, import.meta.url), "utf8"));
 const escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 
-test("production SSR includes all localized sales sections, FAQ and live Whop packages without JavaScript", async () => {
+test("production SSR includes all localized sales sections, FAQ and the live catalog without JavaScript", async () => {
   for (const { code } of LANGUAGES) {
     const response = await fetch(`http://localhost:80/api/packages?lang=${code}`);
     assert.equal(response.status, 200);
     const packages = await response.json();
-    assert.ok(packages.length > 0, "Test requires the real Whop catalog");
+    assert.ok(packages.length > 0, "Test requires the live catalog");
     const { html, status, indexable } = await renderPage(shell, `/${code}/`, "/", packages);
     assert.equal(status, 200);
     assert.equal(indexable, true);
@@ -25,11 +25,7 @@ test("production SSR includes all localized sales sections, FAQ and live Whop pa
     const boot = JSON.parse(html.match(/<script id="initial-page" type="application\/json">([\s\S]*?)<\/script>/)[1]);
     assert.equal(boot.lang, code);
     assert.deepEqual(boot.packages, packages);
-    const currency = code === "vi" ? "vnd" : "usd";
-    const visible = packages.filter((p) => p.currency === currency);
-    for (const p of visible.length ? visible : packages.filter((p) => p.currency === packages[0].currency)) {
-      assert.ok(html.includes(`data-testid="button-buy-${p.id}"`));
-    }
+    for (const p of packages) assert.ok(html.includes(`data-testid="button-buy-${p.id}"`), `${code}: no buy button for ${p.id}`);
     for (let i = 0; i < dict(code).faq.items.length; i++) assert.ok(html.includes(`id="faq-a-${i}"`));
     // The refund policy must reach visitors and crawlers in every language, in the pricing note and in the FAQ.
     assert.ok(html.includes(escapeHtml(dict(code).pricing.refund)), `${code}: refund note missing`);
@@ -41,22 +37,26 @@ test("production SSR includes all localized sales sections, FAQ and live Whop pa
     assert.equal(product["@type"], "Product");
     assert.equal(product.name, dict(code).hero.eyebrow);
     assert.equal(product.url, canonical);
-    const cards = visible.length ? visible : packages.filter((p) => p.currency === packages[0].currency);
-    assert.equal(product.offers.length, cards.length);
-    for (const p of cards) {
+    assert.equal(product.offers.length, packages.length);
+    for (const p of packages) {
       const offer = product.offers.find((o) => o.identifier === p.id);
       assert.equal(offer.name, p.name);
       assert.equal(offer.price, p.price);
-      assert.equal(offer.priceCurrency, p.currency.toUpperCase());
+      assert.equal(offer.priceCurrency, "VND");
       for (const f of p.features) assert.ok(offer.description.includes(f));
     }
   }
 });
 
-test("utility pages are noindex and unknown paths return 404 in the production renderer", async () => {
-  for (const path of ["/cam-on", "/admin", "/missing", "/en/missing", "/vi/index.html", "/cam-on/"]) {
+const ORDER = "/don-hang/XIDAB12CD";
+const SIGNED_IN_PAGES = ["/dang-nhap", "/dang-ky", "/quen-mat-khau", "/tai-khoan", ORDER, "/quan-tri"];
+
+test("sign-in, account, order and admin pages are noindex; unknown paths return 404 in the production renderer", async () => {
+  const missing = ["/missing", "/en/missing", "/vi/index.html", "/don-hang/xidab12cd", "/don-hang/XID123", "/don-hang"];
+  // The server redirects /cam-on and /admin before rendering; a client-side visit still gets their new page.
+  for (const path of [...SIGNED_IN_PAGES, "/tai-khoan/", `${ORDER}/`, "/cam-on", "/admin", ...missing]) {
     const page = await renderPage(shell, path, "/");
-    assert.equal(page.status, ["/cam-on", "/admin"].includes(path) ? 200 : 404);
+    assert.equal(page.status, missing.includes(path) ? 404 : 200, path);
     assert.equal(page.indexable, false);
     assert.ok(page.html.includes('content="noindex, follow"'));
     assert.ok(!page.html.includes('rel="canonical"'));
@@ -66,14 +66,24 @@ test("utility pages are noindex and unknown paths return 404 in the production r
 });
 
 test("HTTP responses enforce indexing and status before scripts run, including query variants", async () => {
-  for (const path of ["/cam-on", "/cam-on?ref=", "/cam-on?ref=unknown-order&lang=vi", "/missing?ref=anything", "/en/missing", "/vi/index.html"]) {
+  const cases = [
+    ["/tai-khoan", 200], ["/dang-nhap?next=%2Ftai-khoan", 200], [`${ORDER}?ref=unknown-order`, 200], ["/quan-tri", 200],
+    ["/missing?ref=unknown-order", 404], ["/en/missing", 404], ["/vi/index.html", 404],
+  ];
+  for (const [path, status] of cases) {
     const response = await fetch(`http://localhost:80${path}`);
-    assert.equal(response.status, path.startsWith("/cam-on") ? 200 : 404);
+    assert.equal(response.status, status, path);
     assert.equal(response.headers.get("x-robots-tag"), "noindex, follow");
     const html = await response.text();
     assert.ok(html.includes('content="noindex, follow"'));
     assert.ok(!html.includes('rel="canonical"'));
     assert.ok(!html.includes("unknown-order"));
+  }
+  // Old addresses move for good, keeping their query.
+  for (const [from, to] of [["/cam-on", "/tai-khoan"], ["/cam-on?ref=abc&lang=vi", "/tai-khoan?ref=abc&lang=vi"], ["/admin", "/quan-tri"], ["/admin/", "/quan-tri"]]) {
+    const response = await fetch(`http://localhost:80${from}`, { redirect: "manual" });
+    assert.equal(response.status, 301, from);
+    assert.equal(response.headers.get("location"), to);
   }
   const redirect = await fetch("http://localhost:80/?lang=vi", { redirect: "manual" });
   assert.equal(redirect.status, 302);
@@ -83,6 +93,26 @@ test("HTTP responses enforce indexing and status before scripts run, including q
   const head = await fetch("http://localhost:80/missing", { method: "HEAD" });
   assert.equal(head.status, 404);
   assert.equal(await head.text(), "");
+});
+
+test("template demos run sandboxed, stay out of search and serve video in byte ranges", async () => {
+  for (const slug of ["reelmark", "jack", "mainframe", "iris"]) {
+    const response = await fetch(`http://localhost:80/demo/${slug}/`);
+    assert.equal(response.status, 200, slug);
+    assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
+    assert.match(response.headers.get("content-security-policy"), /^sandbox allow-scripts /);
+  }
+  const moved = await fetch("http://localhost:80/demo/jack", { redirect: "manual" });
+  assert.equal(moved.status, 301);
+  assert.equal(moved.headers.get("location"), "/demo/jack/");
+  const video = readdirSync(new URL("../public/demo/mainframe/assets/", import.meta.url)).find((f) => f.endsWith(".mp4"));
+  const part = await fetch(`http://localhost:80/demo/mainframe/assets/${video}`, { headers: { Range: "bytes=10-19" } });
+  assert.equal(part.status, 206);
+  assert.equal((await part.arrayBuffer()).byteLength, 10);
+  // The sandboxed page has the origin "null", so its module scripts need CORS.
+  assert.equal(part.headers.get("access-control-allow-origin"), "*");
+  const beyond = await fetch(`http://localhost:80/demo/mainframe/assets/${video}`, { headers: { Range: "bytes=999999999-" } });
+  assert.equal(beyond.status, 416);
 });
 
 test("catalog cache revalidates, coalesces requests and refuses expired data on failure", async () => {
@@ -171,7 +201,7 @@ test("production server passes the deployment startup check on / with and withou
 
 test("catalog input cannot break out of serialized hydration data", async () => {
   const malicious = '</script><script>alert("x")</script>';
-  const page = await renderPage(shell, "/", "/", [{ id: "test", key: "test", name: malicious, tagline: "test", features: [], price: 1, currency: "usd", billing: "one_time", billingPeriodDays: null, recommended: false }]);
+  const page = await renderPage(shell, "/", "/", [{ id: "test", name: malicious, tagline: "test", features: [], price: 300000, priceUsd: null, recommended: false, pickSample: false }]);
   assert.ok(!page.html.includes(malicious));
   const data = page.html.match(/<script id="initial-page" type="application\/json">([\s\S]*?)<\/script>/)[1];
   assert.equal(JSON.parse(data).packages[0].name, malicious);

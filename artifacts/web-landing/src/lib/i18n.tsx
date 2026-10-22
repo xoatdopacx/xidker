@@ -10,7 +10,6 @@ export const CONTACT_EMAIL = "hello@idkworkshop.com";
 
 /** Vietnamese is the source text; every other language has the same shape (missing keys fall back to English). */
 export type Dict = typeof vi;
-export type Currency = "vnd" | "usd";
 
 const BY_CODE = new Map(LANGUAGES.map((l) => [l.code, l]));
 export const langInfo = (code: Language): LangInfo => BY_CODE.get(code) ?? LANGUAGES[1];
@@ -46,7 +45,7 @@ export async function loadDict(code: Language): Promise<Dict> {
   return dict;
 }
 
-/** Fills "{name}" placeholders: tpl("every {n} days", { n: 14 }). */
+/** Fills "{name}" placeholders: tpl("Order {code}", { code: "XID4K7Q2M" }). */
 export function tpl(text: string, vars: Record<string, string | number>): string {
   return text.replace(/\{(\w+)\}/g, (_, k: string) => String(vars[k] ?? ""));
 }
@@ -86,7 +85,6 @@ export function whenFontReady(code: Language): Promise<void> {
 /* ---------------- initial language ---------------- */
 
 const LANG_KEY = "xidker-lang";
-const CURRENCY_KEY = "xidker-currency";
 
 function matchCode(raw: string | null | undefined): Language | null {
   if (!raw) return null;
@@ -100,15 +98,20 @@ function matchCode(raw: string | null | undefined): Language | null {
   return LANGUAGES.find((l) => l.code.toLowerCase() === (alias[base] ?? base))?.code ?? null;
 }
 
-/** Home URLs are deterministic for crawlers; other pages still use saved/browser preferences. */
-export function initialLang(): Language {
+/** A language in the address (/vi/, ?lang=vi) is the visitor's choice: it is kept for the pages without one (sign-in, orders). */
+export function rememberAddressLanguage(): Language | null {
   const fromPath = pathLanguage(window.location.pathname, import.meta.env.BASE_URL);
-  const fromUrl = matchCode(new URLSearchParams(window.location.search).get("lang"));
-  const explicit = fromPath ?? fromUrl;
+  const explicit = fromPath ?? matchCode(new URLSearchParams(window.location.search).get("lang"));
   if (explicit) {
     try { localStorage.setItem(LANG_KEY, explicit); } catch { /* storage blocked */ }
-    return explicit;
   }
+  return explicit;
+}
+
+/** Home URLs are deterministic for crawlers; other pages still use saved/browser preferences. */
+export function initialLang(): Language {
+  const explicit = rememberAddressLanguage();
+  if (explicit) return explicit;
   if (isHomePath(window.location.pathname, import.meta.env.BASE_URL)) return "en";
   try {
     const saved = matchCode(localStorage.getItem(LANG_KEY));
@@ -132,13 +135,6 @@ export async function prepareI18n(): Promise<void> {
   try { await loadDict(code); } catch { /* falls back to English in the provider */ }
 }
 
-function savedCurrency(): Currency | null {
-  try {
-    const s = localStorage.getItem(CURRENCY_KEY);
-    return s === "vnd" || s === "usd" ? s : null;
-  } catch { return null; }
-}
-
 /* ---------------- provider ---------------- */
 
 type Ctx = {
@@ -150,9 +146,6 @@ type Ctx = {
   locale: string;
   /** Locale for prices: always Latin digits (the number fonts only have those). */
   numLocale: string;
-  /** Currency the visitor sees: their own pick, else VND for Vietnamese and USD for everyone else. */
-  currency: Currency;
-  setCurrency: (c: Currency) => void;
 };
 const I18nCtx = createContext<Ctx | null>(null);
 
@@ -162,8 +155,6 @@ export function I18nProvider({ children, initial }: { children: ReactNode; initi
     const code = initialLang();
     return { lang: code, t: DICTS.get(code) ?? (en as Dict) };
   });
-  const [pickedCurrency, setPickedCurrency] = useState<Currency | null>(() => initial ? null : savedCurrency());
-  useEffect(() => { if (initial) setPickedCurrency(savedCurrency()); }, []);
   const request = useRef(0);
 
   const applyLanguage = useCallback((code: Language) => {
@@ -190,11 +181,6 @@ export function I18nProvider({ children, initial }: { children: ReactNode; initi
     return () => window.removeEventListener("popstate", onHistory);
   }, [applyLanguage]);
 
-  const setCurrency = useCallback((c: Currency) => {
-    setPickedCurrency(c);
-    try { localStorage.setItem(CURRENCY_KEY, c); } catch { /* ignore */ }
-  }, []);
-
   const { lang, t } = state;
   const info = langInfo(lang);
 
@@ -220,9 +206,7 @@ export function I18nProvider({ children, initial }: { children: ReactNode; initi
     lang, info, setLang, t,
     locale: info.locale,
     numLocale: `${info.locale}-u-nu-latn`,
-    currency: pickedCurrency ?? (lang === "vi" ? "vnd" : "usd"),
-    setCurrency,
-  }), [lang, info, setLang, t, pickedCurrency, setCurrency]);
+  }), [lang, info, setLang, t]);
 
   return <I18nCtx.Provider value={value}>{children}</I18nCtx.Provider>;
 }
@@ -233,5 +217,5 @@ export function useI18n() {
   return c;
 }
 
-/** Language picker (header, footer, thank-you and 404 pages). */
+/** Language picker (header, footer, account and 404 pages). */
 export { LangPicker as LangSwitch } from "@/components/lang-picker";

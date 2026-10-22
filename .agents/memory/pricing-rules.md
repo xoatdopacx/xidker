@@ -11,7 +11,7 @@ User-stated package rules (Oct 2026):
 
 Decisions:
 - Package keys stay personal/setup/commercial; setup stays recommended.
-  **Why:** keys tie the USD/VND twin plans and the built-in translations together.
+  **Why:** the built-in translations of the package text are looked up by key.
 - Cards never show "not included" lines; the hosting-only-in-A–Z rule lives in the pricing note under the cards.
   **Why:** every feature row has a check icon, so a "not included" row would contradict it.
 - FAQ Q3 asks how many portfolios a package covers, not whether client use is allowed.
@@ -22,6 +22,5 @@ Decisions:
 Refund policy (user-stated 2026-10-15, user's words: "chỉ hoàn tiền khi chưa xác nhận đơn hàng; 1 khi source đã được gửi, đóng chat, mọi phương thức hoàn tiền sẽ bị vô hiệu"):
 - Copy keeps exactly that: passive "order not yet confirmed" (never say who confirms), no time window, no partial refunds, no extra conditions.
   **Why:** the user stated only these two rules; anything else would be an invented term in a legal text.
-- It lives in four places that must change together: last FAQ item and `pricing.refund` in all 33 locales, the Whop product description, and the Return Policy PDF (`marketing/policy/` → `generated-artifacts/policy/`).
+- It lives in places that must change together: the last FAQ item and `pricing.refund` in all 33 locales, and the policy PDF (`marketing/policy/` → `generated-artifacts/policy/`). The Whop product description still holds a copy, but Whop is no longer used (2026-10-22).
   **How to apply:** append FAQ items (tests and anchors use fixed indices); the SSR test checks the refund text in every language.
-- Whop: an account API key cannot update its own account (`PATCH /accounts/{biz}` answers "Account not found"; `/companies/{biz}` rejects `return_policy`), so the PDF must be uploaded by the user in Dashboard > Settings > Legal. Whop auto-refunds bank dispute alerts up to $500 (account payment control, not changeable by API) — that can refund a buyer despite this policy.
