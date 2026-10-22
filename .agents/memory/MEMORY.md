@@ -13,3 +13,4 @@
 - [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; one pixel size (--sp) per picture; column flex-basis = height.
 - [Source samples](source-samples.md) — user's pick-before-paying request; picker hidden with no visible sample; live admin must re-upload; test recipe.
 - [Pixel art from user photos/videos](pixel-art-conversion.md) — magick recipe for the cat memes; outline/LAB/eye pitfalls; dedupe video poses; PNG8.
+- [Store without Whop](store-without-whop.md) — 2026-10-22 decisions: QR bank transfer confirmed by admin, verified accounts, shared sign-in, 4 templates sold source-only.
