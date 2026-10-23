@@ -96,12 +96,17 @@ test("HTTP responses enforce indexing and status before scripts run, including q
 });
 
 test("template demos run sandboxed, stay out of search and serve video in byte ranges", async () => {
-  for (const slug of ["reelmark", "jack", "mainframe", "iris"]) {
+  for (const slug of ["reelmark", "jack", "mainframe", "iris", "michelle", "kin"]) {
     const response = await fetch(`http://localhost:80/demo/${slug}/`);
     assert.equal(response.status, 200, slug);
     assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
     assert.match(response.headers.get("content-security-policy"), /^sandbox allow-scripts /);
   }
+  // Pictures next to a demo page load from the sandbox too.
+  const picture = await fetch("http://localhost:80/demo/kin/assets/place.webp");
+  assert.equal(picture.status, 200);
+  assert.equal(picture.headers.get("content-type"), "image/webp");
+  assert.equal(picture.headers.get("cross-origin-resource-policy"), "cross-origin");
   const moved = await fetch("http://localhost:80/demo/jack", { redirect: "manual" });
   assert.equal(moved.status, 301);
   assert.equal(moved.headers.get("location"), "/demo/jack/");

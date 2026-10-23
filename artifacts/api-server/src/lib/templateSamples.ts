@@ -6,14 +6,21 @@ import { BUILTIN_DIR, BUILTIN_TEMPLATES, builtinFileName, listBuiltinFiles } fro
 import { savePublicImage } from "./samples";
 import { logger } from "./logger";
 
-// The four templates that ship with the site become ordinary samples the first time the
-// server starts on a database: picture, live demo and source zip filled in. After that the
-// admin owns them like any other sample (rename, hide, delete).
+// Each template that ships with the site becomes an ordinary sample the first time a server
+// with it starts on a database: picture, live demo and source zip filled in. After that the
+// admin owns it like any other sample (rename, hide, delete); a deleted template never comes back.
 
+/** The slugs added so far. The first release stored `true` once its four templates were in. */
 const SEED_FLAG = "templates_seeded";
+const FIRST_RELEASE = ["reelmark", "jack", "mainframe", "iris"];
 /** Any fixed number: only one server instance seeds at a time. */
 const SEED_LOCK = 482_113_907;
 const PREVIEW = { width: 1600, height: 1000 };
+
+function seededSlugs(value: unknown): string[] {
+  if (value === true) return FIRST_RELEASE;
+  return Array.isArray(value) ? value.filter((slug): slug is string => typeof slug === "string") : [];
+}
 
 async function uploadPreview(slug: string): Promise<SampleImageRow> {
   const [full, thumb] = await Promise.all([
@@ -26,18 +33,20 @@ async function uploadPreview(slug: string): Promise<SampleImageRow> {
 
 export async function seedTemplateSamples(): Promise<void> {
   const files = await listBuiltinFiles();
-  if (files.length !== BUILTIN_TEMPLATES.length) {
-    logger.error({ found: files.map((file) => file.slug) }, "Template zips are missing; the templates were not added as samples");
-    return;
+  const missing = BUILTIN_TEMPLATES.filter((template) => !files.some((file) => file.slug === template.slug));
+  if (missing.length) {
+    logger.error({ missing: missing.map((template) => template.slug) }, "Template zips are missing; those templates were not added as samples");
   }
   const added = await db.transaction(async (tx) => {
     const { rows } = await tx.execute<{ locked: boolean }>(sql`select pg_try_advisory_xact_lock(${SEED_LOCK}) as locked`);
-    if (!rows[0]?.locked) return 0;
-    const [done] = await tx.select().from(siteSettingsTable).where(eq(siteSettingsTable.key, SEED_FLAG));
-    if (done) return 0;
+    if (!rows[0]?.locked) return [];
+    const [flag] = await tx.select().from(siteSettingsTable).where(eq(siteSettingsTable.key, SEED_FLAG));
+    const done = seededSlugs(flag?.value);
+    const todo = files.filter((file) => !done.includes(file.slug));
+    if (!todo.length) return [];
 
     const values = [];
-    for (const [i, file] of files.entries()) {
+    for (const [i, file] of todo.entries()) {
       values.push({
         id: randomBytes(9).toString("base64url"),
         name: file.name,
@@ -49,8 +58,12 @@ export async function seedTemplateSamples(): Promise<void> {
       });
     }
     await tx.insert(sourceSamplesTable).values(values);
-    await tx.insert(siteSettingsTable).values({ key: SEED_FLAG, value: true });
-    return values.length;
+    const seeded = [...done, ...todo.map((file) => file.slug)];
+    await tx
+      .insert(siteSettingsTable)
+      .values({ key: SEED_FLAG, value: seeded })
+      .onConflictDoUpdate({ target: siteSettingsTable.key, set: { value: seeded, updatedAt: new Date() } });
+    return todo.map((file) => file.slug);
   });
-  if (added) logger.info({ added }, "Added the bundled templates as samples");
+  if (added.length) logger.info({ added }, "Added the bundled templates as samples");
 }

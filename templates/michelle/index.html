@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <title>Michelle — Playful Dimensions</title>
+    <meta name="description" content="Michelle is a 3D designer who turns curious ideas into playful objects: small worlds shaped through form, tactile materials and light." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2714%27 fill=%27%23E52229%27/%3E%3Cpath d=%27M9 5c6 6 6 16 0 22M23 5c-6 6-6 16 0 22%27 fill=%27none%27 stroke=%27%23fff%27 stroke-width=%271.6%27/%3E%3C/svg%3E" />
+    <script>document.documentElement.className = "js";</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Antonio:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* THEME — colours, fonts and the page margin. */
+      :root {
+        --bg: #ffffff;
+        --ink: #0a0a0a;
+        --muted: #a6a5a1;
+        --line: #d8d7d3;
+        --pad: clamp(16px, 3.2vw, 48px);
+        --display: "Anton", Impact, "Arial Narrow", sans-serif;
+        --label: "Antonio", "Arial Narrow", sans-serif;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { background: var(--bg); color: var(--ink); -webkit-text-size-adjust: 100%; }
+      body { font-family: var(--label); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+      a { color: inherit; text-decoration: none; }
+      :focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+      .label { font: 600 clamp(13px, 1vw, 15px) / 1.2 var(--label); letter-spacing: 0.08em; text-transform: uppercase; }
+      .skip {
+        position: fixed; left: 12px; top: 12px; z-index: 50; padding: 10px 14px;
+        background: var(--ink); color: #fff; transform: translateY(-180%);
+      }
+      .skip:focus { transform: none; }
+
+      /* SCROLL STAGE — one tall track, one pinned screen. */
+      .track { position: relative; }
+      .js .track { height: 540vh; }
+      .js .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+      .js .layer { position: absolute; inset: 0; }
+      /* Hidden until the first frame decides which scene shows (the script sets these inline). */
+      .js .work, .js .contact { opacity: 0; pointer-events: none; }
+      .no-js .layer { position: relative; min-height: 100vh; }
+      .no-js #gl, .no-js #css3d, .no-js .balls { display: none; }
+
+      /* HERO */
+      .hero { z-index: 1; }
+      .hero-top {
+        position: absolute; left: var(--pad); top: clamp(14px, 3.2vh, 40px);
+        font: 400 clamp(64px, 11.7vw, 196px) / 0.88 var(--display); text-transform: uppercase; white-space: nowrap;
+      }
+      .w { display: inline-block; }
+      .manifesto {
+        position: absolute; left: var(--pad); top: 41%; max-width: min(46vw, 760px);
+        font: 400 clamp(20px, 2.52vw, 41px) / 1.06 var(--display); text-transform: uppercase; letter-spacing: 0.01em;
+      }
+      .manifesto span { display: block; }
+      .hero-bottom {
+        position: absolute; z-index: 4; left: var(--pad); bottom: clamp(10px, 2.4vh, 30px);
+        font: 400 clamp(58px, 10.75vw, 182px) / 0.88 var(--display); text-transform: uppercase; white-space: nowrap;
+        transform-origin: 50% 60%; will-change: transform; pointer-events: none;
+      }
+      .no-js .hero-bottom { position: relative; left: auto; bottom: auto; padding: 0 var(--pad) 32px; }
+      #gl { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; display: block; pointer-events: none; }
+      #css3d { position: absolute; inset: 0; z-index: 3; overflow: hidden; pointer-events: none; }
+      #css3d * { pointer-events: none !important; }
+
+      /* WORK */
+      .work {
+        z-index: 6; background: var(--bg); display: flex; flex-direction: column;
+        padding: clamp(18px, 3.6vh, 44px) var(--pad) clamp(16px, 3.2vh, 36px);
+      }
+      .work-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+      .work-head h2 { font: inherit; }
+      .rows { list-style: none; margin: auto 0; border-bottom: 1px solid var(--line); position: relative; z-index: 1; }
+      .row {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 24px;
+        padding: clamp(6px, 1.5vh, 18px) 0; border-top: 1px solid var(--line); color: var(--muted); transition: color 0.35s;
+      }
+      .row-title {
+        display: inline-block; font: 400 clamp(44px, 7.4vw, 120px) / 0.98 var(--display); text-transform: uppercase;
+        transform-origin: 0 80%; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .row-meta { display: grid; grid-template-columns: minmax(170px, auto) minmax(190px, auto); align-items: center; gap: clamp(16px, 3vw, 56px); }
+      .row-kind { display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; }
+      .row-kind svg { width: 26px; height: 26px; flex: none; opacity: 0; transform: translateX(-14px); transition: opacity 0.35s, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+      .row.is-active { color: var(--ink); }
+      .row.is-active .row-title { transform: skewX(-10deg); }
+      .row.is-active .row-kind svg { opacity: 1; transform: none; }
+      .row:focus-visible { outline-offset: -2px; }
+      .caption { position: relative; z-index: 1; }
+      .preview {
+        position: absolute; left: 0; top: 0; z-index: 2; width: clamp(260px, 30vw, 520px); aspect-ratio: 16 / 10;
+        overflow: hidden; background: #ecebe7; pointer-events: none; opacity: 0; transition: opacity 0.4s;
+        box-shadow: 0 34px 60px -34px rgba(10, 10, 10, 0.45); will-change: transform;
+      }
+      .preview.is-on { opacity: 1; }
+      .preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.45s; }
+      .preview img.is-on { opacity: 1; }
+      .work-clone { inset: auto !important; box-shadow: 0 0 0 4px var(--ink); }
+      .work-clone .preview { display: none; }
+      .no-js .preview { display: none; }
+
+      /* CONTACT */
+      .contact { z-index: 5; display: flex; flex-direction: column; padding: clamp(18px, 4vh, 48px) var(--pad) 0; }
+      .contact-main { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+      .contact-title { font: 400 clamp(72px, 14.2vw, 224px) / 0.86 var(--display); text-transform: uppercase; }
+      .contact-title span { display: block; }
+      .mail {
+        display: inline-flex; align-items: center; gap: 14px; padding-bottom: 8px; white-space: nowrap;
+        font: 600 clamp(18px, 1.9vw, 30px) / 1.2 var(--label); letter-spacing: 0.02em;
+        background: linear-gradient(var(--ink), var(--ink)) 0 100% / 100% 2.5px no-repeat;
+      }
+      .mail svg { width: 1.2em; height: 1.2em; flex: none; }
+      .mail:hover, .mail:focus-visible { animation: redraw 0.75s cubic-bezier(0.6, 0, 0.2, 1); }
+      @keyframes redraw {
+        0% { background-position: 100% 100%; background-size: 100% 2.5px; }
+        45% { background-position: 100% 100%; background-size: 0 2.5px; }
+        46% { background-position: 0 100%; background-size: 0 2.5px; }
+        100% { background-position: 0 100%; background-size: 100% 2.5px; }
+      }
+      .foot {
+        display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+        border-top: 1px solid var(--ink); padding: clamp(14px, 2.4vh, 24px) 0 calc(clamp(14px, 2.4vh, 24px) + env(safe-area-inset-bottom));
+      }
+      .foot nav { display: flex; gap: clamp(18px, 5vw, 80px); }
+      .foot a { position: relative; }
+      .foot a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1.5px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 0.35s; }
+      .foot a:hover::after, .foot a:focus-visible::after { transform: scaleX(1); }
+      .foot small { font: 500 13px / 1.3 var(--label); letter-spacing: 0.04em; color: #6f6e6a; }
+
+      /* BALLS — decorative copies of the footer links. */
+      .balls { position: absolute; inset: 0; z-index: 7; pointer-events: none; overflow: hidden; }
+      .ball {
+        position: absolute; left: 0; top: 0; width: calc(var(--r) * 2); height: calc(var(--r) * 2);
+        margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1); pointer-events: auto; cursor: grab;
+        touch-action: none; user-select: none; -webkit-user-select: none; will-change: transform; visibility: hidden;
+      }
+      .ball.is-drag { cursor: grabbing; }
+      .ball-body {
+        position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background-color: var(--c);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 90px 90px;
+      }
+      .ball-spin { position: absolute; inset: 0; will-change: transform; }
+      .ball-spin svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .ball-glyph {
+        position: absolute; inset: 0; display: grid; place-items: center; color: #fff;
+        font: 700 calc(var(--r) * 0.74) / 1 var(--label); text-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+      }
+      .ball-shade {
+        position: absolute; inset: 0; border-radius: 50%;
+        background:
+          radial-gradient(circle at 31% 26%, rgba(255, 255, 255, 0.85) 0 2.5%, rgba(255, 255, 255, 0) 5.5%),
+          radial-gradient(circle at 33% 28%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 42%),
+          radial-gradient(circle at 64% 70%, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.5) 78%);
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+      }
+      .ball-shadow {
+        position: absolute; left: 0; top: 0; width: calc(var(--r) * 1.8); height: calc(var(--r) * 0.34);
+        margin: calc(var(--r) * -0.17) 0 0 calc(var(--r) * -0.9); border-radius: 50%; pointer-events: none;
+        background: radial-gradient(closest-side, rgba(10, 10, 10, 0.34), rgba(10, 10, 10, 0)); visibility: hidden; will-change: transform, opacity;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 900px) {
+        .row-meta { grid-template-columns: minmax(150px, auto) minmax(150px, auto); gap: 18px; }
+        .manifesto { max-width: 52vw; }
+      }
+      @media (max-width: 640px) {
+        .hero-top .w, .hero-bottom .w { display: block; width: max-content; }
+        .manifesto { top: calc(clamp(14px, 3.2vh, 40px) + 1.76 * clamp(64px, 11.7vw, 196px) + 14px); max-width: none; right: var(--pad); }
+        .row { grid-template-columns: 1fr; gap: 4px; }
+        .row-meta { grid-template-columns: 1fr auto; gap: 12px; }
+        .row-kind svg { width: 20px; height: 20px; }
+        .rows { margin: 0 0 auto; }
+        .work .preview, .js .work .preview { position: relative; width: min(100%, 250px); margin: 10px 0 12px; transform: none !important; opacity: 1; }
+        .work-head { flex-direction: column; gap: 2px; }
+        .contact-main { flex-direction: column; align-items: flex-start; justify-content: center; gap: 22px; }
+        .foot { gap: 10px; }
+        .foot nav { gap: 18px; }
+      }
+      @media (max-width: 640px) and (max-height: 700px) {
+        .work .preview, .js .work .preview { width: min(100%, 200px); margin: 6px 0 8px; }
+        .row-title { font-size: 40px; }
+      }
+
+      /* Calm mode (reduced motion or no WebGL): scenes crossfade instead of flying. */
+      .calm .hero, .calm .hero-bottom, .calm .work, .calm .contact, .calm #gl { transition: opacity 0.45s; }
+      @media (prefers-reduced-motion: reduce) {
+        .row-title, .row-kind svg, .preview, .preview img, .row { transition: none; }
+        .mail:hover, .mail:focus-visible { animation: none; }
+      }
+    </style>
+    <script type="importmap">
+      { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      } }
+    </script>
+  </head>
+  <body>
+    <a class="skip label" href="#work">Skip to selected work</a>
+    <main class="track" id="track">
+      <div class="stage" id="stage">
+        <!-- COPY: HERO — the name, the manifesto and the bottom headline. -->
+        <section class="layer hero" id="hero" aria-labelledby="hero-top">
+          <h1 class="hero-top" id="hero-top"><span class="w">Hi, I’m</span> <span class="w">Michelle</span></h1>
+          <p class="manifesto" id="manifesto">
+            <span>Curious ideas become playful objects.</span>
+            <span>Small worlds shaped through form,</span>
+            <span>tactile materials and light.</span>
+            <span>A little motion brings them to life.</span>
+          </p>
+        </section>
+        <canvas id="gl" aria-hidden="true"></canvas>
+        <div id="css3d" aria-hidden="true"></div>
+        <p class="hero-bottom" id="hero-bottom"><span class="w">Playful</span> <span class="w">Dimensions</span></p>
+
+        <!-- COPY: SELECTED WORK — one link per project; data-image is the preview picture. -->
+        <section class="layer work" id="work" aria-labelledby="work-title">
+          <header class="work-head label">
+            <h2 id="work-title">Selected work</h2>
+            <p>3D objects &amp; little worlds</p>
+          </header>
+          <figure class="preview" aria-hidden="true"></figure>
+          <ul class="rows">
+            <li>
+              <a class="row" href="#" data-image="assets/quiet-orbit.webp" data-alt="Concentric oak gimbal rings holding a white ceramic sphere and a small blue planet, lit by sunlight through blinds">
+                <span class="row-title">Quiet Orbit</span>
+                <span class="row-meta label">
+                  <span class="row-tags">Art direction / 3D / Materials</span>
+                  <span class="row-kind">Object study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9" /></svg></span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="#" data-image="assets/little-listener.webp" data-alt="A wooden acoustic horn on a round oak body with a coiled brass tube and a terracotta knob">
+                <span class="row-title">Little Listener</span>
+                <span class="row-meta label">
+                  <span class="row-tags">3D / Product / Lighting</span>
+                  <span class="row-kind">Sound sculpture <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9" /></svg></span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="row" href="#" data-image="assets/soft-switch.webp" data-alt="A matte cobalt controller with three cream buttons and an orange ball lever in an oak cradle, with a braided white cord">
+                <span class="row-title">Soft Switch</span>
+                <span class="row-meta label">
+                  <span class="row-tags">3D / Colour / Surface design</span>
+                  <span class="row-kind">Tactile experiment <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9" /></svg></span>
+                </span>
+              </a>
+            </li>
+          </ul>
+          <p class="caption label">Material, light, a little curiosity.</p>
+        </section>
+
+        <!-- COPY: CONTACT — headline, email and the footer links (each footer link also becomes a ball). -->
+        <section class="layer contact" id="contact" aria-labelledby="contact-title">
+          <div class="contact-main">
+            <h2 class="contact-title" id="contact-title"><span>Want to</span><span>reach out?</span></h2>
+            <a class="mail" href="mailto:hello@example.com">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              <span>hello@example.com</span>
+            </a>
+          </div>
+          <footer class="foot">
+            <nav aria-label="Social profiles">
+              <a class="label" href="#" target="_blank" rel="noopener" data-ball-color="#151518" data-ball-glyph="X">X / Twitter</a>
+              <a class="label" href="#" target="_blank" rel="noopener" data-ball-color="#E52229" data-ball-glyph="P">Pinterest</a>
+              <a class="label" href="#" target="_blank" rel="noopener" data-ball-color="#1456F0" data-ball-glyph="Bē">Behance</a>
+            </nav>
+            <small>© 2026 Michelle. Playful Dimensions.</small>
+          </footer>
+        </section>
+
+        <div class="balls" id="balls" aria-hidden="true"></div>
+      </div>
+    </main>
+
+    <script type="module">
+      // ===== SETTINGS — scene timing (scroll progress 0 → 1) and motion. =====
+      const T = {
+        bustOut: [0.12, 0.2], ballsFall: 0.12, tiltOff: [0.12, 0.17], manifestoOut: [0.14, 0.18],
+        fold: [0.18, 0.3], fly: [0.2, 0.55], rows: [0.56, 0.8], lift: [0.82, 0.88], contactBalls: 0.86,
+      };
+      const FOV = 38;             // camera field of view (degrees)
+      const SHEET = 0.84;         // size of the work sheet on the end wall, relative to the corridor
+      const ROOM_COLORS = [0x8e9ec7, 0xd68c72, 0x97a882, 0xcca862]; // periwinkle, terracotta, sage, ochre
+
+      // ===== HELPERS =====
+      const $ = (s, el = document) => el.querySelector(s);
+      const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const ramp = (a, b, x) => clamp((x - a) / (b - a), 0, 1);
+      const smooth = (a, b, x) => { const t = ramp(a, b, x); return t * t * (3 - 2 * t); };
+      const inOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      const outCubic = (t) => 1 - Math.pow(1 - t, 3);
+      const damp = (a, b, lambda, dt) => lerp(a, b, 1 - Math.exp(-lambda * dt));
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      const mulberry = (seed) => () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+
+      const root = document.documentElement;
+      const stage = $("#stage"), track = $("#track");
+      const heroLayer = $("#hero"), heroTop = $("#hero-top"), manifesto = $("#manifesto"), heroBottom = $("#hero-bottom");
+      const work = $("#work"), contact = $("#contact"), ballsLayer = $("#balls");
+      const glCanvas = $("#gl"), cssLayer = $("#css3d");
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+      const phoneQuery = matchMedia("(max-width: 640px)");
+
+      const S = { W: 0, H: 0, D: 1, p: 0, pTarget: 0, trackTop: 0, trackMax: 1, motion: false, ready: false, now: 0 };
+      const L = { h1: null, h2: null, floorLocal: null, footY: 0, footXs: [], radius: 40, manifestoBottom: 0 };
+
+      // Write a style only when it changes.
+      const styleCache = new WeakMap();
+      function setStyle(el, prop, value) {
+        let c = styleCache.get(el); if (!c) styleCache.set(el, (c = {}));
+        if (c[prop] !== value) { c[prop] = value; el.style[prop] = value; }
+      }
+      const show = (el, on) => setStyle(el, "visibility", on ? "visible" : "hidden");
+      // Text layers fade instead of using visibility, so they stay in the tab order and readable by screen readers.
+      const fade = (el, on) => setStyle(el, "opacity", on ? "1" : "0");
+      const reveal = (el, on) => { fade(el, on); setStyle(el, "pointerEvents", on ? "auto" : "none"); };
+
+      // ===== LAYOUT — measured after fonts load and on resize. =====
+      function measureHeading(el) {
+        const words = $$(".w", el).map((w) => {
+          const probe = document.createElement("i");
+          probe.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline";
+          w.append(probe);
+          const baseline = probe.offsetTop;
+          probe.remove();
+          return { text: w.textContent, x: w.offsetLeft, top: w.offsetTop, width: w.offsetWidth, baseline };
+        });
+        return { el, left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight, words, font: getComputedStyle(el) };
+      }
+      function capHeight(cs) {
+        const ctx = document.createElement("canvas").getContext("2d");
+        ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        const m = ctx.measureText("H");
+        return m.actualBoundingBoxAscent || parseFloat(cs.fontSize) * 0.72;
+      }
+      function measure() {
+        S.W = stage.clientWidth; S.H = stage.clientHeight;
+        S.trackTop = track.offsetTop; S.trackMax = Math.max(1, track.offsetHeight - S.H);
+        S.D = S.H / 2 / Math.tan((FOV * Math.PI) / 360);
+        L.h1 = measureHeading(heroTop);
+        L.h2 = measureHeading(heroBottom);
+        // The balls' floor in the hero: the top of the capital letters of the first line.
+        const first = Math.min(...L.h2.words.map((w) => w.top));
+        const line = L.h2.words.filter((w) => w.top === first);
+        const capTop = line[0].baseline - capHeight(L.h2.font);
+        L.floorLocal = { x0: line[0].x + 2, x1: line.at(-1).x + line.at(-1).width - 2, y: capTop };
+        const foot = $(".foot", contact);
+        L.footY = foot.offsetTop;
+        L.footXs = $$("[data-ball-color]", foot).map((a) => a.offsetLeft + a.offsetWidth / 2);
+        L.card = { w: $(".preview", work).offsetWidth, h: $(".preview", work).offsetHeight };
+        // Row boxes inside the Work layer (offsets ignore the lift transform).
+        const rowsEl = $(".rows", work), head = $(".work-head", work);
+        L.rowBox = $$(".row", work).map((r) => ({ top: rowsEl.offsetTop + r.offsetTop, bottom: rowsEl.offsetTop + r.offsetTop + r.offsetHeight }));
+        L.headBottom = head.offsetTop + head.offsetHeight;
+        L.workRight = S.W - parseFloat(getComputedStyle(work).paddingRight);
+        L.manifestoBottom = manifesto.offsetTop + manifesto.offsetHeight;
+        L.radius = clamp(S.W * 0.046, 34, 84);
+        readScroll();
+      }
+
+      // ===== SCROLL =====
+      function readScroll() {
+        S.pTarget = clamp((window.scrollY - S.trackTop) / S.trackMax, 0, 1);
+      }
+      addEventListener("scroll", readScroll, { passive: true });
+      function goto(p) {
+        window.scrollTo({ top: S.trackTop + p * S.trackMax, behavior: "auto" });
+        S.pTarget = S.p = p;
+      }
+      const workP = () => (S.motion ? 0.6 : 0.5);
+      const contactP = () => 0.96;
+
+      // ===== POINTER =====
+      const pointer = { x: -1, y: -1, nx: 0, ny: 0, vx: 0, vy: 0, t: 0, moved: -1e9, type: "mouse", px: -1, py: -1 };
+      function trackPointer(e) {
+        const now = performance.now();
+        const r = stage.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        const dt = Math.max(8, now - pointer.t) / 1000;
+        if (pointer.t) { pointer.vx = lerp(pointer.vx, (x - pointer.x) / dt, 0.5); pointer.vy = lerp(pointer.vy, (y - pointer.y) / dt, 0.5); }
+        pointer.px = pointer.x; pointer.py = pointer.y;
+        pointer.x = x; pointer.y = y; pointer.t = now; pointer.moved = now; pointer.type = e.pointerType;
+        pointer.nx = clamp((x / S.W) * 2 - 1, -1, 1); pointer.ny = clamp((y / S.H) * 2 - 1, -1, 1);
+        if (e.pointerType !== "touch") balls.kick(pointer);
+      }
+      addEventListener("pointermove", trackPointer, { passive: true });
+      addEventListener("pointerdown", trackPointer, { passive: true });
+
+      // ===== BALLS — a small 2D physics world for the footer links. =====
+      const SEAMS = `<svg viewBox="0 0 100 100" aria-hidden="true">
+        <g fill="none" stroke-linecap="round">
+          <path d="M22 6 C44 30 44 70 22 94 M78 6 C56 30 56 70 78 94" stroke="rgba(0,0,0,.45)" stroke-width="3.2"/>
+          <path d="M23.4 6.8 C45.4 30.8 45.4 70.8 23.4 94.8 M79.4 6.8 C57.4 30.8 57.4 70.8 79.4 94.8" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+          <path d="M18.6 8.6 C40 32 40 68 18.6 91.4 M74.6 8.6 C53 32 53 68 74.6 91.4" stroke="#f3e6cb" stroke-width="1.2" stroke-dasharray="2.2 2.6"/>
+          <path d="M25.6 8 C47.6 32 47.6 68 25.6 92 M81.4 8 C60 32 60 68 81.4 92" stroke="#f3e6cb" stroke-width="1.2" stroke-dasharray="2.2 2.6"/>
+        </g></svg>`;
+      const balls = (() => {
+        const G = 2700, STEP = 1 / 120;
+        const list = $$(".foot [data-ball-color]").map((a, i) => {
+          const el = document.createElement("div");
+          el.className = "ball";
+          el.style.setProperty("--c", a.dataset.ballColor);
+          el.innerHTML = `<div class="ball-body"><div class="ball-spin">${SEAMS}<span class="ball-glyph"></span></div><div class="ball-shade"></div></div>`;
+          $(".ball-glyph", el).textContent = a.dataset.ballGlyph || a.textContent.trim()[0];
+          const sh = document.createElement("div");
+          sh.className = "ball-shadow";
+          ballsLayer.append(sh, el);
+          const b = { i, el, sh, spin: $(".ball-spin", el), link: a, x: -500, y: -500, vx: 0, vy: 0, a: 0, w: 0, r: 40, live: false, awake: false, rest: 0, alpha: 0, drag: null, contact: null };
+          bindDrag(b);
+          return b;
+        });
+        let mode = "off", floors = [], bottom = false, acc = 0, lastTilt = "";
+
+        function radius() { return L.radius * (phoneQuery.matches ? 0.85 : 1); }
+        // Contact: each ball lands near its label, but never on top of another ball.
+        function spread(xs) {
+          const r = radius(), out = xs.slice();
+          for (let i = 1; i < out.length; i++) out[i] = Math.max(out[i], out[i - 1] + r * 2.4);
+          const over = out.at(-1) + r + 8 - S.W;
+          return over > 0 ? out.map((x) => x - over) : out;
+        }
+        function drop(xs, jitter = 140) {
+          const r = radius();
+          list.forEach((b, i) => {
+            Object.assign(b, { r, live: true, awake: true, alpha: 1, rest: 0, drag: null, x: clamp(xs[i], r, S.W - r), y: -r - 30 - i * r * 1.5, vx: (Math.random() - 0.5) * jitter, vy: 0, a: Math.random() * 6, w: 0 });
+            b.el.style.setProperty("--r", `${r}px`); b.sh.style.setProperty("--r", `${r}px`);
+          });
+        }
+        const narrowHero = () => L.floorLocal.x1 - L.floorLocal.x0 < radius() * 7;
+        function heroXs() {
+          const x0 = L.floorLocal.x0 + L.h2.left, x1 = L.floorLocal.x1 + L.h2.left, r = radius();
+          // A short first line (phones): two balls on the word, the third beside it.
+          if (narrowHero()) return [x0 + r * 1.1, x1 - r * 1.1, S.W - r - 6];
+          return [0.24, 0.47, 0.7].map((t) => lerp(x0, x1, t));
+        }
+        // The headline's floor, projected through its current 3D tilt.
+        let tiltCss = "";
+        function heroFloor() {
+          const h = L.h2, f = L.floorLocal;
+          const ox = h.width / 2, oy = h.height * 0.6;
+          const m = new DOMMatrix([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -1 / 900, 0, 0, 0, 1])
+            .rotateAxisAngle(1, 0, 0, tilt.rx).rotateAxisAngle(0, 1, 0, tilt.ry).skewX(tilt.sk);
+          const proj = (x, y) => { const q = m.transformPoint(new DOMPoint(x - ox, y - oy, 0, 1)); return [h.left + ox + q.x / q.w, h.top + oy + q.y / q.w]; };
+          const [ax, ay] = proj(f.x0, f.y), [bx, by] = proj(f.x1, f.y);
+          return { ax, ay, bx, by };
+        }
+        function footFloor() { return { ax: 0, ay: L.footY, bx: S.W, by: L.footY }; }
+        function wake(b) { b.awake = true; b.rest = 0; }
+
+        function collideSeg(b, f) {
+          if (!b.live || b.drag) return;
+          const ex = f.bx - f.ax, ey = f.by - f.ay, len2 = ex * ex + ey * ey;
+          const t = clamp(((b.x - f.ax) * ex + (b.y - f.ay) * ey) / len2, 0, 1);
+          const qx = f.ax + ex * t, qy = f.ay + ey * t;
+          const dx = b.x - qx, dy = b.y - qy, d = Math.hypot(dx, dy);
+          if (ex * (b.y - f.ay) - ey * (b.x - f.ax) > 0 || d >= b.r || d < 1e-6) return;
+          const nx = dx / d, ny = dy / d, pen = b.r - d;
+          b.x += nx * pen; b.y += ny * pen;
+          const vn = b.vx * nx + b.vy * ny;
+          if (vn < 0) { const e = -vn > 90 ? 0.55 : 0; b.vx -= (1 + e) * vn * nx; b.vy -= (1 + e) * vn * ny; }
+          b.contact = { tx: -ny, ty: nx, floor: f };
+        }
+        function collidePair(a, b) {
+          if (!a.live || !b.live) return;
+          const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy), min = a.r + b.r;
+          if (d >= min || d < 1e-6) return;
+          const ia = a.drag ? 0 : 1, ib = b.drag ? 0 : 1, share = ia + ib;
+          if (!share) return;
+          const nx = dx / d, ny = dy / d, pen = min - d;
+          a.x -= (nx * pen * ia) / share; a.y -= (ny * pen * ia) / share;
+          b.x += (nx * pen * ib) / share; b.y += (ny * pen * ib) / share;
+          const rv = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+          if (rv < 0) {
+            const j = (-(1 + 0.85) * rv) / share;
+            a.vx -= j * nx * ia; a.vy -= j * ny * ia; b.vx += j * nx * ib; b.vy += j * ny * ib;
+            if (-rv > 40) { if (ia) wake(a); if (ib) wake(b); }
+          }
+          if (pen > 1.5) { if (ia) wake(a); if (ib) wake(b); }
+        }
+        function step() {
+          for (const b of list) {
+            if (!b.live || b.drag || !b.awake) continue;
+            b.vy += G * STEP; b.x += b.vx * STEP; b.y += b.vy * STEP; b.contact = null;
+          }
+          for (let k = 0; k < 2; k++) {
+            for (const b of list) {
+              if (!b.live || b.drag) continue;
+              if (b.x - b.r < 0) { b.x = b.r; if (b.vx < 0) b.vx = -b.vx * 0.6; }
+              if (b.x + b.r > S.W) { b.x = S.W - b.r; if (b.vx > 0) b.vx = -b.vx * 0.6; }
+              for (const f of floors) collideSeg(b, f);
+              if (bottom) collideSeg(b, { ax: 0, ay: S.H, bx: S.W, by: S.H });
+            }
+            for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) collidePair(list[i], list[j]);
+          }
+          for (const b of list) {
+            if (!b.live || b.drag || !b.awake) continue;
+            if (b.contact) {
+              const vt = b.vx * b.contact.tx + b.vy * b.contact.ty;
+              b.w = vt / b.r;
+              const f = Math.exp(-1.1 * STEP); b.vx *= f; b.vy *= f;
+            } else b.w *= Math.exp(-0.3 * STEP);
+            b.a += b.w * STEP;
+            if (b.contact && Math.hypot(b.vx, b.vy) < 9) { b.rest += STEP; if (b.rest > 0.35) { b.awake = false; b.vx = b.vy = b.w = 0; } }
+            else b.rest = 0;
+            if (b.y - b.r > S.H + 40) { b.live = false; b.awake = false; }
+          }
+        }
+        function floorYAt(x) {
+          if (mode === "contact") return L.footY;
+          const f = floors[0]; if (!f) return S.H;
+          const t = clamp((x - f.ax) / (f.bx - f.ax), 0, 1);
+          return x < f.ax || x > f.bx ? S.H : lerp(f.ay, f.by, t);
+        }
+        function draw() {
+          for (const b of list) {
+            const on = b.live && b.alpha > 0.01;
+            show(b.el, on); show(b.sh, on);
+            if (!on) continue;
+            b.el.style.transform = `translate3d(${b.x.toFixed(1)}px, ${b.y.toFixed(1)}px, 0)`;
+            b.el.style.opacity = b.alpha;
+            b.spin.style.transform = `rotate(${b.a.toFixed(3)}rad)`;
+            const fy = floorYAt(b.x), h = Math.max(0, fy - (b.y + b.r));
+            const s = clamp(1 - h / (S.H * 0.6), 0.25, 1);
+            b.sh.style.transform = `translate3d(${b.x.toFixed(1)}px, ${fy.toFixed(1)}px, 0) scale(${s.toFixed(3)})`;
+            b.sh.style.opacity = (s * s * b.alpha).toFixed(3);
+          }
+        }
+        // Calm mode: the balls simply rest on their floor.
+        function place(xs, floorY) {
+          const r = radius();
+          list.forEach((b, i) => {
+            Object.assign(b, { r, live: true, awake: false, alpha: 1, x: clamp(xs[i], r, S.W - r), vx: 0, vy: 0, w: 0 });
+            b.y = (typeof floorY === "function" ? floorY(b.x) : floorY) - r;
+            b.el.style.setProperty("--r", `${r}px`); b.sh.style.setProperty("--r", `${r}px`);
+          });
+        }
+        function update(dt) {
+          const p = S.p;
+          if (!S.settled) return;
+          if (!S.motion) {
+            const scene = calmScene();
+            const want = scene === 0 ? "hero" : scene === 2 ? "contact" : "off";
+            if (want !== mode) {
+              mode = want;
+              floors = want === "hero" ? [heroFloor()] : want === "contact" ? [footFloor()] : [];
+              if (want === "hero") place(heroXs(), (x) => floorYAt(x));
+              else if (want === "contact") place(spread(L.footXs), L.footY);
+              else list.forEach((b) => (b.live = false));
+            }
+            draw();
+            return;
+          }
+          // Scene changes.
+          if (p < T.ballsFall) { if (mode !== "hero" && p < 0.1) { mode = "hero"; drop(heroXs(), narrowHero() ? 30 : 140); } }
+          else if (p < 0.84) {
+            if (mode === "hero") { mode = "fall"; list.forEach(wake); }
+            else if (mode === "contact") mode = "fade";
+          } else if (p >= T.contactBalls && mode !== "contact") { mode = "contact"; drop(spread(L.footXs), 0); }
+          if (mode === "fade") { let any = false; for (const b of list) { b.alpha = Math.max(0, b.alpha - dt * 4); if (b.alpha > 0) any = true; else b.live = false; } if (!any) mode = "off"; }
+          if (mode === "fall" && !list.some((b) => b.live)) mode = "off";
+          // Floors follow the tilted headline; a moving floor wakes the balls on it.
+          floors = mode === "hero" ? [heroFloor()] : mode === "contact" ? [footFloor()] : [];
+          bottom = mode === "hero";
+          if (mode === "hero" && tiltCss !== lastTilt) { lastTilt = tiltCss; list.forEach((b) => { if (b.live && !b.drag) wake(b); }); }
+          if (list.some((b) => b.live && (b.awake || b.drag))) {
+            acc = Math.min(acc + dt, 0.1);
+            while (acc >= STEP) { step(); acc -= STEP; }
+          }
+          draw();
+        }
+        function kick(ptr) {
+          if (!S.motion || ptr.px < 0) return;
+          for (const b of list) {
+            if (!b.live || b.drag) continue;
+            // Did the pointer pass through the ball since the last event?
+            const ex = ptr.x - ptr.px, ey = ptr.y - ptr.py, len2 = ex * ex + ey * ey || 1;
+            const t = clamp(((b.x - ptr.px) * ex + (b.y - ptr.py) * ey) / len2, 0, 1);
+            if (Math.hypot(ptr.px + ex * t - b.x, ptr.py + ey * t - b.y) > b.r) continue;
+            const inside = Math.hypot(ptr.px - b.x, ptr.py - b.y) < b.r;
+            if (inside) continue;
+            b.vx += clamp(ptr.vx, -1900, 1900) * 0.55; b.vy += clamp(ptr.vy, -1900, 1900) * 0.55 - 160;
+            wake(b);
+          }
+        }
+        function bindDrag(b) {
+          b.el.addEventListener("pointerdown", (e) => {
+            if (!b.live) return;
+            e.preventDefault();
+            b.el.setPointerCapture(e.pointerId);
+            const r = stage.getBoundingClientRect(), now = performance.now();
+            b.drag = { id: e.pointerId, ox: e.clientX - r.left - b.x, oy: e.clientY - r.top - b.y, sx: e.clientX, sy: e.clientY, t: now, lt: now, lx: e.clientX, ly: e.clientY, vx: 0, vy: 0, moved: 0 };
+            b.el.classList.add("is-drag");
+          });
+          b.el.addEventListener("pointermove", (e) => {
+            const d = b.drag; if (!d || e.pointerId !== d.id) return;
+            const now = performance.now(), r = stage.getBoundingClientRect(), dt = Math.max(8, now - d.lt) / 1000;
+            d.vx = lerp(d.vx, (e.clientX - d.lx) / dt, 0.6); d.vy = lerp(d.vy, (e.clientY - d.ly) / dt, 0.6);
+            d.lx = e.clientX; d.ly = e.clientY; d.lt = now;
+            d.moved = Math.max(d.moved, Math.hypot(e.clientX - d.sx, e.clientY - d.sy));
+            if (S.motion) { b.x = clamp(e.clientX - r.left - d.ox, b.r, S.W - b.r); b.y = e.clientY - r.top - d.oy; b.a += (d.vx * dt) / b.r; }
+          });
+          const end = (e, cancelled) => {
+            const d = b.drag; if (!d || e.pointerId !== d.id) return;
+            b.drag = null; b.el.classList.remove("is-drag");
+            if (!cancelled && d.moved < 6 && performance.now() - d.t < 450) {
+              const href = b.link.getAttribute("href");
+              if (href && href !== "#") window.open(b.link.href, "_blank", "noopener");
+              else if (S.motion) { b.vy = -760; b.vx += (Math.random() - 0.5) * 120; wake(b); } // placeholder link: a little hop
+              return;
+            }
+            if (S.motion) { b.vx = clamp(d.vx, -2600, 2600); b.vy = clamp(d.vy, -2600, 2600); wake(b); }
+          };
+          b.el.addEventListener("pointerup", (e) => end(e, false));
+          b.el.addEventListener("pointercancel", (e) => end(e, true));
+        }
+        return { update, kick, setTilt: (css) => (tiltCss = css), reset: () => { mode = "off"; list.forEach((b) => (b.live = false)); } };
+      })();
+
+      // ===== WORK LIST — active row, floating preview card. =====
+      const workUI = (() => {
+        const rows = $$(".row", work);
+        const card = $(".preview", work);
+        const imgs = rows.map((row) => {
+          const img = document.createElement("img");
+          img.src = row.dataset.image; img.alt = row.dataset.alt || ""; img.decoding = "async";
+          card.append(img);
+          return img;
+        });
+        let hover = -1, focus = -1, active = -1;
+        const card2 = { x: 0, y: 0, lean: 0, init: false };
+        rows.forEach((row, i) => {
+          row.addEventListener("pointerenter", (e) => { if (e.pointerType === "mouse") hover = i; });
+          row.addEventListener("pointerleave", () => { if (hover === i) hover = -1; });
+          row.addEventListener("focus", () => { focus = i; if (sceneOf(S.pTarget) !== 1) goto(workP()); });
+          row.addEventListener("blur", () => { if (focus === i) focus = -1; });
+        });
+        function setActive(i) {
+          if (i === active) return;
+          active = i;
+          rows.forEach((r, k) => r.classList.toggle("is-active", k === i));
+          imgs.forEach((img, k) => img.classList.toggle("is-on", k === i));
+        }
+        function update(dt) {
+          const p = S.p;
+          let scrollIdx;
+          if (S.motion) scrollIdx = p < T.rows[0] ? 0 : Math.min(2, Math.floor(((p - T.rows[0]) / (T.rows[1] - T.rows[0])) * 3));
+          else scrollIdx = Math.min(2, Math.floor(ramp(0.25, 0.8, p) * 3));
+          const visible = sceneOf(p) === 1 && (!S.motion || p >= 0.552);
+          setActive(visible && hover >= 0 ? hover : visible && focus >= 0 ? focus : scrollIdx);
+          card.classList.toggle("is-on", visible && (!S.motion || p > 0.56));
+          if (phoneQuery.matches || !visible) { card2.init = false; return; }
+          const cw = L.card.w, ch = L.card.h;
+          // At rest the card sits on the right, beside the active row (below the first, above the others).
+          const box = L.rowBox[Math.max(0, active)], gap = 10;
+          const restX = L.workRight - cw;
+          const restY = clamp(active <= 0 ? box.bottom + gap : box.top - gap - ch, L.headBottom + gap, S.H - ch - gap);
+          let tx = restX, ty = restY;
+          if (finePointer.matches && hover >= 0) {
+            tx = clamp(pointer.x + 36, 12, S.W - cw - 12);
+            ty = clamp(pointer.y - ch - 24, 12, S.H - ch - 12);
+          }
+          if (!card2.init) { card2.x = tx; card2.y = ty; card2.init = true; }
+          const speed = reducedMotion ? 0 : clamp(pointer.vx * 0.006, -6, 6);
+          card2.x = damp(card2.x, tx, 9, dt); card2.y = damp(card2.y, ty, 9, dt);
+          card2.lean = damp(card2.lean, finePointer.matches && hover >= 0 ? speed : 0, 6, dt);
+          pointer.vx = damp(pointer.vx, 0, 4, dt);
+          card.style.transform = `translate3d(${card2.x.toFixed(1)}px, ${card2.y.toFixed(1)}px, 0) rotate(${card2.lean.toFixed(2)}deg)`;
+        }
+        return { update, rows };
+      })();
+
+      // ===== SCENES =====
+      // 0 hero · 1 work · 2 contact (in calm mode the thresholds are simple crossfades).
+      function sceneOf(p) {
+        if (S.motion) return p < 0.55 ? 0 : p < T.lift[1] ? (p < T.lift[0] + 0.03 ? 1 : 2) : 2;
+        return p < 0.25 ? 0 : p < 0.8 ? 1 : 2;
+      }
+      const calmScene = () => sceneOf(S.p);
+      $(".skip").addEventListener("click", (e) => { e.preventDefault(); goto(workP()); workUI.rows[0].focus({ preventScroll: true }); });
+      $$("a", contact).forEach((a) => a.addEventListener("focus", () => { if (sceneOf(S.pTarget) !== 2) goto(contactP()); }));
+
+      let tilt = { rx: 0, ry: 0, sk: 0 };
+      function applyScene(dt) {
+        const p = S.p;
+        if (S.motion) {
+          fade(heroLayer, true); fade(glCanvas, true);
+          fade(heroTop, p < T.fold[0]);
+          setStyle(manifesto, "opacity", String(1 - smooth(...T.manifestoOut, p)));
+          fade(heroBottom, p < T.fold[0]);
+          show(glCanvas, p < 0.553);
+          show(cssLayer, p >= T.fold[0] - 0.002 && p < 0.553);
+          const lift = inOut(ramp(...T.lift, p));
+          reveal(work, p >= 0.55 && lift < 1);
+          setStyle(work, "transform", lift > 0 ? `translate3d(0, ${(-lift * 100).toFixed(3)}%, 0)` : "none");
+          reveal(contact, p >= T.lift[0] - 0.01);
+        } else {
+          const scene = sceneOf(p);
+          for (const [el, on] of [[heroLayer, scene === 0], [heroBottom, scene === 0], [glCanvas, scene === 0]]) fade(el, on);
+          reveal(work, scene === 1); reveal(contact, scene === 2);
+          show(glCanvas, true); show(cssLayer, false); fade(heroTop, true); setStyle(manifesto, "opacity", "1");
+          setStyle(work, "transform", "none");
+        }
+        // The bottom headline leans toward the pointer.
+        const k = S.motion && !reducedMotion ? 1 - smooth(...T.tiltOff, p) : 0;
+        tilt.rx = damp(tilt.rx, -pointer.ny * 8 * k, 6, dt);
+        tilt.ry = damp(tilt.ry, pointer.nx * 10 * k, 6, dt);
+        tilt.sk = damp(tilt.sk, -pointer.nx * 6 * k, 6, dt);
+        if (p >= T.fold[0]) tilt.rx = tilt.ry = tilt.sk = 0;
+        const flat = Math.abs(tilt.rx) + Math.abs(tilt.ry) + Math.abs(tilt.sk) < 0.01;
+        const css = flat ? "" : `perspective(900px) rotateX(${tilt.rx.toFixed(2)}deg) rotateY(${tilt.ry.toFixed(2)}deg) skewX(${tilt.sk.toFixed(2)}deg)`;
+        setStyle(heroBottom, "transform", css || "none");
+        balls.setTilt(css);
+      }
+
+      // ===== 3D — bust, corridor and the work sheet. =====
+      let G3 = null;
+      async function init3D() {
+        const probe = document.createElement("canvas");
+        if (!probe.getContext("webgl2")) return null;
+        const THREE = await import("three");
+        const { CSS3DRenderer, CSS3DObject } = await import("three/addons/renderers/CSS3DRenderer.js");
+        const renderer = new THREE.WebGLRenderer({ canvas: glCanvas, antialias: true, alpha: true, powerPreference: "high-performance" });
+        renderer.setClearColor(0xffffff, 0);
+        renderer.toneMapping = THREE.NeutralToneMapping;
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0xffffff, 1e6, 2e6);
+        const camera = new THREE.PerspectiveCamera(FOV, 1, 2, 10000);
+        const cssRenderer = new CSS3DRenderer();
+        cssLayer.append(cssRenderer.domElement);
+        const cssScene = new THREE.Scene();
+        const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+        // Lights: warm key top-right, cool fill left, white rim from behind, soft sky.
+        scene.add(new THREE.HemisphereLight(0xffffff, 0xd9d2c8, 1.1));
+        const key = new THREE.DirectionalLight(0xffe2c6, 2.3); key.position.set(3, 4, 4); scene.add(key);
+        const fill = new THREE.DirectionalLight(0xc4d6ff, 0.9); fill.position.set(-4, 1, 2); scene.add(fill);
+        const rim = new THREE.DirectionalLight(0xffffff, 1.6); rim.position.set(-1, 3, -5); scene.add(rim);
+
+        const bust = buildBust(THREE);
+        scene.add(bust.root);
+        const corridor = new THREE.Group();
+        scene.add(corridor);
+        let texts = [], sheet = null, C = null;
+
+        // --- Gradient textures for soft corner shading ---
+        function gradientTexture(stops, vertical) {
+          const c = document.createElement("canvas");
+          c.width = vertical ? 2 : 256; c.height = vertical ? 256 : 2;
+          const ctx = c.getContext("2d");
+          const g = vertical ? ctx.createLinearGradient(0, 256, 0, 0) : ctx.createLinearGradient(0, 0, 256, 0);
+          for (const [o, col] of stops) g.addColorStop(o, col);
+          ctx.fillStyle = g; ctx.fillRect(0, 0, c.width, c.height);
+          const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+          return t;
+        }
+        function radialTexture(inner, outer) {
+          const c = document.createElement("canvas"); c.width = c.height = 128;
+          const ctx = c.getContext("2d"), g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+          g.addColorStop(0, inner); g.addColorStop(1, outer);
+          ctx.fillStyle = g; ctx.fillRect(0, 0, 128, 128);
+          const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+          return t;
+        }
+        const glow = radialTexture("rgba(255,255,255,1)", "rgba(255,255,255,0)");
+        const shade = radialTexture("rgba(0,0,0,0.5)", "rgba(0,0,0,0)");
+        const floorTex = gradientTexture([[0, "#d9d8d3"], [0.16, "#e8e7e3"], [0.5, "#efeeeb"], [0.84, "#e8e7e3"], [1, "#d9d8d3"]], false);
+        const ceilTex = gradientTexture([[0, "#dedcd8"], [0.2, "#eeedea"], [0.5, "#f3f2ef"], [0.8, "#eeedea"], [1, "#dedcd8"]], false);
+        const wallTex = gradientTexture([[0, "#d8d7d2"], [0.12, "#ebeae6"], [0.55, "#f6f5f2"], [0.9, "#ecebe7"], [1, "#e0dfdb"]], true);
+        wallTex.wrapS = THREE.RepeatWrapping;
+        const endTex = radialTexture("#f7f6f3", "#dedcd8");
+
+        function clearCorridor() {
+          corridor.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach((m) => m.dispose()); });
+          corridor.clear();
+        }
+        const basic = (color, extra = {}) => new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, ...extra });
+        function plane(w, h, mat, x, y, z, rx = 0, ry = 0) {
+          const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+          m.position.set(x, y, z); m.rotation.set(rx, ry, 0);
+          corridor.add(m); return m;
+        }
+        function buildCorridor() {
+          clearCorridor();
+          const { W, H, D } = S;
+          const wallT = Math.max(16, H * 0.028);
+          const doorW = clamp(H * 0.34, 150, 360), doorH = H * 0.64, arch = doorW * 0.62;
+          const textEnd = Math.max(L.h2.width + H * 0.12, L.h1.height + H * 0.2);
+          const s1 = textEnd + doorW * 0.5 + H * 0.3, s2 = s1 + doorW + H * 0.55;
+          const len = s2 + doorW * 0.5 + H * 0.75;
+          C = { W, H, D, len, zEnd: -(D + len) + SHEET * D, wallT, rooms: [] };
+          const z0 = -D;
+          // Floor and ceiling.
+          const floor = plane(W, len + 4, basic(0xffffff, { map: floorTex }), 0, -H / 2, z0 - len / 2, -Math.PI / 2);
+          floor.renderOrder = -2;
+          plane(W, len + 4, basic(0xffffff, { map: ceilTex }), 0, H / 2, z0 - len / 2, Math.PI / 2);
+          // Side walls with pointed-arch doorways (real thickness).
+          const doors = [s1, s2];
+          const wallMat = basic(0xffffff, { map: wallTex });
+          wallTex.repeat.set(0.001, 1 / H); wallTex.offset.set(0, 0.5);
+          const reveal = basic(0xe7e6e2);
+          for (const side of [-1, 1]) {
+            const shape = new THREE.Shape();
+            shape.moveTo(-2, -H / 2 - 6); shape.lineTo(len + 2, -H / 2 - 6); shape.lineTo(len + 2, H / 2); shape.lineTo(-2, H / 2); shape.closePath();
+            for (const s of doors) {
+              const x0 = s - doorW / 2, x1 = s + doorW / 2, yb = -H / 2 - 3, ys = -H / 2 + doorH - arch, ya = -H / 2 + doorH;
+              const hole = new THREE.Path();
+              hole.moveTo(x0, yb); hole.lineTo(x0, ys);
+              hole.bezierCurveTo(x0, ys + arch * 0.56, s - doorW * 0.2, ya - arch * 0.12, s, ya);
+              hole.bezierCurveTo(s + doorW * 0.2, ya - arch * 0.12, x1, ys + arch * 0.56, x1, ys);
+              hole.lineTo(x1, yb); hole.closePath();
+              shape.holes.push(hole);
+            }
+            const geo = new THREE.ExtrudeGeometry(shape, { depth: wallT, bevelEnabled: false, curveSegments: 12 });
+            const wall = new THREE.Mesh(geo, [wallMat, reveal]);
+            wall.rotation.y = Math.PI / 2;
+            wall.position.set(side < 0 ? -W / 2 - wallT : W / 2, 0, z0);
+            corridor.add(wall);
+          }
+          // Rooms behind the doorways: left periwinkle then sage, right terracotta then ochre.
+          const rooms = [[-1, s1, 0], [1, s1, 1], [-1, s2, 2], [1, s2, 3]];
+          for (const [side, s, ci] of rooms) buildRoom(side, s, ci, doorW, doorH, wallT);
+          // Ceiling light strips and light pools on the floor.
+          const n = Math.max(2, Math.round((len - textEnd) / (H * 0.85)));
+          for (let i = 0; i < n; i++) {
+            const s = textEnd + ((i + 0.5) * (len - textEnd)) / n;
+            plane(Math.max(18, W * 0.05), H * 0.36, basic(0xffffff), 0, H / 2 - 1, z0 - s, Math.PI / 2);
+            plane(Math.max(60, W * 0.16), H * 0.62, basic(0xffffff, { map: glow, transparent: true, opacity: 0.8, depthWrite: false }), 0, H / 2 - 2, z0 - s, Math.PI / 2);
+            plane(W * 0.6, H * 0.9, basic(0xffffff, { map: glow, transparent: true, opacity: 0.75, depthWrite: false }), 0, -H / 2 + 1, z0 - s, -Math.PI / 2);
+          }
+          // End wall with a soft shadow behind the sheet.
+          plane(W + 4, H + 4, basic(0xffffff, { map: endTex }), 0, 0, z0 - len, 0);
+          plane(W * SHEET * 1.12, H * SHEET * 1.16, basic(0x000000, { map: shade, transparent: true, opacity: 0.32, depthWrite: false }), 0, -H * 0.02, z0 - len + 1, 0);
+          camera.far = D + len + 3000; camera.updateProjectionMatrix();
+        }
+        function buildRoom(side, s, ci, doorW, doorH, wallT) {
+          const { W, H, D } = S;
+          const color = new THREE.Color(ROOM_COLORS[ci]);
+          const shadeOf = (k) => color.clone().multiplyScalar(k);
+          const rd = H * 0.78, rw = doorW * 2.3, rh = doorH * 1.3;
+          const xIn = side * (W / 2 + wallT), xFar = side * (W / 2 + wallT + rd), xMid = (xIn + xFar) / 2;
+          const zc = -D - s, yb = -H / 2, yc = yb + rh / 2;
+          plane(rd, rw, basic(shadeOf(1.08)), xMid, yb, zc, -Math.PI / 2);                       // floor
+          plane(rd, rw, basic(shadeOf(0.8)), xMid, yb + rh, zc, Math.PI / 2);                      // ceiling
+          plane(rw, rh, basic(shadeOf(0.98)), xFar, yc, zc, 0, Math.PI / 2);                        // far wall
+          plane(rd, rh, basic(shadeOf(0.88)), xMid, yc, zc - rw / 2, 0);                            // side walls
+          plane(rd, rh, basic(shadeOf(0.9)), xMid, yc, zc + rw / 2, 0);
+          plane(rw * 0.34, rh * 0.42, basic(0xfffbf0), xFar - side * 1, yb + rh * 0.58, zc - rw * 0.08, 0, Math.PI / 2); // window
+          plane(rw * 0.9, rh * 0.9, basic(0xfff6e0, { map: glow, transparent: true, opacity: 0.55, depthWrite: false }), xFar - side * 2, yb + rh * 0.58, zc - rw * 0.08, 0, Math.PI / 2);
+          const beam = plane(rd * 0.7, rw * 0.3, basic(0xfffaf0, { transparent: true, opacity: 0.35, depthWrite: false }), xMid - side * rd * 0.05, yb + 1, zc + rw * 0.12, -Math.PI / 2);
+          beam.rotation.z = side * 0.35;
+          // Pedestal and a slowly turning object.
+          const pw = Math.min(rd, rw) * 0.26, ph = H * 0.26;
+          const ped = new THREE.Mesh(new THREE.BoxGeometry(pw, ph, pw), [0xf1f0ec, 0xe4e3df, 0xffffff, 0xd8d7d3, 0xf6f5f2, 0xe9e8e4].map((c) => basic(c)));
+          ped.position.set(xMid + side * rd * 0.05, yb + ph / 2, zc);
+          corridor.add(ped);
+          const obj = sculpture(THREE, ci, pw, color);
+          obj.position.set(ped.position.x, yb + ph + pw * 0.55, zc);
+          corridor.add(obj);
+          C.rooms.push(obj);
+          // Tinted light patch spilling onto the corridor floor.
+          plane(Math.min(W * 0.42, H * 0.5), doorW * 1.4, basic(color, { map: glow, transparent: true, opacity: 0.5, depthWrite: false }), side * (W / 2 - Math.min(W * 0.42, H * 0.5) * 0.3), -H / 2 + 1.5, zc, -Math.PI / 2);
+        }
+
+        // --- The two headlines as text planes that fold onto the ceiling and the wall ---
+        function textPlane(info, kind) {
+          const dpr = Math.min(2, window.devicePixelRatio || 1);
+          const cs = info.font;
+          // A margin keeps accents, commas and the italic overhang inside the texture.
+          const pad = Math.ceil(parseFloat(cs.fontSize) * 0.2);
+          const c = document.createElement("canvas");
+          c.width = Math.ceil((info.width + pad * 2) * dpr); c.height = Math.ceil((info.height + pad * 2) * dpr);
+          const ctx = c.getContext("2d");
+          ctx.scale(dpr, dpr); ctx.translate(pad, pad);
+          ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+          ctx.fillStyle = cs.color; ctx.textBaseline = "alphabetic";
+          const caps = cs.textTransform === "uppercase";
+          for (const w of info.words) ctx.fillText(caps ? w.text.toLocaleUpperCase(root.lang || undefined) : w.text, w.x, w.baseline);
+          const tex = new THREE.CanvasTexture(c);
+          tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = maxAniso;
+          const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 });
+          const mesh = new THREE.Mesh(new THREE.PlaneGeometry(info.width + pad * 2, info.height + pad * 2), mat);
+          mesh.renderOrder = 4;
+          const hinge = new THREE.Group();
+          if (kind === "ceiling") mesh.position.set(0, -info.height / 2, 0);
+          else mesh.position.set(info.width / 2, 0, 0);
+          hinge.add(mesh); scene.add(hinge);
+          return { kind, hinge, mesh, tex, info };
+        }
+        function buildTexts() {
+          for (const t of texts) { scene.remove(t.hinge); t.tex.dispose(); t.mesh.geometry.dispose(); t.mesh.material.dispose(); }
+          texts = [textPlane(L.h1, "ceiling"), textPlane(L.h2, "wall")];
+        }
+        function placeTexts(e) {
+          const { W, H, D } = S;
+          for (const t of texts) {
+            const r = t.info;
+            if (t.kind === "ceiling") {
+              t.hinge.position.set(r.left + r.width / 2 - W / 2, lerp(H / 2 - r.top, H / 2 - 1.5, e), -D);
+              t.hinge.rotation.set((e * Math.PI) / 2, 0, 0);
+            } else {
+              t.hinge.position.set(lerp(r.left - W / 2, -W / 2 + 1.5, e), H / 2 - (r.top + r.height / 2), -D);
+              t.hinge.rotation.set(0, (e * Math.PI) / 2, 0);
+            }
+          }
+        }
+        // --- The SELECTED WORK sheet on the end wall: a copy of the real Work layer ---
+        function buildSheet() {
+          if (sheet) { cssScene.remove(sheet); sheet.element.remove(); }
+          const clone = work.cloneNode(true);
+          clone.removeAttribute("id");
+          $$("[id]", clone).forEach((n) => n.removeAttribute("id"));
+          $$("a", clone).forEach((a) => a.setAttribute("tabindex", "-1"));
+          clone.classList.add("work-clone");
+          clone.setAttribute("aria-hidden", "true");
+          clone.inert = true;
+          $$(".row", clone).forEach((r, i) => r.classList.toggle("is-active", i === 0));
+          clone.style.cssText = `width:${S.W}px;height:${S.H}px;visibility:inherit;opacity:1`;
+          sheet = new CSS3DObject(clone);
+          sheet.scale.setScalar(SHEET);
+          sheet.position.set(0, 0, -(S.D + C.len));
+          cssScene.add(sheet);
+        }
+
+        function resize() {
+          const phone = phoneQuery.matches;
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, phone ? 1.5 : 2));
+          renderer.setSize(S.W, S.H, false);
+          cssRenderer.setSize(S.W, S.H);
+          camera.aspect = S.W / S.H; camera.updateProjectionMatrix();
+          buildCorridor(); buildTexts(); buildSheet();
+        }
+
+        const look = { x: 0, y: 0 };
+        let riseStart = 0;
+        function render(dt, now) {
+          const p = S.p, { W, H, D } = S;
+          const corridorOn = S.motion && p >= T.fold[0] - 0.002 && p < 0.553;
+          const bustOn = S.motion ? p < T.bustOut[1] + 0.005 : sceneOf(p) === 0;
+          if (!corridorOn && !bustOn) return;
+          if (!riseStart) riseStart = now;
+          // Camera: dolly to the end wall with a gentle bob and a little look toward the pointer.
+          const fly = inOut(ramp(...T.fly, p));
+          const settle = 1 - smooth(0.47, 0.545, p);
+          const lookK = S.motion && !reducedMotion ? smooth(0.19, 0.24, p) * settle : 0;
+          look.x = damp(look.x, pointer.nx * lookK, 4, dt); look.y = damp(look.y, pointer.ny * lookK, 4, dt);
+          camera.position.set(0, Math.sin(fly * Math.PI * 5) * H * 0.006 * settle, corridorOn ? C.zEnd * fly : 0);
+          camera.rotation.set((-look.y * 1.2 * Math.PI) / 180, (-look.x * 2 * Math.PI) / 180, 0);
+          // Fold, fog and visibility.
+          const fold = inOut(ramp(...T.fold, p));
+          corridor.visible = corridorOn;
+          for (const t of texts) t.hinge.visible = corridorOn;
+          if (corridorOn) {
+            placeTexts(fold);
+            const e = smooth(T.fold[0], T.fold[1] + 0.04, p);
+            scene.fog.near = D; scene.fog.far = D + 40 + C.len * 2.6 * e * e;
+            for (const o of C.rooms) o.rotation.y += dt * 0.45;
+            const dist = -(D + C.len) - camera.position.z;
+            const fogK = clamp((Math.abs(dist) - scene.fog.near) / (scene.fog.far - scene.fog.near), 0, 1);
+            sheet.element.style.opacity = (1 - fogK).toFixed(3);
+          } else { scene.fog.near = 1e6; scene.fog.far = 2e6; }
+          // Bust placement, entrance and slide-out.
+          bust.root.visible = bustOn;
+          if (bustOn) {
+            const k = bustScale();
+            const [sx, sy] = bustSpot(k);
+            const rise = reducedMotion ? 0 : (1 - outCubic(clamp((now - riseStart) / 1100, 0, 1))) * H * 0.45;
+            const out = S.motion ? Math.pow(ramp(...T.bustOut, p), 2) * W * 0.75 : 0;
+            bust.root.position.set(sx - W / 2 + out, H / 2 - sy - rise, -D);
+            bust.root.scale.setScalar(k);
+            bust.update(dt, now, sx + out, sy);
+          }
+          renderer.render(scene, camera);
+          if (corridorOn) cssRenderer.render(cssScene, camera);
+        }
+        function bustScale() {
+          const { W, H } = S;
+          if (phoneQuery.matches) return Math.min(W * 0.25, H * 0.15);
+          if (W <= 900) return Math.min(H * 0.16, W * 0.19);
+          return Math.min(H * 0.18, W * 0.125);
+        }
+        function bustSpot(k) {
+          const { W, H } = S;
+          if (phoneQuery.matches) return [W * 0.68, Math.max(H * 0.6, L.manifestoBottom + k * 1.45)];
+          if (W <= 900) return [W * 0.74, Math.max(H * 0.52, L.h1.top + L.h1.height + k * 1.2)];
+          return [W * 0.72, H * 0.45];
+        }
+        return { resize, render, ready: true };
+
+        // --- Procedural low-poly bust ---
+        function buildBust(THREE) {
+          const rnd = mulberry(11);
+          const SKIN = 0xe8b48e, HAIR = 0x3a2418, BROW = 0x2b1b13, LIP = 0xc4766a, LIP2 = 0xd0857a, TEE = 0x9a9ba0, SHIRT = 0x33415c, POCKET = 0x2b3750, SCLERA = 0xf6f1ea, IRIS = 0x5b3a24;
+          const matte = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.84, metalness: 0 });
+          const satin = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.3, metalness: 0 });
+          function paint(geo, hex, vary = 0.04) {
+            const g = geo.index ? geo.toNonIndexed() : geo;
+            const base = new THREE.Color(hex), n = g.attributes.position.count, col = new Float32Array(n * 3);
+            for (let i = 0; i < n; i += 3) {
+              const k = 1 + (rnd() * 2 - 1) * vary;
+              for (let j = 0; j < 3; j++) { col[(i + j) * 3] = base.r * k; col[(i + j) * 3 + 1] = base.g * k; col[(i + j) * 3 + 2] = base.b * k; }
+            }
+            g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+            g.computeVertexNormals();
+            return g;
+          }
+          const mesh = (geo, hex, opt = {}) => new THREE.Mesh(paint(geo, hex, opt.vary ?? 0.04), opt.mat || matte);
+          const v = new THREE.Vector3();
+          function deform(geo, fn) {
+            const pos = geo.attributes.position;
+            for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); fn(v); pos.setXYZ(i, v.x, v.y, v.z); }
+            pos.needsUpdate = true; return geo;
+          }
+          function keepFaces(geo, test) {
+            const g = geo.index ? geo.toNonIndexed() : geo, src = g.attributes.position.array, out = [];
+            for (let i = 0; i < src.length; i += 9) {
+              const c = { x: (src[i] + src[i + 3] + src[i + 6]) / 3, y: (src[i + 1] + src[i + 4] + src[i + 7]) / 3, z: (src[i + 2] + src[i + 5] + src[i + 8]) / 3 };
+              if (test(c)) for (let k = 0; k < 9; k++) out.push(src[i + k]);
+            }
+            const r = new THREE.BufferGeometry(); r.setAttribute("position", new THREE.Float32BufferAttribute(out, 3)); return r;
+          }
+          const s01 = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+          function headShape(p) {
+            const { x, y, z } = p;
+            const jaw = s01((-y - 0.05) / 0.95);
+            let X = x * 0.8 * (1 - 0.3 * jaw * (0.6 + 0.4 * Math.max(0, z)));
+            let Y = y * 1.06 - 0.05 * jaw;
+            let Z = z * 0.92 * (1 - 0.1 * jaw);
+            if (z > 0) Z += 0.1 * jaw * z;
+            const cheek = Math.exp(-((y + 0.08) ** 2) / 0.025) * Math.max(0, Math.abs(x) - 0.35) * Math.max(0, z);
+            X += Math.sign(x) * 0.22 * cheek;
+            if (z > 0.55) Z -= (z - 0.55) * 0.22;
+            if (z < -0.2 && y > -0.3) Z -= 0.05;
+            p.set(X, Y, Z);
+          }
+
+          const root = new THREE.Group();
+          const body = new THREE.Group(); root.add(body);
+          const pivot = new THREE.Group(); pivot.position.set(0, -0.95, -0.06); root.add(pivot);
+          const head = new THREE.Group(); head.position.set(0, 0.95, 0.06); pivot.add(head);
+
+          const headMesh = mesh(deform(new THREE.IcosahedronGeometry(1, 3), headShape), SKIN);
+          head.add(headMesh);
+          headMesh.updateMatrixWorld(true);
+          const ray = new THREE.Raycaster();
+          const surface = (x, y) => {
+            ray.set(new THREE.Vector3(x, y, 3), new THREE.Vector3(0, 0, -1));
+            const hit = ray.intersectObject(headMesh, false)[0];
+            return hit ? hit.point.clone() : new THREE.Vector3(x, y, 0.8);
+          };
+          // Eyes: the ball turns for the gaze, the lids blink.
+          const LID_OPEN = -0.62, LID_SHUT = 0.42;
+          const eyes = [-1, 1].map((s) => {
+            const p = surface(0.29 * s, 0.1);
+            const g = new THREE.Group(); g.position.set(p.x, p.y, p.z - 0.07); g.rotation.y = s * 0.2; g.scale.set(1.18, 0.82, 0.76);
+            const ball = new THREE.Group(); g.add(ball);
+            ball.add(mesh(new THREE.SphereGeometry(0.11, 14, 10), SCLERA, { vary: 0.01, mat: satin }));
+            const irisCap = mesh(new THREE.SphereGeometry(0.1115, 14, 3, 0, Math.PI * 2, 0, 0.55), IRIS, { vary: 0.03, mat: satin });
+            irisCap.rotation.x = Math.PI / 2; ball.add(irisCap);
+            const pupil = mesh(new THREE.SphereGeometry(0.1125, 12, 2, 0, Math.PI * 2, 0, 0.26), 0x0b0807, { vary: 0, mat: satin });
+            pupil.rotation.x = Math.PI / 2; ball.add(pupil);
+            const hl = new THREE.Mesh(new THREE.CircleGeometry(0.012, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+            hl.position.set(0.026, 0.028, 0.104); ball.add(hl);
+            const lid = new THREE.SphereGeometry(0.119, 14, 6, 0, Math.PI * 2, 0, Math.PI / 2);
+            const upper = mesh(lid, SKIN, { vary: 0.02 }); upper.rotation.x = LID_OPEN; g.add(upper);
+            const lower = mesh(lid.clone(), SKIN, { vary: 0.02 }); lower.rotation.set(0.82, 0, Math.PI); g.add(lower);
+            head.add(g);
+            return { ball, upper };
+          });
+          // Brows, nose, lips, ears.
+          for (const s of [-1, 1]) {
+            const p = surface(0.31 * s, 0.27);
+            const b = mesh(new THREE.BoxGeometry(0.25, 0.04, 0.05), BROW, { vary: 0.03 });
+            b.position.set(p.x, p.y, p.z); b.rotation.set(-0.1, s * 0.28, s * -0.12); head.add(b);
+            const e = mesh(new THREE.SphereGeometry(0.17, 6, 5), SKIN);
+            e.scale.set(0.42, 1, 0.68); e.position.set(0.77 * s, -0.04, -0.06); e.rotation.y = s * 0.3; head.add(e);
+          }
+          const np = surface(0, -0.13), dir = new THREE.Vector3(0, -0.34, 0.94);
+          const nose = mesh(new THREE.ConeGeometry(0.085, 0.24, 4), SKIN);
+          nose.rotation.set(Math.PI / 2 + 0.35, Math.PI / 4, 0);
+          nose.position.copy(np).addScaledVector(dir, 0.06); head.add(nose);
+          const mp = surface(0, -0.5);
+          const up = mesh(new THREE.SphereGeometry(0.1, 8, 4), LIP); up.scale.set(1.45, 0.36, 0.55); up.position.set(mp.x, mp.y + 0.03, mp.z - 0.02); head.add(up);
+          const lo = mesh(new THREE.SphereGeometry(0.1, 8, 4), LIP2); lo.scale.set(1.25, 0.42, 0.6); lo.position.set(mp.x, mp.y - 0.04, mp.z - 0.025); head.add(lo);
+          // Hair: a cap with a side part, a top bun and two face-framing strands.
+          const hairCap = keepFaces(new THREE.IcosahedronGeometry(1, 2), (c) => {
+            const l = Math.hypot(c.x, c.y, c.z), x = c.x / l, y = c.y / l, z = c.z / l;
+            const a = Math.abs(Math.atan2(x, z));
+            let line = a < 0.75 ? 0.44 - 0.16 * Math.max(0, -x) : a < 1.6 ? lerp(0.4, 0.0, (a - 0.75) / 0.85) : lerp(0.0, -0.62, Math.min(1, (a - 1.6) / 1.2));
+            return y > line;
+          });
+          deform(hairCap, (p) => { const up = p.y; headShape(p); p.multiplyScalar(1.075 + 0.04 * Math.max(0, up)); p.y += 0.02; p.x += 0.03 * Math.max(0, up); });
+          head.add(mesh(hairCap, HAIR, { vary: 0.07 }));
+          const bun = mesh(new THREE.IcosahedronGeometry(0.36, 1), HAIR, { vary: 0.07 });
+          bun.scale.set(1, 0.86, 0.95); bun.position.set(0.02, 1.04, -0.3); head.add(bun);
+          for (const s of [-1, 1]) {
+            const st = mesh(new THREE.IcosahedronGeometry(0.13, 1), HAIR, { vary: 0.07 });
+            st.scale.set(0.9, 3.7, 0.8); st.position.set(0.79 * s, -0.06, 0.2); st.rotation.set(0.1, 0, s * 0.12); head.add(st);
+          }
+          // Neck, tee and an open overshirt.
+          const neck = mesh(new THREE.CylinderGeometry(0.39, 0.44, 0.95, 9), SKIN); neck.position.set(0, -1.15, -0.06); body.add(neck);
+          const collarRing = mesh(new THREE.TorusGeometry(0.47, 0.075, 4, 12), TEE); collarRing.rotation.x = Math.PI / 2 - 0.12; collarRing.position.set(0, -1.5, -0.04); body.add(collarRing);
+          const bake = (geo, pos, rot, scl) => { const o = new THREE.Object3D(); o.position.set(...pos); o.rotation.set(...rot); o.scale.set(...scl); o.updateMatrix(); return geo.applyMatrix4(o.matrix); };
+          // One lathed torso with sloping shoulders; the overshirt is a slightly larger copy with the front and neck cut away.
+          const profile = [[1.5, -3.9], [1.56, -3.3], [1.64, -2.6], [1.62, -2.12], [1.5, -1.86], [1.22, -1.68], [0.85, -1.55], [0.46, -1.45], [0, -1.42]].map(([r, y]) => new THREE.Vector2(r, y)); // bottom to top, so the faces point outward
+          const torso = (k = 1) => bake(new THREE.LatheGeometry(profile, 14, Math.PI / 14), [0, 0, -0.08], [0, 0, 0], [k, 1, 0.6 * k]);
+          body.add(mesh(torso(), TEE));
+          const open = (c) => !(c.z > 0 && Math.abs(c.x) < 0.42) && !(c.y > -1.62 && Math.abs(c.x) < 0.8);
+          body.add(mesh(keepFaces(torso(1.04), open), SHIRT, { vary: 0.05 }));
+          for (const s of [-1, 1]) {
+            const flap = mesh(new THREE.ConeGeometry(0.22, 0.52, 3), SHIRT, { vary: 0.05 });
+            flap.scale.set(1, 1, 0.3); flap.position.set(0.47 * s, -1.76, 0.76); flap.rotation.set(-0.42, 0, Math.PI - s * 0.5); body.add(flap);
+            const pocket = mesh(new THREE.BoxGeometry(0.36, 0.38, 0.05), POCKET, { vary: 0.03 });
+            pocket.position.set(0.68 * s, -2.36, 0.95); pocket.rotation.y = s * 0.26; body.add(pocket);
+            const pflap = mesh(new THREE.BoxGeometry(0.39, 0.09, 0.07), SHIRT, { vary: 0.03 });
+            pflap.position.set(0.68 * s, -2.18, 0.97); pflap.rotation.y = s * 0.26; body.add(pflap);
+          }
+          root.rotation.y = -0.16;
+
+          // Animation state.
+          const st = { yaw: 0, pitch: 0, eyeYaw: 0, eyePitch: 0, blinkAt: 0, blink: 0 };
+          function update(dt, now, sx, sy) {
+            const t = now / 1000;
+            const idle = now - pointer.moved > 4000 || pointer.x < 0;
+            let tx, ty;
+            if (idle) { tx = reducedMotion ? 0 : Math.sin(t * 0.35) * S.W * 0.22; ty = reducedMotion ? 0 : Math.sin(t * 0.23 + 1) * S.H * 0.08; }
+            else { tx = pointer.x - sx; ty = pointer.y - sy; }
+            const reach = S.H * 0.9;
+            const wantYaw = clamp(Math.atan2(tx, reach), -0.52, 0.52) + 0.16;
+            const wantPitch = clamp(Math.atan2(-ty, reach), -0.24, 0.24);
+            st.yaw = damp(st.yaw, clamp(wantYaw, -0.52, 0.52), 4.5, dt);
+            st.pitch = damp(st.pitch, wantPitch, 4.5, dt);
+            st.eyeYaw = damp(st.eyeYaw, clamp((wantYaw - st.yaw) * 1.6 + (wantYaw - 0.16) * 0.25, -0.26, 0.26), 14, dt);
+            st.eyePitch = damp(st.eyePitch, clamp((wantPitch - st.pitch) * 1.6 + wantPitch * 0.25, -0.2, 0.2), 14, dt);
+            pivot.rotation.set(-st.pitch, st.yaw, 0);
+            for (const e of eyes) e.ball.rotation.set(-st.eyePitch, st.eyeYaw, 0);
+            // Blink every 3–6 s.
+            if (!st.blinkAt) st.blinkAt = now + 1500;
+            if (now > st.blinkAt) { st.blink = now; st.blinkAt = now + 3000 + Math.random() * 3000; }
+            const bt = (now - st.blink) / 1000;
+            const close = bt < 0.09 ? bt / 0.09 : bt < 0.24 ? 1 - (bt - 0.09) / 0.15 : 0;
+            for (const e of eyes) e.upper.rotation.x = lerp(LID_OPEN, LID_SHUT, close);
+            // Breathing.
+            const breath = reducedMotion ? 0 : Math.sin(t * 1.7);
+            body.scale.set(1, 1 + breath * 0.007, 1 + breath * 0.01);
+            pivot.position.y = -0.95 + breath * 0.008;
+          }
+          return { root, update };
+        }
+
+        function sculpture(THREE, ci, size, color) {
+          const mat = new THREE.MeshStandardMaterial({ color: color.clone().lerp(new THREE.Color(0xffffff), 0.35), roughness: 0.42, metalness: 0.05 });
+          const dark = new THREE.MeshStandardMaterial({ color: color.clone().multiplyScalar(0.62), roughness: 0.5 });
+          const g = new THREE.Group(), s = size;
+          if (ci === 0) g.add(new THREE.Mesh(new THREE.TorusKnotGeometry(s * 0.32, s * 0.1, 90, 12), mat));
+          if (ci === 1) {
+            const horn = new THREE.Mesh(new THREE.ConeGeometry(s * 0.3, s * 0.7, 20, 1, true), mat); horn.position.y = s * 0.45; horn.rotation.x = Math.PI;
+            const body = new THREE.Mesh(new THREE.SphereGeometry(s * 0.3, 24, 16), dark);
+            g.add(horn, body);
+          }
+          if (ci === 2) [0.34, 0.26, 0.18].forEach((r, i, a) => { const m = new THREE.Mesh(new THREE.SphereGeometry(s * r, 24, 16), i % 2 ? dark : mat); m.position.y = s * (a.slice(0, i).reduce((acc, q) => acc + q * 1.7, 0) - 0.15); g.add(m); });
+          if (ci === 3) {
+            const a = new THREE.Mesh(new THREE.TorusGeometry(s * 0.42, s * 0.04, 10, 48), mat), b = a.clone();
+            b.rotation.y = Math.PI / 2; a.rotation.x = 0.4;
+            g.add(a, b, new THREE.Mesh(new THREE.SphereGeometry(s * 0.14, 20, 14), dark));
+          }
+          return g;
+        }
+      }
+
+      // ===== LOOP =====
+      let last = performance.now();
+      function frame(now) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now; S.now = now;
+        S.p = Math.abs(S.pTarget - S.p) < 1e-5 ? S.pTarget : damp(S.p, S.pTarget, 1 / 0.12, dt);
+        applyScene(dt);
+        balls.update(dt);
+        workUI.update(dt);
+        if (G3) G3.render(dt, now);
+        requestAnimationFrame(frame);
+      }
+
+      let lastSize = "";
+      function onResize() {
+        measure();
+        const size = `${S.W}x${S.H}`;
+        if (G3 && size !== lastSize) G3.resize();
+        lastSize = size;
+        balls.reset();
+      }
+      async function start() {
+        await Promise.race([document.fonts.ready, wait(2500)]);
+        measure();
+        lastSize = `${S.W}x${S.H}`;
+        S.ready = true;
+        requestAnimationFrame(frame);
+        try {
+          G3 = await init3D();
+          if (G3) { G3.resize(); S.motion = !reducedMotion; }
+        } catch (err) {
+          console.warn("3D scene unavailable", err);
+          G3 = null;
+        }
+        root.classList.toggle("calm", !S.motion);
+        balls.reset();
+        S.settled = true;
+        let timer = 0;
+        addEventListener("resize", () => { clearTimeout(timer); timer = setTimeout(onResize, 150); });
+        document.fonts.addEventListener?.("loadingdone", () => { clearTimeout(timer); timer = setTimeout(() => { lastSize = ""; onResize(); }, 150); });
+      }
+      root.classList.add("calm");
+      start();
+    </script>
+  </body>
+</html>

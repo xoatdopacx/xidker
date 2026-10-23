@@ -9,7 +9,7 @@ import { objectStorageClient } from "./objectStorage";
 import { isNotFound, uploadFile } from "./samples";
 import { cleanLine } from "./security";
 
-// Zips buyers download: the four templates that ship with the site ("builtin"), or a zip the
+// Zips buyers download: the templates that ship with the site ("builtin"), or a zip the
 // admin uploaded to App Storage ("upload"). Neither is ever reachable without a paid order.
 
 export const ZIP_TYPE = "application/zip";
@@ -20,6 +20,8 @@ export const BUILTIN_TEMPLATES = [
   { slug: "jack", name: "Jack" },
   { slug: "mainframe", name: "Mainframe" },
   { slug: "iris", name: "Iris" },
+  { slug: "michelle", name: "Michelle" },
+  { slug: "kin", name: "Kin OS" },
 ] as const;
 
 // Next to the bundle in dist/, whatever the working directory is.

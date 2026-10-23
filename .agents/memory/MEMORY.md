@@ -11,6 +11,6 @@
 - [SEO rendering policy](seo-rendering.md) — same React content for bots and visitors; `/` must answer 200 within 5s without the catalog; check which code a failed publish built.
 - [Security headers and CSP](security-headers.md) — page CSP only on the live site; demos have their own sandbox CSP; GAESA/Server header unfixable.
 - [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; one pixel size (--sp) per picture; column flex-basis = height.
-- [Source samples](source-samples.md) — pick-before-paying request; the 4 templates seed themselves; other samples must be re-uploaded live.
+- [Source samples](source-samples.md) — pick-before-paying request; bundled templates seed themselves once each; other samples must be re-uploaded live.
 - [Pixel art from user photos/videos](pixel-art-conversion.md) — magick recipe for the cat memes; outline/LAB/eye pitfalls; dedupe video poses; PNG8.
-- [Store without Whop](store-without-whop.md) — 2026-10-22 decisions: QR bank transfer confirmed by admin, verified accounts, shared sign-in, 4 templates sold source-only.
+- [Store without Whop](store-without-whop.md) — 2026-10-22 decisions: QR bank transfer confirmed by admin, verified accounts, shared sign-in, bundled templates sold source-only.
