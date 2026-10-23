@@ -1,0 +1,1155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3e7bd">
+  <meta name="description" content="Noa Lindqvist — landscapes, quiet places and the passing of light. Original photographs on medium-format film, printed by hand.">
+  <title>Noa Lindqvist — A little longer in the light</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/coast.webp" fetchpriority="high">
+  <style>
+    /* ================================================================
+       THEME — edit colours, typefaces and spacing here.
+       No dependencies, build tools, cookies or browser storage.
+       ================================================================ */
+    :root {
+      color-scheme: light;
+      --paper: #f3e7bd;
+      --paper-light: #faf2d8;
+      --paper-deep: #e9d9a4;
+      --ink: #512b3a;
+      --ink-soft: #796151;
+      --line: #512b3a30;
+      --darkroom: #462834;
+      --darkroom-muted: #cebaa7;
+      --accent: #a2494e;
+      --font-display: "Instrument Serif", Georgia, serif;
+      --font-body: "DM Sans", sans-serif;
+      --font-mono: "DM Mono", monospace;
+      --gutter: clamp(22px, 4.3vw, 84px);
+      --content: 1480px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+      --reveal-duration: 850ms;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 30px; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: var(--font-body); font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    body::after { content: ""; pointer-events: none; position: fixed; z-index: 30; inset: 0; opacity: .035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.87' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23512b3a' filter='url(%23n)' opacity='.7' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+    body.modal-open { overflow: hidden; }
+    ::selection { background: var(--ink); color: var(--paper-light); }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button, select { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    button { border: 0; border-radius: 0; }
+    a, button, input, select { touch-action: manipulation; }
+    button:disabled { opacity: .45; cursor: default; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+    .dark-section :focus-visible, .site-footer :focus-visible { outline-color: var(--paper); }
+    img { display: block; width: 100%; height: auto; color: var(--ink); font-size: 13px; }
+    svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+    p, h1, h2, h3, figure { margin: 0; }
+    h1, h2, h3 { font-weight: 400; }
+    h1, h2, h3, .serif { font-family: var(--font-display); }
+    em { font-weight: 400; }
+    [hidden] { display: none !important; }
+    .wrap { width: calc(100% - var(--gutter) * 2); max-width: var(--content); margin-inline: auto; }
+    .eyebrow { font-family: var(--font-mono); font-size: 10px; line-height: 1.6; letter-spacing: .09em; text-transform: uppercase; }
+    .section-title { font-size: clamp(48px, 5.5vw, 82px); line-height: 1.04; letter-spacing: -.025em; }
+    .text-link { display: inline-flex; align-items: center; gap: 18px; padding-block: 9px; border-bottom: 1px solid currentColor; font-size: 13px; line-height: 1.4; background: none; }
+    .text-link svg { width: 15px; height: 15px; transition: transform 250ms var(--ease); }
+    .text-link:hover svg { transform: translate(3px, -3px); }
+    .text-link.down:hover svg { transform: translateY(3px); }
+    .skip-link { position: fixed; z-index: 100; top: 12px; left: 20px; padding: 12px 20px; color: var(--paper); background: var(--ink); transform: translateY(-150%); }
+    .skip-link:focus { transform: translateY(0); }
+    .reading-progress { position: fixed; inset: 0 0 auto; z-index: 40; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; pointer-events: none; }
+    .site-header { display: flex; align-items: center; justify-content: space-between; min-height: 106px; border-bottom: 1px solid var(--line); position: relative; z-index: 20; }
+    .wordmark { display: inline-flex; gap: 12px; align-items: center; font-family: var(--font-display); font-size: 29px; line-height: 1; letter-spacing: -.035em; white-space: nowrap; }
+    .wordmark svg { width: 27px; height: 27px; stroke-width: 1; }
+    .site-nav { display: flex; align-items: center; gap: clamp(24px, 3vw, 46px); font-size: 12px; }
+    .site-nav a { position: relative; padding-block: 8px; }
+    .site-nav a:not(.nav-enquire)::after { content: ""; position: absolute; inset: auto 0 3px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform 250ms var(--ease); }
+    .site-nav a:hover::after { transform: scaleX(1); }
+    .nav-enquire { display: inline-flex; gap: 22px; align-items: center; border-bottom: 1px solid var(--ink); }
+    .nav-enquire svg { width: 14px; height: 14px; }
+    .menu-toggle { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; background: none; }
+    .hero { padding-top: 36px; }
+    .hero-heading { display: grid; grid-template-columns: 1.45fr 1fr; align-items: end; gap: 40px; margin-bottom: 37px; }
+    .hero h1 { font-size: clamp(80px, 8.5vw, 135px); line-height: .93; letter-spacing: -.04em; margin-top: 21px; }
+    .hero h1 em { padding-left: 11%; }
+    .hero-intro { justify-self: end; width: 260px; padding-bottom: 7px; }
+    .hero-intro p { font-size: 15px; line-height: 1.65; }
+    .hero-intro .intro-bottom { display: flex; align-items: center; gap: 25px; margin-top: 23px; color: var(--ink-soft); }
+    .hero-intro .intro-bottom span { font-size: 10px; }
+    .hero-intro .intro-bottom svg { width: 29px; height: 29px; }
+    .photo-wrap, .media-error-host { position: relative; background: var(--paper-deep); }
+    .photo-button { display: block; position: relative; width: 100%; padding: 0; background: transparent; overflow: hidden; text-align: left; cursor: zoom-in; }
+    .photo-button img { object-fit: cover; transition: transform 1100ms var(--ease); }
+    .photo-button:hover img { transform: scale(1.025); }
+    .photo-button:focus-visible { outline-offset: 7px; }
+    .photo-zoom { position: absolute; bottom: 20px; right: 20px; width: 37px; height: 37px; display: grid; place-items: center; background: #f3e7bde0; color: var(--ink); opacity: 0; transform: translateY(5px); transition: opacity 250ms, transform 350ms var(--ease); }
+    .photo-zoom svg { width: 17px; height: 17px; }
+    .photo-button:hover .photo-zoom, .photo-button:focus-visible .photo-zoom { opacity: 1; transform: translateY(0); }
+    .hero-photo img { aspect-ratio: 2.08; object-position: 50% 68%; }
+    .hero-caption { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-top: 16px; }
+    .hero-caption .caption-place { display: flex; gap: 22px; align-items: center; }
+    .frame-square { display: inline-block; width: 7px; height: 7px; background: var(--ink); }
+    .hero-caption .text-link { border: 0; font-size: 10px; padding: 0; gap: 16px; }
+    .hero-caption .text-link svg { width: 13px; height: 13px; }
+    .manifesto { display: grid; grid-template-columns: 1fr 2.1fr 1fr; gap: 50px; padding-block: 112px 118px; align-items: start; border-bottom: 1px solid var(--line); }
+    .manifesto .eyebrow { padding-top: 9px; }
+    .manifesto h2 { font-size: clamp(32px, 3.25vw, 47px); line-height: 1.16; letter-spacing: -.02em; }
+    .manifesto p { font-size: 13px; color: var(--ink-soft); padding-top: 7px; max-width: 250px; }
+    .work { padding-top: 78px; padding-bottom: 112px; }
+    .section-topline { display: flex; align-items: center; justify-content: space-between; margin-bottom: 27px; gap: 20px; }
+    .section-topline .right-note { color: var(--ink-soft); }
+    .work-heading { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 57px; }
+    .work-heading .section-title { font-size: clamp(52px, 5.5vw, 80px); }
+    .work-heading p { font-size: 12px; max-width: 185px; margin-bottom: 5px; color: var(--ink-soft); }
+    .work-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 9%; align-items: start; }
+    .work-column { display: flex; flex-direction: column; gap: 104px; }
+    .work-column:last-child { padding-top: 152px; }
+    .work-card .photo-button img { aspect-ratio: 1.23; }
+    .work-card.town .photo-button img { aspect-ratio: .84; }
+    .work-card.valley { width: 86%; }
+    .work-card.valley .photo-button img { aspect-ratio: 1.2; }
+    .work-card.winter { width: 113%; margin-left: -13%; }
+    .work-card.winter .photo-button img { aspect-ratio: 1.48; }
+    .work-caption { display: grid; grid-template-columns: 26px 1fr auto; column-gap: 9px; align-items: baseline; padding-top: 19px; }
+    .work-caption .photo-title { font-size: clamp(24px, 2.15vw, 32px); line-height: 1.2; letter-spacing: -.02em; }
+    .work-caption .photo-location { grid-column: 2 / -1; font-size: 9px; margin-top: 6px; color: var(--ink-soft); }
+    .work-caption .frame-count { font-size: 9px; color: var(--ink-soft); white-space: nowrap; }
+    .work-bottom { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-top: 90px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .work-bottom p { font-family: var(--font-display); font-size: 29px; font-style: italic; }
+    .work-bottom .text-link { flex: 0 0 auto; }
+    .dark-section { background: var(--darkroom); color: var(--paper); }
+    .darkroom { padding-block: 85px 80px; }
+    .darkroom .section-topline { color: var(--darkroom-muted); }
+    .darkroom .section-topline .right-note { color: var(--darkroom-muted); }
+    .darkroom-heading { display: grid; grid-template-columns: 1.55fr 1fr; gap: 70px; align-items: end; }
+    .darkroom-heading p { max-width: 315px; font-size: 14px; color: var(--darkroom-muted); padding-bottom: 5px; }
+    .darkroom-body { display: grid; grid-template-columns: 1.55fr 1fr; gap: 8%; align-items: center; margin-top: 67px; }
+    .tray { padding: clamp(15px, 2.3vw, 36px); border: 1px solid #e6d9b637; background: #3a232c; box-shadow: inset 0 0 0 7px #412a32, 8px 15px 30px #24131a28; transform: rotate(-2deg); }
+    .develop-paper { position: relative; padding: 17px 17px 32px; background: #e8e0ca; box-shadow: 0 2px 10px #20131c33; }
+    .develop-image { position: relative; background: #e7deca; overflow: hidden; }
+    .develop-image img { aspect-ratio: 1.54; object-fit: cover; filter: grayscale(1) contrast(1.05); opacity: var(--develop, 0); }
+    .develop-image::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(145deg, #f7e9cc00 30%, #f7e9cc19 49%, #f7e9cc00 70%); }
+    .print-handwriting { position: absolute; right: 17px; bottom: 7px; font-family: var(--font-display); font-size: 12px; font-style: italic; color: #71685c; opacity: var(--develop, 0); }
+    .tray-caption { display: flex; justify-content: space-between; gap: 20px; margin-top: 31px; color: var(--darkroom-muted); font-size: 9px; }
+    .darkroom-controls h3 { font-size: 37px; line-height: 1.12; margin-bottom: 15px; }
+    .darkroom-controls > p { font-size: 13px; color: var(--darkroom-muted); max-width: 300px; margin-bottom: 31px; }
+    .develop-label { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .develop-label label { font-size: 10px; }
+    .develop-label output { font-family: var(--font-mono); font-size: 11px; }
+    input[type="range"] { --range-progress: 0%; display: block; appearance: none; -webkit-appearance: none; width: 100%; height: 34px; margin: 12px 0 6px; background: transparent; cursor: ew-resize; }
+    input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: linear-gradient(to right, var(--paper) var(--range-progress), #d8c6aa4a var(--range-progress)); }
+    input[type="range"]::-moz-range-track { height: 2px; background: #d8c6aa4a; }
+    input[type="range"]::-moz-range-progress { background: var(--paper); height: 2px; }
+    input[type="range"]::-webkit-slider-thumb { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; margin-top: -9px; border-radius: 50%; border: 4px solid var(--darkroom); background: var(--paper); box-shadow: 0 0 0 1px var(--paper); }
+    input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; border: 4px solid var(--darkroom); background: var(--paper); box-shadow: 0 0 0 1px var(--paper); }
+    .range-ends { display: flex; justify-content: space-between; font-size: 9px; color: var(--darkroom-muted); margin-bottom: 23px; }
+    .develop-actions { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+    .develop-auto { display: inline-flex; gap: 14px; align-items: center; color: var(--paper); background: none; padding: 8px 0; border-bottom: 1px solid #e6d9b65c; font-size: 12px; }
+    .develop-auto svg { width: 15px; height: 15px; }
+    .develop-reset { width: 44px; height: 44px; display: grid; place-items: center; background: transparent; color: var(--darkroom-muted); border: 1px solid #e6d9b637; border-radius: 50%; }
+    .develop-reset svg { width: 15px; height: 15px; }
+    .darkroom-foot { display: grid; grid-template-columns: 1.55fr 1fr; gap: 8%; margin-top: 65px; padding-top: 28px; border-top: 1px solid #e6d9b62e; align-items: center; }
+    .darkroom-foot blockquote { margin: 0; font-family: var(--font-display); font-size: clamp(26px, 2.7vw, 40px); font-style: italic; line-height: 1.2; max-width: 540px; }
+    .room-detail { display: flex; align-items: center; gap: 20px; }
+    .room-detail .media-error-host { flex: 0 0 115px; }
+    .room-detail img { width: 115px; aspect-ratio: 1.3; object-fit: cover; }
+    .room-detail p { color: var(--darkroom-muted); font-size: 11px; line-height: 1.7; }
+    .about { padding-block: 124px 132px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 12%; align-items: center; }
+    .about .eyebrow { margin-bottom: 35px; }
+    .about h2 { margin-bottom: 31px; font-size: clamp(49px, 5vw, 75px); }
+    .about-copy > p { max-width: 430px; font-size: 14px; margin-top: 18px; line-height: 1.85; }
+    .about-signoff { display: flex; align-items: center; gap: 29px; margin-top: 32px; }
+    .signature { font-family: var(--font-display); font-style: italic; font-size: 52px; line-height: 1; transform: rotate(-7deg); }
+    .about-signoff .eyebrow { margin: 0; font-size: 9px; color: var(--ink-soft); }
+    .portrait { position: relative; padding-top: 35px; }
+    .portrait .margin-note { position: absolute; top: -13px; right: 7px; font-family: var(--font-display); font-size: 24px; font-style: italic; transform: rotate(5deg); }
+    .portrait img { aspect-ratio: .83; object-fit: cover; }
+    .portrait figcaption { margin-top: 17px; color: var(--ink-soft); }
+    .film-stamp { position: absolute; left: -40px; bottom: 67px; width: 98px; height: 98px; border: 1px solid var(--ink); outline: 6px solid var(--paper); background: var(--paper); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; transform: rotate(-12deg); }
+    .film-stamp span { font-family: var(--font-display); font-size: 25px; line-height: .95; text-align: center; }
+    .film-stamp svg { width: 17px; height: 17px; margin-bottom: 7px; }
+    .notes { background: var(--paper-deep); padding-block: 76px 87px; }
+    .notes-heading { display: flex; justify-content: space-between; align-items: end; gap: 35px; margin-bottom: 45px; }
+    .notes-heading .section-title { font-size: clamp(45px, 4.8vw, 70px); }
+    .notes-heading p { max-width: 190px; font-size: 12px; }
+    .notes-body { display: grid; grid-template-columns: 1fr 1fr; gap: 8%; align-items: center; }
+    .notes-photo img { aspect-ratio: 1.4; object-fit: cover; }
+    .notes-photo figcaption { margin-top: 13px; color: var(--ink-soft); font-size: 9px; }
+    .note-list { border-top: 1px solid var(--line); }
+    .note-trigger { width: 100%; padding: 26px 0 28px; background: transparent; border-bottom: 1px solid var(--line); text-align: left; display: grid; grid-template-columns: 1fr 24px; gap: 12px; align-items: center; }
+    .note-trigger .eyebrow { color: var(--ink-soft); font-size: 9px; }
+    .note-trigger .note-title { display: block; font-family: var(--font-display); font-size: clamp(28px, 2.55vw, 38px); line-height: 1.12; margin-top: 8px; }
+    .note-trigger svg { width: 21px; height: 21px; transition: transform 300ms var(--ease); }
+    .note-trigger:hover svg { transform: translate(4px, -4px); }
+    .note-trigger:hover .note-title { font-style: italic; }
+    .prints { padding-block: 120px 130px; }
+    .prints-body { display: grid; grid-template-columns: 1.13fr 1fr; gap: 12%; align-items: center; }
+    .print-stage { position: relative; padding: 65px 50px; background: #e5d09a; }
+    .print-stage::before { content: ""; position: absolute; width: 80%; height: 75%; top: 14%; left: 9%; background: #f5ebcf; box-shadow: 1px 2px 4px #512b3a15; transform: rotate(2deg); }
+    .print-sheet { padding: 34px 34px 57px; background: var(--paper-light); box-shadow: 3px 10px 25px #512b3a28; transform: rotate(-5deg); position: relative; }
+    .print-sheet img { aspect-ratio: 1.22; object-fit: cover; }
+    .print-sheet .print-signature { position: absolute; right: 34px; bottom: 17px; font-family: var(--font-display); font-size: 13px; font-style: italic; }
+    .print-stage-caption { position: absolute; left: 20px; bottom: 15px; font-size: 8px; color: var(--ink-soft); }
+    .prints-copy > .eyebrow { margin-bottom: 24px; }
+    .prints-copy .section-title { margin-bottom: 24px; }
+    .prints-copy > p { font-size: 14px; line-height: 1.8; max-width: 370px; }
+    .print-options { margin-top: 29px; display: grid; gap: 19px; }
+    .select-field label { display: block; font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 7px; }
+    .select-wrap { position: relative; }
+    .select-wrap select { appearance: none; width: 100%; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; padding: 9px 36px 13px 0; font-size: 13px; cursor: pointer; }
+    .select-wrap svg { position: absolute; right: 5px; top: 12px; width: 15px; height: 15px; pointer-events: none; }
+    select option { background: var(--paper-light); color: var(--ink); }
+    .primary-button { display: inline-flex; justify-content: space-between; align-items: center; gap: 30px; color: var(--paper); background: var(--ink); padding: 17px 22px; font-size: 12px; min-height: 53px; }
+    .primary-button svg { width: 17px; height: 17px; transition: transform 250ms var(--ease); }
+    .primary-button:hover svg { transform: translate(3px, -3px); }
+    .print-options .primary-button { margin-top: 8px; width: 100%; }
+    .prints-copy .print-small { font-size: 10px; color: var(--ink-soft); margin-top: 13px; }
+    .site-footer { background: var(--ink); color: var(--paper); padding-block: 65px 25px; }
+    .footer-top { display: flex; justify-content: space-between; gap: 30px; align-items: center; color: var(--darkroom-muted); }
+    .footer-top .availability { display: inline-flex; align-items: center; gap: 9px; }
+    .availability i { width: 5px; height: 5px; display: inline-block; border-radius: 50%; background: var(--paper); }
+    .footer-main { display: grid; grid-template-columns: 1.5fr 1fr; gap: 70px; align-items: end; margin-block: 41px 72px; }
+    .footer-main h2 { font-size: clamp(70px, 8.7vw, 133px); line-height: .95; letter-spacing: -.035em; }
+    .footer-contact { padding-bottom: 6px; }
+    .footer-contact > p { font-size: 13px; max-width: 260px; color: var(--darkroom-muted); margin-bottom: 27px; }
+    .email-row { display: flex; gap: 14px; align-items: center; }
+    .email-link { font-family: var(--font-display); font-size: clamp(25px, 2.6vw, 39px); line-height: 1.3; border-bottom: 1px solid #f3e7bd66; }
+    .copy-email { display: grid; place-items: center; width: 44px; height: 44px; background: none; color: var(--paper); border: 1px solid #f3e7bd40; border-radius: 50%; }
+    .copy-email svg { width: 15px; height: 15px; }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 25px; align-items: center; padding-top: 22px; border-top: 1px solid #f3e7bd38; color: var(--darkroom-muted); font-size: 9px; }
+    .footer-bottom a { display: inline-flex; align-items: center; gap: 13px; }
+    .footer-bottom svg { width: 13px; height: 13px; }
+    .no-script { padding: 14px var(--gutter); background: var(--paper-deep); font-size: 12px; text-align: center; }
+    .image-error { position: absolute; z-index: 3; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px; background: var(--paper-deep); text-align: center; color: var(--ink); }
+    .image-error p { font-family: var(--font-display); font-size: 25px; }
+    .image-error button { background: none; border-bottom: 1px solid currentColor; padding: 8px; font-size: 12px; }
+    .image-error svg { width: 27px; height: 27px; }
+    .room-detail .image-error p { font-size: 12px; }
+    .room-detail .image-error { gap: 2px; padding: 5px; }
+    .room-detail .image-error svg { display: none; }
+    .image-loading { position: absolute; inset: 0; background: var(--paper-deep); overflow: hidden; pointer-events: none; }
+    .image-loading::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 20%, #faf2d83a 50%, transparent 80%); animation: paper-loading 1.8s infinite; }
+    .js .reveal { opacity: 0; transform: translateY(27px); transition: opacity var(--reveal-duration) var(--ease), transform var(--reveal-duration) var(--ease); transition-delay: var(--delay, 0ms); }
+    .js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .entrance { animation: arrive 1.05s var(--ease) both; }
+    .entrance.later { animation-delay: 130ms; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes paper-loading { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+    dialog { border: 0; padding: 0; color: var(--ink); background: var(--paper); max-height: calc(100dvh - 48px); overscroll-behavior: contain; box-shadow: 0 20px 80px #24151b40; }
+    dialog::backdrop { background: #2d1d27df; backdrop-filter: blur(5px); }
+    dialog[open] { animation: arrive 350ms var(--ease); }
+    .dialog-close { width: 44px; height: 44px; display: grid; place-items: center; background: transparent; color: inherit; }
+    .dialog-close svg { width: 23px; height: 23px; }
+    .dialog-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .lightbox { width: min(1320px, calc(100% - 60px)); padding: 15px 25px 24px; background: var(--darkroom); color: var(--paper); }
+    .lightbox .dialog-top { margin-bottom: 12px; }
+    .lightbox .eyebrow { color: var(--darkroom-muted); }
+    .lightbox-image-wrap { position: relative; display: grid; place-items: center; min-height: 180px; background: #38242c; }
+    .lightbox-image { width: 100%; height: min(65dvh, 760px); object-fit: contain; }
+    .lightbox-bottom { display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: center; margin-top: 20px; }
+    .lightbox h2 { font-size: 35px; line-height: 1.1; }
+    .lightbox-description { color: var(--darkroom-muted); font-size: 12px; margin-top: 9px; max-width: 720px; }
+    .lightbox-nav { display: flex; gap: 10px; }
+    .lightbox-nav button { background: transparent; border: 1px solid #f3e7bd4d; color: var(--paper); width: 44px; height: 44px; display: grid; place-items: center; }
+    .lightbox :focus-visible { outline-color: var(--paper); }
+    .paper-dialog { width: min(650px, calc(100% - 40px)); padding: 25px 38px 40px; }
+    .paper-dialog h2 { font-size: clamp(39px, 4vw, 58px); line-height: 1.04; letter-spacing: -.02em; margin-block: 23px 26px; }
+    .paper-dialog p { font-size: 14px; line-height: 1.85; margin-block: 17px; }
+    .note-reader .reader-end { width: 35px; height: 1px; background: var(--ink); margin-top: 30px; }
+    .enquiry-summary { padding: 20px 0; margin-block: 23px; border-block: 1px solid var(--line); display: grid; grid-template-columns: 85px 1fr; gap: 20px; align-items: center; }
+    .enquiry-summary img { width: 85px; height: 85px; object-fit: cover; }
+    .enquiry-summary h3 { font-size: 27px; line-height: 1.1; }
+    .enquiry-summary p { font-size: 11px; margin: 7px 0 0; color: var(--ink-soft); }
+    .enquiry-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 23px; }
+    .enquiry-actions .text-link { font-size: 12px; gap: 10px; }
+    .paper-dialog .enquiry-disclaimer { font-size: 11px; color: var(--ink-soft); margin: 20px 0 0; }
+    .copy-fallback { margin-top: 20px; }
+    .copy-fallback label { display: block; font-size: 12px; margin-bottom: 10px; }
+    .copy-fallback textarea, .copy-fallback input { width: 100%; padding: 13px; border: 1px solid var(--line); background: var(--paper-light); border-radius: 0; font-size: 13px; resize: vertical; }
+    .copy-fallback textarea { min-height: 155px; }
+    .toast { position: fixed; z-index: 80; bottom: 25px; left: 50%; transform: translate(-50%, 20px); padding: 13px 23px; color: var(--paper); background: var(--ink); box-shadow: 0 4px 20px #512b3a25; border: 1px solid #f3e7bd44; font-size: 12px; opacity: 0; pointer-events: none; transition: opacity 250ms, transform 350ms var(--ease); max-width: calc(100% - 40px); text-align: center; }
+    .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+    @media (min-width: 1700px) {
+      .hero-photo img { aspect-ratio: 2.25; }
+      .hero-heading { margin-bottom: 45px; }
+    }
+    @media (max-width: 1100px) {
+      .manifesto { grid-template-columns: .65fr 1.5fr 1fr; gap: 30px; padding-block: 85px; }
+      .work-grid { gap: 7%; }
+      .work-caption .frame-count { display: none; }
+      .darkroom-body, .darkroom-foot { gap: 6%; }
+      .about { gap: 9%; }
+      .room-detail { gap: 13px; }
+      .room-detail .media-error-host { flex-basis: 85px; }
+      .room-detail img { width: 85px; }
+      .prints-body { gap: 8%; }
+      .print-stage { padding: 65px 35px; }
+      .print-sheet { padding: 25px 25px 48px; }
+      .footer-main { gap: 35px; }
+    }
+    @media (max-width: 767px) {
+      :root { --gutter: 24px; }
+      .site-header { min-height: 82px; }
+      .wordmark { font-size: 27px; gap: 9px; }
+      .wordmark svg { width: 24px; height: 24px; }
+      .menu-toggle { display: flex; margin-right: -10px; }
+      .site-nav { display: none; position: absolute; top: 81px; left: calc(-1 * var(--gutter)); right: calc(-1 * var(--gutter)); padding: 20px var(--gutter) 28px; background: var(--paper); box-shadow: 0 12px 20px #512b3a0c; border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch; gap: 10px; font-size: 15px; }
+      .site-nav.is-open { display: flex; }
+      .site-nav a { min-height: 44px; padding-block: 9px; }
+      .nav-enquire { justify-content: space-between; margin-top: 5px; }
+      .hero { padding-top: 27px; }
+      .hero-heading { grid-template-columns: 1fr; gap: 24px; margin-bottom: 29px; }
+      .hero .eyebrow { font-size: 8px; letter-spacing: .07em; }
+      .hero h1 { font-size: clamp(79px, 14.5vw, 110px); margin-top: 21px; line-height: .96; }
+      .hero h1 em { padding-left: 14%; }
+      .hero-intro { justify-self: start; width: 100%; display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 0; }
+      .hero-intro p { font-size: 12px; line-height: 1.65; }
+      .hero-intro .intro-bottom { margin: 0 0 3px; }
+      .hero-intro .intro-bottom span { display: none; }
+      .hero-intro .intro-bottom svg { width: 25px; height: 25px; }
+      .hero-photo img { aspect-ratio: 1.05; object-position: 62% 50%; }
+      .photo-zoom { opacity: 1; transform: none; width: 30px; height: 30px; bottom: 13px; right: 13px; background: #f3e7bdd4; }
+      .hero-caption { margin-top: 13px; gap: 10px; align-items: start; }
+      .hero-caption .caption-place { gap: 10px; align-items: start; }
+      .hero-caption .frame-square { flex: 0 0 5px; height: 5px; margin-top: 4px; }
+      .hero-caption .eyebrow { font-size: 8px; }
+      .hero-caption .text-link { font-size: 0; gap: 0; padding: 0 4px; }
+      .hero-caption .text-link svg { width: 15px; height: 15px; }
+      .manifesto { grid-template-columns: 1fr; gap: 23px; padding-block: 68px 64px; }
+      .manifesto .eyebrow { padding: 0; }
+      .manifesto h2 { font-size: clamp(35px, 6vw, 44px); max-width: 480px; }
+      .manifesto p { max-width: 340px; font-size: 12px; padding: 0; }
+      .work { padding-top: 51px; padding-bottom: 64px; }
+      .section-topline { margin-bottom: 22px; }
+      .section-topline .eyebrow { font-size: 9px; }
+      .work-heading { display: block; margin-bottom: 32px; }
+      .work-heading .section-title { font-size: 54px; }
+      .work-heading p { font-size: 11px; max-width: none; margin-top: 16px; }
+      .work-grid { grid-template-columns: 1fr; gap: 45px; }
+      .work-column { gap: 45px; display: contents; }
+      .work-card.tide { order: 0; }
+      .work-card.town { order: 1; width: 86%; justify-self: end; }
+      .work-card.valley { order: 2; width: 100%; }
+      .work-card.winter { order: 3; width: 100%; margin: 0; }
+      .work-caption { padding-top: 15px; grid-template-columns: 20px 1fr; gap: 5px 8px; }
+      .work-caption .photo-title { font-size: 28px; }
+      .work-caption .photo-location { font-size: 8px; margin-top: 2px; }
+      .work-caption > .eyebrow { font-size: 9px; }
+      .work-bottom { margin-top: 43px; padding-top: 20px; flex-direction: column; align-items: start; gap: 15px; }
+      .work-bottom p { font-size: 25px; }
+      .work-bottom .text-link { font-size: 11px; }
+      .darkroom { padding-block: 51px 48px; }
+      .darkroom .right-note { display: none; }
+      .darkroom-heading { grid-template-columns: 1fr; gap: 25px; }
+      .darkroom-heading .section-title { font-size: clamp(46px, 8.5vw, 64px); }
+      .darkroom-heading p { font-size: 13px; max-width: 370px; }
+      .darkroom-body { grid-template-columns: 1fr; gap: 36px; margin-top: 36px; }
+      .tray { padding: 18px; margin-inline: 5px; }
+      .develop-paper { padding: 11px 11px 25px; }
+      .print-handwriting { bottom: 5px; right: 12px; font-size: 10px; }
+      .tray-caption { margin-top: 23px; font-size: 8px; }
+      .darkroom-controls h3 { font-size: 33px; }
+      .darkroom-controls > p { max-width: 100%; margin-bottom: 26px; font-size: 12px; }
+      .darkroom-foot { grid-template-columns: 1fr; gap: 30px; margin-top: 38px; padding-top: 26px; }
+      .darkroom-foot blockquote { font-size: 31px; }
+      .room-detail { gap: 20px; }
+      .room-detail .media-error-host { flex-basis: 100px; }
+      .room-detail img { width: 100px; }
+      .about { grid-template-columns: 1fr; gap: 49px; padding-block: 67px 68px; }
+      .about .eyebrow { margin-bottom: 26px; }
+      .about h2 { font-size: 54px; margin-bottom: 23px; }
+      .about-copy > p { font-size: 13px; max-width: 480px; }
+      .about-signoff { margin-top: 27px; }
+      .about-signoff .eyebrow { margin: 0; }
+      .portrait { width: 85%; justify-self: end; padding-top: 25px; }
+      .portrait .margin-note { font-size: 23px; top: -14px; }
+      .film-stamp { width: 83px; height: 83px; left: -30px; bottom: 60px; }
+      .film-stamp span { font-size: 21px; }
+      .portrait figcaption { font-size: 8px; }
+      .notes { padding-block: 51px 55px; }
+      .notes-heading { display: block; margin-bottom: 28px; }
+      .notes-heading .section-title { font-size: 49px; }
+      .notes-heading p { font-size: 11px; max-width: none; margin-top: 17px; }
+      .notes-body { grid-template-columns: 1fr; gap: 28px; }
+      .note-trigger { padding-block: 22px; }
+      .note-trigger .note-title { font-size: 31px; }
+      .note-trigger .eyebrow { font-size: 8px; }
+      .prints { padding-block: 63px 65px; }
+      .prints-body { grid-template-columns: 1fr; gap: 41px; }
+      .prints-copy > .eyebrow { margin-bottom: 22px; }
+      .prints-copy .section-title { font-size: 57px; }
+      .prints-copy > p { font-size: 13px; }
+      .print-stage { padding: 57px 39px; }
+      .print-sheet { padding: 28px 28px 48px; }
+      .print-options { gap: 17px; margin-top: 24px; }
+      .site-footer { padding-block: 41px 24px; }
+      .footer-top { align-items: start; }
+      .footer-top .eyebrow { font-size: 8px; }
+      .footer-top .availability { gap: 7px; max-width: 115px; }
+      .footer-main { grid-template-columns: 1fr; gap: 36px; margin-block: 36px 43px; }
+      .footer-main h2 { font-size: clamp(67px, 12vw, 96px); }
+      .footer-contact > p { font-size: 12px; max-width: 240px; margin-bottom: 18px; }
+      .email-link { font-size: 35px; }
+      .footer-bottom { flex-wrap: wrap; gap: 17px 20px; font-size: 8px; }
+      .footer-bottom .footer-note { order: 2; width: 100%; }
+      .lightbox { width: calc(100% - 20px); max-height: calc(100dvh - 24px); padding: 10px 15px 20px; }
+      .lightbox-image { height: min(51dvh, 600px); }
+      .lightbox-bottom { gap: 15px; align-items: start; }
+      .lightbox h2 { font-size: 29px; }
+      .lightbox-description { font-size: 11px; }
+      .lightbox-nav { gap: 5px; }
+      .lightbox-nav button { width: 44px; height: 44px; }
+      .lightbox .dialog-top .eyebrow { font-size: 8px; }
+      .paper-dialog { width: calc(100% - 28px); max-height: calc(100dvh - 28px); padding: 15px 23px 30px; }
+      .paper-dialog h2 { font-size: 43px; margin-block: 20px 23px; }
+      .paper-dialog p { font-size: 13px; }
+      .enquiry-summary { grid-template-columns: 65px 1fr; gap: 15px; }
+      .enquiry-summary img { width: 65px; height: 75px; }
+      .enquiry-summary h3 { font-size: 24px; }
+      .enquiry-actions { align-items: stretch; }
+      .enquiry-actions .primary-button { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .js .reveal { opacity: 1 !important; transform: none !important; }
+      .photo-button:hover img { transform: none; }
+      dialog::backdrop { backdrop-filter: none; }
+    }
+    @media print {
+      .site-header, .reading-progress, .menu-toggle, .photo-zoom, .develop-actions, .print-options, .copy-email, dialog, .toast, body::after { display: none !important; }
+      .js .reveal { opacity: 1 !important; transform: none !important; }
+      .develop-image img, .print-handwriting { opacity: 1; }
+      .dark-section, .site-footer { background: var(--paper); color: var(--ink); }
+      .wrap { width: 90%; }
+      figure, .about, .prints { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body id="top">
+  <!-- ICONS — original, inline linework. -->
+  <svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v18m-6-6 6 6 6-6"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 21V3m-6 6 6-6 6 6"/></symbol>
+      <symbol id="i-left" viewBox="0 0 24 24"><path d="M20 12H4m7-7-7 7 7 7"/></symbol>
+      <symbol id="i-right" viewBox="0 0 24 24"><path d="M4 12h16m-7-7 7 7-7 7"/></symbol>
+      <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 8h18M3 16h18"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m5 9 7 7 7-7"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="1"/><path d="M15 8V3H3v13h5"/></symbol>
+      <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 8M4 4v6h6"/></symbol>
+      <symbol id="i-light" viewBox="0 0 32 32"><circle cx="16" cy="16" r="6"/><path d="M16 1v5m0 20v5M1 16h5m20 0h5M5.4 5.4 9 9m14 14 3.6 3.6M5.4 26.6 9 23M23 9l3.6-3.6"/><circle cx="16" cy="16" r="2" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="i-image" viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 17l6-6 5 5 3-3 4 4"/><circle cx="16" cy="8" r="1.5"/></symbol>
+    </defs>
+  </svg>
+  <a class="skip-link" href="#main">Skip to the photographs</a>
+  <div class="reading-progress" aria-hidden="true"></div>
+  <noscript><p class="no-script">The photographs and stories are here to enjoy. For print enquiries, write to <a href="mailto:hello@example.com">hello@example.com</a>. Enable JavaScript for the darkroom and image viewer.</p></noscript>
+
+  <!-- CONTENT & LINKS — name, navigation and introductory copy. -->
+  <header class="site-header wrap">
+    <a class="wordmark" href="#top" aria-label="Noa Lindqvist, back to the beginning">
+      <svg aria-hidden="true"><use href="#i-light"/></svg>
+      <span>Noa Lindqvist</span>
+    </a>
+    <button class="menu-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
+      <svg aria-hidden="true"><use href="#i-menu"/></svg>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+      <a href="#work">Selected work</a>
+      <a href="#darkroom">In the darkroom</a>
+      <a href="#about">About Noa</a>
+      <a href="#prints" class="nav-enquire">Print enquiries <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- 01 / THE ARRIVAL — replace the hero photograph and its caption together. -->
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-heading">
+        <div class="entrance">
+          <p class="eyebrow">Travel & landscape · Medium-format film</p>
+          <h1 id="hero-title">Stay a little<br><em>longer.</em></h1>
+        </div>
+        <div class="hero-intro entrance later">
+          <p>Photographs made slowly.<br>In the landscape, on film,<br>and by hand in the darkroom.</p>
+          <a class="intro-bottom" href="#work" aria-label="Explore the selected photographs">
+            <span class="eyebrow">There is no hurry here</span>
+            <svg aria-hidden="true"><use href="#i-down"/></svg>
+          </a>
+        </div>
+      </div>
+      <figure class="hero-photo entrance later" id="photo-coast" data-gallery="0">
+        <div class="photo-wrap media-error-host">
+          <button class="photo-button" type="button" data-view-photo aria-label="View Last light, Veyr Coast in the photograph viewer">
+            <img src="assets/coast.webp" width="1024" height="1024" alt="A tiny figure on a tawny headland above a blue-grey sea, the last rose light resting on the horizon." fetchpriority="high" decoding="async">
+            <span class="photo-zoom"><svg aria-hidden="true"><use href="#i-expand"/></svg></span>
+          </button>
+        </div>
+        <figcaption class="hero-caption">
+          <div class="caption-place"><span class="frame-square" aria-hidden="true"></span><span class="eyebrow photo-location">Veyr Coast, last light &nbsp; / &nbsp; September 2025</span></div>
+          <a class="text-link down" href="#work">A few places I've stayed a while <svg aria-hidden="true"><use href="#i-down"/></svg></a>
+          <h2 class="photo-title" hidden>Last light, Veyr Coast</h2>
+          <p class="photo-story" hidden>Three hours on the headland. One frame before the light went home. A late-summer evening on the Veyr Coast, made on medium-format colour negative film.</p>
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- 02 / A WAY OF SEEING -->
+    <section class="manifesto wrap reveal" aria-labelledby="manifesto-title">
+      <span class="eyebrow">A slower way<br>of seeing</span>
+      <h2 id="manifesto-title">Not the farthest place.<br>Not the perfect moment.<br><em>Just the feeling of being there.</em></h2>
+      <p>I travel with a film camera and leave a little room for the unexpected. These are the places that asked me to stop. And the photographs I brought home.</p>
+    </section>
+
+    <!-- 03 / SELECTED WORK — each figure is automatically added to the viewer.
+         Keep data-gallery (viewer order), .photo-title, .photo-location
+         and .photo-story. The viewer always shows the full, uncropped negative. -->
+    <section class="work wrap" id="work" aria-labelledby="work-title">
+      <div class="section-topline reveal"><p class="eyebrow">01 / Selected work</p><span class="eyebrow right-note">2022 — 2025</span></div>
+      <div class="work-heading reveal">
+        <h2 class="section-title" id="work-title">Somewhere,<br><em>worth slowing down.</em></h2>
+        <p>Four small stories.<br>Open a photograph. Stay a while.</p>
+      </div>
+      <div class="work-grid">
+        <div class="work-column">
+          <figure class="work-card tide reveal" id="photo-tide" data-gallery="1">
+            <div class="photo-wrap media-error-host">
+              <button type="button" class="photo-button" data-view-photo aria-label="View Where the land lets go">
+                <img src="assets/tide.webp" width="1000" height="1000" alt="Pale sea stacks in a misty turquoise sea, soft waves on dark shingle and a solitary walker at the water's edge." loading="lazy" decoding="async">
+                <span class="photo-zoom"><svg aria-hidden="true"><use href="#i-expand"/></svg></span>
+              </button>
+            </div>
+            <figcaption class="work-caption">
+              <span class="eyebrow">01</span><h3 class="photo-title">Where the land lets go</h3><span class="eyebrow frame-count">12 frames</span>
+              <p class="eyebrow photo-location">Veyr Coast &nbsp; / &nbsp; Late summer, 2025</p>
+              <p class="photo-story" hidden>A coast that disappears a little more with every tide. I walked the same stretch of shingle for six mornings, waiting for the sea and the sky to become almost the same colour.</p>
+            </figcaption>
+          </figure>
+          <figure class="work-card valley reveal" id="photo-valley" data-gallery="3">
+            <div class="photo-wrap media-error-host">
+              <button type="button" class="photo-button" data-view-photo aria-label="View The long way home">
+                <img src="assets/valley.webp" width="1000" height="1000" alt="Rust-coloured autumn grasses, a still mountain tarn and a narrow path disappearing into a misty valley." loading="lazy" decoding="async">
+                <span class="photo-zoom"><svg aria-hidden="true"><use href="#i-expand"/></svg></span>
+              </button>
+            </div>
+            <figcaption class="work-caption">
+              <span class="eyebrow">03</span><h3 class="photo-title">The long way home</h3><span class="eyebrow frame-count">9 frames</span>
+              <p class="eyebrow photo-location">Solaine Valley &nbsp; / &nbsp; Autumn, 2023</p>
+              <p class="photo-story" hidden>There was a shorter path back. There always is. A week of walking in the Solaine Valley, just as the grasses turned copper and the first clouds settled in for winter.</p>
+            </figcaption>
+          </figure>
+        </div>
+        <div class="work-column">
+          <figure class="work-card town reveal" id="photo-town" data-gallery="2">
+            <div class="photo-wrap media-error-host">
+              <button type="button" class="photo-button" data-view-photo aria-label="View The hours in between">
+                <img src="assets/town.webp" width="1000" height="1000" alt="A distant woman walks through a quiet lane of sun-faded rose and yellow buildings, past a pale blue doorway." loading="lazy" decoding="async">
+                <span class="photo-zoom"><svg aria-hidden="true"><use href="#i-expand"/></svg></span>
+              </button>
+            </div>
+            <figcaption class="work-caption">
+              <span class="eyebrow">02</span><h3 class="photo-title">The hours in between</h3><span class="eyebrow frame-count">16 frames</span>
+              <p class="eyebrow photo-location">Lornes &nbsp; / &nbsp; Early autumn, 2024</p>
+              <p class="photo-story" hidden>In Lornes, the afternoon belongs to nobody in particular. Shutters half closed. A bicycle waiting. Someone turning a corner before I could learn their name.</p>
+            </figcaption>
+          </figure>
+          <figure class="work-card winter reveal" id="photo-winter" data-gallery="4">
+            <div class="photo-wrap media-error-host">
+              <button type="button" class="photo-button" data-view-photo aria-label="View A quieter kind of blue">
+                <img src="assets/winter.webp" width="1000" height="1000" alt="Two very distant figures cross a frozen lake beneath a pale winter sky, with dry grasses at the snowy shore." loading="lazy" decoding="async">
+                <span class="photo-zoom"><svg aria-hidden="true"><use href="#i-expand"/></svg></span>
+              </button>
+            </div>
+            <figcaption class="work-caption">
+              <span class="eyebrow">04</span><h3 class="photo-title">A quieter kind of blue</h3><span class="eyebrow frame-count">7 frames</span>
+              <p class="eyebrow photo-location">Lake Orren &nbsp; / &nbsp; Midwinter, 2022</p>
+              <p class="photo-story" hidden>The sound of two pairs of boots carries a long way over a frozen lake. I stood on the shore until the cold found its way through my gloves. One frame, almost nothing in it, and everything I wanted to remember.</p>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+      <div class="work-bottom reveal">
+        <p>A few photographs. A great deal of waiting.</p>
+        <a class="text-link" href="#prints">Find a place for one <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </section>
+
+    <!-- 04 / THE DARKROOM — signature, keyboard-accessible developing interaction. -->
+    <section class="darkroom dark-section" id="darkroom" aria-labelledby="darkroom-title">
+      <div class="wrap">
+        <div class="section-topline reveal"><p class="eyebrow">02 / In the darkroom</p><span class="eyebrow right-note">From a negative to something you can hold</span></div>
+        <div class="darkroom-heading reveal">
+          <h2 class="section-title" id="darkroom-title">The other half<br><em>happens in the dark.</em></h2>
+          <p>The journey doesn't end with the shutter. In a small room at home, with water, paper and a little chemistry, I meet the photograph again.</p>
+        </div>
+        <div class="darkroom-body">
+          <div class="develop-station reveal">
+            <div class="tray">
+              <div class="develop-paper" id="develop-paper" style="--develop:0">
+                <div class="develop-image media-error-host">
+                  <img src="assets/coast.webp" width="1024" height="1024" alt="A monochrome interpretation of the Veyr Coast photograph slowly appearing on paper as you develop it." loading="lazy" decoding="async">
+                </div>
+                <span class="print-handwriting">Veyr, last light. — N.</span>
+              </div>
+            </div>
+            <div class="tray-caption eyebrow"><span>A small digital darkroom</span><span>Negative no. 018</span></div>
+          </div>
+          <div class="darkroom-controls reveal" style="--delay:100ms">
+            <h3>A place, slowly returning.</h3>
+            <p>That first trace of an image is still my favourite part. Move the slider and watch the light come back.</p>
+            <div class="develop-label">
+              <label for="develop-range" class="eyebrow">Slide to develop</label>
+              <output id="develop-output" for="develop-range">00 / 100</output>
+            </div>
+            <input id="develop-range" type="range" min="0" max="100" value="0" step="1" aria-label="Develop the photograph" aria-describedby="develop-help">
+            <div class="range-ends eyebrow" id="develop-help"><span>Blank paper</span><span>A memory, made visible</span></div>
+            <div class="develop-actions">
+              <button type="button" class="develop-auto" id="develop-auto" aria-pressed="false">
+                <svg aria-hidden="true"><use href="#i-light"/></svg>
+                <span data-develop-label="start">Or, let it take its time</span>
+                <span data-develop-label="pause" hidden>Pause for a moment</span>
+                <span data-develop-label="again" hidden>Watch it appear again</span>
+              </button>
+              <button type="button" class="develop-reset" id="develop-reset" aria-label="Return to a blank sheet of paper"><svg aria-hidden="true"><use href="#i-reset"/></svg></button>
+            </div>
+            <span id="develop-status" class="eyebrow" role="status"></span>
+          </div>
+        </div>
+        <div class="darkroom-foot reveal">
+          <blockquote>“The landscape gives you the negative.<br>The darkroom asks what you saw.”</blockquote>
+          <div class="room-detail">
+            <div class="media-error-host"><img src="assets/darkroom.webp" width="1000" height="1000" alt="A coastal print in a worn enamel developing tray, beside burgundy tongs and an amber bottle." loading="lazy" decoding="async"></div>
+            <p>No two prints are quite the same.<br>A little more light here.<br>A little more time there.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 / ABOUT — the person behind the photographs. -->
+    <section class="about wrap" id="about" aria-labelledby="about-title">
+      <div class="about-copy reveal">
+        <p class="eyebrow">03 / Behind the camera</p>
+        <h2 class="section-title" id="about-title">Hello, I'm Noa.<br><em>Usually, I'm waiting.</em></h2>
+        <p>For a cloud to move. For the street to empty. For the light to do that thing it did yesterday, when I didn't have my camera.</p>
+        <p>I'm a travel and landscape photographer based in the little harbour town of Ruunvik. I work with medium-format film, walk more than I need to, and make my prints in a darkroom that used to be a pantry.</p>
+        <p>I don't think a photograph has to say very much. Sometimes, it's enough to make you feel a little more here.</p>
+        <div class="about-signoff"><span class="signature">Noa</span><span class="eyebrow">A camera, a notebook,<br>and no particular hurry.</span></div>
+      </div>
+      <figure class="portrait reveal" style="--delay:100ms">
+        <span class="margin-note">At home, between journeys.</span>
+        <div class="media-error-host"><img src="assets/noa.webp" width="1000" height="1000" alt="Noa, with short wavy hair and a faded blue work shirt, looks down at a medium-format camera beside her studio window." loading="lazy" decoding="async"></div>
+        <div class="film-stamp" aria-hidden="true"><svg><use href="#i-light"/></svg><span>Always<br><em>on film.</em></span></div>
+        <figcaption class="eyebrow">Ruunvik studio &nbsp; / &nbsp; A quiet Tuesday</figcaption>
+      </figure>
+    </section>
+
+    <!-- 06 / FIELD NOTES — full articles live in the templates near the footer. -->
+    <section class="notes" id="notes" aria-labelledby="notes-title">
+      <div class="wrap">
+        <div class="section-topline reveal"><p class="eyebrow">04 / Field notes</p><span class="eyebrow right-note">A notebook, left open</span></div>
+        <div class="notes-heading reveal">
+          <h2 class="section-title" id="notes-title">Notes from <em>the edges.</em></h2>
+          <p>Small observations.<br>Kept along the way.</p>
+        </div>
+        <div class="notes-body">
+          <figure class="notes-photo reveal">
+            <div class="media-error-host"><img src="assets/notes.webp" width="1000" height="1000" alt="A notebook, a burgundy pencil and a few film photographs left on a golden wooden table in soft window light." loading="lazy" decoding="async"></div>
+            <figcaption class="eyebrow">The things that come home with me.</figcaption>
+          </figure>
+          <div class="note-list reveal" style="--delay:100ms">
+            <button class="note-trigger" type="button" data-note="note-light" aria-haspopup="dialog">
+              <span><span class="eyebrow">18 September 2025 &nbsp; / &nbsp; On waiting</span><span class="note-title">The light I almost left behind</span></span>
+              <svg aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+            <button class="note-trigger" type="button" data-note="note-less" aria-haspopup="dialog">
+              <span><span class="eyebrow">06 July 2025 &nbsp; / &nbsp; In the field</span><span class="note-title">Why I carry less</span></span>
+              <svg aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+            <button class="note-trigger" type="button" data-note="note-twice" aria-haspopup="dialog">
+              <span><span class="eyebrow">24 February 2025 &nbsp; / &nbsp; In the darkroom</span><span class="note-title">Making a photograph twice</span></span>
+              <svg aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 / PRINTS — edit options, edition information and prices here.
+         Option values correspond to the work figure IDs above. -->
+    <section class="prints wrap" id="prints" aria-labelledby="prints-title">
+      <div class="prints-body">
+        <div class="print-stage reveal">
+          <div class="print-sheet media-error-host">
+            <img id="print-preview" src="assets/tide.webp" width="1000" height="1000" alt="Where the land lets go, presented with a generous warm paper border." loading="lazy" decoding="async">
+            <span class="print-signature">N. Lindqvist</span>
+          </div>
+          <span class="print-stage-caption eyebrow">An image becomes an object.</span>
+        </div>
+        <div class="prints-copy reveal" style="--delay:100ms">
+          <p class="eyebrow">05 / From my darkroom to your wall</p>
+          <h2 class="section-title" id="prints-title">A place,<br><em>to come back to.</em></h2>
+          <p>For the wall you walk past every morning. Small editions, printed by hand on beautiful paper. Signed, numbered, and sent with a note.</p>
+          <div class="print-options">
+            <div class="select-field">
+              <label for="print-choice">Choose a photograph</label>
+              <div class="select-wrap">
+                <select id="print-choice">
+                  <option value="photo-tide">Where the land lets go</option>
+                  <option value="photo-town">The hours in between</option>
+                  <option value="photo-valley">The long way home</option>
+                  <option value="photo-winter">A quieter kind of blue</option>
+                </select>
+                <svg aria-hidden="true"><use href="#i-chevron"/></svg>
+              </div>
+            </div>
+            <div class="select-field">
+              <label for="print-size">Paper size</label>
+              <div class="select-wrap">
+                <select id="print-size">
+                  <option value="24 × 30 cm — €185">24 × 30 cm — €185</option>
+                  <option value="40 × 50 cm — €295">40 × 50 cm — €295</option>
+                </select>
+                <svg aria-hidden="true"><use href="#i-chevron"/></svg>
+              </div>
+            </div>
+            <button type="button" id="enquire-print" class="primary-button" aria-haspopup="dialog">Enquire about this print <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+          </div>
+          <p class="print-small">Editions of 18 · Unframed · Carefully packed, wherever you are.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 08 / CONTACT & LINKS — replace hello@example.com here and in SETTINGS.
+       No form submission or backend is required. -->
+  <footer class="site-footer" id="contact">
+    <div class="wrap">
+      <div class="footer-top reveal"><span class="eyebrow">06 / A little correspondence</span><span class="eyebrow availability"><i aria-hidden="true"></i>Open to the unexpected</span></div>
+      <div class="footer-main">
+        <h2 class="reveal">There is still<br><em>so much to see.</em></h2>
+        <div class="footer-contact reveal" style="--delay:100ms">
+          <p>For a print, a thoughtful collaboration,<br>or a place you think I should see.<br>I'd love to hear from you.</p>
+          <div class="email-row"><a class="email-link" data-contact-email href="mailto:hello@example.com">hello@example.com</a><button class="copy-email" id="copy-email" type="button" aria-label="Copy email address"><svg aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+        </div>
+      </div>
+      <div class="footer-bottom"><span>© 2026 Noa Lindqvist</span><span class="footer-note">Made slowly. Meant to be felt.</span><a href="#top">Back to the light <svg aria-hidden="true"><use href="#i-up"/></svg></a></div>
+    </div>
+  </footer>
+
+  <!-- CONTENT / VIEWER — native dialogs support Escape and keyboard focus. -->
+  <dialog class="lightbox" id="photo-dialog" aria-labelledby="viewer-title" aria-describedby="viewer-description">
+    <div class="dialog-top"><p class="eyebrow" id="viewer-location"></p><button type="button" class="dialog-close" data-close-dialog aria-label="Close photograph viewer"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="lightbox-image-wrap media-error-host"><img class="lightbox-image" id="viewer-image" alt="" width="1024" height="1024"></div>
+    <div class="lightbox-bottom">
+      <div><h2 id="viewer-title"></h2><p class="lightbox-description" id="viewer-description"></p><p class="eyebrow" id="viewer-counter" style="margin-top:12px" aria-live="polite"></p></div>
+      <div class="lightbox-nav"><button type="button" id="viewer-prev" aria-label="Previous photograph"><svg aria-hidden="true"><use href="#i-left"/></svg></button><button type="button" id="viewer-next" aria-label="Next photograph"><svg aria-hidden="true"><use href="#i-right"/></svg></button></div>
+    </div>
+  </dialog>
+  <dialog class="paper-dialog note-reader" id="note-dialog" aria-labelledby="note-dialog-title">
+    <div class="dialog-top"><span class="eyebrow">From Noa's notebook</span><button type="button" class="dialog-close" data-close-dialog aria-label="Close field note"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <article id="note-content"></article>
+    <div class="reader-end" aria-hidden="true"></div>
+  </dialog>
+  <dialog class="paper-dialog" id="enquiry-dialog" aria-labelledby="enquiry-title">
+    <div class="dialog-top"><span class="eyebrow">A print of your own</span><button type="button" class="dialog-close" data-close-dialog aria-label="Close print enquiry"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <h2 id="enquiry-title">Let's make room<br><em>for a landscape.</em></h2>
+    <p>A print is a personal thing. Send a note about the photograph you have in mind, and we'll take it from there.</p>
+    <div class="enquiry-summary"><img id="enquiry-image" alt="" width="85" height="85"><div><h3 id="enquiry-photo-name"></h3><p id="enquiry-size"></p></div></div>
+    <div class="enquiry-actions"><a id="enquiry-mailto" class="primary-button" href="mailto:hello@example.com">Open an email <svg aria-hidden="true"><use href="#i-arrow"/></svg></a><button type="button" class="text-link" id="copy-enquiry">Copy enquiry <svg aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+    <p class="enquiry-disclaimer">This is a portfolio demo, not a checkout. The email address is a placeholder. No payment or personal information is collected.</p>
+    <div class="copy-fallback" id="enquiry-copy-fallback" hidden><label for="enquiry-copy-text">Automatic copying isn't available here. Select and copy your note below.</label><textarea id="enquiry-copy-text" readonly></textarea></div>
+  </dialog>
+  <dialog class="paper-dialog" id="email-dialog" aria-labelledby="email-dialog-title">
+    <div class="dialog-top"><span class="eyebrow">A little correspondence</span><button type="button" class="dialog-close" data-close-dialog aria-label="Close email address"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <h2 id="email-dialog-title">A note is<br><em>a lovely beginning.</em></h2>
+    <p>Automatic copying isn't available in this browser. You can select the address below, or open your email app.</p>
+    <div class="copy-fallback"><label for="email-copy-text">Email address</label><input id="email-copy-text" type="text" value="hello@example.com" readonly></div>
+    <a class="text-link" data-contact-email href="mailto:hello@example.com" style="margin-top:20px">Open an email <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- CONTENT / FIELD NOTES — plain HTML; add or replace complete articles. -->
+  <template id="note-light">
+    <p class="eyebrow">18 September 2025 · Veyr Coast</p>
+    <h2 id="note-dialog-title">The light I almost<br><em>left behind.</em></h2>
+    <p>By half past six, the sky had been the colour of an old dishcloth for three hours. I'd finished my tea. The wind had found the gap between my scarf and my collar. I put the camera away.</p>
+    <p>Then, halfway back along the path, I stopped to retie a boot. When I looked up, the far edge of the water had turned the faintest shade of pink. Nothing spectacular. Just enough to make the headland look as though it was remembering summer.</p>
+    <p>I walked back. Made one frame. Sat on my empty camera bag until it was too dark to see the path properly. Sometimes patience isn't something you have. It's something a place teaches you, a minute at a time.</p>
+    <p class="serif" style="font-size:27px;font-style:italic">A note to myself: leave a little later.</p>
+  </template>
+  <template id="note-less">
+    <p class="eyebrow">06 July 2025 · On the road to Lornes</p>
+    <h2 id="note-dialog-title">Why I<br><em>carry less.</em></h2>
+    <p>There used to be a second camera. Then a third lens, a light meter I didn't trust, and a collection of useful things that were mostly useful for making my bag heavy.</p>
+    <p>These days, it's one camera, one lens, a notebook and a few rolls of film. The tea still comes. So does a spare pair of socks. I am a romantic about light, not about wet feet.</p>
+    <p>With fewer decisions in the bag, there are fewer decisions between me and the place. I walk a little farther. I look up a little more. If a photograph isn't possible with what I have, perhaps it is simply a moment to be in.</p>
+    <p class="serif" style="font-size:27px;font-style:italic">Not everything has to come home as a picture.</p>
+  </template>
+  <template id="note-twice">
+    <p class="eyebrow">24 February 2025 · Ruunvik darkroom</p>
+    <h2 id="note-dialog-title">Making a<br><em>photograph twice.</em></h2>
+    <p>The first time, there is wind. Or a long walk. Or somebody waiting patiently while I take what must look like a very long time to press a very small button.</p>
+    <p>The second time, there is only the hum of the enlarger and the sound of water. I make a test strip. Another. I give the sky a few extra seconds, keep a little light in the grass. The negative is a record. The print is a conversation with it.</p>
+    <p>I sometimes spend a whole evening on a photograph I made in a fraction of a second. This seems to me an entirely reasonable way to spend an evening. By the time the paper is dry, the place feels close again.</p>
+    <p class="serif" style="font-size:27px;font-style:italic">Some journeys end on a drying rack.</p>
+  </template>
+  <template id="image-error-template">
+    <div class="image-error"><svg aria-hidden="true"><use href="#i-image"/></svg><p>The photograph is taking the long way.</p><button type="button">Try the photograph again</button></div>
+  </template>
+
+  <script>
+    (() => {
+      "use strict";
+
+      /* ==============================================================
+         SETTINGS — animation timings, contact address and UI messages.
+         Content is in the plain HTML above. No storage or network APIs.
+         Replace contactEmail before publishing your own portfolio.
+         ============================================================== */
+      const SETTINGS = {
+        contactEmail: "hello@example.com",
+        developmentDuration: 6400,
+        revealDuration: 850,
+        toastDuration: 3200,
+        messages: {
+          copiedEmail: "Email address copied. A good place to begin.",
+          copiedEnquiry: "Your enquiry is copied and ready to send.",
+          developed: "A memory, made visible.",
+          enquirySubject: "A print enquiry",
+          enquiryGreeting: "Hello Noa,",
+          enquiryIntroduction: "I'd love to know more about this print:",
+          enquiryQuestion: "Could you let me know about availability and delivery?",
+          enquirySignoff: "Thank you!",
+          viewerSeparator: " / ",
+          openNavigation: "Open navigation",
+          closeNavigation: "Close navigation",
+          emailTo: "To:",
+          emailSubject: "Subject:"
+        }
+      };
+      const $ = (selector, scope = document) => scope.querySelector(selector);
+      const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      document.documentElement.style.setProperty("--reveal-duration", `${SETTINGS.revealDuration}ms`);
+
+      // Navigation — works with touch, keyboard, outside click and Escape.
+      const menuButton = $(".menu-toggle");
+      const navigation = $("#site-nav");
+      function setMenu(open) {
+        navigation.classList.toggle("is-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuButton.setAttribute("aria-label", open ? SETTINGS.messages.closeNavigation : SETTINGS.messages.openNavigation);
+        $("use", menuButton).setAttribute("href", open ? "#i-close" : "#i-menu");
+      }
+      menuButton.addEventListener("click", () => setMenu(menuButton.getAttribute("aria-expanded") !== "true"));
+      $$("a", navigation).forEach(link => link.addEventListener("click", () => setMenu(false)));
+      document.addEventListener("click", event => {
+        if (!navigation.contains(event.target) && !menuButton.contains(event.target)) setMenu(false);
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && menuButton.getAttribute("aria-expanded") === "true") {
+          setMenu(false);
+          menuButton.focus();
+        }
+      });
+      window.matchMedia("(min-width: 768px)").addEventListener("change", () => setMenu(false));
+
+      // In-view reveals never hide content in reduced-motion or no-JS modes.
+      if ("IntersectionObserver" in window && !reducedMotion.matches) {
+        const revealObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08, rootMargin: "0px 0px -25px 0px" });
+        $$(".reveal").forEach(element => revealObserver.observe(element));
+        document.documentElement.classList.add("js");
+      }
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) document.documentElement.classList.remove("js");
+      });
+      const progress = $(".reading-progress");
+      let progressQueued = false;
+      function updateReadingProgress() {
+        const height = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${height > 0 ? Math.min(1, window.scrollY / height) : 0})`;
+        progressQueued = false;
+      }
+      window.addEventListener("scroll", () => {
+        if (!progressQueued) {
+          progressQueued = true;
+          requestAnimationFrame(updateReadingProgress);
+        }
+      }, { passive: true });
+      window.addEventListener("resize", updateReadingProgress);
+      updateReadingProgress();
+
+      // Native dialogs provide a focus trap, focus restoration and Escape.
+      function openDialog(dialog) {
+        setMenu(false);
+        if (!dialog.open) dialog.showModal();
+        document.body.classList.add("modal-open");
+      }
+      $$("dialog").forEach(dialog => {
+        dialog.addEventListener("click", event => {
+          if (event.target === dialog) {
+            const rect = dialog.getBoundingClientRect();
+            if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+          }
+        });
+        dialog.addEventListener("close", () => {
+          if (!$("dialog[open]")) document.body.classList.remove("modal-open");
+        });
+      });
+      $$("[data-close-dialog]").forEach(button => button.addEventListener("click", () => button.closest("dialog").close()));
+
+      // Photo viewer — sources and captions are read directly from the HTML.
+      const gallery = $$("[data-gallery]").sort((a, b) => Number(a.dataset.gallery) - Number(b.dataset.gallery));
+      const photoDialog = $("#photo-dialog");
+      let currentPhoto = 0;
+      function showPhoto(index) {
+        if (!gallery.length) return;
+        currentPhoto = (index + gallery.length) % gallery.length;
+        const figure = gallery[currentPhoto];
+        const original = $("img", figure);
+        const viewerImage = $("#viewer-image");
+        viewerImage.src = original.getAttribute("src");
+        viewerImage.alt = original.alt;
+        $("#viewer-title").textContent = $(".photo-title", figure).textContent;
+        $("#viewer-location").textContent = $(".photo-location", figure).textContent;
+        $("#viewer-description").textContent = $(".photo-story", figure).textContent;
+        $("#viewer-counter").textContent = `${String(currentPhoto + 1).padStart(2, "0")}${SETTINGS.messages.viewerSeparator}${String(gallery.length).padStart(2, "0")}`;
+      }
+      gallery.forEach((figure, index) => {
+        $("[data-view-photo]", figure).addEventListener("click", () => {
+          showPhoto(index);
+          openDialog(photoDialog);
+        });
+      });
+      $("#viewer-prev").addEventListener("click", () => showPhoto(currentPhoto - 1));
+      $("#viewer-next").addEventListener("click", () => showPhoto(currentPhoto + 1));
+      photoDialog.addEventListener("keydown", event => {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          event.preventDefault();
+          showPhoto(currentPhoto + (event.key === "ArrowLeft" ? -1 : 1));
+        }
+      });
+      let swipeStart = null;
+      $("#viewer-image").addEventListener("touchstart", event => {
+        swipeStart = event.touches.length === 1 ? { x: event.touches[0].clientX, y: event.touches[0].clientY } : null;
+      }, { passive: true });
+      $("#viewer-image").addEventListener("touchend", event => {
+        if (!swipeStart) return;
+        const touch = event.changedTouches[0];
+        const dx = touch.clientX - swipeStart.x;
+        const dy = touch.clientY - swipeStart.y;
+        if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) showPhoto(currentPhoto + (dx < 0 ? 1 : -1));
+        swipeStart = null;
+      }, { passive: true });
+      $("#viewer-image").addEventListener("touchcancel", () => { swipeStart = null; }, { passive: true });
+
+      // Signature interaction — direct touch/keyboard control or slow development.
+      const developRange = $("#develop-range");
+      const developPaper = $("#develop-paper");
+      const developButton = $("#develop-auto");
+      let developing = false;
+      let developmentFrame = 0;
+      function updateDevelopButton() {
+        const state = developing ? "pause" : Number(developRange.value) >= 100 ? "again" : "start";
+        $$("[data-develop-label]", developButton).forEach(label => { label.hidden = label.dataset.developLabel !== state; });
+        developButton.setAttribute("aria-pressed", String(developing));
+      }
+      function setDevelopment(value) {
+        const rounded = Math.max(0, Math.min(100, Math.round(value)));
+        developRange.value = String(rounded);
+        developRange.style.setProperty("--range-progress", `${rounded}%`);
+        // Only opacity changes; the photograph is never distorted or cropped by a mask.
+        developPaper.style.setProperty("--develop", String(Math.pow(rounded / 100, 1.4)));
+        $("#develop-output").value = `${String(rounded).padStart(2, "0")} / 100`;
+        $("#develop-status").textContent = rounded === 100 ? SETTINGS.messages.developed : "";
+        updateDevelopButton();
+      }
+      function stopDeveloping() {
+        developing = false;
+        cancelAnimationFrame(developmentFrame);
+        updateDevelopButton();
+      }
+      developRange.addEventListener("input", () => {
+        stopDeveloping();
+        setDevelopment(Number(developRange.value));
+      });
+      developButton.addEventListener("click", () => {
+        if (developing) { stopDeveloping(); return; }
+        if (Number(developRange.value) >= 100) setDevelopment(0);
+        if (reducedMotion.matches) { setDevelopment(100); return; }
+        developing = true;
+        updateDevelopButton();
+        const startValue = Number(developRange.value);
+        const startTime = performance.now();
+        const remainingDuration = SETTINGS.developmentDuration * (1 - startValue / 100);
+        function tick(now) {
+          const fraction = Math.min(1, (now - startTime) / remainingDuration);
+          setDevelopment(startValue + (100 - startValue) * fraction);
+          if (fraction < 1 && developing) developmentFrame = requestAnimationFrame(tick);
+          else stopDeveloping();
+        }
+        developmentFrame = requestAnimationFrame(tick);
+      });
+      $("#develop-reset").addEventListener("click", () => { stopDeveloping(); setDevelopment(0); });
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches && developing) { stopDeveloping(); setDevelopment(100); }
+      });
+      document.addEventListener("visibilitychange", () => { if (document.hidden) stopDeveloping(); });
+
+      // Field notes — articles remain easy-to-edit, semantic HTML.
+      const noteDialog = $("#note-dialog");
+      $$("[data-note]").forEach(button => {
+        button.addEventListener("click", () => {
+          const template = document.getElementById(button.dataset.note);
+          if (!template) return;
+          $("#note-content").replaceChildren(template.content.cloneNode(true));
+          openDialog(noteDialog);
+          noteDialog.scrollTop = 0;
+        });
+      });
+
+      // Print choices and the enquiry preview stay in sync.
+      const printChoice = $("#print-choice");
+      const printSize = $("#print-size");
+      const printPreview = $("#print-preview");
+      const enquiryDialog = $("#enquiry-dialog");
+      let enquiryText = "";
+      function selectedPrint() {
+        const figure = document.getElementById(printChoice.value);
+        return { title: $(".photo-title", figure).textContent, image: $("img", figure).getAttribute("src"), alt: $("img", figure).alt };
+      }
+      function updatePrint() {
+        const print = selectedPrint();
+        printPreview.src = print.image;
+        printPreview.alt = print.alt;
+      }
+      printChoice.addEventListener("change", updatePrint);
+      $("#enquire-print").addEventListener("click", () => {
+        const print = selectedPrint();
+        $("#enquiry-image").src = print.image;
+        $("#enquiry-image").alt = print.alt;
+        $("#enquiry-photo-name").textContent = print.title;
+        $("#enquiry-size").textContent = printSize.value;
+        const message = SETTINGS.messages;
+        enquiryText = `${message.enquiryGreeting}\n\n${message.enquiryIntroduction}\n${print.title}\n${printSize.value}\n\n${message.enquiryQuestion}\n\n${message.enquirySignoff}`;
+        $("#enquiry-mailto").href = `mailto:${SETTINGS.contactEmail}?subject=${encodeURIComponent(`${message.enquirySubject} — ${print.title}`)}&body=${encodeURIComponent(enquiryText)}`;
+        $("#enquiry-copy-text").value = `${message.emailTo} ${SETTINGS.contactEmail}\n${message.emailSubject} ${message.enquirySubject} — ${print.title}\n\n${enquiryText}`;
+        $("#enquiry-copy-fallback").hidden = true;
+        $(".copy-status", enquiryDialog)?.remove();
+        openDialog(enquiryDialog);
+      });
+
+      /* CONTACT ADAPTER — replace this one function if integrating a buyer's
+         preferred clipboard/contact service. No forms submit in this demo.
+         Clipboard denial is expected in sandboxes: show selectable text. */
+      async function copyText(text) {
+        try {
+          // Avoid even attempting a policy-blocked API in an opaque-origin demo.
+          if (!window.isSecureContext || window.origin === "null") return false;
+          const policy = document.permissionsPolicy || document.featurePolicy;
+          if (policy?.allowsFeature && !policy.allowsFeature("clipboard-write")) return false;
+          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+        } catch (_) { /* Sandboxed demo: a manual-copy fallback follows. */ }
+        return false;
+      }
+      let toastTimeout;
+      function toast(message) {
+        const element = $("#toast");
+        clearTimeout(toastTimeout);
+        element.textContent = message;
+        element.classList.add("is-visible");
+        toastTimeout = setTimeout(() => element.classList.remove("is-visible"), SETTINGS.toastDuration);
+      }
+      $$("[data-contact-email]").forEach(link => {
+        link.href = `mailto:${SETTINGS.contactEmail}`;
+        if (link.classList.contains("email-link")) link.textContent = SETTINGS.contactEmail;
+      });
+      $("#email-copy-text").value = SETTINGS.contactEmail;
+      $("#copy-email").addEventListener("click", async () => {
+        if (await copyText(SETTINGS.contactEmail)) toast(SETTINGS.messages.copiedEmail);
+        else {
+          openDialog($("#email-dialog"));
+          $("#email-copy-text").focus();
+          $("#email-copy-text").select();
+        }
+      });
+      $("#copy-enquiry").addEventListener("click", async () => {
+        if (await copyText($("#enquiry-copy-text").value)) {
+          // A status inside the top-layer dialog is readable by assistive tech.
+          let status = $(".copy-status", enquiryDialog);
+          if (!status) {
+            status = document.createElement("p");
+            status.className = "copy-status enquiry-disclaimer";
+            status.setAttribute("role", "status");
+            $(".enquiry-actions", enquiryDialog).after(status);
+          }
+          status.textContent = SETTINGS.messages.copiedEnquiry;
+        } else {
+          $("#enquiry-copy-fallback").hidden = false;
+          $("#enquiry-copy-text").focus();
+          $("#enquiry-copy-text").select();
+        }
+      });
+
+      // Images — paper-toned loading placeholders and a recoverable error state.
+      $$("img").forEach(image => {
+        const host = image.closest(".media-error-host");
+        if (!host) return;
+        let loading = null;
+        function clearState() {
+          loading?.remove();
+          loading = null;
+          $(".image-error", host)?.remove();
+        }
+        function showLoading() {
+          if (!loading) {
+            loading = document.createElement("span");
+            loading.className = "image-loading";
+            loading.setAttribute("aria-hidden", "true");
+            host.append(loading);
+          }
+        }
+        function showError() {
+          clearState();
+          const error = $("#image-error-template").content.cloneNode(true);
+          $("button", error).addEventListener("click", () => {
+            clearState();
+            showLoading();
+            const source = image.getAttribute("src").split("?")[0];
+            image.src = `${source}?retry=${Date.now()}`;
+          });
+          host.append(error);
+        }
+        image.addEventListener("load", clearState);
+        image.addEventListener("error", showError);
+        if (image.getAttribute("src")) {
+          if (image.complete && image.naturalWidth === 0) showError();
+          else if (!image.complete) showLoading();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

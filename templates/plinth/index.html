@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plinth is an independent architecture and interiors studio. Quiet houses, honest materials, and a little more room for everyday life.">
+  <meta name="theme-color" content="#f0eccf">
+  <meta name="color-scheme" content="light">
+  <title>Plinth — Architecture for everyday life</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='4' fill='%23f0eccf'/%3E%3Cpath d='M18 49V15h16c16 0 16 24 0 24H18m0-17h15c7 0 7 10 0 10H18' fill='none' stroke='%233d4638' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="assets/courtyard.webp" as="image" fetchpriority="high">
+  <style>
+    /* =====================================================================
+       PLINTH / THEME
+       Edit colours and fonts here. No framework or build step is required.
+       Paper: pale citron. Ink: olive graphite. Accent: oxidised sage.
+       ===================================================================== */
+    :root {
+      --paper: #f0eccf;
+      --paper-light: #f6f2df;
+      --paper-deep: #e5dfbe;
+      --ink: #3d4638;
+      --ink-soft: #69705c;
+      --sage: #56644d;
+      --sun: #dfcd86;
+      --line: rgba(61, 70, 56, .25);
+      --dark: #394535;
+      --dark-ink: #f0eccf;
+      --dark-muted: #c0c7af;
+      --font-body: "Manrope", sans-serif;
+      --font-serif: "Instrument Serif", Georgia, serif;
+      --font-mono: "DM Mono", monospace;
+      --gutter: clamp(22px, 3.6vw, 68px);
+      --page-width: 1760px;
+      --header-height: 94px;
+      --reveal-duration: 760ms;
+      --hover-duration: 400ms;
+      --ease: cubic-bezier(.2, .65, .3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-height) + 24px); }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; font-weight: 400; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+    body::before { content: ""; position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: .025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.76' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%233d4638' filter='url(%23n)' opacity='.7' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+    body.dialog-open { overflow: hidden; }
+    ::selection { background: var(--ink); color: var(--paper); }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { border: 0; border-radius: 0; background: none; color: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    svg { display: block; }
+    h1, h2, h3, p, figure { margin: 0; }
+    h1, h2, h3 { font-weight: 400; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 6px; }
+    .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+    .svg-library { position: absolute; width: 0; height: 0; overflow: hidden; }
+    .page-width { width: min(100%, var(--page-width)); margin-inline: auto; padding-inline: var(--gutter); }
+    .mono, .eyebrow { font: 400 10px/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: .075em; }
+    .eyebrow { display: flex; align-items: center; gap: 14px; }
+    .eyebrow .index { color: var(--ink-soft); }
+    .serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -.025em; }
+    .section-title { font-size: clamp(36px, 4.05vw, 67px); line-height: 1.1; letter-spacing: -.055em; }
+    .text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; padding-block: 12px; border-bottom: 1px solid currentColor; font-size: 12px; font-weight: 500; line-height: 1.5; }
+    .text-link .icon { width: 17px; height: 17px; transition: transform var(--hover-duration) var(--ease); }
+    .text-link:hover .icon { transform: translate(3px, -3px); }
+    .text-link.down:hover .icon { transform: translateY(3px); }
+    .round-arrow { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; flex: 0 0 auto; transition: transform var(--hover-duration) var(--ease); }
+    .round-arrow .icon { width: 18px; height: 18px; }
+    .skip-link { position: fixed; left: 20px; top: 14px; z-index: 100; padding: 12px 20px; background: var(--ink); color: var(--paper); transform: translateY(-150%); }
+    .skip-link:focus { transform: translateY(0); }
+    .reading-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; background: var(--sage); z-index: 70; transform: scaleX(0); transform-origin: left; pointer-events: none; }
+
+    /* Navigation / the continuous datum line. */
+    .site-header { height: var(--header-height); position: sticky; top: 0; z-index: 40; background: var(--paper); }
+    .header-inner { height: 100%; display: flex; align-items: center; gap: 36px; }
+    .header-inner::after { content: ""; height: 1px; position: absolute; bottom: 0; left: var(--gutter); right: var(--gutter); background: var(--line); }
+    .wordmark { display: inline-flex; align-items: baseline; font-size: 43px; font-weight: 600; line-height: 1; letter-spacing: -.075em; }
+    .wordmark-dot { width: 7px; height: 7px; margin-left: 4px; background: currentColor; }
+    .header-descriptor { margin-left: 34px; font-size: 10px; line-height: 1.55; color: var(--ink-soft); }
+    .site-nav { margin-left: auto; display: flex; align-items: center; gap: 36px; }
+    .site-nav a { position: relative; display: flex; align-items: center; gap: 20px; min-height: 44px; font-size: 12px; }
+    .site-nav a::after { content: ""; position: absolute; height: 1px; bottom: 8px; left: 0; right: 0; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--hover-duration) var(--ease); }
+    .site-nav a:hover::after, .site-nav a[aria-current="location"]::after { transform: scaleX(1); }
+    .site-nav .nav-contact { margin-left: 24px; gap: 16px; }
+    .nav-contact .icon { width: 17px; height: 17px; }
+    .menu-toggle { display: none; margin-left: auto; min-width: 44px; min-height: 44px; align-items: center; gap: 10px; padding: 0; font-size: 12px; }
+    .menu-lines { display: flex; flex-direction: column; gap: 5px; width: 19px; }
+    .menu-lines span { height: 1px; background: currentColor; transition: transform 250ms var(--ease); }
+    .menu-toggle[aria-expanded="true"] .menu-lines span:first-child { transform: translateY(3px) rotate(45deg); }
+    .menu-toggle[aria-expanded="true"] .menu-lines span:last-child { transform: translateY(-3px) rotate(-45deg); }
+
+    /* 00 / Opening. */
+    .hero-intro { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 60px; padding-block: 49px 39px; align-items: end; }
+    .hero-eyebrow { margin-bottom: 22px; gap: 9px; font-size: 9px; }
+    .small-cross { position: relative; width: 9px; height: 9px; display: inline-block; }
+    .small-cross::before, .small-cross::after { position: absolute; content: ""; background: currentColor; }
+    .small-cross::before { width: 9px; height: 1px; left: 0; top: 4px; }
+    .small-cross::after { width: 1px; height: 9px; top: 0; left: 4px; }
+    .hero h1 { font-size: clamp(66px, 7.8vw, 128px); line-height: .99; letter-spacing: -.068em; }
+    .hero h1 .line { display: block; }
+    .hero h1 .serif { font-size: 1.14em; }
+    .hero-aside { padding-bottom: 9px; }
+    .hero-aside p { font-size: 15px; line-height: 1.7; max-width: 25ch; }
+    .hero-aside .text-link { margin-top: 24px; min-width: 142px; }
+    .hero-image { position: relative; height: clamp(350px, 36.5vw, 640px); background: var(--paper-deep); overflow: hidden; }
+    .hero-image > img { object-position: 50% 59%; transition: transform 1400ms var(--ease); }
+    .hero-image:hover > img { transform: scale(1.018); }
+    .hero-image::after { content: ""; position: absolute; inset: 50% 0 0; background: linear-gradient(transparent, rgba(31, 39, 27, .35)); pointer-events: none; }
+    .hero-image .corner { width: 14px; height: 14px; position: absolute; border-color: rgba(246, 242, 223, .8); border-style: solid; z-index: 2; }
+    .hero-image .corner-tl { top: 19px; left: 19px; border-width: 1px 0 0 1px; }
+    .hero-image .corner-tr { top: 19px; right: 19px; border-width: 1px 1px 0 0; }
+    .hero-image .corner-bl { bottom: 19px; left: 19px; border-width: 0 0 1px 1px; }
+    .hero-image .corner-br { bottom: 19px; right: 19px; border-width: 0 1px 1px 0; }
+    .hero-image-label { position: absolute; left: 34px; bottom: 30px; z-index: 2; color: var(--paper-light); }
+    .hero-image-label .mono { display: block; margin-bottom: 5px; font-size: 9px; }
+    .hero-image-label > span:last-child { font-size: 18px; letter-spacing: -.025em; }
+    .hero-project-button { position: absolute; right: 32px; bottom: 30px; z-index: 3; display: flex; align-items: center; gap: 14px; color: var(--paper-light); font-size: 11px; padding: 0; }
+    .hero-project-button .round-arrow { border-color: rgba(246, 242, 223, .65); }
+    .hero-project-button:hover .round-arrow { transform: rotate(45deg); }
+    .hero-caption { display: flex; justify-content: space-between; gap: 20px; padding-block: 17px; border-bottom: 1px solid var(--line); font-size: 9px; }
+    .hero-caption span:last-child { color: var(--ink-soft); }
+
+    /* 01 / Practice. */
+    .practice { display: grid; grid-template-columns: 1fr 2fr; column-gap: 7vw; padding-block: 118px 128px; }
+    .section-side { display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 50px; }
+    .practice-mark { width: 116px; height: 100px; color: var(--ink-soft); }
+    .practice h2 { max-width: 19ch; }
+    .practice-copy { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 36px; max-width: 780px; }
+    .practice-copy p { font-size: 14px; line-height: 1.85; }
+    .practice-copy p:last-child { color: var(--ink-soft); }
+    .practice-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 25px; margin-top: 35px; }
+    .practice-footer .mono { color: var(--ink-soft); font-size: 9px; }
+
+    /* 02 / A project index, with deliberately uneven folios. */
+    .work { padding-bottom: 114px; }
+    .section-topline { border-top: 1px solid var(--line); padding-top: 18px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .section-topline > .mono { color: var(--ink-soft); font-size: 9px; }
+    .work-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; padding-block: 38px 45px; }
+    .work-heading h2 { font-size: clamp(35px, 4.3vw, 68px); }
+    .work-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; padding-bottom: 5px; }
+    .filter-button { min-height: 44px; padding: 8px 0; border-bottom: 1px solid transparent; font-size: 10px; color: var(--ink-soft); }
+    .filter-button[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+    .filter-button:hover { color: var(--ink); }
+    .filter-button sup { font: 8px var(--font-mono); margin-left: 4px; }
+    .project-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 4.2%; row-gap: 66px; align-items: start; }
+    .project-card { padding: 0; text-align: left; display: block; width: 100%; min-width: 0; }
+    .project-card:nth-child(1) { grid-column: 1 / 8; }
+    .project-card:nth-child(2) { grid-column: 9 / 13; margin-top: 138px; }
+    .project-card:nth-child(3) { grid-column: 1 / 6; }
+    .project-card:nth-child(4) { grid-column: 7 / 13; margin-top: 114px; }
+    .project-image { display: block; position: relative; overflow: hidden; background: var(--paper-deep); aspect-ratio: 1.35; }
+    .project-card:nth-child(2) .project-image { aspect-ratio: .84; }
+    .project-card:nth-child(3) .project-image { aspect-ratio: 1.06; }
+    .project-card:nth-child(4) .project-image { aspect-ratio: 1.46; }
+    .project-image img { transition: transform 1000ms var(--ease); }
+    .project-card:hover .project-image img { transform: scale(1.035); }
+    .project-image .project-tag { position: absolute; top: 18px; left: 18px; background: var(--paper-light); color: var(--ink); padding: 5px 8px; font: 9px/1.5 var(--font-mono); }
+    .project-view { position: absolute; bottom: 16px; right: 16px; width: 43px; height: 43px; display: grid; place-items: center; border-radius: 50%; background: var(--paper-light); color: var(--ink); opacity: 0; transform: translateY(6px); transition: transform var(--hover-duration) var(--ease), opacity var(--hover-duration) var(--ease); }
+    .project-card:hover .project-view, .project-card:focus-visible .project-view { opacity: 1; transform: translateY(0); }
+    .project-meta { display: grid; grid-template-columns: 1fr auto; column-gap: 12px; padding-block: 16px 14px; border-bottom: 1px solid var(--line); }
+    .project-name { font-size: clamp(19px, 1.8vw, 29px); line-height: 1.3; letter-spacing: -.04em; }
+    .project-meta > .icon { width: 20px; height: 20px; align-self: center; transition: transform var(--hover-duration) var(--ease); }
+    .project-card:hover .project-meta > .icon { transform: translate(3px, -3px); }
+    .project-info { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 15px; padding-top: 9px; color: var(--ink-soft); font: 9px/1.6 var(--font-mono); text-transform: uppercase; letter-spacing: .02em; }
+    .project-grid.is-filtered .project-card { grid-column: span 6; margin-top: 0; }
+    .project-grid.is-filtered .project-image { aspect-ratio: 1.25; }
+    .work-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 45px; color: var(--ink-soft); font-size: 9px; }
+    .work-bottom .small-cross { margin-right: 8px; }
+
+    /* 03 / Signature interaction: a drawing becomes a place. */
+    .line-to-life { background: var(--dark); color: var(--dark-ink); padding-block: 57px 36px; --line: rgba(240, 236, 207, .25); --ink-soft: var(--dark-muted); --sage: var(--sun); }
+    .line-to-life .section-topline { border-top: none; padding-top: 0; }
+    .line-to-life .section-topline > .mono { color: var(--dark-muted); }
+    .drawing-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 50px; margin-block: 35px 38px; }
+    .drawing-heading h2 { max-width: 14ch; }
+    .drawing-heading p { max-width: 33ch; font-size: 13px; line-height: 1.85; color: var(--dark-muted); }
+    .drawing-stage { position: relative; width: 100%; aspect-ratio: 2.13; background: #394535; overflow: hidden; border: 1px solid var(--line); --reveal: 47%; }
+    .drawing-stage:focus-within { outline: 2px solid var(--sun); outline-offset: 6px; }
+    .floor-plan { width: 100%; height: 100%; display: block; color: #d7ddbc; }
+    .floor-plan text { font-family: var(--font-mono); font-size: 9px; font-weight: 400; letter-spacing: 1px; fill: currentColor; stroke: none; }
+    .drawing-photograph { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--reveal)) 0 0); }
+    .drawing-photograph img { object-position: 50% 59%; }
+    .drawing-photograph::after { position: absolute; content: ""; inset: 0; background: rgba(57, 69, 53, .06); }
+    .drawing-label { position: absolute; z-index: 2; top: 20px; font: 9px var(--font-mono); letter-spacing: .06em; color: var(--paper-light); pointer-events: none; text-shadow: 0 1px 5px rgba(30, 36, 26, .6); }
+    .drawing-label.photo-label { left: 22px; }
+    .drawing-label.plan-label { right: 22px; }
+    .drawing-divider { position: absolute; top: 0; bottom: 0; left: var(--reveal); width: 1px; background: var(--paper-light); z-index: 3; pointer-events: none; }
+    .drawing-handle { position: absolute; top: 50%; left: 0; width: 54px; height: 54px; border-radius: 50%; border: 1px solid var(--paper); background: var(--paper); color: var(--ink); transform: translate(-50%, -50%); display: grid; place-items: center; box-shadow: 0 3px 16px rgba(30, 36, 26, .12); }
+    .drawing-handle .icon { width: 25px; height: 25px; }
+    .drawing-range { position: absolute; z-index: 4; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+    .drawing-bottom { display: grid; grid-template-columns: 1fr auto 1fr; gap: 20px; align-items: center; padding-top: 22px; }
+    .drawing-caption { font: 9px/1.8 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
+    .drawing-caption span { color: var(--dark-muted); }
+    .drawing-instruction { display: flex; align-items: center; gap: 10px; font-size: 10px; color: var(--dark-muted); }
+    .drawing-instruction .icon { width: 22px; }
+    .drawing-switch { justify-self: end; display: flex; gap: 22px; }
+    .drawing-switch button { font-size: 10px; min-height: 44px; padding: 6px 0; color: var(--dark-muted); position: relative; }
+    .drawing-switch button::after { content: ""; position: absolute; bottom: 8px; left: 0; right: 0; height: 1px; background: currentColor; opacity: 0; }
+    .drawing-switch button:hover, .drawing-switch button[aria-pressed="true"] { color: var(--paper); }
+    .drawing-switch button[aria-pressed="true"]::after { opacity: 1; }
+
+    /* 04 / Material language. */
+    .materials { display: grid; grid-template-columns: 1.04fr 1fr; gap: 9%; padding-block: 126px; }
+    .material-figure { align-self: stretch; display: flex; flex-direction: column; }
+    .material-photo { position: relative; flex: 1; min-height: 470px; background: var(--paper-deep); overflow: hidden; }
+    .material-photo img { position: absolute; inset: 0; object-position: 48% 50%; }
+    .material-caption { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; font-size: 8px; color: var(--ink-soft); }
+    .material-copy { padding-block: 16px 4px; }
+    .material-copy h2 { margin-block: 30px 24px; }
+    .material-intro { color: var(--ink-soft); font-size: 14px; max-width: 41ch; line-height: 1.85; }
+    .material-list { margin-top: 35px; }
+    .material-note { border-top: 1px solid var(--line); }
+    .material-note:last-child { border-bottom: 1px solid var(--line); }
+    .material-note summary { display: flex; align-items: center; gap: 20px; padding-block: 17px; list-style: none; cursor: pointer; min-height: 58px; }
+    .material-note summary::-webkit-details-marker { display: none; }
+    .material-number { font: 9px var(--font-mono); color: var(--ink-soft); }
+    .material-name { font-size: 19px; letter-spacing: -.025em; }
+    .material-note summary .icon { margin-left: auto; width: 15px; height: 15px; }
+    .material-note[open] summary .icon { transform: rotate(45deg); }
+    .material-note p { padding: 0 22px 21px 35px; color: var(--ink-soft); font-size: 12px; line-height: 1.9; max-width: 47ch; }
+
+    /* 05 / People, not a practice statement. */
+    .studio { padding-bottom: 122px; }
+    .studio-content { display: grid; grid-template-columns: 1fr 1.15fr; gap: 8.5%; padding-top: 47px; }
+    .studio-copy { padding-top: 14px; }
+    .studio-copy h2 { max-width: 15ch; margin-bottom: 28px; }
+    .studio-copy > p { max-width: 43ch; font-size: 14px; color: var(--ink-soft); line-height: 1.85; }
+    .partners { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 41px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .partner-name { font-size: 14px; margin-bottom: 4px; }
+    .partner-role { font-size: 8px; color: var(--ink-soft); }
+    .studio-copy .text-link { margin-top: 29px; }
+    .studio-image { aspect-ratio: 1.02; background: var(--paper-deep); }
+    .studio-image img { object-position: 50% 52%; }
+    .studio-caption { margin-top: 12px; color: var(--ink-soft); font-size: 8px; display: flex; justify-content: space-between; gap: 18px; }
+
+    /* 06 / Notes from the table. */
+    .notes { padding-bottom: 112px; }
+    .notes-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; margin-block: 37px 35px; }
+    .notes-header p { font-size: 12px; color: var(--ink-soft); max-width: 25ch; }
+    .note-row { display: grid; grid-template-columns: 130px 160px 1fr 44px; align-items: center; gap: 35px; border-top: 1px solid var(--line); padding: 24px 0; text-align: left; width: 100%; }
+    .note-row:last-child { border-bottom: 1px solid var(--line); }
+    .note-thumb { display: block; height: 96px; overflow: hidden; background: var(--paper-deep); }
+    .note-thumb img { transition: transform 750ms var(--ease); }
+    .note-date { color: var(--ink-soft); font: 9px/1.9 var(--font-mono); text-transform: uppercase; letter-spacing: .025em; }
+    .note-title { font-size: clamp(22px, 2.6vw, 37px); letter-spacing: -.045em; line-height: 1.25; max-width: 25ch; }
+    .note-row:hover .note-thumb img { transform: scale(1.055); }
+    .note-row:hover .round-arrow { transform: rotate(45deg); }
+    .note-row:hover .note-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+
+    /* 07 / An invitation, not a lead form. */
+    .contact { background: var(--sun); padding-top: 45px; }
+    .contact .section-topline { border-top: none; padding-top: 0; }
+    .contact-main { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10%; align-items: end; padding-block: 48px 68px; }
+    .contact h2 { font-size: clamp(75px, 9vw, 146px); line-height: .97; letter-spacing: -.065em; }
+    .contact h2 .serif { font-size: 1.1em; }
+    .contact-copy { max-width: 410px; padding-bottom: 7px; }
+    .contact-copy > p { font-size: 15px; max-width: 31ch; line-height: 1.8; }
+    .email-row { display: flex; align-items: center; gap: 22px; margin-top: 27px; padding-block: 10px; border-bottom: 1px solid var(--ink); }
+    .email-link { font-size: clamp(20px, 2.3vw, 34px); letter-spacing: -.04em; flex: 1; }
+    .email-link:hover { opacity: .7; }
+    .copy-email { display: grid; place-items: center; width: 44px; height: 44px; position: relative; }
+    .copy-email .icon { width: 20px; height: 20px; }
+    .copy-email:hover { transform: translateY(-2px); }
+    .email-hint { display: flex; justify-content: space-between; gap: 20px; margin-top: 10px; font-size: 9px; color: var(--ink); }
+    .copy-status { min-height: 16px; }
+    .manual-copy { margin-top: 16px; }
+    .manual-copy label { font-size: 11px; display: block; margin-bottom: 8px; }
+    .manual-copy input { background: var(--paper); border: 1px solid var(--ink); padding: 12px; width: 100%; color: var(--ink); font-size: 15px; }
+    .contact-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 25px; padding-block: 25px 26px; border-top: 1px solid var(--line); }
+    .footer-brand { display: flex; align-items: center; gap: 31px; }
+    .footer-brand .wordmark { font-size: 32px; }
+    .footer-brand .wordmark-dot { width: 5px; height: 5px; margin-left: 3px; }
+    .footer-brand .mono { font-size: 8px; }
+    .footer-note { color: var(--ink-soft); font-size: 8px; }
+    .back-to-top { display: inline-flex; align-items: center; gap: 17px; min-height: 44px; padding: 0; font-size: 10px; }
+    .back-to-top .icon { width: 16px; height: 16px; transform: rotate(180deg); transition: transform var(--hover-duration) var(--ease); }
+    .back-to-top:hover .icon { transform: rotate(180deg) translateY(3px); }
+
+    /* The project folio and journal reader share a quiet, accessible dialog. */
+    .folio { width: min(1000px, calc(100% - 48px)); max-height: calc(100dvh - 48px); padding: 0; border: 1px solid var(--line); background: var(--paper-light); color: var(--ink); overflow-y: auto; overscroll-behavior: contain; }
+    .folio::backdrop { background: rgba(31, 40, 28, .65); backdrop-filter: blur(5px); }
+    .folio[open] { animation: dialog-in 350ms var(--ease) both; }
+    .folio-bar { display: flex; justify-content: space-between; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 4; background: var(--paper-light); border-bottom: 1px solid var(--line); padding: 14px 32px; }
+    .folio-close { display: inline-flex; align-items: center; gap: 12px; padding: 0; min-height: 44px; font-size: 11px; }
+    .folio-close .icon { width: 18px; height: 18px; }
+    .folio-content { padding: 38px 40px 0; }
+    .folio-content h2 { font-size: clamp(38px, 5vw, 65px); line-height: 1.06; letter-spacing: -.055em; margin-top: 16px; }
+    .folio-lead { font-size: 16px; color: var(--ink-soft); max-width: 53ch; line-height: 1.75; margin-block: 22px 30px; }
+    .folio-image { aspect-ratio: 1.6; background: var(--paper-deep); }
+    .folio-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-block: 25px 36px; padding-bottom: 25px; border-bottom: 1px solid var(--line); }
+    .folio-facts dt { font: 8px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 8px; }
+    .folio-facts dd { margin: 0; font-size: 12px; }
+    .folio-text { max-width: 650px; margin: 32px auto 40px; }
+    .folio-text h3 { font-size: 27px; letter-spacing: -.035em; margin-bottom: 14px; }
+    .folio-text p { margin-top: 16px; font-size: 14px; line-height: 1.9; color: var(--ink-soft); }
+    .folio-text blockquote { margin: 30px 0; padding-left: 24px; border-left: 1px solid var(--ink); font: italic 34px/1.2 var(--font-serif); }
+    .folio-text .text-link { color: var(--ink); margin-top: 15px; }
+    .folio-navigation { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin: 0 40px; padding: 17px 0 25px; border-top: 1px solid var(--line); }
+    .folio-navigation .text-link { border: 0; }
+    .folio-navigation > .mono { color: var(--ink-soft); font-size: 9px; }
+    .folio-image-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .folio-image-pair img { aspect-ratio: 1; height: auto; }
+    .folio-caption { margin-top: 12px; font-size: 8px; color: var(--ink-soft); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+    /* Motion: only opacity and transforms animate. Content is visible without JS. */
+    .reveal-ready [data-reveal] { opacity: 0; transform: translateY(23px); transition: opacity var(--reveal-duration) var(--ease) var(--delay, 0ms), transform var(--reveal-duration) var(--ease) var(--delay, 0ms); }
+    .reveal-ready [data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+    @keyframes dialog-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Tablet and phone: the same drawing set, re-bound to a smaller page. */
+    @media (min-width: 1900px) {
+      .header-inner::after { left: calc((100% - var(--page-width)) / 2 + var(--gutter)); right: calc((100% - var(--page-width)) / 2 + var(--gutter)); }
+    }
+    @media (max-width: 1100px) {
+      .header-descriptor { margin-left: 16px; }
+      .site-nav { gap: 25px; }
+      .site-nav .nav-contact { margin-left: 10px; }
+      .hero-intro { grid-template-columns: 1fr 230px; gap: 25px; }
+      .hero h1 { font-size: 8.1vw; }
+      .hero-aside p { font-size: 13px; }
+      .practice { column-gap: 5vw; grid-template-columns: .7fr 2fr; }
+      .work-heading { align-items: flex-start; flex-direction: column; gap: 16px; padding-bottom: 30px; }
+      .work-filters { gap: 27px; }
+      .project-card:nth-child(2) { grid-column: 8 / 13; margin-top: 95px; }
+      .project-card:nth-child(1) { grid-column: 1 / 7; }
+      .project-card:nth-child(3) { grid-column: 1 / 6; }
+      .project-card:nth-child(4) { grid-column: 7 / 13; margin-top: 80px; }
+      .drawing-bottom { grid-template-columns: 1fr 1fr; }
+      .drawing-instruction { grid-row: 2; grid-column: 1 / -1; justify-content: center; }
+      .materials { gap: 6%; }
+      .material-photo { min-height: 440px; }
+      .studio-content { gap: 6%; }
+      .studio-image { aspect-ratio: .8; }
+      .note-row { grid-template-columns: 110px 115px 1fr 44px; gap: 25px; }
+      .note-thumb { height: 85px; }
+      .contact-main { gap: 8%; }
+      .contact-footer .footer-note { display: none; }
+    }
+    @media (max-width: 767px) {
+      :root { --gutter: 23px; --header-height: 76px; }
+      .wordmark { font-size: 37px; }
+      .wordmark-dot { width: 6px; height: 6px; }
+      .header-inner { gap: 20px; }
+      .header-descriptor { margin-left: 0; font-size: 8px; }
+      .menu-toggle { display: flex; }
+      .site-nav { position: absolute; top: calc(var(--header-height) - 1px); left: 0; right: 0; padding: 20px var(--gutter) 26px; background: var(--paper); border-bottom: 1px solid var(--line); display: none; flex-direction: column; align-items: stretch; gap: 0; box-shadow: 0 14px 20px rgba(61, 70, 56, .05); }
+      .site-nav.is-open { display: flex; }
+      .site-nav a { font-size: 21px; padding-block: 12px; justify-content: space-between; min-height: 52px; }
+      .site-nav a::after { bottom: 0; }
+      .site-nav .nav-contact { margin: 9px 0 0; font-size: 13px; border-top: 1px solid var(--line); padding-top: 18px; }
+      .hero-intro { grid-template-columns: 1fr; gap: 25px; padding-block: 32px 27px; }
+      .hero-eyebrow { font-size: 8px; margin-bottom: 22px; letter-spacing: .04em; }
+      .hero h1 { font-size: clamp(46px, 12.7vw, 88px); line-height: 1.03; letter-spacing: -.064em; }
+      .hero-aside { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding: 0; }
+      .hero-aside p { font-size: 11px; max-width: 22ch; line-height: 1.8; }
+      .hero-aside .text-link { margin: 0; min-width: auto; padding-block: 8px; gap: 14px; white-space: nowrap; font-size: 10px; }
+      .hero-image { height: auto; aspect-ratio: .98; }
+      .hero-image > img { object-position: 50% 57%; }
+      .hero-image-label { left: 23px; bottom: 23px; }
+      .hero-image-label .mono { font-size: 7px; }
+      .hero-image-label > span:last-child { font-size: 15px; }
+      .hero-image .corner-tl, .hero-image .corner-tr { top: 12px; }
+      .hero-image .corner-bl, .hero-image .corner-br { bottom: 12px; }
+      .hero-image .corner-tl, .hero-image .corner-bl { left: 12px; }
+      .hero-image .corner-tr, .hero-image .corner-br { right: 12px; }
+      .hero-project-button { right: 22px; bottom: 22px; }
+      .hero-project-button > span:first-child { display: none; }
+      .hero-project-button .round-arrow { width: 36px; height: 36px; }
+      .hero-caption { padding-block: 14px; gap: 12px; font-size: 7px; letter-spacing: .02em; }
+      .hero-caption span:first-child { max-width: 28ch; }
+      .hero-caption span:last-child { text-align: right; max-width: 20ch; }
+      .practice { grid-template-columns: 1fr; gap: 34px; padding-block: 72px 75px; }
+      .section-side { flex-direction: row; align-items: center; }
+      .practice-mark { display: none; }
+      .section-title { font-size: clamp(36px, 8.7vw, 56px); letter-spacing: -.05em; line-height: 1.12; }
+      .eyebrow { font-size: 9px; gap: 12px; }
+      .practice h2 { max-width: 18ch; }
+      .practice-copy { grid-template-columns: 1fr; gap: 17px; margin-top: 25px; }
+      .practice-copy p { font-size: 13px; max-width: 48ch; }
+      .practice-footer { margin-top: 23px; }
+      .practice-footer .mono { font-size: 7px; max-width: 14ch; text-align: right; }
+      .text-link { font-size: 11px; gap: 24px; }
+      .work { padding-bottom: 72px; }
+      .section-topline { padding-top: 15px; }
+      .section-topline > .mono { font-size: 7px; }
+      .work-heading { padding-block: 27px 25px; gap: 17px; }
+      .work-heading h2 { font-size: clamp(35px, 8.7vw, 56px); max-width: 13ch; }
+      .work-filters { gap: 23px; padding: 0; }
+      .filter-button { font-size: 10px; }
+      .project-grid { display: grid; grid-template-columns: 1fr; gap: 35px; }
+      .project-grid .project-card:nth-child(n), .project-grid.is-filtered .project-card { grid-column: 1; margin-top: 0; }
+      .project-grid .project-card:nth-child(n) .project-image { aspect-ratio: 1.12; }
+      .project-grid .project-card:nth-child(2) .project-image { aspect-ratio: 1; }
+      .project-image .project-tag { top: 14px; left: 14px; font-size: 8px; }
+      .project-name { font-size: 24px; }
+      .project-info { font-size: 8px; }
+      .project-meta { padding-top: 14px; }
+      .project-view { opacity: 1; transform: none; width: 35px; height: 35px; bottom: 13px; right: 13px; }
+      .project-view .icon { width: 16px; height: 16px; }
+      .work-bottom { margin-top: 26px; gap: 20px; font-size: 7px; }
+      .work-bottom > span:last-child { text-align: right; }
+      .line-to-life { padding-block: 35px 27px; }
+      .line-to-life .section-topline > .mono { display: none; }
+      .drawing-heading { flex-direction: column; align-items: flex-start; gap: 23px; margin-block: 28px 28px; }
+      .drawing-heading h2 { max-width: 13ch; }
+      .drawing-heading p { font-size: 12px; max-width: 39ch; }
+      .drawing-stage { aspect-ratio: .97; }
+      .floor-plan { position: absolute; width: 175%; max-width: none; height: 100%; left: -37.5%; }
+      .drawing-photograph img { object-position: 45% 50%; }
+      .drawing-label { top: 15px; font-size: 7px; }
+      .drawing-label.photo-label { left: 14px; }
+      .drawing-label.plan-label { right: 14px; }
+      .drawing-handle { width: 44px; height: 44px; }
+      .drawing-handle .icon { width: 22px; }
+      .drawing-bottom { padding-top: 18px; gap: 13px; }
+      .drawing-caption { font-size: 7px; }
+      .drawing-switch { gap: 19px; }
+      .drawing-switch button { font-size: 9px; }
+      .drawing-instruction { font-size: 9px; margin-top: 5px; }
+      .materials { grid-template-columns: 1fr; gap: 30px; padding-block: 73px; }
+      .material-copy { grid-row: 1; padding: 0; }
+      .material-copy h2 { margin-block: 28px 20px; max-width: 17ch; }
+      .material-intro { font-size: 13px; }
+      .material-list { margin-top: 27px; }
+      .material-note summary { padding-block: 14px; }
+      .material-name { font-size: 18px; }
+      .material-note p { font-size: 12px; padding-right: 12px; }
+      .material-photo { min-height: 0; aspect-ratio: 1.06; }
+      .material-caption { font-size: 7px; gap: 10px; }
+      .material-caption span:first-child { max-width: 28ch; }
+      .studio { padding-bottom: 74px; }
+      .studio-content { grid-template-columns: 1fr; gap: 32px; padding-top: 29px; }
+      .studio-copy { padding-top: 0; }
+      .studio-copy h2 { max-width: 16ch; margin-bottom: 23px; }
+      .studio-copy > p { font-size: 13px; }
+      .partners { margin-top: 28px; gap: 15px; }
+      .partner-name { font-size: 13px; }
+      .partner-role { font-size: 7px; }
+      .studio-copy .text-link { margin-top: 20px; }
+      .studio-image { aspect-ratio: 1.04; }
+      .studio-caption { font-size: 7px; }
+      .notes { padding-bottom: 73px; }
+      .notes-header { align-items: flex-start; flex-direction: column; margin-block: 27px; gap: 17px; }
+      .notes-header h2 { max-width: 13ch; }
+      .notes-header p { max-width: 35ch; font-size: 12px; }
+      .note-row { position: relative; grid-template-columns: 80px 1fr 30px; column-gap: 18px; row-gap: 7px; padding: 20px 0; }
+      .note-thumb { grid-column: 1; grid-row: 1 / 3; height: 88px; }
+      .note-date { grid-column: 2; grid-row: 1; font-size: 7px; align-self: end; }
+      .note-date br { display: none; }
+      .note-date span::before { content: " / "; }
+      .note-title { grid-column: 2; grid-row: 2; font-size: 20px; align-self: start; letter-spacing: -.035em; }
+      .note-row .round-arrow { grid-column: 3; grid-row: 1 / 3; width: 30px; height: 30px; }
+      .note-row .round-arrow .icon { width: 14px; height: 14px; }
+      .contact { padding-top: 31px; }
+      .contact .section-topline > .mono { display: none; }
+      .contact-main { grid-template-columns: 1fr; gap: 34px; padding-block: 35px 37px; }
+      .contact h2 { font-size: clamp(77px, 20vw, 125px); line-height: .97; }
+      .contact-copy > p { font-size: 13px; max-width: 33ch; }
+      .email-row { margin-top: 20px; }
+      .email-link { font-size: 28px; }
+      .email-hint { font-size: 8px; }
+      .contact-footer { padding-block: 20px; gap: 15px; }
+      .footer-brand { gap: 17px; align-items: flex-start; }
+      .footer-brand .wordmark { font-size: 27px; }
+      .footer-brand .mono { font-size: 7px; max-width: 15ch; }
+      .back-to-top { gap: 10px; font-size: 9px; white-space: nowrap; }
+      .folio { width: calc(100% - 20px); max-height: calc(100dvh - 20px); }
+      .folio-bar { padding: 9px 19px; }
+      .folio-bar .mono { font-size: 8px; }
+      .folio-content { padding: 26px 21px 0; }
+      .folio-lead { font-size: 14px; margin-block: 20px 25px; }
+      .folio-image { aspect-ratio: 1.05; }
+      .folio-facts { grid-template-columns: 1fr 1fr; gap: 20px; }
+      .folio-facts dd { font-size: 11px; }
+      .folio-text { margin-block: 25px 30px; }
+      .folio-text h3 { font-size: 25px; }
+      .folio-text p { font-size: 13px; }
+      .folio-text blockquote { font-size: 29px; }
+      .folio-navigation { margin-inline: 21px; }
+      .folio-image-pair { grid-template-columns: 1fr; gap: 16px; }
+    }
+    @media (max-width: 380px) {
+      :root { --gutter: 20px; }
+      .header-descriptor { font-size: 7px; }
+      .hero h1 { font-size: 46px; }
+      .hero-aside { gap: 15px; }
+      .hero-aside p { font-size: 10px; max-width: 21ch; }
+      .hero-aside .text-link { font-size: 9px; gap: 10px; }
+      .note-row { grid-template-columns: 68px 1fr 28px; gap: 14px; }
+      .note-title { font-size: 18px; }
+      .email-link { font-size: 25px; }
+      .footer-brand { gap: 12px; }
+    }
+    @media (hover: none) {
+      .project-view { opacity: 1; transform: none; }
+      .project-card:hover .project-image img, .hero-image:hover > img, .note-row:hover .note-thumb img { transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal-ready [data-reveal] { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="reading-progress" aria-hidden="true"></div>
+  <!-- Original inline icons. All decorative uses are hidden from assistive technology. -->
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></symbol>
+      <symbol id="icon-down" viewBox="0 0 24 24"><path d="M12 4v16m-6-6 6 6 6-6"/></symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+      <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="1"/><path d="M15 8V3H3v13h5"/></symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="icon-drag" viewBox="0 0 24 24"><path d="m7 8-4 4 4 4m10-8 4 4-4 4M3 12h6m6 0h6"/></symbol>
+    </defs>
+  </svg>
+
+  <!-- =====================================================================
+       CONTENT & LINKS / NAVIGATION
+       The logo and every navigation destination are editable here.
+       ===================================================================== -->
+  <header class="site-header">
+    <div class="header-inner page-width">
+      <a class="wordmark" href="#top" aria-label="Plinth home">plinth<span class="wordmark-dot" aria-hidden="true"></span></a>
+      <p class="header-descriptor">Architecture &amp; interiors<br>Made for everyday life.</p>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="menu-label">Menu</span>
+        <span class="menu-lines" aria-hidden="true"><span></span><span></span></span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="#work">Our work</a>
+        <a href="#studio">The studio</a>
+        <a href="#notes">Field notes</a>
+        <a class="nav-contact" href="#contact">Start a conversation <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- CONTENT / 00 — OPENING -->
+    <section class="hero page-width" aria-labelledby="hero-title">
+      <div class="hero-intro">
+        <div data-reveal>
+          <p class="hero-eyebrow eyebrow"><span class="small-cross" aria-hidden="true"></span> An independent architecture &amp; interiors studio</p>
+          <h1 id="hero-title"><span class="line">Quiet buildings.</span><span class="line">Full of <em class="serif">life.</em></span></h1>
+        </div>
+        <div class="hero-aside" data-reveal style="--delay: 110ms">
+          <p>Thoughtful spaces. Honest materials. A little more room for the everyday.</p>
+          <a class="text-link down" href="#work">Explore our work <svg class="icon" aria-hidden="true"><use href="#icon-down"/></svg></a>
+        </div>
+      </div>
+      <figure data-reveal style="--delay: 180ms">
+        <div class="hero-image">
+          <img src="assets/courtyard.webp" alt="Afternoon light falls across oak cladding, pale lime plaster and a limestone step at Marden Courtyard." width="1024" height="1024" fetchpriority="high">
+          <span class="corner corner-tl" aria-hidden="true"></span><span class="corner corner-tr" aria-hidden="true"></span>
+          <span class="corner corner-bl" aria-hidden="true"></span><span class="corner corner-br" aria-hidden="true"></span>
+          <div class="hero-image-label"><span class="mono">P—01 / A house around a garden</span><span>Marden Courtyard</span></div>
+          <button class="hero-project-button" type="button" data-project="courtyard" aria-label="Open the Marden Courtyard project">
+            <span>Discover the project</span><span class="round-arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></span>
+          </button>
+        </div>
+        <figcaption class="hero-caption mono"><span>Timber, lime plaster &amp; the afternoon sun.</span><span>Aven Mere · Completed 2025</span></figcaption>
+      </figure>
+    </section>
+
+    <!-- CONTENT / 01 — THE PRACTICE -->
+    <section class="practice page-width" aria-labelledby="practice-title">
+      <div class="section-side" data-reveal>
+        <p class="eyebrow"><span class="index">01 /</span> The way we see it</p>
+        <svg class="practice-mark" viewBox="0 0 130 110" fill="none" aria-hidden="true">
+          <path d="M14 89h102M27 89V38l38-24 38 24v51M35 89V43l30-19 30 19v46M55 89V62h20v27M20 36h90M18 100h93M27 96v8m76-8v8" stroke="currentColor" stroke-width=".85"/>
+          <path d="M9 8v6m-3-3h6M115 92v6m-3-3h6M65 6v31" stroke="currentColor" stroke-width=".7"/>
+          <text x="45" y="108" fill="currentColor" stroke="none" font-family="monospace" font-size="5" letter-spacing="1">A PLACE TO BE</text>
+        </svg>
+      </div>
+      <div>
+        <h2 class="section-title" id="practice-title" data-reveal>A good house begins<br>with a way of <em class="serif">living.</em></h2>
+        <div class="practice-copy" data-reveal>
+          <p>Where you leave your boots. How the light reaches the table. The window you open first in spring. These are the things we start with.</p>
+          <p>We are Plinth, a two-partner architecture and interiors studio. We make thoughtful places from simple materials, shaped around the lives that unfold within them.</p>
+        </div>
+        <div class="practice-footer" data-reveal>
+          <a class="text-link" href="#studio">A little about us <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+          <span class="mono">From the first line<br>to the last detail.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT / 02 — SELECTED PROJECTS
+         Each data-project value points to a matching HTML template below.
+         Categories: architecture, interiors. Keep the visible filter counts in sync.
+         ===================================================================== -->
+    <section class="work page-width" id="work" aria-labelledby="work-title">
+      <div class="section-topline" data-reveal>
+        <p class="eyebrow"><span class="index">02 /</span> Selected work</p>
+        <span class="mono">A few places we've made · 2022—2025</span>
+      </div>
+      <div class="work-heading" data-reveal>
+        <h2 class="section-title" id="work-title">Made for the <em class="serif">everyday.</em></h2>
+        <div class="work-filters" role="group" aria-label="Filter projects">
+          <button class="filter-button" type="button" data-filter="all" aria-pressed="true">All projects<sup>04</sup></button>
+          <button class="filter-button" type="button" data-filter="architecture" aria-pressed="false">Architecture<sup>03</sup></button>
+          <button class="filter-button" type="button" data-filter="interiors" aria-pressed="false">Interiors<sup>01</sup></button>
+        </div>
+      </div>
+      <div class="project-grid" id="project-grid">
+        <button class="project-card" type="button" data-project="courtyard" data-category="architecture" data-reveal aria-label="View Marden Courtyard, a new house in Aven Mere">
+          <span class="project-image">
+            <img src="assets/courtyard.webp" alt="The oak and lime-plaster facade opens onto a quiet gravel garden." loading="lazy" decoding="async" width="1024" height="1024">
+            <span class="project-tag">P—01</span>
+            <span class="project-view"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></span>
+          </span>
+          <span class="project-meta">
+            <span class="project-name">Marden Courtyard</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+            <span class="project-info"><span>Aven Mere · New house</span><span>2025</span></span>
+          </span>
+        </button>
+        <button class="project-card" type="button" data-project="still-room" data-category="interiors" data-reveal style="--delay: 100ms" aria-label="View The Still Room, an interior in Wrencombe">
+          <span class="project-image">
+            <img src="assets/still-room.webp" alt="A deep oak window seat and one dark timber chair in a sunlit lime-plaster room." loading="lazy" decoding="async" width="1000" height="1000">
+            <span class="project-tag">P—02</span>
+            <span class="project-view"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></span>
+          </span>
+          <span class="project-meta">
+            <span class="project-name">The Still Room</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+            <span class="project-info"><span>Wrencombe · Interior</span><span>2024</span></span>
+          </span>
+        </button>
+        <button class="project-card" type="button" data-project="fold-house" data-category="architecture" data-reveal aria-label="View Fold House, a stone house in Saltmead">
+          <span class="project-image">
+            <img src="assets/fold-house.webp" alt="A low limestone house sheltered by an angled garden wall and windswept grasses." loading="lazy" decoding="async" width="1000" height="1000">
+            <span class="project-tag">P—03</span>
+            <span class="project-view"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></span>
+          </span>
+          <span class="project-meta">
+            <span class="project-name">Fold House</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+            <span class="project-info"><span>Saltmead · New house</span><span>2023</span></span>
+          </span>
+        </button>
+        <button class="project-card" type="button" data-project="alder-house" data-category="architecture" data-reveal style="--delay: 100ms" aria-label="View Alder House, a woodland retreat in Bellweather Wood">
+          <span class="project-image">
+            <img src="assets/alder-house.webp" alt="A finely boarded oak retreat sits lightly among trees and ferns." loading="lazy" decoding="async" width="1000" height="1000">
+            <span class="project-tag">P—04</span>
+            <span class="project-view"><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></span>
+          </span>
+          <span class="project-meta">
+            <span class="project-name">Alder House</span><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+            <span class="project-info"><span>Bellweather Wood · Retreat</span><span>2022</span></span>
+          </span>
+        </button>
+      </div>
+      <div class="work-bottom mono"><span id="project-count" role="status">04 projects / Each with its own story.</span><span><span class="small-cross" aria-hidden="true"></span>Different places. A shared sensibility.</span></div>
+    </section>
+
+    <!-- CONTENT / 03 — FROM LINE TO LIFE
+         Signature interaction: native keyboard- and touch-accessible range.
+         The original SVG is a conceptual plan, not a construction document.
+         ===================================================================== -->
+    <section class="line-to-life" id="approach" aria-labelledby="drawing-title">
+      <div class="page-width">
+        <div class="section-topline" data-reveal>
+          <p class="eyebrow"><span class="index">03 /</span> From line to life</p>
+          <span class="mono">Drawing no. P01—GA—001 / A study in living</span>
+        </div>
+        <div class="drawing-heading">
+          <h2 class="section-title" id="drawing-title" data-reveal>Before a picture,<br>there is a <em class="serif">plan.</em></h2>
+          <p data-reveal>We think in plans and sections first. In the path of the sun, the turn of a corner, the relationship between rooms. The picture comes later.</p>
+        </div>
+        <div class="drawing-stage" data-reveal>
+          <svg class="floor-plan" viewBox="0 0 1280 600" role="img" aria-labelledby="plan-title plan-description">
+            <title id="plan-title">Marden Courtyard — conceptual ground-floor plan</title>
+            <desc id="plan-description">A U-shaped plan with a living and kitchen wing to the north, two quiet rooms to the west, and a studio to the east, surrounding a planted courtyard.</desc>
+            <defs>
+              <pattern id="plan-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0v24" fill="none" stroke="#d7ddbc" stroke-opacity=".045" stroke-width=".7"/></pattern>
+              <pattern id="plan-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v5" stroke="#d7ddbc" stroke-opacity=".3" stroke-width="1"/></pattern>
+              <pattern id="plan-paving" width="43" height="35" patternUnits="userSpaceOnUse"><path d="M43 0H0v35" fill="none" stroke="#d7ddbc" stroke-opacity=".18" stroke-width=".8"/></pattern>
+            </defs>
+            <rect width="1280" height="600" fill="url(#plan-grid)"/>
+            <g stroke="currentColor" fill="none" stroke-width=".7" opacity=".48">
+              <path d="M275 82V43m730 39V43M275 57h730M271 52l8 10m722-10 8 10M275 98H227m48 395H227M241 98v395m-5-399 10 8m-10 387 10 8"/>
+              <path d="M285 524h710M285 512v24m710-24v24M285 524h190m-4-4 8 8m185-16v24M810 512v24"/>
+              <path d="M170 149H1108M170 347H1108M170 485H1108" stroke-dasharray="5 8" opacity=".3"/>
+            </g>
+            <g>
+              <text x="608" y="47">18 240</text>
+              <text x="223" y="311" transform="rotate(-90 223 311)">9 860</text>
+              <text x="358" y="545">4 800</text><text x="578" y="545">4 720</text><text x="727" y="545">3 640</text><text x="888" y="545">4 680</text>
+            </g>
+            <path d="M285 98H995V493H813V251H479V493H285Z" fill="url(#plan-hatch)" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M297 110H983V481H825V239H467V481H297Z" fill="#394535" stroke="currentColor" stroke-width=".9"/>
+            <g fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M479 110v82m0 39v8M817 110v74m0 37v18M297 328h114m37 0h19M297 335h114m37 0h19"/>
+              <path d="M825 342h109m36 0h13M825 349h109m36 0h13"/>
+              <path d="M394 110v87h73M394 204v35"/>
+              <path d="M297 398h77v83M374 398v27m0 31v25"/>
+              <path d="M285 138v95m12-95v95M285 153h12m-12 66h12M285 358v28m12-28v28"/>
+              <path d="M550 239v12m0-6h211m0-6v12m-107-12v12M995 129v101m-12-101v101m0-85h12m-12 68h12M995 385v68m-12-68v68"/>
+              <path d="M328 98v12m0-6h38m0-6v12M530 98v12m0-6h103m0-6v12M696 98v12m0-6h86m0-6v12"/>
+              <path d="M479 277v155m-12-155v155m0-155h12m-12 155h12M813 277v155m12-155v155m-12-155h12m-12 155h12"/>
+            </g>
+            <g fill="none" stroke="currentColor" stroke-width=".7" opacity=".85">
+              <path d="M479 192h-39a39 39 0 0 0 39 39M817 184h37a37 37 0 0 1-37 37"/>
+              <path d="M411 328v-37a37 37 0 0 1 37 37M934 342v-36a36 36 0 0 1 36 36M374 425h31a31 31 0 0 1-31 31"/>
+              <rect x="309" y="121" width="69" height="72"/><path d="M309 136h69m-36-15v15"/>
+              <rect x="307" y="118" width="73" height="79"/><rect x="308" y="203" width="21" height="15"/><rect x="359" y="203" width="21" height="15"/>
+              <rect x="309" y="348" width="61" height="38"/><path d="M322 348v38"/><rect x="313" y="353" width="8" height="12"/><rect x="313" y="369" width="8" height="12"/>
+              <rect x="309" y="411" width="30" height="56" rx="10"/><path d="M313 420h22m-22 38h22"/><rect x="347" y="411" width="17" height="17" rx="3"/>
+              <path d="M491 123h145v25H491Zm145 0v67h-25v-42"/>
+              <rect x="503" y="129" width="28" height="12" rx="2"/><circle cx="574" cy="134" r="4"/><circle cx="588" cy="134" r="4"/>
+              <rect x="535" y="178" width="81" height="30"/><path d="M550 208v12m20-12v12m20-12v12"/>
+              <rect x="692" y="142" width="91" height="48" rx="2"/><path d="M712 136v-10h14v10m24 0v-10h14v10m-52 70v10h14v-10m24 0v10h14v-10"/>
+              <rect x="845" y="121" width="111" height="42" rx="2"/><path d="M852 121v32h96v-32m-63 0v31m31-31v31"/>
+              <rect x="867" y="187" width="67" height="30" rx="2"/><rect x="954" y="189" width="19" height="27" rx="2"/>
+              <rect x="842" y="368" width="123" height="29"/><path d="M854 397v17h25v-17m48 0v17h25v-17"/><rect x="852" y="374" width="31" height="15"/><rect x="925" y="374" width="31" height="15"/>
+              <rect x="845" y="452" width="113" height="17"/>
+            </g>
+            <rect x="479" y="251" width="334" height="242" fill="url(#plan-paving)"/>
+            <g fill="none" stroke="currentColor" stroke-width=".7" opacity=".5">
+              <path d="M492 493v30m42-30v30m42-30v30m42-30v30m42-30v30m42-30v30m42-30v30m42-30v30"/>
+              <path d="M610 339q-23-33 3-55 21-26 47-7 38-14 48 19 30 12 15 42 14 26-13 39-4 34-37 29-23 24-43-3-38 7-37-29-24-17 17-35Z"/>
+              <path d="M622 335q-22-18-5-35 18-19 36-10 28-13 42 12 29 12 11 37 13 20-9 29 1 30-29 24-22 12-36-9-26 1-22-22-14-14 12-26Z"/>
+              <circle cx="657" cy="343" r="6"/><path d="M657 343l-22-31m22 31 31-17m-31 17 10 29m-10-29-29 13"/>
+              <path d="M183 279c-13-24 10-46 34-35 24-7 39 12 27 33 15 18-3 39-23 34-28 18-49-5-38-32Z"/>
+              <path d="M1057 417c-18-32 11-59 40-43 26-12 51 12 35 40 14 23-9 48-33 38-31 23-58-4-42-35Z"/>
+            </g>
+            <g>
+              <text x="324" y="262">01 / SLEEP</text><text x="326" y="312" font-size="8">A QUIET WING</text>
+              <text x="533" y="166">KITCHEN</text><text x="695" y="222">GATHER</text>
+              <text x="860" y="280">02 / LIVE</text><text x="851" y="437">03 / MAKE</text>
+              <text x="600" y="447">THE COURTYARD</text><text x="610" y="465" opacity=".6">OPEN TO THE SKY</text>
+            </g>
+            <g stroke="currentColor" stroke-width=".9" fill="none">
+              <path d="M1128 153v-43m-8 15 8-15 8 15"/><circle cx="1128" cy="153" r="3"/>
+              <path d="M285 571h120m-120-4v8m60-8v8m60-8v8"/>
+            </g>
+            <text x="1124" y="99">N</text><text x="283" y="588">0</text><text x="338" y="588">2.5</text><text x="398" y="588">5 M</text>
+            <text x="1050" y="570" opacity=".6">CONCEPT PLAN</text>
+          </svg>
+          <div class="drawing-photograph"><img src="assets/courtyard.webp" alt="" loading="lazy" decoding="async" width="1024" height="1024"></div>
+          <span class="drawing-label photo-label" aria-hidden="true">THE PLACE / 2025</span>
+          <span class="drawing-label plan-label" aria-hidden="true">THE PLAN / 2023</span>
+          <div class="drawing-divider" aria-hidden="true"><span class="drawing-handle"><svg class="icon"><use href="#icon-drag"/></svg></span></div>
+          <input class="drawing-range" id="drawing-range" type="range" min="0" max="100" value="47" step="1" aria-label="Reveal the photograph over the conceptual floor plan" aria-valuetext="47 percent photograph, 53 percent plan" aria-describedby="drawing-help">
+        </div>
+        <div class="drawing-bottom">
+          <p class="drawing-caption">Marden Courtyard<br><span>Ground floor / Concept study</span></p>
+          <p class="drawing-instruction" id="drawing-help"><svg class="icon" aria-hidden="true"><use href="#icon-drag"/></svg> Drag to move from plan to place</p>
+          <div class="drawing-switch" role="group" aria-label="Drawing view">
+            <button type="button" data-drawing-view="0" aria-pressed="false">The plan</button>
+            <button type="button" data-drawing-view="100" aria-pressed="false">The place</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT / 04 — MATERIALS
+         Each open detail selects its photograph. Edit image and alt attributes together.
+         ===================================================================== -->
+    <section class="materials page-width" aria-labelledby="material-title">
+      <figure class="material-figure" data-reveal>
+        <div class="material-photo"><img id="material-image" src="assets/window-detail.webp" alt="The end grain of a solid oak window sill meets softly textured lime plaster." loading="lazy" decoding="async" width="1000" height="1000"></div>
+        <figcaption class="material-caption mono"><span id="material-caption">Solid oak / A junction worth getting right.</span><span>Study no. 01</span></figcaption>
+      </figure>
+      <div class="material-copy" data-reveal>
+        <p class="eyebrow"><span class="index">04 /</span> In the detail</p>
+        <h2 class="section-title" id="material-title">Nothing extra.<br>Nothing <em class="serif">overlooked.</em></h2>
+        <p class="material-intro">A small palette, given room to speak. We care as much about the meeting of two materials as we do about the shape of a whole house.</p>
+        <div class="material-list">
+          <details class="material-note" open data-image="assets/window-detail.webp" data-alt="The end grain of a solid oak window sill meets softly textured lime plaster." data-caption="Solid oak / A junction worth getting right." data-study="01">
+            <summary><span class="material-number">01</span><span class="material-name">Timber</span><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></summary>
+            <p>Warm to the touch. Honest about its age. We use timber where your hands meet the building, and let its grain do the talking.</p>
+          </details>
+          <details class="material-note" data-image="assets/material-study.webp" data-alt="Lime plaster, limestone, cut oak and linen samples cast long shadows on drafting paper." data-caption="Lime plaster / A surface with a little life." data-study="02">
+            <summary><span class="material-number">02</span><span class="material-name">Lime plaster</span><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></summary>
+            <p>A wall should be more than a flat colour. Hand-worked lime holds the trace of its making, softening the light as the day moves through a room.</p>
+          </details>
+          <details class="material-note" data-image="assets/fold-house.webp" data-alt="Pale hand-dressed limestone walls shelter a small house and a courtyard of grasses." data-caption="Limestone / Weight, texture and a sense of place." data-study="03">
+            <summary><span class="material-number">03</span><span class="material-name">Stone</span><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></summary>
+            <p>A cool floor in summer. A step worn smooth over time. We choose stone for the way it settles a building into its landscape, not just for its finish.</p>
+          </details>
+          <details class="material-note" data-image="assets/still-room.webp" data-alt="Afternoon sunlight from an oak-framed window draws a sharp diagonal across pale plaster." data-caption="Daylight / The one material that never sits still." data-study="04">
+            <summary><span class="material-number">04</span><span class="material-name">Daylight</span><svg class="icon" aria-hidden="true"><use href="#icon-plus"/></svg></summary>
+            <p>Our most changeable material. We draw a window for the view, but also for the patch of sun it places on the floor at four in the afternoon.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT / 05 — THE TWO PARTNERS -->
+    <section class="studio page-width" id="studio" aria-labelledby="studio-title">
+      <div class="section-topline" data-reveal>
+        <p class="eyebrow"><span class="index">05 /</span> A small, hands-on studio</p>
+        <span class="mono">Two partners. One drawing table.</span>
+      </div>
+      <div class="studio-content">
+        <div class="studio-copy" data-reveal>
+          <h2 class="section-title" id="studio-title">A conversation,<br>from the <em class="serif">beginning.</em></h2>
+          <p>Plinth is Mara Ellery and Elias Rowan. We set up our studio in Aven Mere with a simple intention: to stay close to the work, and to the people we make it for.</p>
+          <p style="margin-top: 17px">One of us will be at the table from the first conversation to the final site visit. No handovers. Just a shared curiosity, a roll of tracing paper, and the time to get things right.</p>
+          <div class="partners">
+            <div><p class="partner-name">Mara Ellery</p><p class="partner-role mono">Architect &amp; co-founder</p></div>
+            <div><p class="partner-name">Elias Rowan</p><p class="partner-role mono">Architect &amp; co-founder</p></div>
+          </div>
+          <a class="text-link" href="#contact">Come to the table <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+        </div>
+        <figure data-reveal style="--delay: 110ms">
+          <div class="studio-image"><img src="assets/studio.webp" alt="Mara and Elias study a floor plan and a timber model at their sunlit oak drawing table." width="1000" height="1000" loading="lazy" decoding="async"></div>
+          <figcaption class="studio-caption mono"><span>Mara &amp; Elias / At the drawing table</span><span>Aven Mere, 2025</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CONTENT / 06 — FIELD NOTES -->
+    <section class="notes page-width" id="notes" aria-labelledby="notes-title">
+      <div class="section-topline" data-reveal>
+        <p class="eyebrow"><span class="index">06 /</span> Field notes</p><span class="mono">Observations from the practice</span>
+      </div>
+      <div class="notes-header" data-reveal>
+        <h2 class="section-title" id="notes-title">Things we <em class="serif">notice.</em></h2>
+        <p>Small observations. Working thoughts.<br>A few things worth looking at twice.</p>
+      </div>
+      <div class="note-list">
+        <button class="note-row" type="button" data-note="timber" data-reveal aria-label="Read The case for leaving timber alone">
+          <span class="note-thumb"><img src="assets/alder-house.webp" alt="Silvered timber boards in a woodland setting." width="1000" height="1000" loading="lazy" decoding="async"></span>
+          <span class="note-date">12.09.2025<br><span>On materials</span></span>
+          <span class="note-title">The case for leaving timber alone.</span>
+          <span class="round-arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></span>
+        </button>
+        <button class="note-row" type="button" data-note="window" data-reveal aria-label="Read The space inside a window">
+          <span class="note-thumb"><img src="assets/window-detail.webp" alt="The deep oak sill of a carefully detailed window." width="1000" height="1000" loading="lazy" decoding="async"></span>
+          <span class="note-date">26.06.2025<br><span>On everyday life</span></span>
+          <span class="note-title">The space inside a window.</span>
+          <span class="round-arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></span>
+        </button>
+        <button class="note-row" type="button" data-note="first-line" data-reveal aria-label="Read The first line is a question">
+          <span class="note-thumb"><img src="assets/material-study.webp" alt="A graphite pencil and a small arrangement of material samples." width="1000" height="1000" loading="lazy" decoding="async"></span>
+          <span class="note-date">08.03.2025<br><span>On making</span></span>
+          <span class="note-title">The first line is a question.</span>
+          <span class="round-arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- CONTENT & LINKS / 07 — CONTACT
+         Replace the email in this link and the manual-copy input below.
+         JavaScript reads this link as the single source of contact information.
+         No form submissions, cookies, browser storage or backend are used.
+         ===================================================================== -->
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="page-width">
+        <div class="section-topline" data-reveal>
+          <p class="eyebrow"><span class="index">07 /</span> Every place starts somewhere</p><span class="mono">Architecture · Interiors · A good conversation</span>
+        </div>
+        <div class="contact-main">
+          <h2 id="contact-title" data-reveal>Let's make<br><em class="serif">room.</em></h2>
+          <div class="contact-copy" data-reveal>
+            <p>A house, a room, an idea not quite formed.<br>We'd like to hear what you're thinking.</p>
+            <div class="email-row">
+              <a class="email-link" id="contact-email" href="mailto:hello@example.com">hello@example.com</a>
+              <button class="copy-email" type="button" aria-label="Copy email address" title="Copy email address"><svg class="icon" aria-hidden="true"><use href="#icon-copy"/></svg></button>
+            </div>
+            <div class="email-hint mono"><span>Write to us. We'll write back.</span><span class="copy-status" role="status" aria-live="polite"></span></div>
+            <div class="manual-copy" hidden>
+              <label for="email-copy-field">Copy the address below to your email app.</label>
+              <input id="email-copy-field" value="hello@example.com" readonly autocomplete="off" spellcheck="false">
+            </div>
+          </div>
+        </div>
+        <footer class="contact-footer">
+          <div class="footer-brand"><a class="wordmark" href="#top" aria-label="Plinth, back to top">plinth<span class="wordmark-dot" aria-hidden="true"></span></a><p class="mono">© <span data-year>2025</span> Plinth Studio<br>Built on the small things.</p></div>
+          <p class="footer-note mono">Independent in spirit. Considered in every detail.</p>
+          <a class="back-to-top" href="#top">Back to the top <svg class="icon" aria-hidden="true"><use href="#icon-down"/></svg></a>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared accessible reader. Native dialog supplies focus trapping and Escape. -->
+  <dialog class="folio" id="folio" aria-labelledby="folio-title">
+    <div class="folio-bar"><span class="mono" id="folio-label">Plinth / Project folio</span><button class="folio-close" type="button" autofocus>Close <svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg></button></div>
+    <div class="folio-content" id="folio-content"></div>
+    <div class="folio-navigation"><span class="mono" id="folio-position"></span><button class="text-link" id="folio-next" type="button">Next project <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button></div>
+  </dialog>
+
+  <!-- =====================================================================
+       CONTENT / PROJECT FOLIOS
+       These are plain HTML, cloned into the reader when a project is opened.
+       Add a new template and matching data-project button to extend the index.
+       The template id must be "project-" followed by the data-project value.
+       ===================================================================== -->
+  <template id="project-courtyard">
+    <article>
+      <p class="eyebrow">P—01 / Architecture &amp; interiors</p>
+      <h2 id="folio-title">Marden Courtyard</h2>
+      <p class="folio-lead">A house that turns towards a small garden, and away from everything that can wait.</p>
+      <figure><div class="folio-image"><img src="assets/courtyard.webp" alt="Marden Courtyard's long timber and lime-plaster facade catches late-afternoon sunlight." width="1024" height="1024"></div><figcaption class="folio-caption mono">The garden elevation / A place for the afternoon.</figcaption></figure>
+      <dl class="folio-facts"><div><dt>Place</dt><dd>Aven Mere</dd></div><div><dt>Completed</dt><dd>2025</dd></div><div><dt>Floor area</dt><dd>184 m²</dd></div><div><dt>Material palette</dt><dd>Oak, lime, limestone</dd></div></dl>
+      <div class="folio-text">
+        <h3>A little world of its own.</h3>
+        <p>The brief began with a kitchen table. Our clients wanted a place where morning coffee, school projects and long dinners could all happen without rearranging the house. We drew the rooms around that ordinary, important centre.</p>
+        <p>A low building follows the edges of a planted courtyard. The living rooms face into it; the quieter rooms look out towards the meadow. Deep oak-framed openings make the change from inside to outside feel unhurried.</p>
+        <blockquote>“The garden is not something you look at. It is another room.”</blockquote>
+        <p>Lime plaster brings the shifting light into focus. Limestone continues from the kitchen to the terrace. At each window, a generous solid-oak sill gives the wall somewhere to end, and a hand somewhere to rest.</p>
+      </div>
+      <div class="folio-image-pair"><img src="assets/window-detail.webp" alt="A substantial oak sill meets a lime-plaster reveal." width="1000" height="1000" loading="lazy"><img src="assets/material-study.webp" alt="The project's palette explored through a study of timber, plaster and stone samples." width="1000" height="1000" loading="lazy"></div>
+      <div class="folio-text"><a class="text-link" href="#contact" data-close-folio>Thinking about a place of your own? <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a></div>
+    </article>
+  </template>
+  <template id="project-still-room">
+    <article>
+      <p class="eyebrow">P—02 / Interiors &amp; joinery</p>
+      <h2 id="folio-title">The Still Room</h2>
+      <p class="folio-lead">One room, opened to the light. An interior built around the pleasure of doing very little.</p>
+      <figure><div class="folio-image"><img src="assets/still-room.webp" alt="A quiet lime-plaster room with an oak window bench and a single timber chair." width="1000" height="1000"></div><figcaption class="folio-caption mono">Late afternoon / The window does the work.</figcaption></figure>
+      <dl class="folio-facts"><div><dt>Place</dt><dd>Wrencombe</dd></div><div><dt>Completed</dt><dd>2024</dd></div><div><dt>Floor area</dt><dd>38 m²</dd></div><div><dt>Material palette</dt><dd>Oak, lime, linen</dd></div></dl>
+      <div class="folio-text">
+        <h3>Room for a slower hour.</h3>
+        <p>This room had been a corridor in all but name: doors on three walls, furniture around the edges, nowhere quite right to sit. Our work was less about adding than about finding a centre.</p>
+        <p>We closed one doorway and deepened the garden-facing window into a seat. Storage disappears into its oak base. The opposite wall was finished in hand-worked lime, where the afternoon sun makes a different drawing every day.</p>
+        <blockquote>A view, a book, a place to put your cup. Enough.</blockquote>
+        <p>The room belongs to the house, but offers a small change of pace. Its quietness comes from a few useful things, carefully put together.</p>
+        <a class="text-link" href="#contact" data-close-folio>Let's talk about your interior <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+      </div>
+    </article>
+  </template>
+  <template id="project-fold-house">
+    <article>
+      <p class="eyebrow">P—03 / Architecture &amp; landscape</p>
+      <h2 id="folio-title">Fold House</h2>
+      <p class="folio-lead">A low stone house, a folded garden wall, and a sheltered place in an open landscape.</p>
+      <figure><div class="folio-image"><img src="assets/fold-house.webp" alt="A pale limestone house and an angled plaster garden wall in a landscape of coastal grasses." width="1000" height="1000"></div><figcaption class="folio-caption mono">The sheltered side / Stone against the wind.</figcaption></figure>
+      <dl class="folio-facts"><div><dt>Place</dt><dd>Saltmead</dd></div><div><dt>Completed</dt><dd>2023</dd></div><div><dt>Floor area</dt><dd>146 m²</dd></div><div><dt>Material palette</dt><dd>Limestone, oak, zinc</dd></div></dl>
+      <div class="folio-text">
+        <h3>Belonging to the ground.</h3>
+        <p>The site is open to long views and a persistent coastal wind. Rather than raise the house above its surroundings, we set it low and used a single folded wall to make a sheltered outdoor room.</p>
+        <p>The plan is simple: a shared living space under the pitch of the roof, with smaller rooms tucked behind. Thick stone walls make deep openings, each one turned towards a particular piece of the landscape.</p>
+        <p>Hand-dressed limestone, quiet oak frames and a thin zinc roof were chosen for the way they would weather together. The planting is loose, allowing the house to meet the ground without a hard line.</p>
+        <a class="text-link" href="#contact" data-close-folio>Tell us about your landscape <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+      </div>
+    </article>
+  </template>
+  <template id="project-alder-house">
+    <article>
+      <p class="eyebrow">P—04 / Architecture &amp; interiors</p>
+      <h2 id="folio-title">Alder House</h2>
+      <p class="folio-lead">A small timber retreat. Close to the trees, light on the ground, open to the changing seasons.</p>
+      <figure><div class="folio-image"><img src="assets/alder-house.webp" alt="An oak-clad retreat with fine sliding shutters sits above a floor of woodland ferns." width="1000" height="1000"></div><figcaption class="folio-caption mono">The woodland edge / An ordinary afternoon.</figcaption></figure>
+      <dl class="folio-facts"><div><dt>Place</dt><dd>Bellweather Wood</dd></div><div><dt>Completed</dt><dd>2022</dd></div><div><dt>Floor area</dt><dd>67 m²</dd></div><div><dt>Material palette</dt><dd>Oak, lime, softwood</dd></div></dl>
+      <div class="folio-text">
+        <h3>Enough house. More woodland.</h3>
+        <p>Alder House was drawn between the trees, rather than the other way around. A narrow footprint follows a natural clearing, raised just enough to leave the woodland floor largely undisturbed.</p>
+        <p>Inside, one long room moves from cooking to reading to sleeping, with a compact service core along its darker edge. Sliding timber shutters let the owners tune the light, close off a view, or open the house to the sound of rain.</p>
+        <blockquote>Sometimes the right thing to build is a little less.</blockquote>
+        <p>The oak boards are left to silver. Their changing surface records the seasons more honestly than any finish we could apply.</p>
+        <a class="text-link" href="#contact" data-close-folio>Make room for a different pace <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+      </div>
+    </article>
+  </template>
+
+  <!-- CONTENT / JOURNAL ENTRIES
+       Dates, bylines, copy and pictures live here, not inside the script.
+       ===================================================================== -->
+  <template id="note-timber">
+    <article>
+      <p class="eyebrow">Field note 01 / 12 September 2025 / Mara Ellery</p>
+      <h2 id="folio-title">The case for leaving timber alone.</h2>
+      <p class="folio-lead">On weathering, patience, and letting a building become part of its place.</p>
+      <div class="folio-image"><img src="assets/alder-house.webp" alt="The weathering oak facade of Alder House between woodland trees." width="1000" height="1000"></div>
+      <div class="folio-text">
+        <p>There is a moment, a few months after an untreated timber building is finished, when it stops looking new. The colour becomes uneven. Rain picks out the grain. The sheltered boards stay warm while the exposed ones begin to pale.</p>
+        <p>It can feel like something has gone wrong. We think it is the moment the building starts to belong.</p>
+        <h3>Design for the change.</h3>
+        <p>Leaving timber unfinished is not the same as leaving it unconsidered. The detail matters more, not less. Boards need to drain and dry. End grain needs protection. The bottom edge needs to be clear of the splash from the ground.</p>
+        <p>At Alder House, we tested the spacing, fixings and drip edges before we decided on the final elevation. The rhythm of the facade followed the way the material wanted to work.</p>
+        <blockquote>We are not trying to keep the first day. We are making room for all the days after it.</blockquote>
+        <p>Two autumns later, the timber is a soft silver-olive. The darker streaks tell you where the rain comes from. It is not a flawless surface. It is a legible one.</p>
+      </div>
+    </article>
+  </template>
+  <template id="note-window">
+    <article>
+      <p class="eyebrow">Field note 02 / 26 June 2025 / Elias Rowan</p>
+      <h2 id="folio-title">The space inside a window.</h2>
+      <p class="folio-lead">A window is more than an opening. Sometimes, it is the smallest room in the house.</p>
+      <div class="folio-image"><img src="assets/window-detail.webp" alt="A precisely joined oak sill in a warm lime-plaster window reveal." width="1000" height="1000"></div>
+      <div class="folio-text">
+        <p>We often draw windows in section before we draw them in elevation. From the outside, a window is a shape in a wall. From the inside, it is a place where the wall becomes useful.</p>
+        <p>The depth of a reveal can make shade, frame a view, hold a book, or offer a seat. A sill at the right height is a ledge for a cup. A sill a little lower is somewhere a child will sit and watch the garden.</p>
+        <h3>The detail you touch.</h3>
+        <p>For Marden Courtyard, we made full-size samples of the sill edge. A square edge felt too sharp. A generous round felt too soft. The answer was a small easing of the timber, barely visible, but immediately clear to a hand.</p>
+        <blockquote>The things you touch every day deserve more than a line on a specification.</blockquote>
+        <p>Architecture is often photographed from a distance. It is lived very close up. We try to remember that when we draw.</p>
+      </div>
+    </article>
+  </template>
+  <template id="note-first-line">
+    <article>
+      <p class="eyebrow">Field note 03 / 08 March 2025 / Mara &amp; Elias</p>
+      <h2 id="folio-title">The first line is a question.</h2>
+      <p class="folio-lead">Why we begin a project with a conversation, not an image.</p>
+      <div class="folio-image"><img src="assets/material-study.webp" alt="A pencil lies beside carefully arranged oak, lime plaster, stone and linen samples." width="1000" height="1000"></div>
+      <div class="folio-text">
+        <p>When someone comes to the studio for the first time, we clear the table. We put the drawings away. We make tea.</p>
+        <p>There will be plenty of time for plans. First we want to know how a morning works. Who gets up first? Where does the light fall? What is the best thing about the place you live now, and what quietly gets in the way?</p>
+        <h3>A brief made of ordinary things.</h3>
+        <p>These questions are not a warm-up. They are the work. A list of rooms tells us what a house contains. A conversation tells us how it needs to feel.</p>
+        <p>We might draw a path before we draw a wall: from the car to the kitchen, from the bed to a patch of morning sun. Gradually, the building begins to appear around those movements.</p>
+        <blockquote>A good plan is a way of paying attention.</blockquote>
+        <p>By the time we put the first image on the table, we hope it already feels a little familiar. Not because you have seen it somewhere else. Because it came from you.</p>
+        <a class="text-link" href="#contact" data-close-folio>Start with a conversation <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></a>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    (() => {
+      "use strict";
+
+      /* ===================================================================
+         SETTINGS / BEHAVIOUR & ANIMATION TIMINGS
+         Content is plain HTML above. These settings only control behaviour.
+         No dependencies, tracking, storage, requests or backend endpoints.
+         =================================================================== */
+      const SETTINGS = {
+        revealDuration: 760,
+        revealThreshold: 0.07,
+        revealBottomMargin: "-22px",
+        copyFeedbackDuration: 3200,
+        mobileBreakpoint: 767
+      };
+      const root = document.documentElement;
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      root.style.setProperty("--reveal-duration", `${SETTINGS.revealDuration}ms`);
+      const $ = (selector, scope = document) => scope.querySelector(selector);
+      const $$ = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+
+      /* Scroll reveals progressively enhance already-readable HTML. */
+      if ("IntersectionObserver" in window && !reducedMotion.matches) {
+        root.classList.add("reveal-ready");
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: SETTINGS.revealThreshold, rootMargin: `0px 0px ${SETTINGS.revealBottomMargin} 0px` });
+        $$("[data-reveal]").forEach((element) => revealObserver.observe(element));
+        const removeMotion = (event) => {
+          if (event.matches) {
+            root.classList.remove("reveal-ready");
+            revealObserver.disconnect();
+          }
+        };
+        if (reducedMotion.addEventListener) reducedMotion.addEventListener("change", removeMotion);
+      }
+
+      /* Mobile navigation: real anchors, Escape to close, no scroll lock. */
+      const menuToggle = $(".menu-toggle");
+      const menu = $("#site-nav");
+      const menuLabel = $(".menu-label");
+      const setMenu = (open) => {
+        menuToggle.setAttribute("aria-expanded", String(open));
+        menu.classList.toggle("is-open", open);
+        menuLabel.textContent = open ? "Close" : "Menu";
+      };
+      menuToggle.addEventListener("click", () => setMenu(menuToggle.getAttribute("aria-expanded") !== "true"));
+      $$("a", menu).forEach((link) => link.addEventListener("click", () => setMenu(false)));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") {
+          setMenu(false);
+          menuToggle.focus();
+        }
+      });
+      document.addEventListener("click", (event) => {
+        if (menuToggle.getAttribute("aria-expanded") === "true" && !event.target.closest(".site-header")) setMenu(false);
+      });
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > SETTINGS.mobileBreakpoint) setMenu(false);
+      }, { passive: true });
+
+      /* Reading datum: a single transform, scheduled once per animation frame. */
+      const progress = $(".reading-progress");
+      let progressPending = false;
+      const updateProgress = () => {
+        const total = root.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${total > 0 ? Math.min(1, Math.max(0, window.scrollY / total)) : 0})`;
+        progressPending = false;
+      };
+      window.addEventListener("scroll", () => {
+        if (!progressPending) {
+          progressPending = true;
+          window.requestAnimationFrame(updateProgress);
+        }
+      }, { passive: true });
+      window.addEventListener("resize", updateProgress, { passive: true });
+      updateProgress();
+
+      /* Navigation location is announced without hijacking native scrolling. */
+      if ("IntersectionObserver" in window) {
+        const navObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              $$("a", menu).forEach((link) => {
+                if (link.getAttribute("href") === `#${entry.target.id}`) link.setAttribute("aria-current", "location");
+                else link.removeAttribute("aria-current");
+              });
+            }
+          });
+        }, { rootMargin: "-20% 0px -55% 0px", threshold: 0 });
+        $$("#work, #studio, #notes, #contact").forEach((section) => navObserver.observe(section));
+      }
+
+      /* Project filtering keeps source order and announces the visible count. */
+      const projectGrid = $("#project-grid");
+      const projectCards = $$(".project-card");
+      const filterButtons = $$("[data-filter]");
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const category = button.dataset.filter;
+          let count = 0;
+          projectGrid.classList.toggle("is-filtered", category !== "all");
+          filterButtons.forEach((filter) => filter.setAttribute("aria-pressed", String(filter === button)));
+          projectCards.forEach((card) => {
+            const visible = category === "all" || card.dataset.category === category;
+            card.hidden = !visible;
+            if (visible) {
+              count += 1;
+              card.classList.add("is-visible");
+            }
+          });
+          $("#project-count").textContent = `${String(count).padStart(2, "0")} ${count === 1 ? "project" : "projects"} / Each with its own story.`;
+          updateProgress();
+        });
+      });
+
+      /* Plan-to-place slider: native range supports drag, touch and arrow keys. */
+      const drawingRange = $("#drawing-range");
+      const drawingStage = $(".drawing-stage");
+      const drawingButtons = $$("[data-drawing-view]");
+      const updateDrawing = () => {
+        const value = Number(drawingRange.value);
+        drawingStage.style.setProperty("--reveal", `${value}%`);
+        drawingRange.setAttribute("aria-valuetext", `${value} percent photograph, ${100 - value} percent plan`);
+        drawingButtons.forEach((button) => button.setAttribute("aria-pressed", String(Number(button.dataset.drawingView) === value)));
+        $(".photo-label").style.opacity = value < 14 ? "0" : "1";
+        $(".plan-label").style.opacity = value > 86 ? "0" : "1";
+      };
+      drawingRange.addEventListener("input", updateDrawing);
+      drawingButtons.forEach((button) => button.addEventListener("click", () => {
+        drawingRange.value = button.dataset.drawingView;
+        updateDrawing();
+      }));
+      updateDrawing();
+
+      /* Material accordion. Native details remains useful without JavaScript. */
+      const materialDetails = $$(".material-note");
+      const materialImage = $("#material-image");
+      materialDetails.forEach((detail) => {
+        detail.addEventListener("toggle", () => {
+          if (!detail.open) return;
+          materialDetails.forEach((other) => { if (other !== detail) other.open = false; });
+          materialImage.src = detail.dataset.image;
+          materialImage.alt = detail.dataset.alt;
+          $("#material-caption").textContent = detail.dataset.caption;
+          $(".material-caption > span:last-child").textContent = `Study no. ${detail.dataset.study}`;
+        });
+      });
+
+      /* Project and journal reader. Native dialog traps focus and restores it. */
+      const folio = $("#folio");
+      const folioContent = $("#folio-content");
+      const folioNext = $("#folio-next");
+      const projectIds = $$('template[id^="project-"]').map((template) => template.id.slice(8));
+      const noteIds = $$('template[id^="note-"]').map((template) => template.id.slice(5));
+      let activeFolio = { type: "project", id: "" };
+      let folioOpener = null;
+      const openFolio = (type, id, opener) => {
+        const template = document.getElementById(`${type}-${id}`);
+        if (!template) return;
+        if (opener) folioOpener = opener;
+        activeFolio = { type, id };
+        folioContent.replaceChildren(template.content.cloneNode(true));
+        const ids = type === "project" ? projectIds : noteIds;
+        $("#folio-label").textContent = type === "project" ? "Plinth / Project folio" : "Plinth / Field notes";
+        $("#folio-position").textContent = `${String(ids.indexOf(id) + 1).padStart(2, "0")} / ${String(ids.length).padStart(2, "0")}`;
+        folioNext.firstChild.textContent = type === "project" ? "Next project " : "Next note ";
+        if (!folio.open) {
+          document.body.classList.add("dialog-open");
+          folio.showModal();
+        }
+        folio.scrollTop = 0;
+        $(".folio-close").focus({ preventScroll: true });
+      };
+      $$("[data-project]").forEach((button) => button.addEventListener("click", () => openFolio("project", button.dataset.project, button)));
+      $$("[data-note]").forEach((button) => button.addEventListener("click", () => openFolio("note", button.dataset.note, button)));
+      $(".folio-close").addEventListener("click", () => folio.close());
+      folio.addEventListener("click", (event) => {
+        if (event.target === folio) {
+          const rect = folio.getBoundingClientRect();
+          if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) folio.close();
+        }
+        const contactLink = event.target.closest("[data-close-folio]");
+        if (contactLink) {
+          event.preventDefault();
+          folio.close();
+          window.requestAnimationFrame(() => {
+            $("#contact").scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth" });
+            $("#contact-email").focus({ preventScroll: true });
+          });
+        }
+      });
+      folio.addEventListener("close", () => {
+        document.body.classList.remove("dialog-open");
+        if (folioOpener && document.contains(folioOpener)) folioOpener.focus({ preventScroll: true });
+      });
+      folioNext.addEventListener("click", () => {
+        const ids = activeFolio.type === "project" ? projectIds : noteIds;
+        const nextIndex = (ids.indexOf(activeFolio.id) + 1) % ids.length;
+        openFolio(activeFolio.type, ids[nextIndex]);
+      });
+
+      /* CONTACT ADAPTER
+         To integrate a buyer's contact service, replace this function only.
+         Current behaviour: clipboard -> legacy copy -> visible selectable field.
+         All restricted browser APIs are guarded for opaque sandboxed origins.
+         =================================================================== */
+      const copyButton = $(".copy-email");
+      const copyStatus = $(".copy-status");
+      const manualCopy = $(".manual-copy");
+      const emailCopyField = $("#email-copy-field");
+      let copyTimer;
+      let copying = false;
+      async function copyContactEmail() {
+        if (copying) return;
+        copying = true;
+        const email = $("#contact-email").textContent.trim();
+        let copied = false;
+        try {
+          const policy = document.permissionsPolicy || document.featurePolicy;
+          const clipboardAllowed = !policy || !policy.allowsFeature || policy.allowsFeature("clipboard-write");
+          if (clipboardAllowed && navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(email);
+            copied = true;
+          }
+        } catch (_) { /* Clipboard permissions may be unavailable in a sandbox. */ }
+        if (!copied) {
+          manualCopy.hidden = false;
+          emailCopyField.value = email;
+          emailCopyField.focus({ preventScroll: true });
+          emailCopyField.select();
+          try { copied = Boolean(document.execCommand("copy")); } catch (_) { copied = false; }
+        }
+        window.clearTimeout(copyTimer);
+        if (copied) {
+          manualCopy.hidden = true;
+          copyButton.focus({ preventScroll: true });
+          $("use", copyButton).setAttribute("href", "#icon-check");
+          copyButton.setAttribute("aria-label", "Email address copied");
+          copyStatus.textContent = "Address copied";
+          copyTimer = window.setTimeout(() => {
+            $("use", copyButton).setAttribute("href", "#icon-copy");
+            copyButton.setAttribute("aria-label", "Copy email address");
+            copyStatus.textContent = "";
+          }, SETTINGS.copyFeedbackDuration);
+        } else {
+          $("use", copyButton).setAttribute("href", "#icon-copy");
+          copyButton.setAttribute("aria-label", "Copy email address");
+          copyStatus.textContent = "Select & copy below";
+        }
+        copying = false;
+      }
+      copyButton.addEventListener("click", copyContactEmail);
+      $$("[data-year]").forEach((element) => { element.textContent = new Date().getFullYear(); });
+    })();
+  </script>
+</body>
+</html>

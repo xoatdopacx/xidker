@@ -96,7 +96,7 @@ test("HTTP responses enforce indexing and status before scripts run, including q
 });
 
 test("template demos run sandboxed, stay out of search and serve video in byte ranges", async () => {
-  for (const slug of ["reelmark", "jack", "mainframe", "iris", "michelle", "kin"]) {
+  for (const slug of ["reelmark", "jack", "mainframe", "iris", "michelle", "kin", "rowan", "noa", "plinth"]) {
     const response = await fetch(`http://localhost:80/demo/${slug}/`);
     assert.equal(response.status, 200, slug);
     assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");

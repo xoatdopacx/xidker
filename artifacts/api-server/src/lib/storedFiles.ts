@@ -22,6 +22,9 @@ export const BUILTIN_TEMPLATES = [
   { slug: "iris", name: "Iris" },
   { slug: "michelle", name: "Michelle" },
   { slug: "kin", name: "Kin OS" },
+  { slug: "rowan", name: "Rowan" },
+  { slug: "noa", name: "Noa" },
+  { slug: "plinth", name: "Plinth" },
 ] as const;
 
 // Next to the bundle in dist/, whatever the working directory is.
