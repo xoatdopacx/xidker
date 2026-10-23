@@ -78,3 +78,17 @@ mtime_ms = 1792729385814
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/2f5652b8-e3b8-4017-9ece-203654e71c37/51b5ca00-42ce-4870-8bcd-2a9c9d7435ac"
 storage_version_token = "1792730140886841"
 content_type = "image/webp"
+
+[[outputs]]
+id = "t4Yzd2HTWxmATi5cU6lAn"
+uri = "file://prompts/motionsites-danh-sach.csv"
+type = "table"
+title = "Danh sách mẫu trên motionsites.ai"
+description = "654 mẫu: tên, loại, miễn phí hay không, ngày đăng và đường dẫn (cập nhật 23/10/2026)."
+logical_id = "54f9a7bf-1b4d-431e-89ff-972f58b4b328"
+content_hash = "sha256:4739f8064ed6c20777165c6e59573fd5edc364ca3e955232a4883a8e0cb122ab"
+size = 58763
+mtime_ms = 1792739364460
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/54f9a7bf-1b4d-431e-89ff-972f58b4b328/a5f558f5-4bf0-47c3-af28-5667e987d7f0"
+storage_version_token = "1792739376540193"
+content_type = "text/csv"
