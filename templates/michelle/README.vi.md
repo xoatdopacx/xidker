@@ -24,10 +24,10 @@ Ngoài ảnh, mọi thứ nằm trong **`index.html`**:
 - **Ảnh:** thư mục `assets/` chứa ba ảnh dự án (`.webp`, tỉ lệ 16:10, ví dụ 1024×640). Ảnh thay thế nên giữ tỉ lệ 16:10.
 - **Màu và phông chữ:** tìm `THEME` trong thẻ `<style>`; đường dẫn phông chữ nằm ở `<head>`. Màu các phòng trong hành lang là `ROOM_COLORS` trong phần `SETTINGS` của script.
 - **Thời điểm và chuyển động:** tìm `SETTINGS` ở đầu script. `T` là các mốc cuộn của từng cảnh (0 = đầu trang, 1 = cuối), `FOV` là góc nhìn của camera, `SHEET` là kích thước tấm danh sách trên tường cuối.
-- **Tượng bán thân:** hàm `buildBust()` trong phần `3D` dựng tượng bằng các khối hình đơn giản ngay trong code, không có tệp mô hình nào phải thay. Màu của tượng là các hằng số ở đầu hàm này.
+- **Tượng bán thân:** đổi các màu chính (da, tóc, áo thun, áo khoác, mắt) trong `BUST_COLORS` ở phần `SETTINGS`. Bản thân mô hình được nén trong thẻ script `bust-data` ngay phía trên script chính, nên không có tệp mô hình riêng; hàm `buildBust()` trong phần `3D` giải nén nó và thêm chuyển động quay đầu, chớp mắt, thở.
 
 ## Đưa lên mạng
 
 Tải `index.html` cùng thư mục `assets/` lên nơi lưu trang tĩnh như GitHub Pages, Netlify, Cloudflare Pages hoặc máy chủ của bạn. Không cần lệnh build, backend, cookie hay localStorage. Muốn dùng địa chỉ `/demo/michelle/`, đặt `index.html` và `assets/` cùng trong thư mục đó; đường dẫn ảnh là tương đối. Khi nhúng vào iframe có sandbox, cần cho phép chạy script; không cần quyền same-origin. Liên kết cuối trang mở trong tab mới nên iframe cũng cần `allow-popups`.
 
-Phông chữ và thư viện được tải từ bên ngoài, không nằm sẵn trong thư mục. Ba ảnh dự án chỉ để minh hoạ; hãy thay bằng tác phẩm của bạn và kiểm tra quyền sử dụng mọi nội dung trước khi đăng hoặc bán lại.
+Tượng bán thân dựa trên mô hình người gốc của MakeHuman, phát hành theo giấy phép CC0 (phạm vi công cộng). Phông chữ và thư viện được tải từ bên ngoài, không nằm sẵn trong thư mục. Ba ảnh dự án chỉ để minh hoạ; hãy thay bằng tác phẩm của bạn và kiểm tra quyền sử dụng mọi nội dung trước khi đăng hoặc bán lại.

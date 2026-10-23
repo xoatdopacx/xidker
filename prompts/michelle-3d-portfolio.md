@@ -56,11 +56,12 @@ Layer order, back to front: top headline + manifesto → transparent 3D canvas �
 - **"HI, I'M MICHELLE"** across the top-left.
 - **Manifesto**, left middle, four lines: `CURIOUS IDEAS BECOME PLAYFUL OBJECTS.` / `SMALL WORLDS SHAPED THROUGH FORM,` / `TACTILE MATERIALS AND LIGHT.` / `A LITTLE MOTION BRINGS THEM TO LIFE.`
 - **"PLAYFUL DIMENSIONS"** along the bottom edge. It tilts toward the pointer in 3D (`perspective(900px)`, rotateX ±8°, rotateY ±10°, skewX ±6°, damped) and is the floor for the balls: the collider is the top of its capital letters, projected through the current tilt, so balls roll when it leans.
-- **Bust** on the right half, in front of the top headline and behind the bottom one. Procedural low-poly model from Three.js primitives with flat shading (about 3k triangles), no external model:
-  - egg-shaped faceted head with soft jaw, cheekbones and chin; warm skin facets (`#E8B48E`, ±4% per-face variation); small pyramid nose; ears; soft lips;
-  - almond eyes: white sclera, brown iris `#5B3A24`, black pupil, tiny highlight; skin-coloured lids that blink every 3–6 s;
-  - dark espresso hair `#3A2418` in chunky facets: a cap with a side part, a top bun and two face-framing strands; dark brows;
-  - neck, grey crew-neck tee `#9A9BA0`, open navy-slate overshirt `#33415C` with a pointed collar and two chest pockets.
+- **Bust** on the right half, in front of the top headline and behind the bottom one. Stylised low-poly bust built offline from the CC0 MakeHuman base mesh, flat shaded (about 5k triangles), packed into the page as gzip + base64 data and unpacked with `DecompressionStream`, so it still works from `file://` and in a sandboxed iframe:
+  - faceted head decimated from the base mesh with a softened, stylised face; warm skin facets (`#E8B48E`, small per-face variation, light blush), clean lip outlines, a dark lash line on each upper lid;
+  - eyeballs with white sclera, brown iris `#5B3A24`, black pupil, a dark socket behind each lid; the upper lids close as a morph target to blink every 3–6 s;
+  - dark espresso hair `#3A2418` in chunky combed stripes, a coiled top bun and two face-framing locks; dark brows;
+  - grey crew-neck tee `#9A9BA0` with a ribbed neckline, open navy-slate overshirt `#33415C` shrink-wrapped over the shoulders, with a pointed collar, hem bands and two flap chest pockets; arms hang down, torso slightly smaller than realistic so the head reads larger.
+  - Skinned with three bones: chest (still), neck (35% of the turn) and head (65%); hair, brows and eyes ride on the head bone. Main colours are editable in `BUST_COLORS`.
   - Light: warm key top-right, cool fill left, white rim from behind, soft hemisphere; neutral tone mapping.
   - The head turns toward the pointer around a neck pivot (yaw ±30°, pitch ±14°, damped); the eyes lead by up to ±15°. After 4 s without pointer movement it drifts into a slow idle look. Subtle breathing. On touch screens it follows the last touch.
 - **Leather balls** for X / Twitter, Pinterest and Behance (glyphs `X`, `P`, `Bē`). Radius `clamp(34px, 4.6vw, 84px)`. They drop from above the viewport shortly after load, bounce (restitution 0.55 on the floor, 0.85 between balls), roll with friction, spin with their motion, collide with each other and the screen edges, and settle on the bottom headline.

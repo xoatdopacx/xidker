@@ -11,3 +11,6 @@ The picker does not appear while no sample is visible, and database rows do not 
 
 Testing: use the end-to-end recipe in admin-chat.md (second API with a test outbox and a throwaway ADMIN_EMAIL). Delete test samples through the API, which also deletes their files.
 **Why:** test samples left in dev would show on the dev site.
+
+Changing a bundled template's preview pictures does not update a sample that was already added: its pictures were copied to storage when it was added. On 2026-10-23 the dev Michelle row was refreshed with a one-off script (upload new pictures, update the row, delete the unused old ones; restart the API to drop its in-memory picture cache). The live database had no samples yet then, so publishing adds them with the current pictures.
+**How to apply:** after remaking a template preview, check whether that sample already exists in dev and on the live site.

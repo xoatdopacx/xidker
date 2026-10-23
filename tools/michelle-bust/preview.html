@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;background:#fff}canvas{display:block}</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script type="module">
+import * as THREE from "three";
+const q = new URLSearchParams(location.search);
+const data = await (await fetch(q.get("f") || "out/bust.json", { cache: "no-store" })).json();
+const TW = +(q.get("tw") || 420), TH = +(q.get("th") || 520);
+const views = JSON.parse(q.get("v") || "null") || [
+  { yaw: 0, pitch: 0, dist: 8, ty: -0.6 },
+  { yaw: -35, pitch: 4, dist: 8, ty: -0.6 },
+  { yaw: 35, pitch: 4, dist: 8, ty: -0.6 },
+  { yaw: 90, pitch: 0, dist: 8, ty: -0.6 },
+  { yaw: 155, pitch: 10, dist: 8, ty: -0.6 },
+  { yaw: 0, pitch: 0, dist: 3.4, ty: 0.05 },
+  { yaw: -25, pitch: 2, dist: 3.4, ty: 0.05 },
+  { yaw: 0, pitch: 0, dist: 8, ty: -1.2, hero: true },
+];
+const cols = Math.min(4, views.length), rows = Math.ceil(views.length / cols);
+const canvas = document.getElementById("c");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(TW * cols, TH * rows, false);
+renderer.setClearColor(0xffffff, 1);
+renderer.toneMapping = THREE.NeutralToneMapping;
+renderer.setScissorTest(true);
+const scene = new THREE.Scene();
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd9d2c8, 1.1));
+const key = new THREE.DirectionalLight(0xffe2c6, 2.3); key.position.set(3, 4, 4); scene.add(key);
+const fill = new THREE.DirectionalLight(0xc4d6ff, 0.9); fill.position.set(-4, 1, 2); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xffffff, 1.6); rim.position.set(-1, 3, -5); scene.add(rim);
+const mats = {
+  matte: new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.84, metalness: 0 }),
+  skin: new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.72, metalness: 0 }),
+  hair: new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.55, metalness: 0 }),
+  satin: new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.3, metalness: 0 }),
+  cloth: new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.9, metalness: 0, side: THREE.DoubleSide }),
+  basic: new THREE.MeshBasicMaterial({ vertexColors: true }),
+};
+const root = new THREE.Group(); scene.add(root);
+const c = new THREE.Color();
+let tris = 0;
+for (const part of data.parts) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(part.pos, 3));
+  const n = part.pos.length / 9, col = new Float32Array(n * 9);
+  for (let f = 0; f < n; f++) { c.setHex(part.col[f] ?? part.col[0]); for (let k = 0; k < 3; k++) col.set([c.r, c.g, c.b], f * 9 + k * 3); }
+  g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  const m = new THREE.Mesh(g, mats[part.mat] || mats.matte);
+  root.add(m); tris += n;
+}
+const cam = new THREE.PerspectiveCamera(38, TW / TH, 0.1, 100);
+views.forEach((v, i) => {
+  const x = (i % cols) * TW, y = (rows - 1 - Math.floor(i / cols)) * TH;
+  renderer.setViewport(x, y, TW, TH); renderer.setScissor(x, y, TW, TH);
+  root.rotation.y = v.hero ? -0.16 : 0;
+  const yaw = (v.yaw * Math.PI) / 180, pitch = (v.pitch * Math.PI) / 180;
+  const t = new THREE.Vector3(v.tx ?? 0, v.ty ?? 0, v.tz ?? 0);
+  cam.position.set(t.x + v.dist * Math.sin(yaw) * Math.cos(pitch), t.y + v.dist * Math.sin(pitch), t.z + v.dist * Math.cos(yaw) * Math.cos(pitch));
+  cam.lookAt(t);
+  renderer.render(scene, cam);
+});
+window.info = { tris };
+window.done = true;
+</script>
+</body>
+</html>

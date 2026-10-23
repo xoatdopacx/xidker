@@ -64,3 +64,17 @@ mtime_ms = 1792051323600
 storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/d22770a4-85ae-48ab-9674-0c67306d65e9/b3c2cfd7-776b-48ae-8c93-e777d8ab03f2"
 storage_version_token = "1792051870124954"
 content_type = "application/pdf"
+
+[[outputs]]
+id = "c01TgYrJ_aS2iZ94hfK_8"
+uri = "file://artifacts/api-server/assets/templates/michelle.webp"
+type = "image"
+title = "Michelle – tượng 3D mới"
+description = "Ảnh trang đầu của mẫu Michelle với tượng 3D làm lại."
+logical_id = "2f5652b8-e3b8-4017-9ece-203654e71c37"
+content_hash = "sha256:15073c9440fdde99fd6b764985539d28ff90c7c71b918baaf8a0f51d4f43f058"
+size = 58728
+mtime_ms = 1792729385814
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:abe1f284-cbb1-48dd-9a41-0e1e8f6d2d61/2f5652b8-e3b8-4017-9ece-203654e71c37/51b5ca00-42ce-4870-8bcd-2a9c9d7435ac"
+storage_version_token = "1792730140886841"
+content_type = "image/webp"

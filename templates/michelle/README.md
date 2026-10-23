@@ -24,10 +24,10 @@ Everything except the pictures is in **`index.html`**:
 - **Pictures:** `assets/` holds the three project pictures (`.webp`, 16:10, for example 1024×640). Keep the 16:10 ratio for replacements.
 - **Colours and fonts:** find `THEME` in the inline `<style>`; the font link is in `<head>`. The corridor room colours are `ROOM_COLORS` under `SETTINGS` in the script.
 - **Timing and motion:** find `SETTINGS` at the start of the script. `T` holds the scroll range of each scene (0 = top, 1 = end), `FOV` the camera angle, and `SHEET` the size of the work sheet on the end wall.
-- **The bust:** `buildBust()` in the `3D` section builds it from simple shapes in code, so there is no model file to replace. Its colours are the constants at the top of that function.
+- **The bust:** change its main colours (skin, hair, tee, overshirt, eyes) with `BUST_COLORS` under `SETTINGS`. The model itself is packed into the `bust-data` script just above the main script, so there is no separate model file; `buildBust()` in the `3D` section unpacks it and adds the head turn, blinking and breathing.
 
 ## Publish
 
 Upload `index.html` and the `assets/` folder to any static host, such as GitHub Pages, Netlify, Cloudflare Pages, or your web server. No build command, backend, cookies, or local storage are needed. For a subfolder such as `/demo/michelle/`, keep `index.html` and `assets/` together in that folder; picture paths are relative. In a sandboxed iframe, allow scripts; same-origin access is not required. Footer links open in a new tab, so a sandboxed iframe also needs `allow-popups`.
 
-The fonts and library load from external services and are not bundled. The three project pictures are placeholders; replace them with your own work, and check the rights to any media you publish or redistribute.
+The bust is based on the MakeHuman base mesh, released under CC0 (public domain). The fonts and library load from external services and are not bundled. The three project pictures are placeholders; replace them with your own work, and check the rights to any media you publish or redistribute.

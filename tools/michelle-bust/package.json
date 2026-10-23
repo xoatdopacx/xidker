@@ -1,0 +1,9 @@
+{
+  "name": "michelle-bust-tool",
+  "private": true,
+  "type": "module",
+  "description": "Offline generator for the Michelle template's 3D bust. Not part of the pnpm workspace.",
+  "dependencies": {
+    "meshoptimizer": "1.3.0"
+  }
+}
