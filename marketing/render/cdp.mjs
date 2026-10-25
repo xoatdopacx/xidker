@@ -4,13 +4,17 @@ import { setTimeout as sleep } from "node:timers/promises";
 
 export const CHROMIUM = "/repl/tools/bin/chromium";
 
-export async function launch({ port = 9333, args = [] } = {}) {
+// webgl: render WebGL/WebGL2 in software (SwiftShader) for pages with a 3D scene; slower, but no GPU needed.
+export async function launch({ port = 9333, args = [], webgl = false } = {}) {
+  const graphics = webgl
+    ? ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]
+    : ["--disable-gpu"];
   const proc = spawn(
     CHROMIUM,
     [
       "--headless=new",
       "--no-sandbox",
-      "--disable-gpu",
+      ...graphics,
       "--hide-scrollbars",
       "--mute-audio",
       "--no-first-run",

@@ -96,7 +96,7 @@ test("HTTP responses enforce indexing and status before scripts run, including q
 });
 
 test("template demos run sandboxed, stay out of search and serve video in byte ranges", async () => {
-  for (const slug of ["reelmark", "jack", "mainframe", "iris", "michelle", "kin", "rowan", "noa", "plinth"]) {
+  for (const slug of ["reelmark", "jack", "mainframe", "iris", "michelle", "kin", "rowan", "noa", "plinth", "idk-portfolio"]) {
     const response = await fetch(`http://localhost:80/demo/${slug}/`);
     assert.equal(response.status, 200, slug);
     assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
@@ -107,6 +107,11 @@ test("template demos run sandboxed, stay out of search and serve video in byte r
   assert.equal(picture.status, 200);
   assert.equal(picture.headers.get("content-type"), "image/webp");
   assert.equal(picture.headers.get("cross-origin-resource-policy"), "cross-origin");
+  // A demo built from JavaScript modules: they must arrive as JavaScript, with CORS.
+  const script = await fetch("http://localhost:80/demo/idk-portfolio/js/ocean/index.js");
+  assert.equal(script.status, 200);
+  assert.match(script.headers.get("content-type"), /^text\/javascript/);
+  assert.equal(script.headers.get("access-control-allow-origin"), "*");
   const moved = await fetch("http://localhost:80/demo/jack", { redirect: "manual" });
   assert.equal(moved.status, 301);
   assert.equal(moved.headers.get("location"), "/demo/jack/");

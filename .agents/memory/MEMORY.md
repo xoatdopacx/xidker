@@ -17,3 +17,4 @@
 - [Michelle 3D bust](michelle-bust.md) — built offline from CC0 MakeHuman by tools/michelle-bust; user rejected the primitive bust; blink/clothes pitfalls.
 - [motionsites.ai list](motionsites-index.md) — no bulk copying of their prompts (free ones too); names/links list only; original templates instead; their terms; how to refresh.
 - [Only original templates on sale](template-originality.md) — uploaded/copied sites of real companies are not added; check domain/credits, offer an original version.
+- [idk portfolio ocean](idk-ocean.md) — wake/foam/sky tuning lessons (dipole push, pulse, smooth churn) and how to render WebGL headlessly.

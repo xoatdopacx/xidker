@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
+  <defs>
+    <radialGradient id="g3" cx="35%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#064e3b" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#040908" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="800" fill="#040908"/>
+  <rect width="1200" height="800" fill="url(#g3)"/>
+  <g stroke="#34d399" stroke-opacity="0.35" fill="none" stroke-width="1.2">
+    <rect x="280" y="180" width="640" height="420" rx="24"/>
+    <rect x="330" y="220" width="540" height="340" rx="16" stroke-dasharray="6 6"/>
+    <path d="M 280 390 C 440 240, 760 540, 920 390" stroke-width="2.5" stroke="#10b981"/>
+    <path d="M 280 430 C 440 280, 760 580, 920 430" stroke-width="1.5" stroke="#6ee7b7"/>
+  </g>
+  <g fill="#f8fafc" font-family="monospace" font-size="14" letter-spacing="3">
+    <text x="60" y="70" fill="#34d399">IDK.WORKSHOP // ARCHIVE 03</text>
+    <text x="60" y="730">HYPERION AUTONOMOUS TELEMETRY ENGINE</text>
+    <text x="960" y="730" fill="#94a3b8">WEBGPU // GSAP</text>
+  </g>
+</svg>

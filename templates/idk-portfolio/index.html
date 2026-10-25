@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>idk portfolio — Creative Engineering, 3D Ocean Shaders &amp; Interactive Motion Studio</title>
+  <meta name="description" content="idk portfolio by idk workshop — Creative engineering studio specializing in WebGL/Three.js 3D ocean simulations, GPGPU Kelvin wakes, and GSAP scroll storytelling." />
+  <meta name="theme-color" content="#050811" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <!-- Fonts are bundled in fonts/; the two used by the loading screen start downloading right away. -->
+  <link rel="preload" href="./fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="./css/fonts.css" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <!-- three.js and Lenis are bundled in vendor/; these names let the scripts import them. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.min.js",
+        "lenis": "./vendor/lenis.min.js"
+      }
+    }
+  </script>
+  <link rel="modulepreload" href="./vendor/three.module.min.js" />
+</head>
+<body>
+  <!-- Custom Cursor -->
+  <div id="idk-cursor-dot" class="idk-cursor-dot"></div>
+  <div id="idk-cursor-ring" class="idk-cursor-ring"></div>
+
+  <!-- Preloader -->
+  <div id="idk-preloader" class="idk-preloader">
+    <div class="preloader-top">
+      <span>IDK PORTFOLIO // IDK WORKSHOP</span>
+      <span>GPGPU 3D OCEAN ENGINE READY</span>
+    </div>
+    <div class="preloader-center">
+      <div id="preloader-counter" class="preloader-counter">000%</div>
+      <div class="preloader-bar-track">
+        <div id="preloader-bar" class="preloader-bar-fill"></div>
+      </div>
+    </div>
+    <div class="preloader-bottom">
+      <span>LAT 10.7769° N // LON 106.7009° E</span>
+      <span>HELLO@IDKWORKSHOP.COM</span>
+    </div>
+  </div>
+
+  <!-- Fixed Header -->
+  <header class="idk-header">
+    <a href="#top" class="idk-brand">
+      <span class="idk-brand-mark">IDK</span>
+      <span>idk portfolio</span>
+    </a>
+    <nav class="idk-nav">
+      <a href="#ocean-stage" class="idk-nav-link">3D Ocean</a>
+      <a href="#selected-works" class="idk-nav-link">Selected Works</a>
+      <a href="#capabilities" class="idk-nav-link">Architecture</a>
+      <a href="#faq" class="idk-nav-link">FAQ</a>
+      <a href="#contact" class="idk-nav-link">Contact</a>
+    </nav>
+    <a href="mailto:hello@idkworkshop.com" class="idk-cta-btn">
+      <span>hello@idkworkshop.com</span>
+      <span>↗</span>
+    </a>
+  </header>
+
+  <!-- Fullscreen Fixed 3D WebGL Ocean Viewport -->
+  <div class="ocean-sticky-viewport" aria-hidden="true">
+    <div id="ocean-canvas-host"></div>
+    <div class="ocean-vignette-overlay"></div>
+  </div>
+
+  <!-- Foreground Scroll Storytelling Content -->
+  <main id="top" class="idk-scroll-content">
+    <!-- 1. HERO SECTION -->
+    <section id="ocean-stage" class="hero-section">
+      <div class="hero-telemetry-row js-hero-reveal">
+        <div class="telemetry-pill">
+          <span class="status-dot"></span>
+          <span>REAL-TIME WEBGL2 GPGPU OCEAN &amp; KELVIN WAKE</span>
+        </div>
+        <div class="telemetry-pill">
+          <span>STUDIO: IDK WORKSHOP // EDITION 2026</span>
+        </div>
+      </div>
+
+      <div class="hero-center-grid">
+        <div class="js-hero-reveal">
+          <span class="hero-eyebrow">01 // SPATIAL WEB &amp; INTERACTIVE MOTION</span>
+          <h1 class="hero-display-title">
+            CRAFTING <span class="gradient-span">LIVING 3D</span> WORLDS &amp; DIGITAL FLAGSHIPS.
+          </h1>
+        </div>
+
+        <div class="hero-glass-panel js-hero-reveal">
+          <p class="hero-lead">
+            <strong>idk portfolio</strong> is the interactive showcase of <strong>idk workshop</strong>. We engineer real-time Three.js fluid simulations, custom GLSL ocean shaders, and 60fps scroll choreography. Move your cursor across the sea below to carve live Kelvin wakes.
+          </p>
+          <div class="hero-stat-strip">
+            <div>
+              <div class="hero-stat-num">60 FPS</div>
+              <div class="hero-stat-label">GPGPU Wake Sim</div>
+            </div>
+            <div>
+              <div class="hero-stat-num">24+</div>
+              <div class="hero-stat-label">WebGL Flagships</div>
+            </div>
+            <div>
+              <div class="hero-stat-num">100%</div>
+              <div class="hero-stat-label">Bespoke Shaders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive 3D Ocean Shader Controls -->
+      <div class="ocean-hud-bar js-hero-reveal">
+        <div class="hud-controls-group">
+          <label class="hud-control-item">
+            <span>Wake Speed</span>
+            <input id="hud-speed" type="range" min="25" max="100" step="1" value="65" />
+          </label>
+          <label class="hud-control-item">
+            <span>Wave Height</span>
+            <input id="hud-wave" type="range" min="0.8" max="3.0" step="0.05" value="1.85" />
+          </label>
+          <label class="hud-control-item">
+            <span>Camera Altitude</span>
+            <input id="hud-zoom" type="range" min="8" max="36" step="1" value="14" />
+          </label>
+        </div>
+        <div class="hud-controls-group">
+          <button type="button" class="hud-preset-btn" data-ocean-preset="calm">Calm Horizon</button>
+          <button type="button" class="hud-preset-btn is-active" data-ocean-preset="voyage">Deep Voyage</button>
+          <button type="button" class="hud-preset-btn" data-ocean-preset="storm">Kinetic Swell</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 3D OCEAN EXPEDITION STORY CARDS -->
+    <section class="ocean-story-section">
+      <article class="ocean-story-card">
+        <span class="story-tag">02 // PING-PONG FBO WAKE SIMULATION</span>
+        <h2 class="story-heading">Interactive Kelvin Wake &amp; Foam Dispersion</h2>
+        <p class="story-copy">
+          Our custom GPGPU heightfield solver runs dual floating-point framebuffers in Three.js. As your pointer glides over the ocean surface, it injects directional momentum, V-shaped Kelvin waves, and turbulent crest foam in real time.
+        </p>
+      </article>
+
+      <article class="ocean-story-card align-right">
+        <span class="story-tag">03 // PROCEDURAL SIMPLEX 3D SWELLS</span>
+        <h2 class="story-heading">Multi-Octave PBR Water &amp; Horizon Compression</h2>
+        <p class="story-copy">
+          Combined with 4-octave Simplex 3D noise, dual scrolling normal maps, Fresnel sky reflections, and horizon sun compression, the scene delivers cinema-grade ocean depth directly inside the browser.
+        </p>
+      </article>
+    </section>
+
+    <!-- 3. SELECTED WORKS ARCHIVE -->
+    <section id="selected-works" class="works-section">
+      <div class="section-header-row">
+        <div>
+          <span class="hero-eyebrow">04 // SELECTED WORKS ARCHIVE</span>
+          <h2 class="section-title">Featured Interactive Systems</h2>
+        </div>
+        <a href="mailto:hello@idkworkshop.com" class="idk-cta-btn">
+          <span>Request Full Archive</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <div class="works-grid">
+        <article class="work-card">
+          <div class="work-media-wrap">
+            <img src="./assets/works/work-01-aether.svg" alt="Aether Ocean Engine — WebGL2 Fluid &amp; Kelvin Wake System" loading="lazy" />
+            <span class="work-badge">WebGL2 // Custom GLSL</span>
+          </div>
+          <div class="work-body">
+            <div class="work-meta">
+              <span>01 / AETHER MARITIME ENGINE</span>
+              <span>2026</span>
+            </div>
+            <h3 class="work-title">Real-Time GPGPU Ocean &amp; Wake Visualizer</h3>
+            <p class="work-desc">
+              Interactive 3D ocean surface with ping-pong framebuffer wave propagation, turbulent wake trails, and dynamic camera choreography.
+            </p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-media-wrap">
+            <img src="./assets/works/work-02-kronos.svg" alt="Kronos Spatial Audio &amp; Raymarched Synthesizer" loading="lazy" />
+            <span class="work-badge">Three.js // WebAudio</span>
+          </div>
+          <div class="work-body">
+            <div class="work-meta">
+              <span>02 / KRONOS SPATIAL SYNTH</span>
+              <span>2026</span>
+            </div>
+            <h3 class="work-title">Audio-Reactive Raymarched Geometry</h3>
+            <p class="work-desc">
+              Signed-distance-field (SDF) sculptures driven by real-time FFT frequency analysis and physical chromatic dispersion shaders.
+            </p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-media-wrap">
+            <img src="./assets/works/work-03-hyperion.svg" alt="Hyperion Autonomous Telemetry Engine" loading="lazy" />
+            <span class="work-badge">GSAP // Canvas 2D + 3D</span>
+          </div>
+          <div class="work-body">
+            <div class="work-meta">
+              <span>03 / HYPERION TELEMETRY</span>
+              <span>2025</span>
+            </div>
+            <h3 class="work-title">High-Frequency Spatial Data Storytelling</h3>
+            <p class="work-desc">
+              Scroll-scrubbed timeline architecture combining dual-canvas frame sequences, split-text gradient reveals, and zero-latency transitions.
+            </p>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-media-wrap">
+            <img src="./assets/works/work-04-solaris.svg" alt="Solaris Volumetric Cloud &amp; Ocean Simulation" loading="lazy" />
+            <span class="work-badge">GLSL // PBR Lighting</span>
+          </div>
+          <div class="work-body">
+            <div class="work-meta">
+              <span>04 / SOLARIS ATMOSPHERICS</span>
+              <span>2025</span>
+            </div>
+            <h3 class="work-title">Atmospheric Scattering &amp; Specular Horizon</h3>
+            <p class="work-desc">
+              Physically inspired sky dome and ocean horizon shader with dynamic sun elevation and anisotropic specular highlights.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. STUDIO ARCHITECTURE & CAPABILITIES -->
+    <section id="capabilities" class="capabilities-section">
+      <span class="hero-eyebrow">05 // ENGINEERING DISCIPLINES</span>
+      <h2 class="section-title">How idk workshop Builds</h2>
+
+      <div class="cap-grid">
+        <div class="cap-card">
+          <span class="cap-index">[ 01 // SHADERS ]</span>
+          <div>
+            <h3 class="cap-name">WebGL2 &amp; GLSL</h3>
+            <p class="cap-text">Custom vertex and fragment pipelines, GPGPU ping-pong simulations, Fresnel reflections, and procedural noise fields.</p>
+          </div>
+        </div>
+
+        <div class="cap-card">
+          <span class="cap-index">[ 02 // MOTION ]</span>
+          <div>
+            <h3 class="cap-name">GSAP Choreography</h3>
+            <p class="cap-text">ScrollTrigger pinning, timeline scrubbing, SplitText gradient reveals, and inertial Lenis smooth scrolling.</p>
+          </div>
+        </div>
+
+        <div class="cap-card">
+          <span class="cap-index">[ 03 // PERFORMANCE ]</span>
+          <div>
+            <h3 class="cap-name">60FPS Architecture</h3>
+            <p class="cap-text">Zero-layout-thrash CSS custom properties, intersection-gated render loops, and adaptive device-pixel-ratio scaling.</p>
+          </div>
+        </div>
+
+        <div class="cap-card">
+          <span class="cap-index">[ 04 // DESIGN SYSTEMS ]</span>
+          <div>
+            <h3 class="cap-name">Fluid Grid &amp; Type</h3>
+            <p class="cap-text">Viewport-proportional typography, glassmorphic HUD telemetry, and cohesive brand identity systems.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. FAQ SECTION -->
+    <section id="faq" class="faq-section">
+      <div style="text-align: center; max-width: 46rem; margin: 0 auto;">
+        <span class="hero-eyebrow">06 // TECHNICAL FAQ</span>
+        <h2 class="section-title">Questions &amp; Answers</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item is-open">
+          <button type="button" class="faq-trigger">
+            <span>How does the 3D ocean scene run at 60fps in the browser?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-panel" style="max-height: 240px;">
+            <div class="faq-panel-inner">
+              The ocean scene uses a Three.js plane geometry displaced in the vertex shader by 4-octave Simplex 3D noise and a GPU framebuffer wake simulation, avoiding expensive CPU mesh updates on every frame.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger">
+            <span>Can idk workshop customize the 3D shaders and motion for our brand?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">
+              Yes. Every shader parameter—water tint, sun elevation, Kelvin wake dispersion, camera path, and scroll-linked choreography—is modular and tailored from scratch for each client commission.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger">
+            <span>How do we start a project with idk workshop?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-panel">
+            <div class="faq-panel-inner">
+              Send your project brief, timeline, and interactive goals directly to <strong>hello@idkworkshop.com</strong>. We respond within 24 hours with an architecture proposal.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. FOOTER -->
+    <footer id="contact" class="idk-footer">
+      <div class="footer-cta-box">
+        <span class="hero-eyebrow">07 // INITIATE TRANSMISSION</span>
+        <a href="mailto:hello@idkworkshop.com" class="footer-big-mail">hello@idkworkshop.com</a>
+      </div>
+      <div class="footer-bottom-row">
+        <span>© 2026 idk portfolio — Designed &amp; Engineered by idk workshop</span>
+        <span>100% Bespoke WebGL2 Ocean Scene // Zero External CDN Dependencies</span>
+      </div>
+    </footer>
+  </main>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
