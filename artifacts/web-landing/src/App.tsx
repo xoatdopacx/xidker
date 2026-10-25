@@ -1,10 +1,11 @@
-import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
+import { Suspense, useEffect, useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { I18nProvider, useI18n, type Dict } from '@/lib/i18n';
 import { LANGUAGES } from '@/lib/languages';
+import { lazyWithReload } from '@/lib/lazy-reload';
 import { PixelTransitionProvider } from '@/components/pixel-transition';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
@@ -21,11 +22,12 @@ import {
   Router as WouterRouter,
 } from 'wouter';
 
-// Visitors on the home page never download the account and admin screens.
-const Admin = lazy(() => import('@/pages/admin'));
-const AuthPage = lazy(() => import('@/pages/auth'));
-const AccountPage = lazy(() => import('@/pages/account'));
-const OrderPage = lazy(() => import('@/pages/order'));
+// Visitors on the home page never download the account and admin screens. The address already names the screen,
+// so a reload after a failed download lands on it again.
+const Admin = lazyWithReload(() => import('@/pages/admin'));
+const AuthPage = lazyWithReload(() => import('@/pages/auth'));
+const AccountPage = lazyWithReload(() => import('@/pages/account'));
+const OrderPage = lazyWithReload(() => import('@/pages/order'));
 const homeRoute = new RegExp(`^/(?:${LANGUAGES.map((l) => l.code).join('|')})?/?$`);
 
 function PageLoading() {

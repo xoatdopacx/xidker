@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode, type RefObject } from "react";
+import { Suspense, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode, type RefObject } from "react";
 import { useListPackages, getListPackagesQueryKey } from "@workspace/api-client-react";
 import type { Package } from "@workspace/api-client-react";
 import { keepPreviousData, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import { supportChat } from "@/lib/support-chat";
 import { productSchema, serializeJson } from "@/lib/product-schema";
 import { localePath } from "@/lib/locale-url";
 import { orderErrorText, useStartOrder } from "@/lib/order";
+import { lazyWithReload } from "@/lib/lazy-reload";
 import { ROUTES } from "@/lib/routes";
 
 /* ---------------- Road + walking character ---------------- */
@@ -389,8 +390,22 @@ function PagesMock({ items }: { items: string[] }) {
 
 /* ---------------- Pricing ---------------- */
 
-// Neither the picker code nor its sample/image requests load until a visitor chooses a package.
-const SamplePicker = lazy(() => import("@/components/sample-picker"));
+// Neither the picker code nor its sample/image requests load until a visitor chooses a package. If that code cannot
+// be downloaded the page reloads, and the package the visitor chose opens again right after.
+const PICKER_AFTER_RELOAD = "xidker:picker-after-reload";
+let pickerLoadingFor: string | null = null;
+const SamplePicker = lazyWithReload(() => import("@/components/sample-picker"), () => {
+  try { if (pickerLoadingFor) sessionStorage.setItem(PICKER_AFTER_RELOAD, pickerLoadingFor); } catch { /* storage blocked */ }
+});
+function takePickerAfterReload(): string | null {
+  try {
+    const id = sessionStorage.getItem(PICKER_AFTER_RELOAD);
+    sessionStorage.removeItem(PICKER_AFTER_RELOAD);
+    return id;
+  } catch {
+    return null;
+  }
+}
 
 function PackageCard({ p, i, busy, disabled, onBuy }: { p: Package; i: number; busy: boolean; disabled: boolean; onBuy: (event: MouseEvent<HTMLButtonElement>) => void }) {
   const { t, lang, numLocale } = useI18n();
@@ -461,12 +476,27 @@ function Pricing() {
     script.textContent = serializeJson(productSchema(t, data ?? null, url));
   }, [data, t, lang]);
 
+  const openPicker = (p: Package, trigger: HTMLElement | null) => {
+    // Keep the actual button (mouse clicks do not focus buttons in every browser).
+    pickerTriggerRef.current = trigger;
+    pickerLoadingFor = p.id;
+    setPickerPackage(p);
+    setPickerOpen(true);
+  };
+
+  // Reopen the picker after the page reloaded because its code failed to download.
+  useEffect(() => {
+    if (!data) return;
+    const id = takePickerAfterReload();
+    const p = id ? data.find((item) => item.id === id && item.pickSample) : undefined;
+    if (p) openPicker(p, document.querySelector<HTMLElement>(`[data-testid="button-buy-${CSS.escape(p.id)}"]`));
+    // Only the first catalog this page receives matters.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   const buy = (p: Package, trigger: HTMLButtonElement) => {
     if (p.pickSample) {
-      // Keep the actual button (mouse clicks do not focus buttons in every browser).
-      pickerTriggerRef.current = trigger;
-      setPickerPackage(p);
-      setPickerOpen(true);
+      openPicker(p, trigger);
       return;
     }
     checkout.start({ packageId: p.id, name: p.name }, (err) => toast({ variant: "destructive", title: t.pricing.toastTitle, description: orderErrorText(err, t) }));

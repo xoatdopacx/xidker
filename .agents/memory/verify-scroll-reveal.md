@@ -25,6 +25,8 @@ Scripts gated on the host name (the Whop pixel skips `localhost` and `*.replit.d
 
 To check looping CSS animations at exact moments, run `document.getAnimations().forEach(a => { a.pause(); a.currentTime = t; })` and capture; the same t on every animation keeps them in step (negative delays included). Pick times that are not all the same phase of a short loop, or every capture shows one frame.
 
+The user's preview runs on the private workspace URL and can hit failures the container never sees (requests made without their sign-in, a request dropped while the dev server restarts). To reproduce one, make the request fail with CDP `Fetch.enable` + `Fetch.failRequest` (e.g. the first request for a screen's code), or put a local proxy that refuses requests without a test cookie in front of localhost:80.
+
 If WebGL is ever needed again in headless mode: drop `--disable-gpu` and add `--use-angle=swiftshader --enable-unsafe-swiftshader --ignore-gpu-blocklist`.
 
 **Why:** pricing cards with live data, checkout navigation, the road character's per-leg vehicles and the FAQ height check could only be confirmed this way.

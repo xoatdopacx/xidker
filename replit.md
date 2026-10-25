@@ -96,6 +96,7 @@ Multilingual (33 languages) sales page, styled and animated like a pixel-art gam
 - A language switch blocks the page for several hundred ms (re-render, text layout, font swap; worst for Chinese/Japanese/Korean). The loading card's bar, walker and percentage are queued up front as browser (compositor) animations so they keep moving through that; do not drive them with JS timers. The new language's font stylesheet is added only after the screen is covered, because adding a stylesheet restyles the whole page and would stall the cover animation.
 - Transition and card-build canvases are reused from a pool; creating canvases costs more than drawing into them.
 - Inside Radix dialogs (the sample picker), show errors inline, not as toasts: toasts sit under the dialog backdrop.
+- Screens loaded on demand (sample picker, sign-in, account, order, dashboard) use `lazyWithReload` (`src/lib/lazy-reload.ts`), not plain `lazy`: React and the browser keep a failed code download for the whole visit, so the page reloads once (at most once a minute) and the picker reopens for the chosen package. This also covers visitors whose page was open during a publish (old file names are gone).
 
 ## Pointers
 

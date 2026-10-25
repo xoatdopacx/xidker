@@ -1,5 +1,5 @@
 - [Whop integration quirks (legacy)](whop-integration.md) — site stopped using Whop 2026-10-22; notes only for the root whop scripts or a return to Whop.
-- [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; fake API answers via Fetch; POSTs need the dev-domain Origin.
+- [Browser verification](verify-scroll-reveal.md) — Screenshot tool cannot scroll; drive chromium over CDP; fake or fail requests via Fetch; POSTs need the dev-domain Origin.
 - [Scene transition performance](transition-perf.md) — loading card must be compositor-driven; font stylesheet only under cover; pool canvases; dev "unknown runtime error" unreproduced.
 - [Font delivery policy](font-delivery.md) — prioritize readable fallback text over waiting for base fonts; preserve on-demand script fonts and covered language switches.
 - [Pricing rules](pricing-rules.md) — user-defined $12/$50/$250 package contents, provisional VND prices, refund policy places to keep in sync; no invented terms.

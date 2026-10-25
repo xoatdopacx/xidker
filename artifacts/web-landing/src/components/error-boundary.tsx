@@ -4,6 +4,7 @@ import {
   type ErrorInfo,
   type ReactNode,
 } from 'react';
+import { needsReload } from '@/lib/lazy-reload';
 
 export interface ErrorFallbackProps {
   error: Error;
@@ -54,7 +55,8 @@ function DefaultFallback({ error, resetError }: ErrorFallbackProps) {
         ) : null}
         <button
           type="button"
-          onClick={resetError}
+          // Code that failed to download stays failed until the page loads again.
+          onClick={needsReload(error) ? () => window.location.reload() : resetError}
           className="mt-4 rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
         >
           Try again
