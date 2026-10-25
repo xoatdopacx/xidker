@@ -11,3 +11,7 @@ The page CSP is enforced only on the published site, so a missing host breaks th
 
 The template demos under `/demo/<slug>/` get their own sandbox policy (`DEMO_CSP`), in dev as well, so a broken demo shows up in the preview. Iris's 3D loader failed until `connect-src` allowed `data: blob:`.
 **How to apply:** after changing a template demo, open all four demos at desktop and phone size and read the console; the only expected noise is a favicon request and Jack's 404 GIF.
+
+Exception, added 2026-10-25: requests whose Host is the workspace's own (private) dev domain get the sandbox plus `allow-same-origin`, dev only. The user opened a demo in their own browser tab and got a bare unstyled page.
+**Why:** the workspace URL answers only requests carrying the user's Replit sign-in cookie; from an opaque origin the browser leaves it off, so every CSS/JS/picture request got Replit's login page. Checks from the container never see this, because the container reaches its dev URL without signing in. The published site is public, so it is unaffected.
+**How to apply:** keep localhost and production on the full sandbox. To reproduce, put a small local proxy in front of localhost:80 that refuses requests without a test cookie, set that cookie (SameSite=Lax) in chromium, and open the demo through the proxy.

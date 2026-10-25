@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
+import http from "node:http";
 import { fileURLToPath } from "node:url";
 import { renderPage, LANGUAGES } from "../dist/server/render.js";
 import { createCatalogCache } from "../seo/catalog-cache.mjs";
@@ -101,6 +102,19 @@ test("template demos run sandboxed, stay out of search and serve video in byte r
     assert.equal(response.status, 200, slug);
     assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
     assert.match(response.headers.get("content-security-policy"), /^sandbox allow-scripts /);
+    assert.doesNotMatch(response.headers.get("content-security-policy"), /allow-same-origin/, slug);
+  }
+  // Through the private workspace URL the browser would leave the sign-in cookie off a sandboxed demo's own files,
+  // so there (development only) a demo keeps the site's origin.
+  if (process.env.REPLIT_DEV_DOMAIN) {
+    const policy = await new Promise((resolve, reject) => {
+      const request = http.get({ host: "127.0.0.1", port: 80, path: "/demo/idk-portfolio/", headers: { Host: process.env.REPLIT_DEV_DOMAIN } }, (response) => {
+        response.resume();
+        resolve(response.headers["content-security-policy"]);
+      });
+      request.on("error", reject);
+    });
+    assert.match(policy, /^sandbox allow-scripts allow-same-origin /);
   }
   // Pictures next to a demo page load from the sandbox too.
   const picture = await fetch("http://localhost:80/demo/kin/assets/place.webp");

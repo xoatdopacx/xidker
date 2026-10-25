@@ -108,6 +108,21 @@ const DEMO_CSP = [
   "form-action 'none'",
   "frame-ancestors 'self'",
 ].join("; ");
+/**
+ * In development the workspace URL is private: Replit answers only requests that carry the signed-in user's cookie.
+ * Browsers leave that cookie off requests made by a sandboxed page (its origin is opaque), so a demo's own styles,
+ * scripts and pictures would come back as Replit's login page. Opened through that URL, a demo therefore keeps this
+ * site's origin. Development only: local checks on localhost and the published site (public) keep the full sandbox.
+ */
+const privateDevHosts = new Set(
+  development
+    ? [process.env.REPLIT_DEV_DOMAIN, ...(process.env.REPLIT_DOMAINS ?? "").split(",")]
+        .map((host) => host?.trim().toLowerCase())
+        .filter(Boolean)
+    : [],
+);
+const DEMO_CSP_PRIVATE_DEV = DEMO_CSP.replace("sandbox allow-scripts", "sandbox allow-scripts allow-same-origin");
+const requestHost = (req) => String(req.headers.host ?? "").trim().toLowerCase().replace(/:\d+$/, "");
 async function serveDemo(req, res, url, pathname, relative) {
   const demoRoot = resolve(publicDir, "demo");
   let file = resolve(publicDir, relative);
@@ -131,8 +146,9 @@ async function serveDemo(req, res, url, pathname, relative) {
     // The sandboxed page has an origin of its own, so its files must be loadable from another origin.
     "Cross-Origin-Resource-Policy": "cross-origin",
   };
-  if (extname(file) === ".html") headers["Content-Security-Policy"] = DEMO_CSP;
-  else {
+  if (extname(file) === ".html") {
+    headers["Content-Security-Policy"] = privateDevHosts.has(requestHost(req)) ? DEMO_CSP_PRIVATE_DEV : DEMO_CSP;
+  } else {
     // Module scripts and crossorigin stylesheets are CORS requests; from the sandbox their origin is "null".
     headers["Access-Control-Allow-Origin"] = "*";
     headers["Accept-Ranges"] = "bytes";

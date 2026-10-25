@@ -9,7 +9,7 @@
 - [Locale updates](locale-updates.md) — add many strings to all 33 locales with a merge script, placeholder/neighbour checks, and a key-path check against vi.json.
 - [Marketing renders](marketing-renders.md) — logo/promo are HTML rendered by headless chromium; clip-path cuts VN capital accents; outputs gitignored.
 - [SEO rendering policy](seo-rendering.md) — same React content for bots and visitors; `/` must answer 200 within 5s without the catalog; check which code a failed publish built.
-- [Security headers and CSP](security-headers.md) — page CSP only on the live site; demos have their own sandbox CSP; GAESA/Server header unfixable.
+- [Security headers and CSP](security-headers.md) — page CSP only on the live site; demos sandboxed (not via the private dev URL); GAESA/Server header unfixable.
 - [Frontend gotchas](frontend-gotchas.md) — unlayered index.css classes beat Tailwind v4 utilities; one pixel size (--sp) per picture; column flex-basis = height.
 - [Source samples](source-samples.md) — pick-before-paying request; bundled templates seed themselves once each; other samples must be re-uploaded live.
 - [Pixel art from user photos/videos](pixel-art-conversion.md) — magick recipe for the cat memes; outline/LAB/eye pitfalls; dedupe video poses; PNG8.
